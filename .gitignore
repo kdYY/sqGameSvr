@@ -1,0 +1,36 @@
+#########################################
+## Author		:	yangpy
+## Create Date	:	2017-07-04 11:50:00
+## Version		:	0.0.1
+#########################################
+##
+# Eclipse project file
+# File - prefix with .
+.classpath
+.project
+.settings
+
+##
+# Intellij idea
+.idea
+*.iml
+dependency-reduced-pom.xml
+
+
+# File - name as *.filetype
+*.class
+
+# File
+error.log
+
+# Folder 
+target
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
