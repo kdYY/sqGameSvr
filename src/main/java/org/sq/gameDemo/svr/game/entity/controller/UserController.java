@@ -4,11 +4,11 @@
  * All rights reserved.
  */
 
-package org.sq.gameDemo.svr.controller;
+package org.sq.gameDemo.svr.game.entity.controller;
 
 import org.sq.gameDemo.common.Result;
-import org.sq.gameDemo.svr.model.User;
-import org.sq.gameDemo.svr.service.UserService;
+import org.sq.gameDemo.svr.game.entity.model.User;
+import org.sq.gameDemo.svr.game.entity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -16,7 +16,7 @@ Date: 2018-10-21 01:28:44
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for svr
+-- Table structure for common
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
@@ -28,7 +28,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of svr
+-- Records of common
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'ja', '123', '江苏');
 INSERT INTO `user` VALUES ('2', 'BL', '123', '新加坡');

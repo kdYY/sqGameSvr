@@ -37,7 +37,11 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>1.3.2</version>
 		</dependency>
-
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
         <!-- 热部署用，改变代码不需要重启项目  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

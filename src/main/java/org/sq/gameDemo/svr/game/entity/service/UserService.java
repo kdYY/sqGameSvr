@@ -4,10 +4,10 @@
  * All rights reserved.
  */
 
-package org.sq.gameDemo.svr.service;
+package org.sq.gameDemo.svr.game.entity.service;
 
-import org.sq.gameDemo.svr.dao.UserDao;
-import org.sq.gameDemo.svr.model.User;
+import org.sq.gameDemo.svr.game.entity.dao.UserDao;
+import org.sq.gameDemo.svr.game.entity.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -4,7 +4,7 @@
  * All rights reserved.
  */
 
-package org.sq.gameDemo.svr.model;
+package org.sq.gameDemo.svr.game.entity.model;
 
 import java.io.Serializable;
 

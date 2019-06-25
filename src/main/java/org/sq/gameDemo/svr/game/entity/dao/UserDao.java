@@ -4,9 +4,9 @@
  * All rights reserved.
  */
 
-package org.sq.gameDemo.svr.dao;
+package org.sq.gameDemo.svr.game.entity.dao;
 
-import org.sq.gameDemo.svr.model.User;
+import org.sq.gameDemo.svr.game.entity.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -31,10 +31,10 @@ public interface UserDao {
 
     public List<User> listUser();
 
-    public void addUser(@Param("svr") User user);
+    public void addUser(@Param("common") User user);
 
     public void delUser(@Param("id") Integer id);
 
-    public void updateUser(@Param("svr") User user);
+    public void updateUser(@Param("common") User user);
 
 }
