@@ -6,6 +6,7 @@
 
 package org.sq.gameDemo.svr.game.entity.service;
 
+import org.sq.gameDemo.common.GameOrderMapping;
 import org.sq.gameDemo.svr.game.entity.dao.UserDao;
 import org.sq.gameDemo.svr.game.entity.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
+    @GameOrderMapping(name="getUser")
     public User getUser(String name,String password){
         return userDao.getUser(name,password);
     }
