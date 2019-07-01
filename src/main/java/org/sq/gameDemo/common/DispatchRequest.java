@@ -4,15 +4,19 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ContextLoader;
+import org.sq.gameDemo.svr.game.entity.model.OrderRule;
+import org.sq.gameDemo.svr.game.entity.service.OrderRuleService;
 
 import javax.annotation.PostConstruct;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,11 +29,17 @@ public class DispatchRequest{
     private static final Map<String, String> request2Handler = new HashMap();  // 指令，spring对应bean名:方法注解名称(唯一)
     //site, userService:site
 
-    static {
-        //做指令初始化工作 eg 读取指令文本文件抑或其他途径
-        request2Handler.put("site","userService:site");
-    }
+    @Autowired
+    private OrderRuleService orderRuleService;
 
+
+    @PostConstruct
+    public void init() {
+        List<OrderRule> orderRuleList = orderRuleService.getOrderRuleList();
+        for (OrderRule orderRule : orderRuleList) {
+             request2Handler.put(orderRule.getOrderName(), orderRule.getRule());
+        }
+    }
 
     /**
      * 根据requestOrder执行spring管理下的bean中有特定注解的方法

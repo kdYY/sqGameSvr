@@ -32,3 +32,9 @@ CREATE TABLE `user` (
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'ja', '123', '江苏');
 INSERT INTO `user` VALUES ('2', 'BL', '123', '新加坡');
+DROP TABLE IF EXISTS `orderRule`;
+CREATE TABLE `orderRule` (
+  `order_name` varchar(255) NOT NULL,
+  `rule` varchar(255) NOT NULL,
+   PRIMARY KEY (`order_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
