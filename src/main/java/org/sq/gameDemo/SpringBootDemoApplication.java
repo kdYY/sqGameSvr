@@ -29,6 +29,7 @@ public class SpringBootDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... strings) {
+		System.out.println("启动netty中");
 		try {
 			InetSocketAddress address = new InetSocketAddress(url, port);
 			ChannelFuture future = null;
@@ -43,6 +44,6 @@ public class SpringBootDemoApplication implements CommandLineRunner {
 		}catch (Exception e) {
 			gameSvr.destroy();
 		}
-
+		System.out.println("启动结束");
 	}
 }

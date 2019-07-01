@@ -18,6 +18,10 @@ import java.net.InetSocketAddress;
 @Service
 public class GameSvr {
 
+    @Autowired
+    private SvrChannelInitializer svrChannelInitializer;
+
+
     private static final Logger log = Logger.getLogger(GameSvr.class);
 
     private final EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -25,28 +29,27 @@ public class GameSvr {
     private Channel channel;
 
     public ChannelFuture run(InetSocketAddress address) {
-        ChannelFuture f = null;
+        ChannelFuture future = null;
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new SvrChannelInitializer())
+                    .childHandler(svrChannelInitializer)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
-            f = b.bind(address).syncUninterruptibly();
-
-            System.out.println(GameSvr.class.getName() + " started and listen on " + f.channel().localAddress());
-            channel = f.channel();
+            future = b.bind(address).syncUninterruptibly();
+            System.out.println(GameSvr.class.getName() + " started and listen on " + future.channel().localAddress());
+            channel = future.channel();
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
-            if (f != null && f.isSuccess()) {
+            if (future != null && future.isSuccess()) {
                 log.info("Netty server listening on port " + address.getPort() + " and ready for connections...");
             } else {
                 log.error("Netty server start up Error!");
             }
         }
-        return  f;
+        return  future;
     }
     public void destroy() {
         log.info("Shutdown Netty Server...");

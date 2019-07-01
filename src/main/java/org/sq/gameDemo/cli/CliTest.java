@@ -12,6 +12,7 @@ import io.netty.util.CharsetUtil;
 import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;
+import java.util.Scanner;
 
 public class CliTest {
 
@@ -25,7 +26,8 @@ public class CliTest {
         try {
             log.info("init...");
             b = new Bootstrap();
-            b.group(workerGroup);
+            b.group(workerGroup)
+                    .remoteAddress("127.0.0.1", 8085);
             b.channel(NioSocketChannel.class);
             b.option(ChannelOption.SO_KEEPALIVE, true);
             b.handler(new ChannelInitializer<SocketChannel>() {
@@ -42,28 +44,30 @@ public class CliTest {
         }
     }
 
-    public static Object startAndWrite(InetSocketAddress address, Object send) throws InterruptedException {
-        init();
-        f = b.connect(address).sync();
+    public static void sendMsg(Object send) throws InterruptedException {
         // 传数据给服务端
         f.channel().writeAndFlush(send);
-        f.channel().closeFuture().sync();
-        return f.channel().attr(AttributeKey.valueOf("Attribute_key")).get();
     }
 
-    public static void main(String[] args) {
-        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8085);
-        String message = "hello";
-        try {
-            Object result = CliTest.startAndWrite(address, message);
-            log.info("....result:" + result);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        } finally {
-            f.channel().close();
-            workerGroup.shutdownGracefully();
-            log.info("Closed client!");
+    public static void main(String[] args) throws InterruptedException {
+        init();
+        f = b.connect().sync();
+        Scanner scanner = new Scanner(System.in);
+        String line = "";
+        while (scanner.hasNext()) {
+            try {
+                line = scanner.nextLine();
+                CliTest.sendMsg( line);
+                line = "";
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                e.printStackTrace();
+                //关闭连接
+                f.channel().close().sync();
+            } finally {
+
+            }
         }
+
     }
 }

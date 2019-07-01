@@ -42,4 +42,13 @@ public class User implements Serializable {
 		this.address = address;
 	}
 
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", password='" + password + '\'' +
+				", address='" + address + '\'' +
+				'}';
+	}
 }

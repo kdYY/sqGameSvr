@@ -30,7 +30,7 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    @GameOrderMapping("getUser")
+
     public User getUser(String name,String password){
         return userDao.getUser(name,password);
     }
