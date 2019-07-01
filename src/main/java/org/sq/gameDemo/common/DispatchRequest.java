@@ -36,6 +36,12 @@ public class DispatchRequest implements ApplicationContextAware {
     }
 
 
+    /**
+     * 根据requestOrder执行spring管理下的bean中有特定注解的方法
+     * @param ctx
+     * @param requestOrder
+     * @return
+     */
     public String dispatch(ChannelHandlerContext ctx, String requestOrder) {
         String response = "";
         ChannelFuture future = null;
@@ -50,7 +56,7 @@ public class DispatchRequest implements ApplicationContextAware {
                 Method[] methods = bean.getClass().getDeclaredMethods();
                 for (Method method : methods) {
                     GameOrderMapping order = method.getAnnotation(GameOrderMapping.class);
-                    if(order != null && order.name().equals(orderName)) {
+                    if(order != null && order.value().equals(orderName)) {
                         response = (String)method.invoke(bean);
                     }
                 }
