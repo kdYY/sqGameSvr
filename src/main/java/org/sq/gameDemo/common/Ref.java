@@ -1,13 +1,13 @@
 package org.sq.gameDemo.common;
 
 public class Ref<T> {
-    public T t;
+    public T ref;
 
-    public T getT() {
-        return t;
+    public T getRef() {
+        return ref;
     }
 
-    public void setT(T t) {
-        this.t = t;
+    public void setRef(T ref) {
+        this.ref = ref;
     }
 }

@@ -16,8 +16,8 @@ public class PoiUtil {
     public static List readExcel(File file, int sheetNum, Class clazz) throws Exception{
         //1.读取Excel文档对象
         int fieldNum = clazz.getDeclaredMethods().length;
-        //将class的Field <name, setName()>记录到map中
-        Map<String, Method> setMethodMap = new HashMap<>();//<id, setId()>
+        //将class的Field的名称<name, setName()>记录到map中
+        Map<String, Method> setMethodMap = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
             String name = field.getName();
             Method setMethod = clazz.getDeclaredMethod(
@@ -33,8 +33,11 @@ public class PoiUtil {
             hssfWorkbook = new HSSFWorkbook(new FileInputStream(file));
             HSSFSheet sheet = hssfWorkbook.getSheetAt(sheetNum);
             int lastRowNum = sheet.getLastRowNum();
+            //Ref为了将第一行标题取出来
             Ref<List> listRef = new Ref<>();
             getSingleRow(sheet, 0, setMethodMap, listRef, clazz);//<1,name>
+
+            //将每一行的数据注入到class实例中并保存在list中
             for(int i = 1;i < lastRowNum; i++) {
                 excelData.add(getSingleRow(sheet, i, setMethodMap, listRef, clazz));
             }
@@ -45,33 +48,45 @@ public class PoiUtil {
         return null;
     }
 
-    private static Object getSingleRow(HSSFSheet sheet, int rowNum, Map<String, Method> setMethod, Ref<List> listRef, Class clazz) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchFieldException {
-        List<Object> rowData = new ArrayList<>();//帶出引用
+    /**
+     * 根据传入的clazz 将每一行的数据填充到clazz.instance的实例中，然后返回
+     * @param sheet
+     * @param rowNum 取第rownum行
+     * @param setMethod class中所有属性对应set属性方法的map映射；譬如class类中 public String name; 就会有-> <name, setName()>
+     * @param listRef 引用，从参数取方法中的某个局部变量的引用
+     * @param clazz 实例类变量
+     * @return
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchFieldException
+     */
+    private static Object getSingleRow(HSSFSheet sheet, int rowNum, Map<String, Method> setMethod, Ref<List> listRef, Class clazz) throws Exception {
+        List<Object> rowData = new ArrayList<>();
         Object instance = clazz.newInstance();
         HSSFRow row = sheet.getRow(rowNum);
-        int lastCellNum = row.getLastCellNum() & '\uffff';
-//                if(lastCellNum < fieldNum) {
-//                    System.out.println("第" + i + "行數據缺失");
-//                    throw new Exception(file.getName() + "文件有誤");
-//                }
+        int lastCellNum = row.getLastCellNum() & '\uffff'; //盗poi的...
+        if(lastCellNum < setMethod.keySet().size()) {
+            System.out.println("第" + rowNum + "行數據缺失");
+            throw new Exception("PoiUtil -> excel文件有誤");
+        }
         for(int j = 0; j < lastCellNum; j++) {
             HSSFCell cell = row.getCell(j);
             Object value;
-            if(rowNum == 0 && listRef.t == null) {
+            if(rowNum == 0 && listRef.ref == null) {
                 value = getValueFromCell(cell, String.class);
                 rowData.add(j, value);
             } else {
-                //實例化bean
-
-                Field declaredField = clazz.getDeclaredField(String.valueOf(listRef.t.get(j)));
+                //实例化Class对象，并注入数据
+                Field declaredField = clazz.getDeclaredField(String.valueOf(listRef.ref.get(j)));
                 Class<?> type = declaredField.getType();
                 value = getValueFromCell(cell, type);
-                setMethod.get(listRef.t.get(j)).invoke(instance, value);
+                setMethod.get(listRef.ref.get(j)).invoke(instance, value);
             }
 
         }
-        if(rowNum == 0 && listRef.t == null) {
-            listRef.t = rowData;
+        if(rowNum == 0 && listRef.ref == null) {
+            listRef.ref = rowData;
         }
         return instance;
     }
@@ -83,6 +98,8 @@ public class PoiUtil {
      */
     private static Object getValueFromCell(HSSFCell cell, Class expectClazz) {
         Object value = null;
+        String typeName = expectClazz.getTypeName();
+
         switch (cell.getCellType()) {
             case HSSFCell.CELL_TYPE_STRING:
                 value = cell.getStringCellValue();
@@ -91,22 +108,26 @@ public class PoiUtil {
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     Date date = cell.getDateCellValue();
                     if (date != null) {
-                        value = new SimpleDateFormat("yyyy-MM-dd")
-                                .format(date);
+                        if(typeName.equals("String")) {
+                            value = new SimpleDateFormat("yyyy-MM-dd").format(date);
+                        }
+                        if(typeName.equals("Date")) {
+                            value = date;
+                        }
                     } else {
-                        value = "";
+                        value = null;
                     }
                 } else {
-//                    value = new DecimalFormat("0").format(cell
-//                            .getNumericCellValue());
-                    double cellValue = cell.getNumericCellValue();
+                    Double cellValue = cell.getNumericCellValue();
                     value = new DecimalFormat("0").format(cellValue);
-                    String typeName = expectClazz.getTypeName();
                     if(typeName.equals("int") || typeName.equals("Integer")) {
                         value = Integer.valueOf(new DecimalFormat("0").format(cellValue));
                     }
                     if(typeName.equals("double") || typeName.equals("Double")) {
                         value = cellValue;
+                    }
+                    if(typeName.equals("float") || typeName.equals("Float")) {
+                        value = cellValue.floatValue();
                     }
                 }
                 break;
@@ -121,19 +142,14 @@ public class PoiUtil {
             case HSSFCell.CELL_TYPE_BLANK:
                 break;
             case HSSFCell.CELL_TYPE_ERROR:
-                value = "";
                 break;
             case HSSFCell.CELL_TYPE_BOOLEAN:
-                value = (cell.getBooleanCellValue() == true ? true:false);
+                value = cell.getBooleanCellValue();
                 break;
             default:
-                value = "";
+                value = null;
         }
         return value;
-    }
-    public static boolean isIntegerForDouble(double obj) {
-        double eps = 1e-10;  // 精度范围
-        return obj-Math.floor(obj) < eps;
     }
 
     public static void main(String[] args) {
@@ -143,4 +159,8 @@ public class PoiUtil {
             e.printStackTrace();
         }
     }
+
+
+
+
 }
