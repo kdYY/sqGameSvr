@@ -70,10 +70,11 @@ public class PoiUtil {
             System.out.println("第" + rowNum + "行數據缺失");
             throw new Exception("PoiUtil -> excel文件有誤");
         }
+        boolean titleRow = (rowNum == 0 && listRef.ref == null);
         for(int j = 0; j < lastCellNum; j++) {
             HSSFCell cell = row.getCell(j);
             Object value;
-            if(rowNum == 0 && listRef.ref == null) {
+            if(titleRow) {
                 value = getValueFromCell(cell, String.class);
                 rowData.add(j, value);
             } else {
@@ -85,7 +86,7 @@ public class PoiUtil {
             }
 
         }
-        if(rowNum == 0 && listRef.ref == null) {
+        if(titleRow) {
             listRef.ref = rowData;
         }
         return instance;
