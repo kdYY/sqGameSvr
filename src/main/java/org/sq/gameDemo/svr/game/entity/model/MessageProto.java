@@ -34,7 +34,7 @@ public final class MessageProto {
      *
      * <code>string order = 2;</code>
      */
-    String getOrder();
+    java.lang.String getOrder();
     /**
      * <pre>
      *发送方命令
@@ -50,7 +50,7 @@ public final class MessageProto {
      *时间戳(单位:毫秒)
      * </pre>
      *
-     * <code>uint64 time = 4;</code>
+     * <code>uint64 time = 3;</code>
      */
     long getTime();
 
@@ -59,36 +59,60 @@ public final class MessageProto {
      *消息内容
      * </pre>
      *
-     * <code>string content = 5;</code>
+     * <code>string content = 4;</code>
      */
-    String getContent();
+    java.lang.String getContent();
     /**
      * <pre>
      *消息内容
      * </pre>
      *
-     * <code>string content = 5;</code>
+     * <code>string content = 4;</code>
      */
     com.google.protobuf.ByteString
         getContentBytes();
 
     /**
      * <pre>
-     *发送者昵称
+     *结果信息
      * </pre>
      *
-     * <code>string from_nick = 6;</code>
+     * <code>string result = 5;</code>
      */
-    String getFromNick();
+    java.lang.String getResult();
     /**
      * <pre>
-     *发送者昵称
+     *结果信息
      * </pre>
      *
-     * <code>string from_nick = 6;</code>
+     * <code>string result = 5;</code>
      */
     com.google.protobuf.ByteString
-        getFromNickBytes();
+        getResultBytes();
+
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    java.util.List<org.sq.gameDemo.svr.game.entity.model.MessageProto.User> 
+        getUserList();
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    org.sq.gameDemo.svr.game.entity.model.MessageProto.User getUser(int index);
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    int getUserCount();
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    java.util.List<? extends org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder> 
+        getUserOrBuilderList();
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder getUserOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code Msg}
@@ -105,17 +129,18 @@ public final class MessageProto {
     private Msg() {
       order_ = "";
       content_ = "";
-      fromNick_ = "";
+      result_ = "";
+      user_ = java.util.Collections.emptyList();
     }
 
-    @Override
+    @java.lang.Override
     @SuppressWarnings({"unused"})
-    protected Object newInstance(
+    protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
       return new Msg();
     }
 
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
       return this.unknownFields;
@@ -126,8 +151,9 @@ public final class MessageProto {
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
-        throw new NullPointerException();
+        throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -144,26 +170,35 @@ public final class MessageProto {
               break;
             }
             case 18: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               order_ = s;
               break;
             }
-            case 32: {
+            case 24: {
 
               time_ = input.readUInt64();
               break;
             }
-            case 42: {
-              String s = input.readStringRequireUtf8();
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
 
               content_ = s;
               break;
             }
-            case 50: {
-              String s = input.readStringRequireUtf8();
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              fromNick_ = s;
+              result_ = s;
+              break;
+            }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                user_ = new java.util.ArrayList<org.sq.gameDemo.svr.game.entity.model.MessageProto.User>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              user_.add(
+                  input.readMessage(org.sq.gameDemo.svr.game.entity.model.MessageProto.User.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -181,21 +216,24 @@ public final class MessageProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          user_ = java.util.Collections.unmodifiableList(user_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return MessageProto.internal_static_Msg_descriptor;
+      return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_Msg_descriptor;
     }
 
-    @Override
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return MessageProto.internal_static_Msg_fieldAccessorTable
+      return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_Msg_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              Msg.class, Builder.class);
+              org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg.class, org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg.Builder.class);
     }
 
     public static final int MSG_ID_FIELD_NUMBER = 1;
@@ -212,7 +250,7 @@ public final class MessageProto {
     }
 
     public static final int ORDER_FIELD_NUMBER = 2;
-    private volatile Object order_;
+    private volatile java.lang.Object order_;
     /**
      * <pre>
      *发送方命令
@@ -220,14 +258,14 @@ public final class MessageProto {
      *
      * <code>string order = 2;</code>
      */
-    public String getOrder() {
-      Object ref = order_;
-      if (ref instanceof String) {
-        return (String) ref;
+    public java.lang.String getOrder() {
+      java.lang.Object ref = order_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
+        java.lang.String s = bs.toStringUtf8();
         order_ = s;
         return s;
       }
@@ -241,11 +279,11 @@ public final class MessageProto {
      */
     public com.google.protobuf.ByteString
         getOrderBytes() {
-      Object ref = order_;
-      if (ref instanceof String) {
+      java.lang.Object ref = order_;
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
+                (java.lang.String) ref);
         order_ = b;
         return b;
       } else {
@@ -253,36 +291,36 @@ public final class MessageProto {
       }
     }
 
-    public static final int TIME_FIELD_NUMBER = 4;
+    public static final int TIME_FIELD_NUMBER = 3;
     private long time_;
     /**
      * <pre>
      *时间戳(单位:毫秒)
      * </pre>
      *
-     * <code>uint64 time = 4;</code>
+     * <code>uint64 time = 3;</code>
      */
     public long getTime() {
       return time_;
     }
 
-    public static final int CONTENT_FIELD_NUMBER = 5;
-    private volatile Object content_;
+    public static final int CONTENT_FIELD_NUMBER = 4;
+    private volatile java.lang.Object content_;
     /**
      * <pre>
      *消息内容
      * </pre>
      *
-     * <code>string content = 5;</code>
+     * <code>string content = 4;</code>
      */
-    public String getContent() {
-      Object ref = content_;
-      if (ref instanceof String) {
-        return (String) ref;
+    public java.lang.String getContent() {
+      java.lang.Object ref = content_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
+        java.lang.String s = bs.toStringUtf8();
         content_ = s;
         return s;
       }
@@ -292,15 +330,15 @@ public final class MessageProto {
      *消息内容
      * </pre>
      *
-     * <code>string content = 5;</code>
+     * <code>string content = 4;</code>
      */
     public com.google.protobuf.ByteString
         getContentBytes() {
-      Object ref = content_;
-      if (ref instanceof String) {
+      java.lang.Object ref = content_;
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
+                (java.lang.String) ref);
         content_ = b;
         return b;
       } else {
@@ -308,50 +346,85 @@ public final class MessageProto {
       }
     }
 
-    public static final int FROM_NICK_FIELD_NUMBER = 6;
-    private volatile Object fromNick_;
+    public static final int RESULT_FIELD_NUMBER = 5;
+    private volatile java.lang.Object result_;
     /**
      * <pre>
-     *发送者昵称
+     *结果信息
      * </pre>
      *
-     * <code>string from_nick = 6;</code>
+     * <code>string result = 5;</code>
      */
-    public String getFromNick() {
-      Object ref = fromNick_;
-      if (ref instanceof String) {
-        return (String) ref;
+    public java.lang.String getResult() {
+      java.lang.Object ref = result_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        fromNick_ = s;
+        java.lang.String s = bs.toStringUtf8();
+        result_ = s;
         return s;
       }
     }
     /**
      * <pre>
-     *发送者昵称
+     *结果信息
      * </pre>
      *
-     * <code>string from_nick = 6;</code>
+     * <code>string result = 5;</code>
      */
     public com.google.protobuf.ByteString
-        getFromNickBytes() {
-      Object ref = fromNick_;
-      if (ref instanceof String) {
+        getResultBytes() {
+      java.lang.Object ref = result_;
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        fromNick_ = b;
+                (java.lang.String) ref);
+        result_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
 
+    public static final int USER_FIELD_NUMBER = 6;
+    private java.util.List<org.sq.gameDemo.svr.game.entity.model.MessageProto.User> user_;
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    public java.util.List<org.sq.gameDemo.svr.game.entity.model.MessageProto.User> getUserList() {
+      return user_;
+    }
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    public java.util.List<? extends org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder> 
+        getUserOrBuilderList() {
+      return user_;
+    }
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    public int getUserCount() {
+      return user_.size();
+    }
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    public org.sq.gameDemo.svr.game.entity.model.MessageProto.User getUser(int index) {
+      return user_.get(index);
+    }
+    /**
+     * <code>repeated .User user = 6;</code>
+     */
+    public org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder getUserOrBuilder(
+        int index) {
+      return user_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
-    @Override
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -361,7 +434,7 @@ public final class MessageProto {
       return true;
     }
 
-    @Override
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (msgId_ != 0L) {
@@ -371,18 +444,21 @@ public final class MessageProto {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, order_);
       }
       if (time_ != 0L) {
-        output.writeUInt64(4, time_);
+        output.writeUInt64(3, time_);
       }
       if (!getContentBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, content_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, content_);
       }
-      if (!getFromNickBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, fromNick_);
+      if (!getResultBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, result_);
+      }
+      for (int i = 0; i < user_.size(); i++) {
+        output.writeMessage(6, user_.get(i));
       }
       unknownFields.writeTo(output);
     }
 
-    @Override
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -397,28 +473,32 @@ public final class MessageProto {
       }
       if (time_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(4, time_);
+          .computeUInt64Size(3, time_);
       }
       if (!getContentBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, content_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, content_);
       }
-      if (!getFromNickBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, fromNick_);
+      if (!getResultBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, result_);
+      }
+      for (int i = 0; i < user_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, user_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
-    @Override
-    public boolean equals(final Object obj) {
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof Msg)) {
+      if (!(obj instanceof org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg)) {
         return super.equals(obj);
       }
-      Msg other = (Msg) obj;
+      org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg other = (org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg) obj;
 
       if (getMsgId()
           != other.getMsgId()) return false;
@@ -428,13 +508,15 @@ public final class MessageProto {
           != other.getTime()) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
-      if (!getFromNick()
-          .equals(other.getFromNick())) return false;
+      if (!getResult()
+          .equals(other.getResult())) return false;
+      if (!getUserList()
+          .equals(other.getUserList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
       if (memoizedHashCode != 0) {
         return memoizedHashCode;
@@ -451,76 +533,80 @@ public final class MessageProto {
           getTime());
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
-      hash = (37 * hash) + FROM_NICK_FIELD_NUMBER;
-      hash = (53 * hash) + getFromNick().hashCode();
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + getResult().hashCode();
+      if (getUserCount() > 0) {
+        hash = (37 * hash) + USER_FIELD_NUMBER;
+        hash = (53 * hash) + getUserList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static Msg parseFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Msg parseFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Msg parseFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Msg parseFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Msg parseFrom(byte[] data)
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Msg parseFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Msg parseFrom(java.io.InputStream input)
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Msg parseFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Msg parseDelimitedFrom(java.io.InputStream input)
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static Msg parseDelimitedFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Msg parseFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Msg parseFrom(
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -528,21 +614,21 @@ public final class MessageProto {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    @Override
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(Msg prototype) {
+    public static Builder newBuilder(org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
-    @Override
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
     }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
@@ -554,18 +640,18 @@ public final class MessageProto {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:Msg)
-        MsgOrBuilder {
+        org.sq.gameDemo.svr.game.entity.model.MessageProto.MsgOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return MessageProto.internal_static_Msg_descriptor;
+        return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_Msg_descriptor;
       }
 
-      @Override
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return MessageProto.internal_static_Msg_fieldAccessorTable
+        return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_Msg_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                Msg.class, Builder.class);
+                org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg.class, org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg.Builder.class);
       }
 
       // Construct using org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg.newBuilder()
@@ -581,9 +667,10 @@ public final class MessageProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getUserFieldBuilder();
         }
       }
-      @Override
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         msgId_ = 0L;
@@ -594,87 +681,103 @@ public final class MessageProto {
 
         content_ = "";
 
-        fromNick_ = "";
+        result_ = "";
 
+        if (userBuilder_ == null) {
+          user_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          userBuilder_.clear();
+        }
         return this;
       }
 
-      @Override
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return MessageProto.internal_static_Msg_descriptor;
+        return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_Msg_descriptor;
       }
 
-      @Override
-      public Msg getDefaultInstanceForType() {
-        return Msg.getDefaultInstance();
+      @java.lang.Override
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg getDefaultInstanceForType() {
+        return org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg.getDefaultInstance();
       }
 
-      @Override
-      public Msg build() {
-        Msg result = buildPartial();
+      @java.lang.Override
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg build() {
+        org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      @Override
-      public Msg buildPartial() {
-        Msg result = new Msg(this);
+      @java.lang.Override
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg buildPartial() {
+        org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg result = new org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg(this);
+        int from_bitField0_ = bitField0_;
         result.msgId_ = msgId_;
         result.order_ = order_;
         result.time_ = time_;
         result.content_ = content_;
-        result.fromNick_ = fromNick_;
+        result.result_ = result_;
+        if (userBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            user_ = java.util.Collections.unmodifiableList(user_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.user_ = user_;
+        } else {
+          result.user_ = userBuilder_.build();
+        }
         onBuilt();
         return result;
       }
 
-      @Override
+      @java.lang.Override
       public Builder clone() {
         return super.clone();
       }
-      @Override
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
+          java.lang.Object value) {
         return super.setField(field, value);
       }
-      @Override
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
-      @Override
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
-      @Override
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
+          int index, java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
-      @Override
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
+          java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
-      @Override
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof Msg) {
-          return mergeFrom((Msg)other);
+        if (other instanceof org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg) {
+          return mergeFrom((org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(Msg other) {
-        if (other == Msg.getDefaultInstance()) return this;
+      public Builder mergeFrom(org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg other) {
+        if (other == org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg.getDefaultInstance()) return this;
         if (other.getMsgId() != 0L) {
           setMsgId(other.getMsgId());
         }
@@ -689,30 +792,56 @@ public final class MessageProto {
           content_ = other.content_;
           onChanged();
         }
-        if (!other.getFromNick().isEmpty()) {
-          fromNick_ = other.fromNick_;
+        if (!other.getResult().isEmpty()) {
+          result_ = other.result_;
           onChanged();
+        }
+        if (userBuilder_ == null) {
+          if (!other.user_.isEmpty()) {
+            if (user_.isEmpty()) {
+              user_ = other.user_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureUserIsMutable();
+              user_.addAll(other.user_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.user_.isEmpty()) {
+            if (userBuilder_.isEmpty()) {
+              userBuilder_.dispose();
+              userBuilder_ = null;
+              user_ = other.user_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              userBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getUserFieldBuilder() : null;
+            } else {
+              userBuilder_.addAllMessages(other.user_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
-      @Override
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
-      @Override
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Msg parsedMessage = null;
+        org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (Msg) e.getUnfinishedMessage();
+          parsedMessage = (org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -721,6 +850,7 @@ public final class MessageProto {
         }
         return this;
       }
+      private int bitField0_;
 
       private long msgId_ ;
       /**
@@ -760,7 +890,7 @@ public final class MessageProto {
         return this;
       }
 
-      private Object order_ = "";
+      private java.lang.Object order_ = "";
       /**
        * <pre>
        *发送方命令
@@ -768,16 +898,16 @@ public final class MessageProto {
        *
        * <code>string order = 2;</code>
        */
-      public String getOrder() {
-        Object ref = order_;
-        if (!(ref instanceof String)) {
+      public java.lang.String getOrder() {
+        java.lang.Object ref = order_;
+        if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
+          java.lang.String s = bs.toStringUtf8();
           order_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
       /**
@@ -789,11 +919,11 @@ public final class MessageProto {
        */
       public com.google.protobuf.ByteString
           getOrderBytes() {
-        Object ref = order_;
+        java.lang.Object ref = order_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
+                  (java.lang.String) ref);
           order_ = b;
           return b;
         } else {
@@ -808,7 +938,7 @@ public final class MessageProto {
        * <code>string order = 2;</code>
        */
       public Builder setOrder(
-          String value) {
+          java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -855,7 +985,7 @@ public final class MessageProto {
        *时间戳(单位:毫秒)
        * </pre>
        *
-       * <code>uint64 time = 4;</code>
+       * <code>uint64 time = 3;</code>
        */
       public long getTime() {
         return time_;
@@ -865,7 +995,7 @@ public final class MessageProto {
        *时间戳(单位:毫秒)
        * </pre>
        *
-       * <code>uint64 time = 4;</code>
+       * <code>uint64 time = 3;</code>
        */
       public Builder setTime(long value) {
         
@@ -878,7 +1008,7 @@ public final class MessageProto {
        *时间戳(单位:毫秒)
        * </pre>
        *
-       * <code>uint64 time = 4;</code>
+       * <code>uint64 time = 3;</code>
        */
       public Builder clearTime() {
         
@@ -887,24 +1017,24 @@ public final class MessageProto {
         return this;
       }
 
-      private Object content_ = "";
+      private java.lang.Object content_ = "";
       /**
        * <pre>
        *消息内容
        * </pre>
        *
-       * <code>string content = 5;</code>
+       * <code>string content = 4;</code>
        */
-      public String getContent() {
-        Object ref = content_;
-        if (!(ref instanceof String)) {
+      public java.lang.String getContent() {
+        java.lang.Object ref = content_;
+        if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
+          java.lang.String s = bs.toStringUtf8();
           content_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
       /**
@@ -912,15 +1042,15 @@ public final class MessageProto {
        *消息内容
        * </pre>
        *
-       * <code>string content = 5;</code>
+       * <code>string content = 4;</code>
        */
       public com.google.protobuf.ByteString
           getContentBytes() {
-        Object ref = content_;
+        java.lang.Object ref = content_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
+                  (java.lang.String) ref);
           content_ = b;
           return b;
         } else {
@@ -932,10 +1062,10 @@ public final class MessageProto {
        *消息内容
        * </pre>
        *
-       * <code>string content = 5;</code>
+       * <code>string content = 4;</code>
        */
       public Builder setContent(
-          String value) {
+          java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -949,7 +1079,7 @@ public final class MessageProto {
        *消息内容
        * </pre>
        *
-       * <code>string content = 5;</code>
+       * <code>string content = 4;</code>
        */
       public Builder clearContent() {
         
@@ -962,7 +1092,7 @@ public final class MessageProto {
        *消息内容
        * </pre>
        *
-       * <code>string content = 5;</code>
+       * <code>string content = 4;</code>
        */
       public Builder setContentBytes(
           com.google.protobuf.ByteString value) {
@@ -976,41 +1106,41 @@ public final class MessageProto {
         return this;
       }
 
-      private Object fromNick_ = "";
+      private java.lang.Object result_ = "";
       /**
        * <pre>
-       *发送者昵称
+       *结果信息
        * </pre>
        *
-       * <code>string from_nick = 6;</code>
+       * <code>string result = 5;</code>
        */
-      public String getFromNick() {
-        Object ref = fromNick_;
-        if (!(ref instanceof String)) {
+      public java.lang.String getResult() {
+        java.lang.Object ref = result_;
+        if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          fromNick_ = s;
+          java.lang.String s = bs.toStringUtf8();
+          result_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
       /**
        * <pre>
-       *发送者昵称
+       *结果信息
        * </pre>
        *
-       * <code>string from_nick = 6;</code>
+       * <code>string result = 5;</code>
        */
       public com.google.protobuf.ByteString
-          getFromNickBytes() {
-        Object ref = fromNick_;
+          getResultBytes() {
+        java.lang.Object ref = result_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          fromNick_ = b;
+                  (java.lang.String) ref);
+          result_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
@@ -1018,59 +1148,299 @@ public final class MessageProto {
       }
       /**
        * <pre>
-       *发送者昵称
+       *结果信息
        * </pre>
        *
-       * <code>string from_nick = 6;</code>
+       * <code>string result = 5;</code>
        */
-      public Builder setFromNick(
-          String value) {
+      public Builder setResult(
+          java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        fromNick_ = value;
+        result_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *发送者昵称
+       *结果信息
        * </pre>
        *
-       * <code>string from_nick = 6;</code>
+       * <code>string result = 5;</code>
        */
-      public Builder clearFromNick() {
+      public Builder clearResult() {
         
-        fromNick_ = getDefaultInstance().getFromNick();
+        result_ = getDefaultInstance().getResult();
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *发送者昵称
+       *结果信息
        * </pre>
        *
-       * <code>string from_nick = 6;</code>
+       * <code>string result = 5;</code>
        */
-      public Builder setFromNickBytes(
+      public Builder setResultBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
         
-        fromNick_ = value;
+        result_ = value;
         onChanged();
         return this;
       }
-      @Override
+
+      private java.util.List<org.sq.gameDemo.svr.game.entity.model.MessageProto.User> user_ =
+        java.util.Collections.emptyList();
+      private void ensureUserIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          user_ = new java.util.ArrayList<org.sq.gameDemo.svr.game.entity.model.MessageProto.User>(user_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          org.sq.gameDemo.svr.game.entity.model.MessageProto.User, org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder, org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder> userBuilder_;
+
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public java.util.List<org.sq.gameDemo.svr.game.entity.model.MessageProto.User> getUserList() {
+        if (userBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(user_);
+        } else {
+          return userBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public int getUserCount() {
+        if (userBuilder_ == null) {
+          return user_.size();
+        } else {
+          return userBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.User getUser(int index) {
+        if (userBuilder_ == null) {
+          return user_.get(index);
+        } else {
+          return userBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder setUser(
+          int index, org.sq.gameDemo.svr.game.entity.model.MessageProto.User value) {
+        if (userBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureUserIsMutable();
+          user_.set(index, value);
+          onChanged();
+        } else {
+          userBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder setUser(
+          int index, org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder builderForValue) {
+        if (userBuilder_ == null) {
+          ensureUserIsMutable();
+          user_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          userBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder addUser(org.sq.gameDemo.svr.game.entity.model.MessageProto.User value) {
+        if (userBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureUserIsMutable();
+          user_.add(value);
+          onChanged();
+        } else {
+          userBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder addUser(
+          int index, org.sq.gameDemo.svr.game.entity.model.MessageProto.User value) {
+        if (userBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureUserIsMutable();
+          user_.add(index, value);
+          onChanged();
+        } else {
+          userBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder addUser(
+          org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder builderForValue) {
+        if (userBuilder_ == null) {
+          ensureUserIsMutable();
+          user_.add(builderForValue.build());
+          onChanged();
+        } else {
+          userBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder addUser(
+          int index, org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder builderForValue) {
+        if (userBuilder_ == null) {
+          ensureUserIsMutable();
+          user_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          userBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder addAllUser(
+          java.lang.Iterable<? extends org.sq.gameDemo.svr.game.entity.model.MessageProto.User> values) {
+        if (userBuilder_ == null) {
+          ensureUserIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, user_);
+          onChanged();
+        } else {
+          userBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder clearUser() {
+        if (userBuilder_ == null) {
+          user_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          userBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public Builder removeUser(int index) {
+        if (userBuilder_ == null) {
+          ensureUserIsMutable();
+          user_.remove(index);
+          onChanged();
+        } else {
+          userBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder getUserBuilder(
+          int index) {
+        return getUserFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder getUserOrBuilder(
+          int index) {
+        if (userBuilder_ == null) {
+          return user_.get(index);  } else {
+          return userBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public java.util.List<? extends org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder> 
+           getUserOrBuilderList() {
+        if (userBuilder_ != null) {
+          return userBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(user_);
+        }
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder addUserBuilder() {
+        return getUserFieldBuilder().addBuilder(
+            org.sq.gameDemo.svr.game.entity.model.MessageProto.User.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder addUserBuilder(
+          int index) {
+        return getUserFieldBuilder().addBuilder(
+            index, org.sq.gameDemo.svr.game.entity.model.MessageProto.User.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .User user = 6;</code>
+       */
+      public java.util.List<org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder> 
+           getUserBuilderList() {
+        return getUserFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          org.sq.gameDemo.svr.game.entity.model.MessageProto.User, org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder, org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder> 
+          getUserFieldBuilder() {
+        if (userBuilder_ == null) {
+          userBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              org.sq.gameDemo.svr.game.entity.model.MessageProto.User, org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder, org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder>(
+                  user_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          user_ = null;
+        }
+        return userBuilder_;
+      }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
-      @Override
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -1081,18 +1451,18 @@ public final class MessageProto {
     }
 
     // @@protoc_insertion_point(class_scope:Msg)
-    private static final Msg DEFAULT_INSTANCE;
+    private static final org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new Msg();
+      DEFAULT_INSTANCE = new org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg();
     }
 
-    public static Msg getDefaultInstance() {
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
     private static final com.google.protobuf.Parser<Msg>
         PARSER = new com.google.protobuf.AbstractParser<Msg>() {
-      @Override
+      @java.lang.Override
       public Msg parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1105,13 +1475,630 @@ public final class MessageProto {
       return PARSER;
     }
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<Msg> getParserForType() {
       return PARSER;
     }
 
-    @Override
-    public Msg getDefaultInstanceForType() {
+    @java.lang.Override
+    public org.sq.gameDemo.svr.game.entity.model.MessageProto.Msg getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UserOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:User)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int32 user_id = 1;</code>
+     */
+    int getUserId();
+
+    /**
+     * <code>string user_name = 2;</code>
+     */
+    java.lang.String getUserName();
+    /**
+     * <code>string user_name = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getUserNameBytes();
+  }
+  /**
+   * Protobuf type {@code User}
+   */
+  public  static final class User extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:User)
+      UserOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use User.newBuilder() to construct.
+    private User(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private User() {
+      userName_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new User();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private User(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              userId_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              userName_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_User_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_User_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.sq.gameDemo.svr.game.entity.model.MessageProto.User.class, org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder.class);
+    }
+
+    public static final int USER_ID_FIELD_NUMBER = 1;
+    private int userId_;
+    /**
+     * <code>int32 user_id = 1;</code>
+     */
+    public int getUserId() {
+      return userId_;
+    }
+
+    public static final int USER_NAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object userName_;
+    /**
+     * <code>string user_name = 2;</code>
+     */
+    public java.lang.String getUserName() {
+      java.lang.Object ref = userName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string user_name = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getUserNameBytes() {
+      java.lang.Object ref = userName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (userId_ != 0) {
+        output.writeInt32(1, userId_);
+      }
+      if (!getUserNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userName_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (userId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, userId_);
+      }
+      if (!getUserNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userName_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.sq.gameDemo.svr.game.entity.model.MessageProto.User)) {
+        return super.equals(obj);
+      }
+      org.sq.gameDemo.svr.game.entity.model.MessageProto.User other = (org.sq.gameDemo.svr.game.entity.model.MessageProto.User) obj;
+
+      if (getUserId()
+          != other.getUserId()) return false;
+      if (!getUserName()
+          .equals(other.getUserName())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId();
+      hash = (37 * hash) + USER_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getUserName().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.sq.gameDemo.svr.game.entity.model.MessageProto.User prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code User}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:User)
+        org.sq.gameDemo.svr.game.entity.model.MessageProto.UserOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_User_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_User_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.sq.gameDemo.svr.game.entity.model.MessageProto.User.class, org.sq.gameDemo.svr.game.entity.model.MessageProto.User.Builder.class);
+      }
+
+      // Construct using org.sq.gameDemo.svr.game.entity.model.MessageProto.User.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        userId_ = 0;
+
+        userName_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.sq.gameDemo.svr.game.entity.model.MessageProto.internal_static_User_descriptor;
+      }
+
+      @java.lang.Override
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.User getDefaultInstanceForType() {
+        return org.sq.gameDemo.svr.game.entity.model.MessageProto.User.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.User build() {
+        org.sq.gameDemo.svr.game.entity.model.MessageProto.User result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public org.sq.gameDemo.svr.game.entity.model.MessageProto.User buildPartial() {
+        org.sq.gameDemo.svr.game.entity.model.MessageProto.User result = new org.sq.gameDemo.svr.game.entity.model.MessageProto.User(this);
+        result.userId_ = userId_;
+        result.userName_ = userName_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof org.sq.gameDemo.svr.game.entity.model.MessageProto.User) {
+          return mergeFrom((org.sq.gameDemo.svr.game.entity.model.MessageProto.User)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.sq.gameDemo.svr.game.entity.model.MessageProto.User other) {
+        if (other == org.sq.gameDemo.svr.game.entity.model.MessageProto.User.getDefaultInstance()) return this;
+        if (other.getUserId() != 0) {
+          setUserId(other.getUserId());
+        }
+        if (!other.getUserName().isEmpty()) {
+          userName_ = other.userName_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.sq.gameDemo.svr.game.entity.model.MessageProto.User parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.sq.gameDemo.svr.game.entity.model.MessageProto.User) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int userId_ ;
+      /**
+       * <code>int32 user_id = 1;</code>
+       */
+      public int getUserId() {
+        return userId_;
+      }
+      /**
+       * <code>int32 user_id = 1;</code>
+       */
+      public Builder setUserId(int value) {
+        
+        userId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 user_id = 1;</code>
+       */
+      public Builder clearUserId() {
+        
+        userId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object userName_ = "";
+      /**
+       * <code>string user_name = 2;</code>
+       */
+      public java.lang.String getUserName() {
+        java.lang.Object ref = userName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          userName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string user_name = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUserNameBytes() {
+        java.lang.Object ref = userName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          userName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string user_name = 2;</code>
+       */
+      public Builder setUserName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        userName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string user_name = 2;</code>
+       */
+      public Builder clearUserName() {
+        
+        userName_ = getDefaultInstance().getUserName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string user_name = 2;</code>
+       */
+      public Builder setUserNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        userName_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:User)
+    }
+
+    // @@protoc_insertion_point(class_scope:User)
+    private static final org.sq.gameDemo.svr.game.entity.model.MessageProto.User DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.sq.gameDemo.svr.game.entity.model.MessageProto.User();
+    }
+
+    public static org.sq.gameDemo.svr.game.entity.model.MessageProto.User getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<User>
+        PARSER = new com.google.protobuf.AbstractParser<User>() {
+      @java.lang.Override
+      public User parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new User(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<User> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<User> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.sq.gameDemo.svr.game.entity.model.MessageProto.User getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1122,6 +2109,11 @@ public final class MessageProto {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Msg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_User_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_User_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1130,12 +2122,13 @@ public final class MessageProto {
   private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
-    String[] descriptorData = {
-      "\n\022MessageProto.proto\"V\n\003Msg\022\016\n\006msg_id\030\001 " +
-      "\001(\004\022\r\n\005order\030\002 \001(\t\022\014\n\004time\030\004 \001(\004\022\017\n\007cont" +
-      "ent\030\005 \001(\t\022\021\n\tfrom_nick\030\006 \001(\tB5\n%org.sq.g" +
-      "ameDemo.svr.game.entity.modelB\014MessagePr" +
-      "otob\006proto3"
+    java.lang.String[] descriptorData = {
+      "\n\022MessageProto.proto\"h\n\003Msg\022\016\n\006msg_id\030\001 " +
+      "\001(\004\022\r\n\005order\030\002 \001(\t\022\014\n\004time\030\003 \001(\004\022\017\n\007cont" +
+      "ent\030\004 \001(\t\022\016\n\006result\030\005 \001(\t\022\023\n\004user\030\006 \003(\0132" +
+      "\005.User\"*\n\004User\022\017\n\007user_id\030\001 \001(\005\022\021\n\tuser_" +
+      "name\030\002 \001(\tB5\n%org.sq.gameDemo.svr.game.e" +
+      "ntity.modelB\014MessageProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1146,7 +2139,13 @@ public final class MessageProto {
     internal_static_Msg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Msg_descriptor,
-        new String[] { "MsgId", "Order", "Time", "Content", "FromNick", });
+        new java.lang.String[] { "MsgId", "Order", "Time", "Content", "Result", "User", });
+    internal_static_User_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_User_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_User_descriptor,
+        new java.lang.String[] { "UserId", "UserName", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -7,10 +7,14 @@ message Msg {
     string order = 2;       //发送方命令
     uint64 time = 3;        //时间戳(单位:毫秒)
     string content = 4;     //消息内容
-    string from_nick = 5;   //发送者昵称
+    string result = 5;   //结果信息
+
+    repeated User user = 6;
 }
 
 
 message User {
-    
+    int32 user_id = 1;
+    string user_name = 2;
+
 }
