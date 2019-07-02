@@ -9,6 +9,7 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.common.NettyConstant;
+import org.sq.gameDemo.svr.game.entity.model.MessageProto;
 
 @Component
 public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
@@ -30,7 +31,7 @@ public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
 //                .addLast(new StringDecoder(CharsetUtil.UTF_8))
 //                .addLast(new StringEncoder(CharsetUtil.UTF_8))
 
-// 添加ProtobufVarint32FrameDecoder，主要用于Protobuf的半包处理
+        // 添加ProtobufVarint32FrameDecoder，主要用于Protobuf的半包处理
         ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
         // 添加ProtobufDecoder×××，它的参数是com.google.protobuf.MessageLite
         // 实际上就是要告诉ProtobufDecoder需要解码的目标类是什么，否则仅仅从字节数组中是

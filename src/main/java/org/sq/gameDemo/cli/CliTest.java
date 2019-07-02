@@ -10,6 +10,7 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.apache.log4j.Logger;
+import org.sq.gameDemo.svr.game.entity.model.MessageProto;
 
 import java.util.Scanner;
 
@@ -35,7 +36,7 @@ public class CliTest {
                     // 解码编码
 //                    ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
 //                    ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
-                    ch.pipeline().addLast(new CliHandler());
+
                     // 添加ProtobufVarint32FrameDecoder，主要用于Protobuf的半包处理
                     ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
                     // 添加ProtobufDecoder×××，它的参数是com.google.protobuf.MessageLite
@@ -58,6 +59,7 @@ public class CliTest {
                     ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
                     // 添加ProtobufEncoder编码器，这样就不需要对SubscribeResp进行手工编码
                     ch.pipeline().addLast(new ProtobufEncoder());
+                    ch.pipeline().addLast(new CliHandler());
                 }
             });
         } catch (Exception e) {
@@ -102,7 +104,7 @@ public class CliTest {
 //        address.add("ShenZhen HongShuLin");
 //        builder.addAllAddress(address);
         builder.setMsgId(2L);
-        builder.setContent(String.valueOf(send));
+        builder.setOrder(String.valueOf(send));
         return builder.build();
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ContextLoader;
+import org.sq.gameDemo.svr.game.entity.model.MessageProto;
 import org.sq.gameDemo.svr.game.entity.model.OrderRule;
 import org.sq.gameDemo.svr.game.entity.service.OrderRuleService;
 
@@ -27,7 +28,8 @@ import java.util.stream.Collectors;
 public class DispatchRequest{
 
     private ExecutorService executorService = Executors.newFixedThreadPool(NettyConstant.getMaxThreads());
-    private static final Map<String, String> request2Handler = new HashMap();  // 指令，spring对应bean名:方法注解名称(唯一)
+    private static final Map<String, String> request2Handler = new HashMap();
+    // 指令，spring对应bean名:方法注解名称(唯一)
     //site, userService:site
 
     @Autowired
@@ -48,16 +50,19 @@ public class DispatchRequest{
      * @param requestOrder
      * @return
      */
-    public void dispatch(ChannelHandlerContext ctx, String requestOrder) {
-        System.out.println("dispatch" + requestOrder);
+    public void dispatch(ChannelHandlerContext ctx, MessageProto.Msg requestOrder) {
+        System.out.println("server: dispatch->" + requestOrder.getOrder());
+        String cliOrder = requestOrder.getOrder();
         executorService.submit(()->{
-            String response = "";
+            MessageProto.Msg response = null;
             ChannelFuture future = null;
             try {
-                String beanAndOrder = request2Handler.get(requestOrder);
+                String beanAndOrder = request2Handler.get(cliOrder);
                 if(beanAndOrder == null) {
-                    future = ctx.writeAndFlush("无此指令");
-                    return;
+//                    SpringUtil.getApplicationContext().getBean("errorOrder");
+//                    future = ctx.writeAndFlush("无此指令");
+//                    return;
+                    beanAndOrder = request2Handler.get("errOrder");
                 }
                 String beanName = beanAndOrder.split(":")[0];
                 String orderName =  beanAndOrder.split(":")[1];
@@ -69,12 +74,12 @@ public class DispatchRequest{
                     for (Method method : methods) {
                         GameOrderMapping order = method.getAnnotation(GameOrderMapping.class);
                         if(order != null && order.value().equals(orderName)) {
-                            response = (String) method.invoke(bean);
+                            response = (MessageProto.Msg) method.invoke(bean);
                             break;
                         }
                     }
                 }
-                if (response == null || "".equals(response)) {
+                if (response == null) {
                     future = ctx.writeAndFlush(NullWritable.nullWritable());
                 } else {
                     future = ctx.writeAndFlush(response);
@@ -86,5 +91,6 @@ public class DispatchRequest{
             }
         });
     }
+
 }
 
