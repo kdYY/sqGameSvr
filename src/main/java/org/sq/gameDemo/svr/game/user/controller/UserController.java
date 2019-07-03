@@ -4,18 +4,14 @@
  * All rights reserved.
  */
 
-package org.sq.gameDemo.svr.game.entity.controller;
+package org.sq.gameDemo.svr.game.user.controller;
 
 import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.GameOrderMapping;
-import org.sq.gameDemo.common.Result;
 import org.sq.gameDemo.svr.game.entity.model.MessageProto;
-import org.sq.gameDemo.svr.game.entity.model.User;
-import org.sq.gameDemo.svr.game.entity.service.UserService;
+import org.sq.gameDemo.svr.game.user.model.User;
+import org.sq.gameDemo.svr.game.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.stream.Collectors;
 

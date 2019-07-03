@@ -9,15 +9,19 @@ message Msg {
     string content = 4;     //消息内容
     string result = 5;   //结果信息
 
-    repeated User user = 6;
+    repeated Entity entity = 6;
     repeated Sence sence = 7;
+    repeated User user = 8;
 }
 
-
 message User {
-    int32 user_id = 1;
-    string user_name = 2;
+    int32 id = 1;
+    string name = 2;
+}
 
+message Entity {
+    int32 id = 1;
+    string name = 2;
 }
 
 message Sence {

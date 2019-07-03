@@ -4,13 +4,13 @@
  * All rights reserved.
  */
 
-package org.sq.gameDemo.svr.game.entity.service;
+package org.sq.gameDemo.svr.game.user.service;
 
-import org.sq.gameDemo.common.GameOrderMapping;
-import org.sq.gameDemo.svr.game.entity.dao.UserDao;
-import org.sq.gameDemo.svr.game.entity.model.User;
+import org.sq.gameDemo.svr.game.user.dao.UserMapper;
+import org.sq.gameDemo.svr.game.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.svr.game.user.model.UserExample;
 
 import java.util.List;
 
@@ -28,27 +28,23 @@ import java.util.List;
 public class UserService {
 
     @Autowired
-    private UserDao userDao;
+    private UserMapper userMapper;
 
 
-    public User getUser(String name,String password){
-        return userDao.getUser(name,password);
+    public User getUser(Integer id){
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andEntityidEqualTo(id);
+        return userMapper.selectByExample(userExample).get(0);
     }
 
     public List<User> listUser(){
-        return userDao.listUser();
+        return userMapper.selectByExample(new UserExample());
     }
 
-    public void addUser(User user){
-        userDao.addUser(user);
+    public void addUser(User user) {
+        
     }
 
-    public void updateUser(User user){
-        userDao.updateUser(user);
-    }
 
-    public void delUser(Integer id){
-        userDao.delUser(id);
-    }
 
 }

@@ -15,13 +15,13 @@ import java.util.*;
 public class PoiUtil {
     /**
      * 主方法
-     * @param file excel文件流
+     * @param fileName excel文件流
      * @param sheetNum 第sheetNum个表格
      * @param clazz 实体class
      * @return
      * @throws Exception
      */
-    public static List readExcel(File file, int sheetNum, Class clazz) throws Exception{
+    public static List readExcel(String fileName, int sheetNum, Class clazz) throws Exception{
         //1.读取Excel文档对象
         int fieldNum = clazz.getDeclaredMethods().length;
         //将class的Field的名称<name, setName()>记录到map中
@@ -38,7 +38,9 @@ public class PoiUtil {
         ArrayList excelData = new ArrayList<>();
         HSSFWorkbook hssfWorkbook = null;
         try {
-            hssfWorkbook = new HSSFWorkbook(new FileInputStream(file));
+            File file = new File(fileName);
+            InputStream resourceAsStream = PoiUtil.class.getClassLoader().getResourceAsStream(fileName);
+            hssfWorkbook = new HSSFWorkbook(resourceAsStream);
             HSSFSheet sheet = hssfWorkbook.getSheetAt(sheetNum);
             int lastRowNum = sheet.getLastRowNum();
             //Ref为了将第一行标题取出来
@@ -78,7 +80,7 @@ public class PoiUtil {
     private static Object getSingleRow(HSSFSheet sheet, int rowNum, Map<String, Method> setMethod, Ref<List> listRef, Class clazz) throws Exception {
         HSSFRow row = sheet.getRow(rowNum);
 
-        if(checkRow(row, rowNum, setMethod)) {
+        if(!checkRow(row, rowNum, setMethod)) {
             System.out.println("err: 第" + (rowNum + 1) + "行數據有误");
             throw new Exception("PoiUtil -> excel文件有誤");
         }
@@ -176,14 +178,14 @@ public class PoiUtil {
     private static boolean checkRow(Row row, int rowNum, Map<String, Method> setMethod) {
         int lastCellNum = row.getLastCellNum() & '\uffff'; //盗poi的...
         if(lastCellNum != setMethod.keySet().size()) {
-            return false
+            return false;
         }
         return true;
     }
 
     public static void main(String[] args) {
         try {
-            List list = readExcel(new File("C:\\code\\sence.xls"), 0, GameScene.class);
+            List list = readExcel("C:\\code\\sence.xls", 0, GameScene.class);
             list.forEach(sence->{
                 System.out.println(sence.toString());
             });
