@@ -1,6 +1,7 @@
 package org.sq.gameDemo.common;
 
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.Row;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 
 import java.io.*;
@@ -12,7 +13,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PoiUtil {
-
+    /**
+     * 主方法
+     * @param file excel文件流
+     * @param sheetNum 第sheetNum个表格
+     * @param clazz 实体class
+     * @return
+     * @throws Exception
+     */
     public static List readExcel(File file, int sheetNum, Class clazz) throws Exception{
         //1.读取Excel文档对象
         int fieldNum = clazz.getDeclaredMethods().length;
@@ -38,8 +46,14 @@ public class PoiUtil {
             getSingleRow(sheet, 0, setMethodMap, listRef, clazz);//<1,name>
 
             //将每一行的数据注入到class实例中并保存在list中
-            for(int i = 1;i < lastRowNum; i++) {
-                excelData.add(getSingleRow(sheet, i, setMethodMap, listRef, clazz));
+            for(int i = 1;i <= lastRowNum; i++) {
+                try {
+                    Object singleRow = getSingleRow(sheet, i, setMethodMap, listRef, clazz);
+                    excelData.add(singleRow);
+                }catch (Exception e) {
+                    throw new Exception("该路径下 " + file.getPath() + " 文件内容有誤");
+                }
+
             }
             return excelData;
         } catch (IOException e) {
@@ -62,15 +76,19 @@ public class PoiUtil {
      * @throws NoSuchFieldException
      */
     private static Object getSingleRow(HSSFSheet sheet, int rowNum, Map<String, Method> setMethod, Ref<List> listRef, Class clazz) throws Exception {
-        List<Object> rowData = new ArrayList<>();
-        Object instance = clazz.newInstance();
         HSSFRow row = sheet.getRow(rowNum);
-        int lastCellNum = row.getLastCellNum() & '\uffff'; //盗poi的...
-        if(lastCellNum < setMethod.keySet().size()) {
-            System.out.println("第" + rowNum + "行數據缺失");
+
+        if(checkRow(row, rowNum, setMethod)) {
+            System.out.println("err: 第" + (rowNum + 1) + "行數據有误");
             throw new Exception("PoiUtil -> excel文件有誤");
         }
+
+        //此次读取是否为标题行读取
         boolean titleRow = (rowNum == 0 && listRef.ref == null);
+        List<Object> rowData = new ArrayList<>();
+        Object instance = clazz.newInstance();
+        int lastCellNum = row.getLastCellNum() & '\uffff'; //盗poi的...
+
         for(int j = 0; j < lastCellNum; j++) {
             HSSFCell cell = row.getCell(j);
             Object value;
@@ -152,6 +170,15 @@ public class PoiUtil {
                 value = null;
         }
         return value;
+    }
+
+
+    private static boolean checkRow(Row row, int rowNum, Map<String, Method> setMethod) {
+        int lastCellNum = row.getLastCellNum() & '\uffff'; //盗poi的...
+        if(lastCellNum != setMethod.keySet().size()) {
+            return false
+        }
+        return true;
     }
 
     public static void main(String[] args) {
