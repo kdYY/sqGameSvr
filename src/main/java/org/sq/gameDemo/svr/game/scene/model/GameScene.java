@@ -20,4 +20,12 @@ public class GameScene {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "GameScene{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

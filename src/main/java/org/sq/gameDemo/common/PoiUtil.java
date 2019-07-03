@@ -94,7 +94,8 @@ public class PoiUtil {
 
     /**
      * 获取单元格内容
-     * @param cell
+     * @param cell 单元格
+     * @param expectClazz 期望的单元格内容的数据类型
      * @return
      */
     private static Object getValueFromCell(HSSFCell cell, Class expectClazz) {
@@ -155,7 +156,10 @@ public class PoiUtil {
 
     public static void main(String[] args) {
         try {
-            readExcel(new File("C:\\code\\sence.xls"), 0, GameScene.class);
+            List list = readExcel(new File("C:\\code\\sence.xls"), 0, GameScene.class);
+            list.forEach(sence->{
+                System.out.println(sence.toString());
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
