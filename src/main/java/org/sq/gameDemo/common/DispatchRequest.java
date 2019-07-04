@@ -50,14 +50,13 @@ public class DispatchRequest{
      * @param requestOrder
      * @return
      */
-    public void dispatch(ChannelHandlerContext ctx, MessageProto.Msg requestOrder) {
-        System.out.println("server: dispatch->" + requestOrder.getOrder());
-        String cliOrder = requestOrder.getOrder();
+    public void dispatch(ChannelHandlerContext ctx, String requestOrder, Object... objs) {
+        System.out.println("server: dispatch->" + requestOrder);
         executorService.submit(()->{
             MessageProto.Msg response = null;
             ChannelFuture future = null;
             try {
-                String beanAndOrder = request2Handler.get(cliOrder);
+                String beanAndOrder = request2Handler.get(requestOrder);
                 if(beanAndOrder == null) {
 //                    SpringUtil.getApplicationContext().getBean("errorOrder");
 //                    future = ctx.writeAndFlush("无此指令");
@@ -74,7 +73,7 @@ public class DispatchRequest{
                     for (Method method : methods) {
                         GameOrderMapping order = method.getAnnotation(GameOrderMapping.class);
                         if(order != null && order.value().equals(orderName)) {
-                            response = (MessageProto.Msg) method.invoke(bean);
+                            response = (MessageProto.Msg) method.invoke(bean, objs);
                             break;
                         }
                     }
@@ -90,6 +89,10 @@ public class DispatchRequest{
                 future.addListener(ChannelFutureListener.CLOSE);
             }
         });
+    }
+
+    public static void dispatchRequest(ChannelHandlerContext ctx, String order, Object... objs) {
+        SpringUtil.getBean(DispatchRequest.class).dispatch(ctx, order, objs);
     }
 
 }

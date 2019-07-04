@@ -24,7 +24,13 @@ message Entity {
     string name = 2;
 }
 
+message mapEntity {
+    repeated Entity entity = 1;
+    int32 num = 2;
+}
+
 message Sence {
     int32 id = 1;
     string name = 2;
+    repeated mapEntity mapEntity = 3;
 }

@@ -68,7 +68,7 @@ public class UserExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-07-03
+     * @date 2019-07-04
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -384,7 +384,7 @@ public class UserExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-07-03
+     * @date 2019-07-04
      */
     public static class Criterion {
         private String condition;

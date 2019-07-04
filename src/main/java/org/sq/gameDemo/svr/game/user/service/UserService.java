@@ -20,8 +20,6 @@ import java.util.List;
  * Description
  * <p/>
  * <b>Creation Time:</b> 2019/3/3 22:31.
- *
- * @author 谢德奇
  * @since SpringBootDemo ${PROJECT_VERSION}
  */
 @Service
@@ -32,9 +30,7 @@ public class UserService {
 
 
     public User getUser(Integer id){
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andEntityidEqualTo(id);
-        return userMapper.selectByExample(userExample).get(0);
+        return userMapper.selectByPrimaryKey(id);
     }
 
     public List<User> listUser(){
@@ -42,7 +38,7 @@ public class UserService {
     }
 
     public void addUser(User user) {
-        
+        userMapper.insertSelective(user);
     }
 
 
