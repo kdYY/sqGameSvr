@@ -4,7 +4,7 @@
  * All rights reserved.
  */
 
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.svr.common;
 
 /**
  * <b><code>Result</code></b>

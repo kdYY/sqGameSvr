@@ -1,4 +1,4 @@
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.svr.common;
 
 public class Ref<T> {
     public T ref;

@@ -1,4 +1,4 @@
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.svr.common;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Row;

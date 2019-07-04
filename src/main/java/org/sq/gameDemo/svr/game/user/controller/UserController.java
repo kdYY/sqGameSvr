@@ -7,8 +7,10 @@
 package org.sq.gameDemo.svr.game.user.controller;
 
 import org.springframework.stereotype.Controller;
-import org.sq.gameDemo.common.GameOrderMapping;
-import org.sq.gameDemo.svr.game.entity.model.MessageProto;
+import org.sq.gameDemo.common.proto.MessageProto2;
+import org.sq.gameDemo.svr.common.GameOrderMapping;
+import org.sq.gameDemo.common.proto.MessageProto;
+import org.sq.gameDemo.svr.common.Order;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ public class UserController {
     private UserService userService;
 
 
-    @GameOrderMapping("site")
+    @GameOrderMapping(Order.Site)
     public MessageProto.Msg listUser() {
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setMsgId(2L);
@@ -39,9 +41,9 @@ public class UserController {
         return builder.build();
     }
 
-    @GameOrderMapping("errOrder")
-    public MessageProto.Msg errOrder() {
-        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
+    @GameOrderMapping(Order.ErrOrder)
+    public MessageProto2.Msg errOrder() {
+        MessageProto2.Msg.Builder builder = MessageProto2.Msg.newBuilder();
         builder.setMsgId(2L);
         builder.setContent("無此指令");
         return builder.build();

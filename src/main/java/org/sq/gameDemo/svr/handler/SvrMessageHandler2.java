@@ -1,14 +1,10 @@
-package org.sq.gameDemo.svr.common;
+package org.sq.gameDemo.svr.handler;
 
 
 import io.netty.channel.*;
-import io.netty.util.ReferenceCountUtil;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.sq.gameDemo.common.DispatchRequest;
-import org.sq.gameDemo.common.SpringUtil;
-import org.sq.gameDemo.svr.game.entity.model.MessageProto2;
+import org.sq.gameDemo.svr.common.dispatch.DispatchRequest;
+import org.sq.gameDemo.common.proto.MessageProto2;
 
 public class SvrMessageHandler2 extends SimpleChannelInboundHandler<MessageProto2.Msg> {
 

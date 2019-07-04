@@ -1,4 +1,4 @@
-package org.sq.gameDemo.svr.common;
+package org.sq.gameDemo.svr.net;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -8,11 +8,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.apache.log4j.Logger;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+
 import java.net.InetSocketAddress;
 
 @Service

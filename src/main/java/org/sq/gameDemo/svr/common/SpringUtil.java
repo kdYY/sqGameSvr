@@ -1,4 +1,4 @@
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.svr.common;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +17,6 @@ public class SpringUtil implements ApplicationContextAware {
         }
         System.out.println("========ApplicationContext配置成功,在普通类可以通过调用SpringUtils.getAppContext()获取applicationContext对象,applicationContext="+SpringUtil.applicationContext+"========");
 
-        System.out.println("---------------------------------------------------------------------");
     }
 
     //获取applicationContext
@@ -38,6 +37,10 @@ public class SpringUtil implements ApplicationContextAware {
     //通过name,以及Clazz返回指定的Bean
     public static <T> T getBean(String name,Class<T> clazz){
         return getApplicationContext().getBean(name, clazz);
+    }
+
+    public static String[] getAllDefinationBeanName() {
+        return getApplicationContext().getBeanDefinitionNames();
     }
 
 }

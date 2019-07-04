@@ -1,8 +1,8 @@
 package org.sq.gameDemo.common;
 
 import com.google.protobuf.MessageLite;
-import org.sq.gameDemo.svr.game.entity.model.MessageProto;
-import org.sq.gameDemo.svr.game.entity.model.MessageProto2;
+import org.sq.gameDemo.common.proto.MessageProto;
+import org.sq.gameDemo.common.proto.MessageProto2;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

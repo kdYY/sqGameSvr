@@ -1,13 +1,9 @@
-package org.sq.gameDemo.svr.common;
+package org.sq.gameDemo.common;
 
 import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import org.sq.gameDemo.common.JsonUtil;
-import org.sq.gameDemo.common.ProtobufNum;
-import org.sq.gameDemo.svr.game.entity.model.MessageProto;
-import org.sq.gameDemo.svr.game.entity.model.MessageProto2;
 
 import java.util.List;
 

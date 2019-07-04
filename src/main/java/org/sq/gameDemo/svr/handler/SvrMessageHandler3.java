@@ -1,10 +1,8 @@
-package org.sq.gameDemo.svr.common;
+package org.sq.gameDemo.svr.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.log4j.Logger;
-import org.sq.gameDemo.common.DispatchRequest;
-import org.sq.gameDemo.svr.game.entity.model.MessageProto;
 
 public class SvrMessageHandler3 extends SimpleChannelInboundHandler<Object> {
 

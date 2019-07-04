@@ -1,4 +1,4 @@
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.svr.common;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.sq.gameDemo.svr.common.GameSvr;
+import org.sq.gameDemo.svr.common.SpringUtil;
+import org.sq.gameDemo.svr.common.dispatch.DispatchRequest;
+import org.sq.gameDemo.svr.net.GameSvr;
 
 import java.net.InetSocketAddress;
 
 @SpringBootApplication
-public class SpringBootDemoApplication implements CommandLineRunner {
+public class StartApplication implements CommandLineRunner {
 
 
 	@Value("${netty.port}")
@@ -24,11 +26,18 @@ public class SpringBootDemoApplication implements CommandLineRunner {
 	private GameSvr gameSvr;
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBootDemoApplication.class, args);
+		SpringApplication.run(StartApplication.class, args);
+
 	}
 
 	@Override
 	public void run(String... strings) {
+		DispatchRequest dispatchRequest = (DispatchRequest) SpringUtil.getBean("dispatchRequest");
+		try {
+			dispatchRequest.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println("启动netty中");
 		try {
 			InetSocketAddress address = new InetSocketAddress(url, port);

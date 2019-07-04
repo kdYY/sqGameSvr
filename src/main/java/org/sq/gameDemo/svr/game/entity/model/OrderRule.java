@@ -27,4 +27,12 @@ public class OrderRule {
     public void setRule(String rule) {
         this.rule = rule == null ? null : rule.trim();
     }
+
+    @Override
+    public String toString() {
+        return "OrderRule{" +
+                "orderName='" + orderName + '\'' +
+                ", rule='" + rule + '\'' +
+                '}';
+    }
 }

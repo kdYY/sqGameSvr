@@ -1,4 +1,4 @@
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.svr.common;
 
 import org.springframework.stereotype.Component;
 
@@ -13,6 +13,7 @@ public class NettyConstant {
      * 数据包最大长度
      */
     private static final int MAX_FRAME_LENGTH = 65535;
+
 
     public static int getMaxFrameLength() {
         return MAX_FRAME_LENGTH;

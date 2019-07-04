@@ -1,8 +1,8 @@
-package org.sq.gameDemo.cli;
+package org.sq.gameDemo.cli.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.sq.gameDemo.svr.game.entity.model.MessageProto;
+import org.sq.gameDemo.common.proto.MessageProto;
 
 public class CliHandler extends SimpleChannelInboundHandler<MessageProto.Msg> {
     @Override

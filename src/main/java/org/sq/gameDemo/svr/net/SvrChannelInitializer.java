@@ -1,4 +1,4 @@
-package org.sq.gameDemo.svr.common;
+package org.sq.gameDemo.svr.net;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -7,7 +7,11 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.sq.gameDemo.common.NettyConstant;
+import org.sq.gameDemo.svr.common.NettyConstant;
+import org.sq.gameDemo.common.ProtobufDecoder;
+import org.sq.gameDemo.common.ProtobufEncoder;
+import org.sq.gameDemo.svr.handler.SvrMessageHandler;
+import org.sq.gameDemo.svr.handler.SvrMessageHandler2;
 
 @Component
 public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
