@@ -8,7 +8,7 @@ package org.sq.gameDemo.svr.game.user.controller;
 
 import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.proto.MessageProto2;
-import org.sq.gameDemo.svr.common.GameOrderMapping;
+import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.svr.common.Order;
 import org.sq.gameDemo.svr.game.user.model.User;
@@ -33,7 +33,7 @@ public class UserController {
     private UserService userService;
 
 
-    @GameOrderMapping(Order.Site)
+    @OrderMapping(Order.Site)
     public MessageProto.Msg listUser() {
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setMsgId(2L);
@@ -41,7 +41,7 @@ public class UserController {
         return builder.build();
     }
 
-    @GameOrderMapping(Order.ErrOrder)
+    @OrderMapping(Order.ErrOrder)
     public MessageProto2.Msg errOrder() {
         MessageProto2.Msg.Builder builder = MessageProto2.Msg.newBuilder();
         builder.setMsgId(2L);

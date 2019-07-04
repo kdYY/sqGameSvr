@@ -8,8 +8,7 @@ public class CliHandler extends SimpleChannelInboundHandler<MessageProto.Msg> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, MessageProto.Msg msg) {
         MessageProto.Msg response = (MessageProto.Msg) msg;
-        System.out.println("服务端返回1协议:" + response.getContent() + "\n");
+        System.out.println("服务端返回1协议:" + response.toString() + "\n");
     }
-
 
 }

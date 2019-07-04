@@ -3,12 +3,9 @@ package org.sq.gameDemo.svr.common.dispatch;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.*;
-import org.sq.gameDemo.svr.game.entity.service.OrderRuleService;
 
-import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,9 +26,6 @@ public class DispatchRequest{
 
 
 
-    @Autowired
-    private OrderRuleService orderRuleService;
-
 
     /**
      * 加载指令到内存
@@ -46,7 +40,7 @@ public class DispatchRequest{
             Object bean = SpringUtil.getBean(beanName);
             Method[] methods = bean.getClass().getDeclaredMethods();
             for (Method method : methods) {
-                GameOrderMapping order = method.getAnnotation(GameOrderMapping.class);
+                OrderMapping order = method.getAnnotation(OrderMapping.class);
                 if(order != null) {
                     Order value = order.value();
                     request2Handler.put(value.getOrder(), new OrderBean(beanName, method));

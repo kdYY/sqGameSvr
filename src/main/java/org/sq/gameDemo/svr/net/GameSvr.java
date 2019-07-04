@@ -35,7 +35,7 @@ public class GameSvr {
                     .childHandler(svrChannelInitializer)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
-            future = b.bind(address).syncUninterruptibly();
+            future = b.bind(address).sync();
             System.out.println(GameSvr.class.getName() + " started and listen on " + future.channel().localAddress());
             channel = future.channel();
         } catch (Exception e) {

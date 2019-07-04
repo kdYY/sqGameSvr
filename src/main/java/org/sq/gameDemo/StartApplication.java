@@ -27,18 +27,19 @@ public class StartApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(StartApplication.class, args);
-
 	}
 
 	@Override
 	public void run(String... strings) {
 		DispatchRequest dispatchRequest = (DispatchRequest) SpringUtil.getBean("dispatchRequest");
 		try {
+			//初始化指令映射
 			dispatchRequest.init();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("启动netty中");
+
 		try {
 			InetSocketAddress address = new InetSocketAddress(url, port);
 			ChannelFuture future = null;
