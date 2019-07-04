@@ -37,15 +37,10 @@ public class SvrMessageHandler2 extends SimpleChannelInboundHandler<MessageProto
     protected void channelRead0(ChannelHandlerContext ctx, MessageProto2.Msg request) throws Exception {
         System.out.println("接受客户端发送2协议消息");
         MessageProto2.Msg msg = (MessageProto2.Msg) request;
+        System.out.println(request.getContent());
         DispatchRequest.dispatchRequest(ctx, msg.getOrder());
     }
 
-//    @Override
-//    public void channelRead(ChannelHandlerContext ctx, Object request) throws Exception {
-//        System.out.println("接受客户端发送2协议消息");
-//        MessageProto2.Msg msg = (MessageProto2.Msg) request;
-//        DispatchRequest.dispatchRequest(ctx, msg.getOrder());
-//    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {

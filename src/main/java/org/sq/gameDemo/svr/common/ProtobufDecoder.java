@@ -4,6 +4,8 @@ import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import org.sq.gameDemo.common.JsonUtil;
+import org.sq.gameDemo.common.ProtobufNum;
 import org.sq.gameDemo.svr.game.entity.model.MessageProto;
 import org.sq.gameDemo.svr.game.entity.model.MessageProto2;
 
@@ -56,15 +58,19 @@ public class ProtobufDecoder extends ByteToMessageDecoder {
     }
 
     public MessageLite decodeBody(byte dataType, byte[] array, int offset, int length) throws Exception {
-        if (dataType == 0x00) {
-            return MessageProto.Msg.getDefaultInstance().
-                    getParserForType().parseFrom(array, offset, length);
-        }
-        if (dataType == 0x01) {
-            return MessageProto2.Msg.getDefaultInstance().
-                    getParserForType().parseFrom(array, offset, length);
-        }
+        MessageLite messageLite = (MessageLite)ProtobufNum.getMessageLiteByNum((int) dataType);
+        return messageLite.
+                   getParserForType().parseFrom(array, offset, length);
 
-        return null; // or throw exception
+//        if (dataType == 0x00) {
+//            return MessageProto.Msg.getDefaultInstance().
+//                    getParserForType().parseFrom(array, offset, length);
+//        }
+//        if (dataType == 0x01) {
+//            return MessageProto2.Msg.getDefaultInstance().
+//                    getParserForType().parseFrom(array, offset, length);
+//        }
+
+        //return null; // or throw exception
     }
 }

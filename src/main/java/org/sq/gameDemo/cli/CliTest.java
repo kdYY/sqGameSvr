@@ -5,6 +5,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.apache.log4j.Logger;
 import org.sq.gameDemo.svr.common.ProtobufDecoder;
 import org.sq.gameDemo.svr.common.ProtobufEncoder;
@@ -34,7 +36,7 @@ public class CliTest {
                 protected void initChannel(SocketChannel ch) {
                     /*
                     // 添加ProtobufVarint32FrameDecoder，主要用于Protobuf的半包处理
-                    ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+
                     ch.pipeline().addLast(new ProtobufDecoder(MessageProto.Msg.getDefaultInstance()));
                     /**
                      * 来自源码的代码注释，用于Protobuf的半包处理
@@ -53,6 +55,8 @@ public class CliTest {
                     // 添加ProtobufEncoder编码器，这样就不需要对SubscribeResp进行手工编码
                     ch.pipeline().addLast(new ProtobufEncoder());
                     */
+                    ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+                    ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
                     ch.pipeline().addLast(new ProtobufDecoder());
                     ch.pipeline().addLast(new ProtobufEncoder());
                     ch.pipeline().addLast(new CliHandler());
@@ -116,7 +120,8 @@ public class CliTest {
 //        address.add("ShenZhen HongShuLin");
 //        builder.addAllAddress(address);
         builder.setMsgId(2L);
-        builder.setOrder("这是2协议" + String.valueOf(send));
+        builder.setOrder(String.valueOf(send));
+        builder.setContent("这是客户端发的2协议");
         return builder.build();
     }
 }

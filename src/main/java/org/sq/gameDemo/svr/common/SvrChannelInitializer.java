@@ -1,7 +1,10 @@
 package org.sq.gameDemo.svr.common;
 
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.common.NettyConstant;
@@ -12,6 +15,7 @@ public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Autowired
     private NettyConstant nettyConstant;
 
+    private SimpleChannelInboundHandler simpleChannelInboundHandler;
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -40,9 +44,13 @@ public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast(new ProtobufEncoder());
         ch.pipeline().addLast(new SvrMessageHandler());
         */
+        ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+        ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
         ch.pipeline().addLast(new ProtobufDecoder());
         ch.pipeline().addLast(new ProtobufEncoder());
         ch.pipeline().addLast(new SvrMessageHandler());
         ch.pipeline().addLast(new SvrMessageHandler2());
     }
+
+
 }
