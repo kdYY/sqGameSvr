@@ -7,10 +7,11 @@
 package org.sq.gameDemo.svr.game.user.controller;
 
 import org.springframework.stereotype.Controller;
+import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto2;
+import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.svr.common.Order;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,18 @@ public class UserController {
     private UserService userService;
 
 
-    @OrderMapping(Order.Site)
-    public MessageProto.Msg listUser() {
+    @OrderMapping(OrderEnum.Site)
+    public MsgEntity listUser() {
+        MsgEntity msgEntity = new MsgEntity();
+        msgEntity.setCmdCode(OrderEnum.Site.getOrderCode());
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setMsgId(2L);
         builder.setContent(userService.listUser().stream().map(User::toString).collect(Collectors.joining()));
-        return builder.build();
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
     }
 
-    @OrderMapping(Order.ErrOrder)
+    @OrderMapping(OrderEnum.ErrOrder)
     public MessageProto2.Msg errOrder() {
         MessageProto2.Msg.Builder builder = MessageProto2.Msg.newBuilder();
         builder.setMsgId(2L);

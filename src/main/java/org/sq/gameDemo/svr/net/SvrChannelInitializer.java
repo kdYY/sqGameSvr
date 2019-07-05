@@ -3,20 +3,15 @@ package org.sq.gameDemo.svr.net;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
-import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.sq.gameDemo.common.MsgDecoder;
+import org.sq.gameDemo.common.MsgEncoder;
 import org.sq.gameDemo.svr.common.NettyConstant;
-import org.sq.gameDemo.common.ProtobufDecoder;
-import org.sq.gameDemo.common.ProtobufEncoder;
-import org.sq.gameDemo.svr.handler.SvrMessageHandler;
+import org.sq.gameDemo.svr.handler.SvrHandler;
 
 @Component
 public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
-
-    @Autowired
-    private NettyConstant nettyConstant;
 
     private SimpleChannelInboundHandler simpleChannelInboundHandler;
 
@@ -47,11 +42,16 @@ public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast(new ProtobufEncoder());
         ch.pipeline().addLast(new SvrMessageHandler());
         */
-        ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-        ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
-        ch.pipeline().addLast(new ProtobufDecoder());
-        ch.pipeline().addLast(new ProtobufEncoder());
-        ch.pipeline().addLast(new SvrMessageHandler());
+
+        /*第2版本**/
+//        ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+//        ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+//        ch.pipeline().addLast("decoder", new ProtobufDecoder());
+//        ch.pipeline().addLast("encoder",new ProtobufEncoder());
+//        ch.pipeline().addLast("handler", new SvrMessageHandler());
+        ch.pipeline().addLast("decoder", new MsgDecoder());
+        ch.pipeline().addLast("encoder",new MsgEncoder());
+        ch.pipeline().addLast("handler", new SvrHandler());
     }
 
 

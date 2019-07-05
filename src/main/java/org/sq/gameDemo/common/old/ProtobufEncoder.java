@@ -1,4 +1,4 @@
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.common.old;
 
 import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
@@ -30,8 +30,8 @@ public class ProtobufEncoder extends MessageToByteEncoder<MessageLite> {
             byte[] header = new byte[4];
             header[0] = (byte) (bodyLength & 0xff);
             header[1] = (byte) ((bodyLength >> 8) & 0xff);
-            header[2] = 0; // 保留字段
-            header[3] = messageType;
+            header[2] = 0; // 省略校验,但是还是要保留字段
+            header[3] = messageType;  //根据proto类型获取cmd命令字
             return header;
         }
 

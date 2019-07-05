@@ -3130,7 +3130,7 @@ public final class MessageProto {
     internal_static_Msg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Msg_descriptor,
-        new String[] { "MsgId", "Order", "Time", "Content", "Result", "User", "Sence", });
+        new String[] { "MsgId", "OrderEnum", "Time", "Content", "Result", "User", "Sence", });
     internal_static_User_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_User_fieldAccessorTable = new

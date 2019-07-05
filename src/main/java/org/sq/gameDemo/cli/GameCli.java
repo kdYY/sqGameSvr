@@ -5,8 +5,9 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.log4j.Logger;
+import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.common.proto.MessageProto2;
+import org.sq.gameDemo.common.OrderEnum;
 
 import java.util.Scanner;
 
@@ -52,20 +53,44 @@ public class GameCli {
     }
 
 
-    public static void sendMsg(Object send) throws InterruptedException {
+    public static void sendMsg(String send) throws InterruptedException {
         // 传数据给服务端
-        f.channel().writeAndFlush(subReq(String.valueOf(send)));
+        f.channel().writeAndFlush(sendMsgEntity(send));
     }
 
     private static MessageProto.Msg subReq(String send) {
 
-        //register name=kevins password=123456
+        //register name=kevins&password=123456
+        //login name=kevins&password=123456
+        //move sence=1
+        //
         String[] input = send.split(" ");
 
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-        builder.setOrder(String.valueOf(send));
+        builder.setOrder(input[0]);
+        builder.setContent( input[1]);
         return builder.build();
 
     }
+
+    //new
+    private static MsgEntity sendMsgEntity(String send) {
+
+        //register name=kevins&password=123456
+        //login name=kevins&password=123456
+        //move sence=1
+        //
+        String[] input = send.split(" ");
+        MsgEntity msgEntity = new MsgEntity();
+        msgEntity.setCmdCode(OrderEnum.getOrderCode(input[0]));
+        if(input.length >= 2) {
+            MessageProto.Msg data = MessageProto.Msg.newBuilder().setContent(input[1]).build();
+            msgEntity.setData(data.toByteArray());
+        }
+
+        return msgEntity;
+
+    }
+
 
 }

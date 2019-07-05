@@ -1,4 +1,4 @@
-package org.sq.gameDemo.cli.handler;
+package org.sq.gameDemo.cli.handler.old;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

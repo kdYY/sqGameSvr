@@ -1,4 +1,4 @@
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.common.old;
 
 import com.google.protobuf.MessageLite;
 import org.sq.gameDemo.common.proto.MessageProto;

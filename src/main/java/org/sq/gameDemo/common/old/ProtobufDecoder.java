@@ -1,4 +1,4 @@
-package org.sq.gameDemo.common;
+package org.sq.gameDemo.common.old;
 
 import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
@@ -55,18 +55,6 @@ public class ProtobufDecoder extends ByteToMessageDecoder {
 
     public MessageLite decodeBody(byte dataType, byte[] array, int offset, int length) throws Exception {
         MessageLite messageLite = (MessageLite)ProtobufNum.getMessageLiteByNum((int) dataType);
-        return messageLite.
-                   getParserForType().parseFrom(array, offset, length);
-
-//        if (dataType == 0x00) {
-//            return MessageProto.Msg.getDefaultInstance().
-//                    getParserForType().parseFrom(array, offset, length);
-//        }
-//        if (dataType == 0x01) {
-//            return MessageProto2.Msg.getDefaultInstance().
-//                    getParserForType().parseFrom(array, offset, length);
-//        }
-
-        //return null; // or throw exception
+        return messageLite.getParserForType().parseFrom(array, offset, length);
     }
 }

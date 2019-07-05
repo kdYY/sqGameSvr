@@ -3,21 +3,16 @@ package org.sq.gameDemo.cli;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
-import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.sq.gameDemo.cli.handler.CliHandler;
-import org.sq.gameDemo.common.ProtobufDecoder;
-import org.sq.gameDemo.common.ProtobufEncoder;
+import org.sq.gameDemo.cli.handler.CliHandler2;
+import org.sq.gameDemo.common.MsgDecoder;
+import org.sq.gameDemo.common.MsgEncoder;
 import org.sq.gameDemo.svr.common.NettyConstant;
-import org.sq.gameDemo.svr.handler.SvrMessageHandler;
 
 @Component
 public class CliChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    @Autowired
-    private NettyConstant nettyConstant;
 
     private SimpleChannelInboundHandler simpleChannelInboundHandler;
 
@@ -48,11 +43,18 @@ public class CliChannelInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast(new ProtobufEncoder());
         ch.pipeline().addLast(new SvrMessageHandler());
         */
-        ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-        ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
-        ch.pipeline().addLast(new ProtobufDecoder());
-        ch.pipeline().addLast(new ProtobufEncoder());
-        ch.pipeline().addLast(new CliHandler());
+
+        /*old版本*/
+//        ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+//        ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+//        ch.pipeline().addLast(new ProtobufDecoder());
+//        ch.pipeline().addLast(new ProtobufEncoder());
+//        ch.pipeline().addLast(new CliHandler());
+
+        ch.pipeline().addLast("decoder", new MsgDecoder());
+        ch.pipeline().addLast("encoder",new MsgEncoder());
+        ch.pipeline().addLast("handler", new CliHandler2());
+
     }
 
 
