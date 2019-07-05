@@ -5,7 +5,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
 
-public class CliHandler2 extends SimpleChannelInboundHandler<MsgEntity> {
+public class CliHandler extends SimpleChannelInboundHandler<MsgEntity> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, MsgEntity msgEntity) throws Exception {
 

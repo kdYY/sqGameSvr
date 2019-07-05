@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class MsgEntity {
     private short cmdCode;
     private byte[] data;
+    private Channel channel;
 
     public short getCmdCode() {
         return cmdCode;

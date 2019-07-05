@@ -6,6 +6,7 @@
 
 package org.sq.gameDemo.svr.game.user.controller;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto2;
@@ -34,10 +35,10 @@ public class UserController {
     private UserService userService;
 
 
-    @OrderMapping(OrderEnum.Site)
-    public MsgEntity listUser() {
-        MsgEntity msgEntity = new MsgEntity();
-        msgEntity.setCmdCode(OrderEnum.Site.getOrderCode());
+    @OrderMapping(OrderEnum.Register)
+    public MsgEntity register(MsgEntity msgEntity) throws InvalidProtocolBufferException {
+
+
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setMsgId(2L);
         builder.setContent(userService.listUser().stream().map(User::toString).collect(Collectors.joining()));
@@ -46,11 +47,16 @@ public class UserController {
     }
 
     @OrderMapping(OrderEnum.ErrOrder)
-    public MessageProto2.Msg errOrder() {
-        MessageProto2.Msg.Builder builder = MessageProto2.Msg.newBuilder();
+    public MsgEntity errOrder(MsgEntity msgEntity) {
+        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setMsgId(2L);
         builder.setContent("無此指令");
-        return builder.build();
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
     }
 
+    @OrderMapping(OrderEnum.ErrOrder)
+    public MsgEntity errOrder() {
+        return errOrder(new MsgEntity());
+    }
 }

@@ -43,15 +43,15 @@ public enum ProtobufNum {
 //        messageType = 0x00;
 //    }
     public static Byte getNumByMessageLite(MessageLite msg) {
-    for (ProtobufNum protobufNum : ProtobufNum.values()) {
+        for (ProtobufNum protobufNum : ProtobufNum.values()) {
 
-        if(msg.getClass() == protobufNum.getMessageLiteClazz()) {
-            // TODO 控制1个字节
-            return Byte.parseByte(String.valueOf(protobufNum.getProtoNum()));
+            if(msg.getClass() == protobufNum.getMessageLiteClazz()) {
+                // TODO 控制1个字节
+                return Byte.parseByte(String.valueOf(protobufNum.getProtoNum()));
 
+            }
         }
+        return null;
     }
-    return null;
-}
 
 }

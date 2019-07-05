@@ -3,12 +3,10 @@ package org.sq.gameDemo.cli;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.sq.gameDemo.cli.handler.CliHandler2;
+import org.sq.gameDemo.cli.handler.CliHandler;
 import org.sq.gameDemo.common.MsgDecoder;
 import org.sq.gameDemo.common.MsgEncoder;
-import org.sq.gameDemo.svr.common.NettyConstant;
 
 @Component
 public class CliChannelInitializer extends ChannelInitializer<SocketChannel> {
@@ -53,7 +51,7 @@ public class CliChannelInitializer extends ChannelInitializer<SocketChannel> {
 
         ch.pipeline().addLast("decoder", new MsgDecoder());
         ch.pipeline().addLast("encoder",new MsgEncoder());
-        ch.pipeline().addLast("handler", new CliHandler2());
+        ch.pipeline().addLast("handler", new CliHandler());
 
     }
 

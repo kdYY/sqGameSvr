@@ -14,8 +14,10 @@ public class MsgEncoder extends MessageToByteEncoder<MsgEntity> {
 	protected void encode(ChannelHandlerContext ctx, MsgEntity msg, ByteBuf byteBuf) throws Exception {
 		int dataLength = msg.getData() == null ? 0 : msg.getData().length;
 		byteBuf.ensureWritable(4 + dataLength);
+
 		byteBuf.writeInt(dataLength);
 		byteBuf.writeShort(msg.getCmdCode());
+
 		if (dataLength > 0) {
 			byteBuf.writeBytes(msg.getData());
 		}

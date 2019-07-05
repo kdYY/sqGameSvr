@@ -1,5 +1,6 @@
 package org.sq.gameDemo.svr.common.dispatch;
 
+import com.google.protobuf.MessageLite;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,6 +10,7 @@ import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.svr.common.*;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -61,12 +63,13 @@ public class DispatchRequest{
      * @param msgEntity 请求实体
      */
     public void dispatch(ChannelHandlerContext ctx, MsgEntity msgEntity) {
-        System.out.println("server: dispatch->" + msgEntity.getCmdCode());
+        short cmdCode = msgEntity.getCmdCode();
+        System.out.println("server: dispatch->" + cmdCode);
         executorService.submit(()->{
             Object response = null;
             ChannelFuture future = null;
             try {
-                OrderBean orderBean = request2Handler.get(OrderEnum.getOrder(msgEntity.getCmdCode()));
+                OrderBean orderBean = request2Handler.get(OrderEnum.getOrder(cmdCode));
                 if(orderBean == null) {
                     orderBean = request2Handler.get(OrderEnum.ErrOrder.getOrder());
                 }
@@ -74,15 +77,16 @@ public class DispatchRequest{
                 Object bean = SpringUtil.getBean(orderBean.getBeanName());
                 byte[] data = msgEntity.getData();
 
+                Method method = orderBean.getMethod();
                 if(data != null && data.length != 0) {
                     //TODO 获取方法中的参数名，参数类型，将msgEntity.getData中的参数进行绑定，发现参数异常返回err
                     //register name=kevins&password=123456
                     //login name=kevins&password=123456
                     //move sence=1
 
-                    response = orderBean.getMethod().invoke(bean, msgEntity.getData());
+                    response = method.invoke(bean, msgEntity);
                 } else {
-                    response = orderBean.getMethod().invoke(bean);
+                    response = method.invoke(bean);
                 }
 
                 if (response == null) {

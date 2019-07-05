@@ -82,7 +82,10 @@ public class GameCli {
         //
         String[] input = send.split(" ");
         MsgEntity msgEntity = new MsgEntity();
+
         msgEntity.setCmdCode(OrderEnum.getOrderCode(input[0]));
+
+
         if(input.length >= 2) {
             MessageProto.Msg data = MessageProto.Msg.newBuilder().setContent(input[1]).build();
             msgEntity.setData(data.toByteArray());
