@@ -102,7 +102,7 @@
             #{entityid,jdbcType=INTEGER})
     </insert>
 
-    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.user.model.User" >
+    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.user.model.User" useGeneratedKeys="true" keyProperty="id">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="id != null" >

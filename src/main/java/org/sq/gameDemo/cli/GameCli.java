@@ -5,20 +5,25 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.log4j.Logger;
+import org.sq.gameDemo.cli.service.SendOrderService;
 import org.sq.gameDemo.common.entity.MsgEntity;
-import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.OrderEnum;
+import org.sq.gameDemo.common.proto.MessageProto;
 
 import java.util.Scanner;
 
+
 public class GameCli {
 
+    private static SendOrderService sendOrderService = new SendOrderService();
     private static final Logger log = Logger.getLogger(GameCli.class);
-
     private static Bootstrap b;
     private static ChannelFuture f;
     private static final EventLoopGroup workerGroup = new NioEventLoopGroup();
 
+    /**
+     * 初始化客户端
+     */
     private static void init () {
         try {
             b = new Bootstrap();
@@ -41,7 +46,7 @@ public class GameCli {
             try {
                 line = scanner.nextLine();
                 GameCli.sendMsg(line);
-                line = "";
+               // line = "";
             } catch (Exception e) {
                 log.error(e.getMessage());
                 e.printStackTrace();
@@ -52,47 +57,50 @@ public class GameCli {
 
     }
 
-
+    /**
+     * 发送请求
+     * @param send
+     * @return
+     */
     public static void sendMsg(String send) throws InterruptedException {
         // 传数据给服务端
-        f.channel().writeAndFlush(sendMsgEntity(send));
-    }
-
-    private static MessageProto.Msg subReq(String send) {
-
-        //register name=kevins&password=123456
-        //login name=kevins&password=123456
-        //move sence=1
-        //
-        String[] input = send.split(" ");
-
-        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-        builder.setOrder(input[0]);
-        builder.setContent( input[1]);
-        return builder.build();
-
-    }
-
-    //new
-    private static MsgEntity sendMsgEntity(String send) {
-
-        //register name=kevins&password=123456
-        //login name=kevins&password=123456
-        //move sence=1
-        //
-        String[] input = send.split(" ");
-        MsgEntity msgEntity = new MsgEntity();
-
-        msgEntity.setCmdCode(OrderEnum.getOrderCode(input[0]));
-
-
-        if(input.length >= 2) {
-            MessageProto.Msg data = MessageProto.Msg.newBuilder().setContent(input[1]).build();
-            msgEntity.setData(data.toByteArray());
+        MsgEntity sendMsgEntity = sendMsgEntity(send);
+        if(sendMsgEntity == null) {
+            System.out.println("输入指令有误");
+            return;
         }
+        f.channel().writeAndFlush(sendMsgEntity);
+    }
 
+    private static MsgEntity sendMsgEntity(String request) {
+
+        //register name=kevins&password=123456
+        //login name=kevins&password=123456
+        //move sence=1
+        //
+        if(request == null || request.equals("")) {
+            return null;
+        }
+        String[] input = request.split(" ");
+        MsgEntity msgEntity = new MsgEntity();
+        if(input == null || input.length == 0)
+            return null;
+        OrderEnum orderEnum = OrderEnum.getOrderEnumByOrder(input[0]);
+        msgEntity.setCmdCode(orderEnum.getOrderCode());
+
+        switch (orderEnum) {
+            case Register:
+                sendOrderService.register(msgEntity, input);
+                break;
+            case Login:
+                sendOrderService.login(msgEntity, input);
+                break;
+            case ErrOrder:
+                return null;
+
+            default:break;
+        }
         return msgEntity;
-
     }
 
 

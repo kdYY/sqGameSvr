@@ -2,7 +2,6 @@ package org.sq.gameDemo.common;
 
 import com.google.protobuf.MessageLite;
 import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.common.proto.MessageProto2;
 import org.sq.gameDemo.common.proto.UserProto;
 
 import java.lang.reflect.Constructor;
@@ -12,7 +11,9 @@ public enum OrderEnum {
 
     Site("site",100, MessageProto.Msg.class),
     ErrOrder("errOrder",101, MessageProto.Msg.class),
-    Register("register",102, UserProto.User.class);
+    Register("register",102, UserProto.User.class),
+    SvrErr("svrErr", 103, MessageProto.Msg.class),
+    Login("login", 104, UserProto.User.class);
     private String order;
     private short orderCode;
     private Class messageLiteClazz;
@@ -35,7 +36,8 @@ public enum OrderEnum {
         return order;
     }
 
-    public static String getOrder(short orderCode) {
+
+    public static String getOrderByCode(short orderCode) {
         for (OrderEnum orderEnum : OrderEnum.values()) {
             if(orderEnum.orderCode == orderCode) {
                 return orderEnum.order;
@@ -73,5 +75,15 @@ public enum OrderEnum {
             }
         }
         return -1;
+    }
+
+
+    public static OrderEnum getOrderEnumByOrder(String order) {
+        for (OrderEnum orderEnum : OrderEnum.values()) {
+            if(orderEnum.order.equals(order)) {
+                return orderEnum;
+            }
+        }
+        return ErrOrder;
     }
 }

@@ -56,11 +56,21 @@ public final class UserProto {
         getNameBytes();
 
     /**
+     * <code>string password = 5;</code>
+     */
+    String getPassword();
+    /**
+     * <code>string password = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getPasswordBytes();
+
+    /**
      * <pre>
      *返回token客户端保存
      * </pre>
      *
-     * <code>string token = 5;</code>
+     * <code>string token = 6;</code>
      */
     String getToken();
     /**
@@ -68,7 +78,7 @@ public final class UserProto {
      *返回token客户端保存
      * </pre>
      *
-     * <code>string token = 5;</code>
+     * <code>string token = 6;</code>
      */
     com.google.protobuf.ByteString
         getTokenBytes();
@@ -87,6 +97,7 @@ public final class UserProto {
     }
     private User() {
       name_ = "";
+      password_ = "";
       token_ = "";
     }
 
@@ -142,6 +153,12 @@ public final class UserProto {
               break;
             }
             case 42: {
+              String s = input.readStringRequireUtf8();
+
+              password_ = s;
+              break;
+            }
+            case 50: {
               String s = input.readStringRequireUtf8();
 
               token_ = s;
@@ -252,14 +269,48 @@ public final class UserProto {
       }
     }
 
-    public static final int TOKEN_FIELD_NUMBER = 5;
+    public static final int PASSWORD_FIELD_NUMBER = 5;
+    private volatile Object password_;
+    /**
+     * <code>string password = 5;</code>
+     */
+    public String getPassword() {
+      Object ref = password_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        password_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string password = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPasswordBytes() {
+      Object ref = password_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        password_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TOKEN_FIELD_NUMBER = 6;
     private volatile Object token_;
     /**
      * <pre>
      *返回token客户端保存
      * </pre>
      *
-     * <code>string token = 5;</code>
+     * <code>string token = 6;</code>
      */
     public String getToken() {
       Object ref = token_;
@@ -278,7 +329,7 @@ public final class UserProto {
      *返回token客户端保存
      * </pre>
      *
-     * <code>string token = 5;</code>
+     * <code>string token = 6;</code>
      */
     public com.google.protobuf.ByteString
         getTokenBytes() {
@@ -320,8 +371,11 @@ public final class UserProto {
       if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, name_);
       }
+      if (!getPasswordBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, password_);
+      }
       if (!getTokenBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, token_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, token_);
       }
       unknownFields.writeTo(output);
     }
@@ -347,8 +401,11 @@ public final class UserProto {
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, name_);
       }
+      if (!getPasswordBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, password_);
+      }
       if (!getTokenBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, token_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, token_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -373,6 +430,8 @@ public final class UserProto {
           != other.getTime()) return false;
       if (!getName()
           .equals(other.getName())) return false;
+      if (!getPassword()
+          .equals(other.getPassword())) return false;
       if (!getToken()
           .equals(other.getToken())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -396,6 +455,8 @@ public final class UserProto {
           getTime());
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
+      hash = (53 * hash) + getPassword().hashCode();
       hash = (37 * hash) + TOKEN_FIELD_NUMBER;
       hash = (53 * hash) + getToken().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -539,6 +600,8 @@ public final class UserProto {
 
         name_ = "";
 
+        password_ = "";
+
         token_ = "";
 
         return this;
@@ -571,6 +634,7 @@ public final class UserProto {
         result.id_ = id_;
         result.time_ = time_;
         result.name_ = name_;
+        result.password_ = password_;
         result.token_ = token_;
         onBuilt();
         return result;
@@ -631,6 +695,10 @@ public final class UserProto {
         }
         if (!other.getName().isEmpty()) {
           name_ = other.name_;
+          onChanged();
+        }
+        if (!other.getPassword().isEmpty()) {
+          password_ = other.password_;
           onChanged();
         }
         if (!other.getToken().isEmpty()) {
@@ -849,13 +917,82 @@ public final class UserProto {
         return this;
       }
 
+      private Object password_ = "";
+      /**
+       * <code>string password = 5;</code>
+       */
+      public String getPassword() {
+        Object ref = password_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          password_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>string password = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPasswordBytes() {
+        Object ref = password_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          password_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string password = 5;</code>
+       */
+      public Builder setPassword(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        password_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string password = 5;</code>
+       */
+      public Builder clearPassword() {
+        
+        password_ = getDefaultInstance().getPassword();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string password = 5;</code>
+       */
+      public Builder setPasswordBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        password_ = value;
+        onChanged();
+        return this;
+      }
+
       private Object token_ = "";
       /**
        * <pre>
        *返回token客户端保存
        * </pre>
        *
-       * <code>string token = 5;</code>
+       * <code>string token = 6;</code>
        */
       public String getToken() {
         Object ref = token_;
@@ -874,7 +1011,7 @@ public final class UserProto {
        *返回token客户端保存
        * </pre>
        *
-       * <code>string token = 5;</code>
+       * <code>string token = 6;</code>
        */
       public com.google.protobuf.ByteString
           getTokenBytes() {
@@ -894,7 +1031,7 @@ public final class UserProto {
        *返回token客户端保存
        * </pre>
        *
-       * <code>string token = 5;</code>
+       * <code>string token = 6;</code>
        */
       public Builder setToken(
           String value) {
@@ -911,7 +1048,7 @@ public final class UserProto {
        *返回token客户端保存
        * </pre>
        *
-       * <code>string token = 5;</code>
+       * <code>string token = 6;</code>
        */
       public Builder clearToken() {
         
@@ -924,7 +1061,7 @@ public final class UserProto {
        *返回token客户端保存
        * </pre>
        *
-       * <code>string token = 5;</code>
+       * <code>string token = 6;</code>
        */
       public Builder setTokenBytes(
           com.google.protobuf.ByteString value) {
@@ -1004,10 +1141,10 @@ public final class UserProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\nUser.proto\"M\n\004User\022\016\n\006msg_id\030\001 \001(\004\022\n\n\002" +
-      "id\030\002 \001(\r\022\014\n\004time\030\003 \001(\004\022\014\n\004name\030\004 \001(\t\022\r\n\005" +
-      "token\030\005 \001(\tB)\n\034org.sq.gameDemo.common.pr" +
-      "otoB\tUserProtob\006proto3"
+      "\n\nUser.proto\"_\n\004User\022\016\n\006msg_id\030\001 \001(\004\022\n\n\002" +
+      "id\030\002 \001(\r\022\014\n\004time\030\003 \001(\004\022\014\n\004name\030\004 \001(\t\022\020\n\010" +
+      "password\030\005 \001(\t\022\r\n\005token\030\006 \001(\tB)\n\034org.sq." +
+      "gameDemo.common.protoB\tUserProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1018,7 +1155,7 @@ public final class UserProto {
     internal_static_User_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_User_descriptor,
-        new String[] { "MsgId", "Id", "Time", "Name", "Token", });
+        new String[] { "MsgId", "Id", "Time", "Name", "Password", "Token", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

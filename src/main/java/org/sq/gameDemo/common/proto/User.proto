@@ -7,5 +7,6 @@ message User {
     uint32 id = 2;          //用户id
     uint64 time = 3;        //时间戳(单位:毫秒)
     string name = 4;
-    string token = 5;       //返回token客户端保存
+    string password = 5;
+    string token = 6;       //返回token客户端保存
 }

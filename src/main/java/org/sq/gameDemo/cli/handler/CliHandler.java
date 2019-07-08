@@ -8,8 +8,9 @@ import org.sq.gameDemo.common.proto.MessageProto;
 public class CliHandler extends SimpleChannelInboundHandler<MsgEntity> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, MsgEntity msgEntity) throws Exception {
-
-        System.out.println("接受服务端信息-->" + MessageProto.Msg.parseFrom(msgEntity.getData()).getContent());
+        MessageProto.Msg msg = MessageProto.Msg.parseFrom(msgEntity.getData());
+        System.out.println("接受服务端信息-->" + msg.getContent());
+        System.out.println("返回用户token->" + msg.getToken());
 //        if (OrderEnum.getOrder(msgEntity.getCmdCode()).equals("site")) {// 名字检查回包
 //            NameCheckResp resp = null;
 //            resp = NameCheckResp.parseFrom(msgEntity.getData());

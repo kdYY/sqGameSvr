@@ -6,6 +6,7 @@
 
 package org.sq.gameDemo.svr.game.user.service;
 
+import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.game.user.dao.UserMapper;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +34,38 @@ public class UserService {
         return userMapper.selectByPrimaryKey(id);
     }
 
+    public User getUser(UserProto.User user){
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andNameEqualTo(user.getName()).andPasswordEqualTo(user.getPassword());
+        return userMapper.selectByExample(userExample).get(0);
+    }
+
     public List<User> listUser(){
         return userMapper.selectByExample(new UserExample());
     }
 
-    public void addUser(User user) {
-        userMapper.insertSelective(user);
+    public int addUser(UserProto.User user) throws Exception{
+        User userSave = new User();
+        userSave.setName(user.getName());
+        userSave.setPassword(user.getPassword());
+        return userMapper.insertSelective(userSave);
     }
 
+    public User getUserName(String name) {
+        UserExample example = new UserExample();
+        example.createCriteria().andNameEqualTo(name);
+        List<User> userList = userMapper.selectByExample(example);
+        if(userList.size() != 0) {
+            return userList.get(0);
+        }
+        return null;
+    }
 
+    public boolean userNameExist(String name) {
+        if(getUserName(name) != null) {
+            return true;
+        }
+        return false;
+    }
 
 }
