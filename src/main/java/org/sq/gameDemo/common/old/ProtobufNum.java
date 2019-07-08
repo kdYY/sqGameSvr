@@ -2,14 +2,13 @@ package org.sq.gameDemo.common.old;
 
 import com.google.protobuf.MessageLite;
 import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.common.proto.MessageProto2;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public enum ProtobufNum {
-    MessageProtoc1(1, MessageProto.Msg.class),
-    MessageProtoc2(2, MessageProto2.Msg.class);
+    MessageProtoc1(1, MessageProto.Msg.class);
+    //MessageProtoc2(2, MessageProto2.Msg.class);
 
 
     private  Integer protoNum;

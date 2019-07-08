@@ -14,16 +14,16 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channel active");
-        ctx.channel().writeAndFlush(subReq("welcome to game! type something to play game"));
+        //ctx.channel().writeAndFlush(subReq("welcome to game! type something to play game"));
     }
 
 
-    private static MessageProto.Msg subReq(Object send) {
-        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-        builder.setMsgId(2L);
-        builder.setContent(String.valueOf(send));
-        return builder.build();
-    }
+//    private static MessageProto.Msg subReq(Object send) {
+//        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
+//        builder.setMsgId(2L);
+//        builder.setContent(String.valueOf(send));
+//        return builder.build();
+//    }
     /**
      * 做请求转发
      * @param ctx
@@ -41,5 +41,11 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
         ctx.close();
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("=============channel inactive");
+        super.channelInactive(ctx);
     }
 }

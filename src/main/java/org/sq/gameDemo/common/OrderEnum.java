@@ -8,16 +8,19 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public enum OrderEnum {
-
-    Site("site",100, MessageProto.Msg.class),
     ErrOrder("errOrder",101, MessageProto.Msg.class),
-    Register("register",102, UserProto.User.class),
-    SvrErr("svrErr", 103, MessageProto.Msg.class),
-    Login("login", 104, UserProto.User.class);
+    SvrErr("svrErr", 102, MessageProto.Msg.class),
+    Help("help", 103, MessageProto.Msg.class),
+    Register("register",104, UserProto.User.class),
+    Login("login", 105, UserProto.User.class),
+    BindRole("bindRole", 106, MessageProto.Msg.class),
+    GetRole("getRoleMsg", 107, MessageProto.Msg.class)
+    ;
+
     private String order;
     private short orderCode;
     private Class messageLiteClazz;
-    private OrderEnum(String order, int orderCode, Class messageLiteClazz) {
+    OrderEnum(String order, int orderCode, Class messageLiteClazz) {
         this.order = order;
         this.orderCode = (short) orderCode;
         this.messageLiteClazz = messageLiteClazz;

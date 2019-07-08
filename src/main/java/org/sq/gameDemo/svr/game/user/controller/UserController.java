@@ -13,6 +13,8 @@ import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.common.OrderMapping;
+import org.sq.gameDemo.svr.game.entity.service.EntityService;
+import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
 import org.sq.gameDemo.svr.game.user.service.UserService;
@@ -32,7 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UserController {
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private EntityService entityService;
 
     @OrderMapping(OrderEnum.Register)
     public MsgEntity register(MsgEntity msgEntity) throws Exception {
@@ -71,15 +74,37 @@ public class UserController {
         if(loginUser == null) {
             builder.setContent("no this user, please register");
         } else {
-            builder.setContent("login success");
+            builder.setContent("login success, \r\nhi! welcome to 起源之地!! \r\nnow construct your role~\r\n" + entityService.getEntitieListString());
             builder.setToken(tokenEncryp(loginUser.getId()));
         }
-
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
 
+    @OrderMapping(OrderEnum.BindRole)
+    public MsgEntity bindRole(MsgEntity msgEntity) throws Exception {
+        byte[] data = msgEntity.getData();
 
+
+        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
+
+        builder.setContent("login success, \r\nhi! welcome to 起源之地!! \r\nnow construct your role~\r\n" + entityService.getEntitieListString());
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
+    }
+
+    @OrderMapping(OrderEnum.GetRole)
+    public MsgEntity getRoles(MsgEntity msgEntity) throws Exception {
+        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
+        builder.setContent(entityService.getEntitieListString());
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
+    }
+
+    @OrderMapping(OrderEnum.ErrOrder)
+    public MsgEntity errOrder() {
+        return errOrder(new MsgEntity());
+    }
 
     private MsgEntity errOrder(MsgEntity msgEntity) {
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
@@ -89,10 +114,7 @@ public class UserController {
         return msgEntity;
     }
 
-    @OrderMapping(OrderEnum.ErrOrder)
-    public MsgEntity errOrder() {
-        return errOrder(new MsgEntity());
-    }
+
 
     private String tokenEncryp(int userId) {
         return String.valueOf(System.currentTimeMillis()) + String.valueOf(userId);

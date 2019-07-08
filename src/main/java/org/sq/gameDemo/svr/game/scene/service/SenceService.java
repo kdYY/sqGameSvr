@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.common.proto.SenceProto;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.PoiUtil;
 import org.sq.gameDemo.svr.game.entity.model.Entity;
@@ -80,5 +81,10 @@ public class SenceService {
     }
 
     //创建用户 角色  根据id创建一个entity， 默认在场景 id = 1起源之地
+    public SenceProto.Sence getSence() {
+        return null;
+    }
+
+
 
 }

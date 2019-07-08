@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.common;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Row;
+import org.sq.gameDemo.common.proto.EntityProto;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 
 import java.io.*;
@@ -28,11 +29,17 @@ public class PoiUtil {
         Map<String, Method> setMethodMap = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
             String name = field.getName();
-            Method setMethod = clazz.getDeclaredMethod(
-                    "set" + String.valueOf(name.charAt(0)).toUpperCase()+ field.getName().substring(1),
-                    field.getType());
+            try{
+                Method setMethod = clazz.getDeclaredMethod(
+                        "set" + String.valueOf(name.charAt(0)).toUpperCase()+ field.getName().substring(1),
+                        field.getType());
+                setMethodMap.put(name, setMethod);
+            }catch (NoSuchMethodException e) {
+                continue;
+            }
 
-            setMethodMap.put(name, setMethod);
+
+
         }
 
         ArrayList excelData = new ArrayList<>();
@@ -185,14 +192,15 @@ public class PoiUtil {
 
     public static void main(String[] args) {
         try {
-            List list = readExcel("C:\\code\\sence.xls", 0, GameScene.class);
+            List<EntityProto.Entity> list = readExcel("C:\\code\\git\\src\\main\\resources\\entity.xls", 0, EntityProto.Entity.class);
             list.forEach(sence->{
-                System.out.println(sence.toString());
+                System.out.println(sence.getName());
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
 
 

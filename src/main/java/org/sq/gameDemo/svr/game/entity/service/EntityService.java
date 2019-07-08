@@ -29,4 +29,12 @@ public class EntityService {
     public List<Entity> getEntities() {
         return entities;
     }
+
+    public String getEntitieListString() {
+        StringBuilder builder = new StringBuilder();
+        for (Entity entity : entities) {
+            builder.append(entity.toString() + "\r\n");
+        }
+        return builder.toString();
+    }
 }
