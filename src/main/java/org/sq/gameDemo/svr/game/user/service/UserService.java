@@ -6,6 +6,7 @@
 
 package org.sq.gameDemo.svr.game.user.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.game.user.dao.UserMapper;
 import org.sq.gameDemo.svr.game.user.model.User;
@@ -44,11 +45,9 @@ public class UserService {
         return userMapper.selectByExample(new UserExample());
     }
 
-    public int addUser(UserProto.User user) throws Exception{
-        User userSave = new User();
-        userSave.setName(user.getName());
-        userSave.setPassword(user.getPassword());
-        return userMapper.insertSelective(userSave);
+    @Transactional
+    public int addUser(User user) throws Exception{
+        return userMapper.insertSelective(user);
     }
 
     public User getUserName(String name) {
@@ -68,4 +67,7 @@ public class UserService {
         return false;
     }
 
+    public void updateUser(Integer userId, int entityId) {
+        userMapper.updateEntityIdByPrimaryKey(userId, entityId);
+    }
 }

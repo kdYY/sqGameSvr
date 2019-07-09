@@ -62,7 +62,6 @@ public class PoiUtil {
                 }catch (Exception e) {
                     throw new Exception("该路径下 " + file.getPath() + " 文件内容有誤");
                 }
-
             }
             return excelData;
         } catch (IOException e) {
@@ -184,7 +183,7 @@ public class PoiUtil {
 
     private static boolean checkRow(Row row, int rowNum, Map<String, Method> setMethod) {
         int lastCellNum = row.getLastCellNum() & '\uffff'; //盗poi的...
-        if(lastCellNum != setMethod.keySet().size()) {
+        if(lastCellNum > setMethod.keySet().size()) {
             return false;
         }
         return true;

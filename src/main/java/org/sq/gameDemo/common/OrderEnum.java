@@ -14,7 +14,8 @@ public enum OrderEnum {
     Register("register",104, UserProto.User.class),
     Login("login", 105, UserProto.User.class),
     BindRole("bindRole", 106, MessageProto.Msg.class),
-    GetRole("getRoleMsg", 107, MessageProto.Msg.class)
+    GetRole("getRoleMsg", 107, MessageProto.Msg.class),
+    CheckToken("checkToken", 108, UserProto.User.class),
     ;
 
     private String order;

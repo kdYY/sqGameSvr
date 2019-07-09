@@ -71,6 +71,7 @@ public class DispatchRequest{
      * @param msgEntity 请求实体
      */
     public void dispatch(ChannelHandlerContext ctx, MsgEntity msgEntity) {
+        msgEntity.setChannel(ctx.channel());
         short cmdCode = msgEntity.getCmdCode();
         System.out.println("server: dispatch->" + cmdCode + ":" + OrderEnum.getOrderByCode(cmdCode));
         executorService.submit(()->{

@@ -8,11 +8,13 @@ import org.sq.gameDemo.common.proto.SenceProto;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.PoiUtil;
 import org.sq.gameDemo.svr.game.entity.model.Entity;
+import org.sq.gameDemo.svr.game.entity.model.EntityVo;
 import org.sq.gameDemo.svr.game.entity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.model.SenceData;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,27 +31,35 @@ public class SenceService {
     @Value("${excel.sencedata}")
     private String sencedataFileName;
 
-    //存储所有的实体信息
+    //存储单体场景信息
     private List<GameScene> gameScenes;
-    //存储实体和场景的映射关系
+    //存储所有场景
     private List<SenceData> senceData;
+    //
+    @Value("${excel.entity}")
+    private String entityFileName;
 
-
-    private Map<GameScene,Map<Entity, Integer>> gameSceneMap = new HashMap<>();
+    //存储所有的实体信息
+    private List<Entity> entities;
 
     @PostConstruct
     private void initalSence() {
         try {
             gameScenes = PoiUtil.readExcel(senceFileName, 0, GameScene.class);
             senceData = PoiUtil.readExcel(sencedataFileName, 0, SenceData.class);
+            entities = PoiUtil.readExcel(entityFileName, 0, Entity.class);
+            //{"1":10,"3":10, "4":20}
+            senceData.forEach(data -> {
+                JSONObject jsonObject = JsonUtil.parseObject(data.getJsonStr());
 
-            senceData.forEach(map -> {
-                JSONObject jsonObject = JsonUtil.parseObject(map.getJsonStr());
-                Map<Entity, Integer> entityMap = new HashMap<>();
+                List<EntityVo> entityVos = new ArrayList<>();
                 jsonObject.keySet().forEach(key -> {
-                    entityMap.put(findEntity(entityService.getEntities(), Integer.valueOf(key)),jsonObject.getIntValue(key));
+                    EntityVo entityVo = new EntityVo();
+                    entityVo.setEntity(findEntity(entities, Integer.valueOf(key)));
+                    entityVo.setNum(jsonObject.getIntValue(key));
+                    entityVos.add(entityVo);
                 });
-                gameSceneMap.put(findSence(gameScenes, map.getSenceId()),entityMap);
+                data.setEntitys(entityVos);
             });
 
         } catch (Exception e) {
@@ -57,10 +67,14 @@ public class SenceService {
         }
     }
 
-    public Map<GameScene, Map<Entity, Integer>> getGameSceneMap() {
-        return gameSceneMap;
+    public SenceData getSenecDataById(int senceId) {
+        for (SenceData senceData : senceData) {
+            if(senceData.getSenceId() == senceId) {
+                return senceData;
+            }
+        }
+        return null;
     }
-
 
     public static Entity findEntity(List<Entity> entityList, int id) {
         for (Entity entity : entityList) {

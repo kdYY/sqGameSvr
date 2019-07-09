@@ -8,6 +8,6 @@ message Entity {
     string name = 3;
     uint64 time = 4;        //时间戳(单位:毫秒)
     string content = 5;     //消息内容
-    string state = 6;       //结果信息
+    string state = 6;       //状态信息
 }
 

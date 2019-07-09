@@ -7,6 +7,7 @@
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="password" property="password" jdbcType="VARCHAR" />
         <result column="entityId" property="entityid" jdbcType="INTEGER" />
+        <result column="senceId" property="senceid" jdbcType="INTEGER" />
     </resultMap>
 
     <sql id="Example_Where_Clause" >
@@ -70,7 +71,7 @@
     </sql>
 
     <sql id="Base_Column_List" >
-        id, name, password, entityId
+        id, name, password, entityId, senceId
     </sql>
 
     <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.user.model.UserExample" >
@@ -96,13 +97,13 @@
     </delete>
 
     <insert id="insert" parameterType="org.sq.gameDemo.svr.game.user.model.User" >
-        insert into user (id, name, password, 
-            entityId)
-        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-            #{entityid,jdbcType=INTEGER})
+        insert into user (id, name, password,
+            entityId, senceId)
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+            #{entityid,jdbcType=INTEGER}, #{senceid,jdbcType=INTEGER})
     </insert>
 
-    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.user.model.User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.user.model.User" useGeneratedKeys="true" keyProperty="id" >
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -117,6 +118,9 @@
             <if test="entityid != null" >
                 entityId,
             </if>
+            <if test="senceid != null" >
+                senceId,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -130,6 +134,9 @@
             </if>
             <if test="entityid != null" >
                 #{entityid,jdbcType=INTEGER},
+            </if>
+            <if test="senceid != null" >
+                #{senceid,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -156,6 +163,9 @@
             <if test="record.entityid != null" >
                 entityId = #{record.entityid,jdbcType=INTEGER},
             </if>
+            <if test="record.senceid != null" >
+                senceId = #{record.senceid,jdbcType=INTEGER},
+            </if>
         </set>
         <if test="_parameter != null" >
             <include refid="Update_By_Example_Where_Clause" />
@@ -165,13 +175,15 @@
     <update id="updateByExample" parameterType="map" >
         update user
         set id = #{record.id,jdbcType=INTEGER},
-            name = #{record.name,jdbcType=VARCHAR},
-            password = #{record.password,jdbcType=VARCHAR},
-            entityId = #{record.entityid,jdbcType=INTEGER}
+        name = #{record.name,jdbcType=VARCHAR},
+        password = #{record.password,jdbcType=VARCHAR},
+        entityId = #{record.entityid,jdbcType=INTEGER},
+        senceId = #{record.senceid,jdbcType=INTEGER}
         <if test="_parameter != null" >
             <include refid="Update_By_Example_Where_Clause" />
         </if>
     </update>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap" >
         select
         <if test="distinct" >
@@ -181,5 +193,9 @@
         from user
         where id = #{id}
     </select>
-
+    <update id="updateEntityIdByPrimaryKey" parameterType="java.lang.Integer" >
+        update user
+        set entityId = #{entityId,jdbcType=INTEGER}
+        where id = #{userId,jdbcType=INTEGER}
+    </update>
 </mapper>

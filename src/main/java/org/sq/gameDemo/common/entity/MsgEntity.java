@@ -26,6 +26,13 @@ public class MsgEntity {
         this.data = data;
     }
 
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
 
     @Override
     public String toString() {
