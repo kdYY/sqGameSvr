@@ -7,6 +7,7 @@ import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
 
 import java.util.List;
+
 @Mapper
 @Repository
 public interface UserMapper {
@@ -24,7 +25,9 @@ public interface UserMapper {
 
     int updateByExample(@Param("record") User record, @Param("example") UserExample example);
 
-    User selectByPrimaryKey(Integer id);
+    User selectByPrimaryKey(int id);
 
-    int updateEntityIdByPrimaryKey(Integer userId, Integer entityId);
+    int updateTypeIdByPrimaryKey(Integer userId, int typeId);
+
+    int updateSenceIdByPrimaryKey(Integer userId, int typeId);
 }

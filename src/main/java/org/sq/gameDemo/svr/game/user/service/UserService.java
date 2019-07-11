@@ -38,7 +38,8 @@ public class UserService {
     public User getUser(UserProto.User user){
         UserExample userExample = new UserExample();
         userExample.createCriteria().andNameEqualTo(user.getName()).andPasswordEqualTo(user.getPassword());
-        return userMapper.selectByExample(userExample).get(0);
+        List<User> users = userMapper.selectByExample(userExample);
+        return users.get(0);
     }
 
     public List<User> listUser(){
@@ -67,7 +68,8 @@ public class UserService {
         return false;
     }
 
-    public void updateUser(Integer userId, int entityId) {
-        userMapper.updateEntityIdByPrimaryKey(userId, entityId);
+    public void updateUser(int userId, int typeId) {
+        userMapper.updateTypeIdByPrimaryKey(userId, typeId);
     }
+
 }

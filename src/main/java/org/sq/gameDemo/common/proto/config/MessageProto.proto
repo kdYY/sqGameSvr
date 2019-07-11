@@ -7,26 +7,6 @@ message Msg {
     string cmd = 2;       //发送方命令
     uint64 time = 3;        //时间戳(单位:毫秒)
     string content = 4;     //消息内容
-    string token = 6;   //验证信息
-}
-
-message User {
-    int32 id = 1;
-    string name = 2;
-}
-
-message Entity {
-    int32 id = 1;
-    string name = 2;
-}
-
-message mapEntity {
-    repeated Entity entity = 1;
-    int32 num = 2;
-}
-
-message Sence {
-    int32 id = 1;
-    string name = 2;
-    repeated mapEntity mapEntity = 3;
+    string token = 5;   //验证信息
+    int32 result = 6;
 }

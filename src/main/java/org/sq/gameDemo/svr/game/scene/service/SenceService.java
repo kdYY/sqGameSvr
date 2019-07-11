@@ -1,17 +1,17 @@
 package org.sq.gameDemo.svr.game.scene.service;
 
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.sq.gameDemo.common.proto.SenceProto;
+import org.sq.gameDemo.common.proto.EntityProto;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.PoiUtil;
-import org.sq.gameDemo.svr.game.entity.model.Entity;
-import org.sq.gameDemo.svr.game.entity.model.EntityVo;
+import org.sq.gameDemo.svr.game.entity.model.EntityType;
+import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
+import org.sq.gameDemo.svr.game.entity.model.UserEntity;
 import org.sq.gameDemo.svr.game.entity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
-import org.sq.gameDemo.svr.game.scene.model.SenceData;
+import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -31,74 +31,118 @@ public class SenceService {
     @Value("${excel.sencedata}")
     private String sencedataFileName;
 
-    //存储单体场景信息
-    private List<GameScene> gameScenes;
-    //存储所有场景
-    private List<SenceData> senceData;
-    //
     @Value("${excel.entity}")
     private String entityFileName;
+    //存储单体场景信息
+    private List<GameScene> gameScenes;
 
-    //存储所有的实体信息
-    private List<Entity> entities;
+    //
+    private List<SenceConfigMsg> senceConfigMsgList;
+
+    //<typeId, 怪物>
+    private Map<Integer, List<SenceEntity>> map = new HashMap<>();
+
+    //存储所有初始化的实体信息
+    private List<EntityType> entities;
 
     @PostConstruct
     private void initalSence() {
         try {
             gameScenes = PoiUtil.readExcel(senceFileName, 0, GameScene.class);
-            senceData = PoiUtil.readExcel(sencedataFileName, 0, SenceData.class);
-            entities = PoiUtil.readExcel(entityFileName, 0, Entity.class);
-            //{"1":10,"3":10, "4":20}
-            senceData.forEach(data -> {
-                JSONObject jsonObject = JsonUtil.parseObject(data.getJsonStr());
+            senceConfigMsgList = PoiUtil.readExcel(sencedataFileName, 0, SenceConfigMsg.class);
+            entities = PoiUtil.readExcel(entityFileName, 0, EntityType.class);
+            for (SenceConfigMsg senceMap : senceConfigMsgList) {
+                List<SenceEntity> senceEntityList = JsonUtil.reSerializableJson(senceMap.getJsonStr(), SenceEntity.class);
+                ArrayList<SenceEntity> senceEntities = new ArrayList<>();
+                for (SenceEntity senceEntity : senceEntityList) {
+                    ArrayList<SenceEntity> entitys = new ArrayList<>();
+                    for (int i = 0; i < senceEntity.getNum(); i++) {
+                        SenceEntity entity = new SenceEntity();
+                        entity.setId(i);
+                        entity.setState(senceEntity.getState());
+                        entity.setTypeId(senceEntity.getTypeId());
+                        entitys.add(entity);
+                    }
+                    map.put(senceEntity.getTypeId(), entitys);
+                    senceEntities.addAll(entitys);
+                }
+                senceMap.setSenceEntities(senceEntities);
 
-                List<EntityVo> entityVos = new ArrayList<>();
-                jsonObject.keySet().forEach(key -> {
-                    EntityVo entityVo = new EntityVo();
-                    entityVo.setEntity(findEntity(entities, Integer.valueOf(key)));
-                    entityVo.setNum(jsonObject.getIntValue(key));
-                    entityVos.add(entityVo);
-                });
-                data.setEntitys(entityVos);
-            });
-
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public SenceData getSenecDataById(int senceId) {
-        for (SenceData senceData : senceData) {
-            if(senceData.getSenceId() == senceId) {
-                return senceData;
+    public SenceConfigMsg getSenecMsgById(int senceId) {
+        for (SenceConfigMsg msg : senceConfigMsgList) {
+            if(msg.getSenceId() == senceId) {
+                return msg;
             }
         }
         return null;
     }
 
-    public static Entity findEntity(List<Entity> entityList, int id) {
-        for (Entity entity : entityList) {
-            if(entity.getId() == id) {
-                return entity;
-            }
+    /**
+     * 将场景信息序列化成ResponseEntityInfo
+     * @param builder
+     * @param senceId
+     */
+    public void transformEntityResponseProto(EntityProto.ResponseEntityInfo.Builder builder, int senceId) {
+        SenceConfigMsg findSence = null;
+        if((findSence=getSenecMsgById(senceId)) == null) {
+            return;
         }
-        return null;
+
+        int i=0;
+        for (UserEntity userEntity : findSence.getUserEntities()) {
+            builder.setUserEntity(i++, entityService.transformSenceUserEntityProto(userEntity));
+        }
+        i=0;
+        for (SenceEntity senceEntity : findSence.getSenceEntities()) {
+            builder.setSenceEntity(i++, entityService.transformSenceEntityProto(senceEntity));
+        }
     }
 
-    public static GameScene findSence(List<GameScene> gameScenes, Integer id) {
-        for (GameScene sence : gameScenes) {
-            if(sence.getId() == id) {
-                return sence;
+
+    public EntityType getEntityTypeById(int id) {
+        for (EntityType entityBaseType : entities) {
+            if(entityBaseType.getId() == id) {
+                return entityBaseType;
             }
         }
         return null;
     }
 
     //创建用户 角色  根据id创建一个entity， 默认在场景 id = 1起源之地
-    public SenceProto.Sence getSence() {
+
+
+    public GameScene getSenceBySenceId(int senceId) {
+        for (GameScene gameScene : gameScenes) {
+            if(gameScene.getId() == senceId) {
+                return gameScene;
+            }
+        }
         return null;
     }
 
+
+    public void addUsetEntityInSence(int senceId, UserEntity userEntity) {
+        senceConfigMsgList.forEach(msg -> {
+            if(msg.getSenceId() == senceId) {
+                msg.getUserEntities().add(userEntity);
+            }
+        });
+    }
+
+    public GameScene addUsetEntityAndGetSence(int senceId, UserEntity userEntity) {
+        for (SenceConfigMsg msg : senceConfigMsgList) {
+            if (msg.getSenceId() == senceId) {
+                msg.getUserEntities().add(userEntity);
+                return getSenceBySenceId(senceId);
+            }
+        }
+        return null;
+    }
 
 
 }

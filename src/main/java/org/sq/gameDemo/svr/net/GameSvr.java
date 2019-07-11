@@ -9,12 +9,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;
 
+@Slf4j
 @Service
 public class GameSvr {
 
@@ -22,7 +24,6 @@ public class GameSvr {
     private SvrChannelInitializer svrChannelInitializer;
 
 
-    private static final Logger log = Logger.getLogger(GameSvr.class);
 
     private final EventLoopGroup bossGroup = new NioEventLoopGroup();
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();

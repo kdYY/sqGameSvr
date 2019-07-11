@@ -2,28 +2,20 @@ package org.sq.gameDemo.svr.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.svr.common.dispatch.DispatchRequest;
-import org.sq.gameDemo.svr.handler.old.SvrMessageHandler;
-
+@Slf4j
 public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
-    private static final Logger log = Logger.getLogger(SvrMessageHandler.class);
+   // private static final Logger log = Logger.getLogger(SvrMessageHandler.class);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channel active");
-        //ctx.channel().writeAndFlush(subReq("welcome to game! type something to play game"));
     }
 
-
-//    private static MessageProto.Msg subReq(Object send) {
-//        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-//        builder.setMsgId(2L);
-//        builder.setContent(String.valueOf(send));
-//        return builder.build();
-//    }
     /**
      * 做请求转发
      * @param ctx
@@ -45,7 +37,7 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("=============channel inactive");
-        super.channelInactive(ctx);
+        //玩家掉线，玩家数据 回写 到数据库进行保存，同时设置玩家数据在内存中保留的时间，避免内存泄漏
+
     }
 }

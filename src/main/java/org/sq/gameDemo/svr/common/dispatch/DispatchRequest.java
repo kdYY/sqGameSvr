@@ -80,9 +80,7 @@ public class DispatchRequest{
             OrderBean orderBean = null;
             try {
                 response = getResponse(msgEntity);
-                if (response == null) {
-                    future = ctx.writeAndFlush(null);
-                } else {
+                if (response != null) {
                     future = ctx.writeAndFlush(response);
                 }
             } catch (Exception e) {

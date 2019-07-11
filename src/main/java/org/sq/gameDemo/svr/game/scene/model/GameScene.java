@@ -1,8 +1,13 @@
 package org.sq.gameDemo.svr.game.scene.model;
 
+import org.sq.gameDemo.common.proto.EntityProto;
+import org.sq.gameDemo.common.proto.SenceProto;
+
+import java.lang.reflect.Method;
+
 public class GameScene {
-    public int id;
-    public String name;
+    private int id;
+    private String name;
 
 
     public String getName() {
@@ -23,9 +28,16 @@ public class GameScene {
 
     @Override
     public String toString() {
-        return "GameScene{" +
+        return "场景信息:{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    //记得写个工具类...免得老是写这些恶心的方法...
+    public static SenceProto.Sence transformProto(GameScene sence) {
+        return SenceProto.Sence.newBuilder().setId(sence.getId()).setName(sence.getName()).build();
+    }
+
+
 }

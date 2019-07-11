@@ -5,7 +5,7 @@ package org.sq.gameDemo.svr.game.user.model;
  * 
  * @author wcyong
  * 
- * @date 2019-07-09
+ * @date 2019-07-10
  */
 public class User {
     private Integer id;
@@ -17,9 +17,9 @@ public class User {
     /**
      * 实体id
      */
-    private Integer entityid;
+    private Integer typeId;
 
-    private Integer senceid;
+    private Integer senceId;
 
     public Integer getId() {
         return id;
@@ -45,19 +45,19 @@ public class User {
         this.password = password == null ? null : password.trim();
     }
 
-    public Integer getEntityid() {
-        return entityid;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setEntityid(Integer entityid) {
-        this.entityid = entityid;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
-    public Integer getSenceid() {
-        return senceid;
+    public Integer getSenceId() {
+        return senceId;
     }
 
-    public void setSenceid(Integer senceid) {
-        this.senceid = senceid;
+    public void setSenceId(Integer senceId) {
+        this.senceId = senceId;
     }
 }

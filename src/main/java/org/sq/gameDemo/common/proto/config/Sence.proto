@@ -1,17 +1,15 @@
 syntax = "proto3";
-
-import "Entity.proto";
-
 option java_package = "org.sq.gameDemo.common.proto";
 option java_outer_classname = "SenceProto";
 message Sence {
+    int32 id = 1;
+    string name = 2;
+    uint64 time = 3;        //时间戳(单位:毫秒)
+}
+//请求
+message RequestSenceInfo {
     uint64 msg_id = 1;      //消息id
-    int32 id = 2;       //发送方命令
-    string name = 3;
-    uint64 time = 4;        //时间戳(单位:毫秒)
-    string content = 5;     //消息内容
-    string token = 6;   //结果信息
-
-    repeated Entity entity = 7;
+    int32 senceId  = 2;
+    uint64 time = 3;        //时间戳(单位:毫秒)
 }
 

@@ -189,16 +189,6 @@ public class PoiUtil {
         return true;
     }
 
-    public static void main(String[] args) {
-        try {
-            List<EntityProto.Entity> list = readExcel("C:\\code\\git\\src\\main\\resources\\entity.xls", 0, EntityProto.Entity.class);
-            list.forEach(sence->{
-                System.out.println(sence.getName());
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 

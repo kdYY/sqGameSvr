@@ -77,7 +77,7 @@ public final class MessageProto {
      *验证信息
      * </pre>
      *
-     * <code>string token = 6;</code>
+     * <code>string token = 5;</code>
      */
     String getToken();
     /**
@@ -85,10 +85,15 @@ public final class MessageProto {
      *验证信息
      * </pre>
      *
-     * <code>string token = 6;</code>
+     * <code>string token = 5;</code>
      */
     com.google.protobuf.ByteString
         getTokenBytes();
+
+    /**
+     * <code>int32 result = 6;</code>
+     */
+    int getResult();
   }
   /**
    * Protobuf type {@code Msg}
@@ -160,10 +165,15 @@ public final class MessageProto {
               content_ = s;
               break;
             }
-            case 50: {
+            case 42: {
               String s = input.readStringRequireUtf8();
 
               token_ = s;
+              break;
+            }
+            case 48: {
+
+              result_ = input.readInt32();
               break;
             }
             default: {
@@ -308,14 +318,14 @@ public final class MessageProto {
       }
     }
 
-    public static final int TOKEN_FIELD_NUMBER = 6;
+    public static final int TOKEN_FIELD_NUMBER = 5;
     private volatile Object token_;
     /**
      * <pre>
      *验证信息
      * </pre>
      *
-     * <code>string token = 6;</code>
+     * <code>string token = 5;</code>
      */
     public String getToken() {
       Object ref = token_;
@@ -334,7 +344,7 @@ public final class MessageProto {
      *验证信息
      * </pre>
      *
-     * <code>string token = 6;</code>
+     * <code>string token = 5;</code>
      */
     public com.google.protobuf.ByteString
         getTokenBytes() {
@@ -348,6 +358,15 @@ public final class MessageProto {
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 6;
+    private int result_;
+    /**
+     * <code>int32 result = 6;</code>
+     */
+    public int getResult() {
+      return result_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -377,7 +396,10 @@ public final class MessageProto {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, content_);
       }
       if (!getTokenBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, token_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, token_);
+      }
+      if (result_ != 0) {
+        output.writeInt32(6, result_);
       }
       unknownFields.writeTo(output);
     }
@@ -403,7 +425,11 @@ public final class MessageProto {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, content_);
       }
       if (!getTokenBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, token_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, token_);
+      }
+      if (result_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, result_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -430,6 +456,8 @@ public final class MessageProto {
           .equals(other.getContent())) return false;
       if (!getToken()
           .equals(other.getToken())) return false;
+      if (getResult()
+          != other.getResult()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -453,6 +481,8 @@ public final class MessageProto {
       hash = (53 * hash) + getContent().hashCode();
       hash = (37 * hash) + TOKEN_FIELD_NUMBER;
       hash = (53 * hash) + getToken().hashCode();
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + getResult();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -596,6 +626,8 @@ public final class MessageProto {
 
         token_ = "";
 
+        result_ = 0;
+
         return this;
       }
 
@@ -627,6 +659,7 @@ public final class MessageProto {
         result.time_ = time_;
         result.content_ = content_;
         result.token_ = token_;
+        result.result_ = result_;
         onBuilt();
         return result;
       }
@@ -692,6 +725,9 @@ public final class MessageProto {
         if (!other.getToken().isEmpty()) {
           token_ = other.token_;
           onChanged();
+        }
+        if (other.getResult() != 0) {
+          setResult(other.getResult());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -982,7 +1018,7 @@ public final class MessageProto {
        *验证信息
        * </pre>
        *
-       * <code>string token = 6;</code>
+       * <code>string token = 5;</code>
        */
       public String getToken() {
         Object ref = token_;
@@ -1001,7 +1037,7 @@ public final class MessageProto {
        *验证信息
        * </pre>
        *
-       * <code>string token = 6;</code>
+       * <code>string token = 5;</code>
        */
       public com.google.protobuf.ByteString
           getTokenBytes() {
@@ -1021,7 +1057,7 @@ public final class MessageProto {
        *验证信息
        * </pre>
        *
-       * <code>string token = 6;</code>
+       * <code>string token = 5;</code>
        */
       public Builder setToken(
           String value) {
@@ -1038,7 +1074,7 @@ public final class MessageProto {
        *验证信息
        * </pre>
        *
-       * <code>string token = 6;</code>
+       * <code>string token = 5;</code>
        */
       public Builder clearToken() {
         
@@ -1051,7 +1087,7 @@ public final class MessageProto {
        *验证信息
        * </pre>
        *
-       * <code>string token = 6;</code>
+       * <code>string token = 5;</code>
        */
       public Builder setTokenBytes(
           com.google.protobuf.ByteString value) {
@@ -1061,6 +1097,32 @@ public final class MessageProto {
   checkByteStringIsUtf8(value);
         
         token_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int result_ ;
+      /**
+       * <code>int32 result = 6;</code>
+       */
+      public int getResult() {
+        return result_;
+      }
+      /**
+       * <code>int32 result = 6;</code>
+       */
+      public Builder setResult(int value) {
+        
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 result = 6;</code>
+       */
+      public Builder clearResult() {
+        
+        result_ = 0;
         onChanged();
         return this;
       }
@@ -1131,10 +1193,11 @@ public final class MessageProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\022MessageProto.proto\"P\n\003Msg\022\016\n\006msg_id\030\001 " +
+      "\n\022MessageProto.proto\"`\n\003Msg\022\016\n\006msg_id\030\001 " +
       "\001(\004\022\013\n\003cmd\030\002 \001(\t\022\014\n\004time\030\003 \001(\004\022\017\n\007conten" +
-      "t\030\004 \001(\t\022\r\n\005token\030\006 \001(\tB,\n\034org.sq.gameDem" +
-      "o.common.protoB\014MessageProtob\006proto3"
+      "t\030\004 \001(\t\022\r\n\005token\030\005 \001(\t\022\016\n\006result\030\006 \001(\005B," +
+      "\n\034org.sq.gameDemo.common.protoB\014MessageP" +
+      "rotob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1145,7 +1208,7 @@ public final class MessageProto {
     internal_static_Msg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Msg_descriptor,
-        new String[] { "MsgId", "Cmd", "Time", "Content", "Token", });
+        new String[] { "MsgId", "Cmd", "Time", "Content", "Token", "Result", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

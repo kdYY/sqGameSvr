@@ -1,17 +1,22 @@
 package org.sq.gameDemo.svr.common;
 
 import io.netty.channel.Channel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.game.user.model.User;
+import org.sq.gameDemo.svr.game.user.service.UserService;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class UserCache {
 
+    @Autowired
+    private UserService userService;
     //<Token, UserId>
     public static Map<String, Integer> tokenUserMap = new HashMap<>();
     //<Channel, UserId>
@@ -21,7 +26,10 @@ public class UserCache {
 
     @PostConstruct
     public void init() {
-
+        List<User> userList = userService.listUser();
+        for (User user : userList) {
+            userMap.put(user.getId(), user);
+        }
     }
 
 
@@ -45,8 +53,9 @@ public class UserCache {
         Object overTimeKey = getKeyByValue(value, map);
         if(overTimeKey != null && !overTimeKey.equals(value)) {
             map.remove(overTimeKey);
-            map.put(newKey, value);
         }
+        map.put(newKey,value);
+
     }
 
     private static Object getKeyByValue(Object value, Map map) {

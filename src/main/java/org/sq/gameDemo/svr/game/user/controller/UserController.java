@@ -7,25 +7,22 @@
 package org.sq.gameDemo.svr.game.user.controller;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.netty.channel.Channel;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.OrderEnum;
+import org.sq.gameDemo.common.proto.EntityProto;
 import org.sq.gameDemo.common.proto.MessageProto;
+import org.sq.gameDemo.common.proto.SenceProto;
 import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.UserCache;
+import org.sq.gameDemo.svr.game.entity.model.EntityType;
 import org.sq.gameDemo.svr.game.entity.service.EntityService;
-import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.user.model.User;
-import org.sq.gameDemo.svr.game.user.model.UserExample;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 /**
  * <b><code>UserController</code></b>
@@ -47,50 +44,78 @@ public class UserController {
     private EntityService entityService;
 
     @OrderMapping(OrderEnum.Register)
-    public MsgEntity register(MsgEntity msgEntity) throws Exception {
-        byte[] data = msgEntity.getData();
-        UserProto.User user = UserProto.User.parseFrom(data);
+    public MsgEntity register(MsgEntity msgEntity) {
+        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();;
+        try {
+            byte[] data = msgEntity.getData();
+            UserProto.RequestUserInfo requestUserInfo = UserProto.RequestUserInfo.parseFrom(data);
 
-        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-        builder.setMsgId(user.getMsgId());
-        builder.setTime(user.getTime());
-        User userSave = new User();
-        userSave.setName(user.getName());
-        userSave.setPassword(user.getPassword());
-        if(userService.userNameExist(user.getName())) {
-            builder.setContent("name exist, try again");
-        } else {
-            int isSuccess = userService.addUser(userSave);
-            if(isSuccess <= 0) {
-                builder.setContent("fail, try again");
+            UserProto.User user = requestUserInfo.getUser();
+
+            builder.setMsgId(requestUserInfo.getMsgId());
+            builder.setTime(requestUserInfo.getTime());
+
+            User userSave = new User();
+            userSave.setName(user.getName());
+            userSave.setPassword(user.getPassword());
+
+            if(userService.userNameExist(user.getName())) {
+                builder.setContent("name exist, try again");
             } else {
-                builder.setContent("success");
-                UserCache.addUserMap(userSave.getId(), userService.getUser(userSave.getId()));
+                int isSuccess = userService.addUser(userSave);
+                if(isSuccess <= 0) {
+                    builder.setContent("fail, try again");
+                } else {
+                    builder.setContent("success");
+                    UserCache.addUserMap(userSave.getId(), userService.getUser(userSave.getId()));
+                }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setResult(500);//服务端异常
         }
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
 
     @OrderMapping(OrderEnum.Login)
-    public MsgEntity login(MsgEntity msgEntity) throws Exception {
+    public MsgEntity login(MsgEntity msgEntity) {
         byte[] data = msgEntity.getData();
-        UserProto.User user = UserProto.User.parseFrom(data);
+        UserProto.RequestUserInfo requestUserInfo = null;
+        UserProto.ResponseUserInfo.Builder builder = UserProto.ResponseUserInfo.newBuilder();
 
-        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-        builder.setMsgId(user.getMsgId());
-        builder.setTime(user.getTime());
+        try {
+            requestUserInfo = UserProto.RequestUserInfo.parseFrom(data);
+            UserProto.User user = requestUserInfo.getUser();
+            builder.setMsgId(requestUserInfo.getMsgId());
+            builder.setTime(requestUserInfo.getTime());
 
-        User loginUser = userService.getUser(user);
-        if(loginUser == null) {
-            builder.setContent("no this user, please register");
-        } else {
-            builder.setContent("login success, \r\nhi! welcome to 起源之地!! \r\nnow construct your role~\r\n" + entityService.getEntitieListString());
+            User loginUser = userService.getUser(user);
+            if(loginUser == null) {
+                builder.setContent("no this user, please register");
+            } else {
+                builder.setContent("login success, \r\nhi! welcome to 起源之地!! \r\nnow construct your role~\r\n");
+                //TODO 考虑去掉
+                List<EntityType> entitieTypes = entityService.getEntitieTypes();
+                int index = 0;
+                for (EntityType entitieType : entitieTypes) {
+                    builder.setEntityTypes(index++,
+                            EntityProto.EntityType.newBuilder()
+                            .setId(entitieType.getId())
+                            .setName(entitieType.getName())
+                                    .build()
+                    );
+                }
+                String token = tokenEncryp(loginUser.getId());
+                builder.setToken(token);
 
-            String token = tokenEncryp(loginUser.getId());
-            builder.setToken(token);
-            UserCache.updateUserToken(user.getId(), token);
-            UserCache.updateChannelCache(msgEntity.getChannel(), user.getId());
+                UserCache.updateUserToken(loginUser.getId(), token);
+                UserCache.updateChannelCache(msgEntity.getChannel(), loginUser.getId());
+            }
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+            builder.setResult(500);//服务端异常
         }
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
@@ -101,19 +126,29 @@ public class UserController {
     // 重连检测
     @OrderMapping(OrderEnum.CheckToken)
     public MsgEntity checkToken(MsgEntity msgEntity) throws Exception {
-        byte[] data = msgEntity.getData();
-        UserProto.User user = UserProto.User.parseFrom(data);
-        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-        builder.setMsgId(user.getMsgId());
-        builder.setTime(user.getTime());
-        String userToken = user.getToken();
-        if(userToken != null && userToken.length() != 0 && UserCache.tokenUserMap.get(userToken) != null) {
-            UserCache.updateChannelCache(msgEntity.getChannel(), user.getId());
-            //TODO 上次离开的地方
-            builder.setContent("\r\nlogin success, \r\nhi! welcome back to 起源之地!! \r\n");
-        } else {
-            builder.setContent("login fail, please relogin, enter \"help\" to get Help");
-            builder.setToken("");
+        UserProto.ResponseUserInfo.Builder builder = UserProto.ResponseUserInfo.newBuilder();
+        try {
+            byte[] data = msgEntity.getData();
+            UserProto.RequestUserInfo requestUserInfo = UserProto.RequestUserInfo.parseFrom(data);
+            UserProto.User user = requestUserInfo.getUser();
+            String userToken = requestUserInfo.getToken();
+
+
+            builder.setMsgId(requestUserInfo.getMsgId());
+            builder.setTime(requestUserInfo.getTime());
+
+            if(userToken != null && userToken.length() != 0 && UserCache.tokenUserMap.get(userToken) != null) {
+                UserCache.updateChannelCache(msgEntity.getChannel(), user.getId());
+                //TODO 上次离开的地方
+                builder.setContent("\r\nlogin success, \r\nhi! welcome back to 起源之地!! \r\n");
+                builder.setSence(SenceProto.Sence.newBuilder().setId(1).setName("起源之地").build());
+            } else {
+                builder.setContent("reconnect fail, please relogin, enter \"help\" to get Help");
+                builder.setToken(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setResult(500);//服务端异常
         }
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
@@ -121,12 +156,20 @@ public class UserController {
 
 
     @OrderMapping(OrderEnum.GetRole)
-    public MsgEntity getRoles(MsgEntity msgEntity) throws Exception {
-        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-        builder.setContent(entityService.getEntitieListString());
+    public MsgEntity getRoles() throws Exception {
+        MsgEntity msgEntity = new MsgEntity();
+        EntityProto.ResponseEntityInfo.Builder builder =EntityProto.ResponseEntityInfo.newBuilder();
+        try {
+            entityService.transformEntityTypeProto(builder);
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setResult(500);//服务端异常
+        }
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
+
+
 
     @OrderMapping(OrderEnum.ErrOrder)
     public MsgEntity errOrder() {
@@ -146,4 +189,6 @@ public class UserController {
     private String tokenEncryp(int userId) {
         return String.valueOf(System.currentTimeMillis()) + String.valueOf(userId);
     }
+
+
 }
