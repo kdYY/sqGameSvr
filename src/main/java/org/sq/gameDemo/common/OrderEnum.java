@@ -17,6 +17,7 @@ public enum OrderEnum {
     GetRole("getRoleMsg", 107 ),
     CheckToken("checkToken", 108),
     Aoi("aoi", 109),
+    Move("move",  110),
     ;
 
     private String order;

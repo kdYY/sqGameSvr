@@ -72,4 +72,8 @@ public class UserService {
         userMapper.updateTypeIdByPrimaryKey(userId, typeId);
     }
 
+    public void updateUser(User user) {
+        userMapper.updateByExampleSelective(user, new UserExample());
+    }
+
 }

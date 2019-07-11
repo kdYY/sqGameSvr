@@ -108,10 +108,10 @@ public class DispatchRequest{
         byte[] data = msgEntity.getData();
 
         Method method = orderBean.getMethod();
-        if(data != null && data.length != 0) {
-            response = method.invoke(bean, msgEntity);
-        } else {
+        if(method.getParameterCount() == 0) {
             response = method.invoke(bean);
+        } else {
+            response = method.invoke(bean, msgEntity);
         }
         return response;
     }

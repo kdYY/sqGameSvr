@@ -95,13 +95,11 @@ public class UserController {
             if(loginUser == null) {
                 builder.setContent("no this user, please register");
             } else {
-                builder.setContent("login success, \r\nhi! welcome to 起源之地!! \r\nnow construct your role~\r\n");
                 //TODO 考虑去掉
                 List<EntityType> entitieTypes = entityService.getEntitieTypes();
-                int index = 0;
                 for (EntityType entitieType : entitieTypes) {
-                    builder.setEntityTypes(index++,
-                            EntityProto.EntityType.newBuilder()
+
+                    builder.addEntityTypes(EntityProto.EntityType.newBuilder()
                             .setId(entitieType.getId())
                             .setName(entitieType.getName())
                                     .build()
@@ -156,8 +154,7 @@ public class UserController {
 
 
     @OrderMapping(OrderEnum.GetRole)
-    public MsgEntity getRoles() throws Exception {
-        MsgEntity msgEntity = new MsgEntity();
+    public MsgEntity getRoles(MsgEntity msgEntity) throws Exception {
         EntityProto.ResponseEntityInfo.Builder builder =EntityProto.ResponseEntityInfo.newBuilder();
         try {
             entityService.transformEntityTypeProto(builder);
