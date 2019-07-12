@@ -3,8 +3,8 @@
 
 package org.sq.gameDemo.common.proto;
 
-public final class EntityProto {
-  private EntityProto() {}
+public final class SenceEntityProto {
+  private SenceEntityProto() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
@@ -45,12 +45,12 @@ public final class EntityProto {
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
-    java.util.List<org.sq.gameDemo.common.proto.EntityTypeProto.EntityType> 
+    java.util.List<EntityTypeProto.EntityType>
         getTypeList();
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
-    org.sq.gameDemo.common.proto.EntityTypeProto.EntityType getType(int index);
+    EntityTypeProto.EntityType getType(int index);
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
@@ -58,12 +58,12 @@ public final class EntityProto {
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
-    java.util.List<? extends org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder> 
+    java.util.List<? extends EntityTypeProto.EntityTypeOrBuilder>
         getTypeOrBuilderList();
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
-    org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder getTypeOrBuilder(
+    EntityTypeProto.EntityTypeOrBuilder getTypeOrBuilder(
             int index);
   }
   /**
@@ -139,11 +139,11 @@ public final class EntityProto {
             }
             case 42: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                type_ = new java.util.ArrayList<org.sq.gameDemo.common.proto.EntityTypeProto.EntityType>();
+                type_ = new java.util.ArrayList<EntityTypeProto.EntityType>();
                 mutable_bitField0_ |= 0x00000001;
               }
               type_.add(
-                  input.readMessage(org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.parser(), extensionRegistry));
+                  input.readMessage(EntityTypeProto.EntityType.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -170,13 +170,13 @@ public final class EntityProto {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return EntityProto.internal_static_SenceEntity_descriptor;
+      return SenceEntityProto.internal_static_SenceEntity_descriptor;
     }
 
     @Override
     protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return EntityProto.internal_static_SenceEntity_fieldAccessorTable
+      return SenceEntityProto.internal_static_SenceEntity_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               SenceEntity.class, Builder.class);
     }
@@ -222,17 +222,17 @@ public final class EntityProto {
     }
 
     public static final int TYPE_FIELD_NUMBER = 5;
-    private java.util.List<org.sq.gameDemo.common.proto.EntityTypeProto.EntityType> type_;
+    private java.util.List<EntityTypeProto.EntityType> type_;
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
-    public java.util.List<org.sq.gameDemo.common.proto.EntityTypeProto.EntityType> getTypeList() {
+    public java.util.List<EntityTypeProto.EntityType> getTypeList() {
       return type_;
     }
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
-    public java.util.List<? extends org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder> 
+    public java.util.List<? extends EntityTypeProto.EntityTypeOrBuilder>
         getTypeOrBuilderList() {
       return type_;
     }
@@ -245,13 +245,13 @@ public final class EntityProto {
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
-    public org.sq.gameDemo.common.proto.EntityTypeProto.EntityType getType(int index) {
+    public EntityTypeProto.EntityType getType(int index) {
       return type_.get(index);
     }
     /**
      * <code>repeated .EntityType type = 5;</code>
      */
-    public org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder getTypeOrBuilder(
+    public EntityTypeProto.EntityTypeOrBuilder getTypeOrBuilder(
         int index) {
       return type_.get(index);
     }
@@ -470,18 +470,18 @@ public final class EntityProto {
         SenceEntityOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return EntityProto.internal_static_SenceEntity_descriptor;
+        return SenceEntityProto.internal_static_SenceEntity_descriptor;
       }
 
       @Override
       protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return EntityProto.internal_static_SenceEntity_fieldAccessorTable
+        return SenceEntityProto.internal_static_SenceEntity_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 SenceEntity.class, Builder.class);
       }
 
-      // Construct using org.sq.gameDemo.common.proto.EntityProto.SenceEntity.newBuilder()
+      // Construct using org.sq.gameDemo.common.proto.SenceEntityProto.SenceEntity.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -520,7 +520,7 @@ public final class EntityProto {
       @Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return EntityProto.internal_static_SenceEntity_descriptor;
+        return SenceEntityProto.internal_static_SenceEntity_descriptor;
       }
 
       @Override
@@ -786,22 +786,22 @@ public final class EntityProto {
         return this;
       }
 
-      private java.util.List<org.sq.gameDemo.common.proto.EntityTypeProto.EntityType> type_ =
+      private java.util.List<EntityTypeProto.EntityType> type_ =
         java.util.Collections.emptyList();
       private void ensureTypeIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          type_ = new java.util.ArrayList<org.sq.gameDemo.common.proto.EntityTypeProto.EntityType>(type_);
+          type_ = new java.util.ArrayList<EntityTypeProto.EntityType>(type_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          org.sq.gameDemo.common.proto.EntityTypeProto.EntityType, org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder, org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder> typeBuilder_;
+          EntityTypeProto.EntityType, EntityTypeProto.EntityType.Builder, EntityTypeProto.EntityTypeOrBuilder> typeBuilder_;
 
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public java.util.List<org.sq.gameDemo.common.proto.EntityTypeProto.EntityType> getTypeList() {
+      public java.util.List<EntityTypeProto.EntityType> getTypeList() {
         if (typeBuilder_ == null) {
           return java.util.Collections.unmodifiableList(type_);
         } else {
@@ -821,7 +821,7 @@ public final class EntityProto {
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.EntityTypeProto.EntityType getType(int index) {
+      public EntityTypeProto.EntityType getType(int index) {
         if (typeBuilder_ == null) {
           return type_.get(index);
         } else {
@@ -832,7 +832,7 @@ public final class EntityProto {
        * <code>repeated .EntityType type = 5;</code>
        */
       public Builder setType(
-          int index, org.sq.gameDemo.common.proto.EntityTypeProto.EntityType value) {
+          int index, EntityTypeProto.EntityType value) {
         if (typeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -849,7 +849,7 @@ public final class EntityProto {
        * <code>repeated .EntityType type = 5;</code>
        */
       public Builder setType(
-          int index, org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder builderForValue) {
+          int index, EntityTypeProto.EntityType.Builder builderForValue) {
         if (typeBuilder_ == null) {
           ensureTypeIsMutable();
           type_.set(index, builderForValue.build());
@@ -862,7 +862,7 @@ public final class EntityProto {
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public Builder addType(org.sq.gameDemo.common.proto.EntityTypeProto.EntityType value) {
+      public Builder addType(EntityTypeProto.EntityType value) {
         if (typeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -879,7 +879,7 @@ public final class EntityProto {
        * <code>repeated .EntityType type = 5;</code>
        */
       public Builder addType(
-          int index, org.sq.gameDemo.common.proto.EntityTypeProto.EntityType value) {
+          int index, EntityTypeProto.EntityType value) {
         if (typeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -896,7 +896,7 @@ public final class EntityProto {
        * <code>repeated .EntityType type = 5;</code>
        */
       public Builder addType(
-          org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder builderForValue) {
+          EntityTypeProto.EntityType.Builder builderForValue) {
         if (typeBuilder_ == null) {
           ensureTypeIsMutable();
           type_.add(builderForValue.build());
@@ -910,7 +910,7 @@ public final class EntityProto {
        * <code>repeated .EntityType type = 5;</code>
        */
       public Builder addType(
-          int index, org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder builderForValue) {
+          int index, EntityTypeProto.EntityType.Builder builderForValue) {
         if (typeBuilder_ == null) {
           ensureTypeIsMutable();
           type_.add(index, builderForValue.build());
@@ -924,7 +924,7 @@ public final class EntityProto {
        * <code>repeated .EntityType type = 5;</code>
        */
       public Builder addAllType(
-          Iterable<? extends org.sq.gameDemo.common.proto.EntityTypeProto.EntityType> values) {
+          Iterable<? extends EntityTypeProto.EntityType> values) {
         if (typeBuilder_ == null) {
           ensureTypeIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -964,14 +964,14 @@ public final class EntityProto {
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder getTypeBuilder(
+      public EntityTypeProto.EntityType.Builder getTypeBuilder(
           int index) {
         return getTypeFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder getTypeOrBuilder(
+      public EntityTypeProto.EntityTypeOrBuilder getTypeOrBuilder(
           int index) {
         if (typeBuilder_ == null) {
           return type_.get(index);  } else {
@@ -981,7 +981,7 @@ public final class EntityProto {
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public java.util.List<? extends org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder> 
+      public java.util.List<? extends EntityTypeProto.EntityTypeOrBuilder>
            getTypeOrBuilderList() {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilderList();
@@ -992,31 +992,31 @@ public final class EntityProto {
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder addTypeBuilder() {
+      public EntityTypeProto.EntityType.Builder addTypeBuilder() {
         return getTypeFieldBuilder().addBuilder(
-            org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.getDefaultInstance());
+            EntityTypeProto.EntityType.getDefaultInstance());
       }
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder addTypeBuilder(
+      public EntityTypeProto.EntityType.Builder addTypeBuilder(
           int index) {
         return getTypeFieldBuilder().addBuilder(
-            index, org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.getDefaultInstance());
+            index, EntityTypeProto.EntityType.getDefaultInstance());
       }
       /**
        * <code>repeated .EntityType type = 5;</code>
        */
-      public java.util.List<org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder> 
+      public java.util.List<EntityTypeProto.EntityType.Builder>
            getTypeBuilderList() {
         return getTypeFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          org.sq.gameDemo.common.proto.EntityTypeProto.EntityType, org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder, org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder> 
+          EntityTypeProto.EntityType, EntityTypeProto.EntityType.Builder, EntityTypeProto.EntityTypeOrBuilder>
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
           typeBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.sq.gameDemo.common.proto.EntityTypeProto.EntityType, org.sq.gameDemo.common.proto.EntityTypeProto.EntityType.Builder, org.sq.gameDemo.common.proto.EntityTypeProto.EntityTypeOrBuilder>(
+              EntityTypeProto.EntityType, EntityTypeProto.EntityType.Builder, EntityTypeProto.EntityTypeOrBuilder>(
                   type_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
@@ -1200,13 +1200,13 @@ public final class EntityProto {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return EntityProto.internal_static_RequestInfo_descriptor;
+      return SenceEntityProto.internal_static_RequestInfo_descriptor;
     }
 
     @Override
     protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return EntityProto.internal_static_RequestInfo_fieldAccessorTable
+      return SenceEntityProto.internal_static_RequestInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               RequestInfo.class, Builder.class);
     }
@@ -1458,18 +1458,18 @@ public final class EntityProto {
         RequestInfoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return EntityProto.internal_static_RequestInfo_descriptor;
+        return SenceEntityProto.internal_static_RequestInfo_descriptor;
       }
 
       @Override
       protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return EntityProto.internal_static_RequestInfo_fieldAccessorTable
+        return SenceEntityProto.internal_static_RequestInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 RequestInfo.class, Builder.class);
       }
 
-      // Construct using org.sq.gameDemo.common.proto.EntityProto.RequestInfo.newBuilder()
+      // Construct using org.sq.gameDemo.common.proto.SenceEntityProto.RequestInfo.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1501,7 +1501,7 @@ public final class EntityProto {
       @Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return EntityProto.internal_static_RequestInfo_descriptor;
+        return SenceEntityProto.internal_static_RequestInfo_descriptor;
       }
 
       @Override
@@ -1961,13 +1961,13 @@ public final class EntityProto {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return EntityProto.internal_static_ResponseInfo_descriptor;
+      return SenceEntityProto.internal_static_ResponseInfo_descriptor;
     }
 
     @Override
     protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return EntityProto.internal_static_ResponseInfo_fieldAccessorTable
+      return SenceEntityProto.internal_static_ResponseInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               ResponseInfo.class, Builder.class);
     }
@@ -2291,18 +2291,18 @@ public final class EntityProto {
         ResponseInfoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return EntityProto.internal_static_ResponseInfo_descriptor;
+        return SenceEntityProto.internal_static_ResponseInfo_descriptor;
       }
 
       @Override
       protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return EntityProto.internal_static_ResponseInfo_fieldAccessorTable
+        return SenceEntityProto.internal_static_ResponseInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 ResponseInfo.class, Builder.class);
       }
 
-      // Construct using org.sq.gameDemo.common.proto.EntityProto.ResponseInfo.newBuilder()
+      // Construct using org.sq.gameDemo.common.proto.SenceEntityProto.ResponseInfo.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2341,7 +2341,7 @@ public final class EntityProto {
       @Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return EntityProto.internal_static_ResponseInfo_descriptor;
+        return SenceEntityProto.internal_static_ResponseInfo_descriptor;
       }
 
       @Override
@@ -2987,13 +2987,13 @@ public final class EntityProto {
       "\007senceId\030\004 \001(\005\"p\n\014ResponseInfo\022\016\n\006msg_id" +
       "\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007" +
       "content\030\004 \001(\t\022!\n\013SenceEntity\030\005 \003(\0132\014.Sen" +
-      "ceEntityB+\n\034org.sq.gameDemo.common.proto" +
-      "B\013EntityProtob\006proto3"
+      "ceEntityB0\n\034org.sq.gameDemo.common.proto" +
+      "B\020SenceEntityProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          org.sq.gameDemo.common.proto.EntityTypeProto.getDescriptor(),
+          EntityTypeProto.getDescriptor(),
         });
     internal_static_SenceEntity_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -3013,7 +3013,7 @@ public final class EntityProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseInfo_descriptor,
         new String[] { "MsgId", "Result", "Time", "Content", "SenceEntity", });
-    org.sq.gameDemo.common.proto.EntityTypeProto.getDescriptor();
+    EntityTypeProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

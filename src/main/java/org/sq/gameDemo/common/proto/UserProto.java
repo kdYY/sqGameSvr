@@ -1889,55 +1889,6 @@ public final class UserProto {
      */
     com.google.protobuf.ByteString
         getContentBytes();
-
-    /**
-     * <pre>
-     *断线重连时候使用
-     * </pre>
-     *
-     * <code>.Sence sence = 6;</code>
-     */
-    boolean hasSence();
-    /**
-     * <pre>
-     *断线重连时候使用
-     * </pre>
-     *
-     * <code>.Sence sence = 6;</code>
-     */
-    SenceProto.Sence getSence();
-    /**
-     * <pre>
-     *断线重连时候使用
-     * </pre>
-     *
-     * <code>.Sence sence = 6;</code>
-     */
-    SenceProto.SenceOrBuilder getSenceOrBuilder();
-
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    java.util.List<EntityProto.EntityType>
-        getEntityTypesList();
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    EntityProto.EntityType getEntityTypes(int index);
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    int getEntityTypesCount();
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    java.util.List<? extends EntityProto.EntityTypeOrBuilder>
-        getEntityTypesOrBuilderList();
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    EntityProto.EntityTypeOrBuilder getEntityTypesOrBuilder(
-            int index);
   }
   /**
    * Protobuf type {@code ResponseUserInfo}
@@ -1954,7 +1905,6 @@ public final class UserProto {
     private ResponseUserInfo() {
       token_ = "";
       content_ = "";
-      entityTypes_ = java.util.Collections.emptyList();
     }
 
     @Override
@@ -1977,7 +1927,6 @@ public final class UserProto {
       if (extensionRegistry == null) {
         throw new NullPointerException();
       }
-      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -2015,28 +1964,6 @@ public final class UserProto {
               content_ = s;
               break;
             }
-            case 50: {
-              SenceProto.Sence.Builder subBuilder = null;
-              if (sence_ != null) {
-                subBuilder = sence_.toBuilder();
-              }
-              sence_ = input.readMessage(SenceProto.Sence.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(sence_);
-                sence_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 58: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                entityTypes_ = new java.util.ArrayList<EntityProto.EntityType>();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              entityTypes_.add(
-                  input.readMessage(EntityProto.EntityType.parser(), extensionRegistry));
-              break;
-            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -2052,9 +1979,6 @@ public final class UserProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          entityTypes_ = java.util.Collections.unmodifiableList(entityTypes_);
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -2183,74 +2107,6 @@ public final class UserProto {
       }
     }
 
-    public static final int SENCE_FIELD_NUMBER = 6;
-    private SenceProto.Sence sence_;
-    /**
-     * <pre>
-     *断线重连时候使用
-     * </pre>
-     *
-     * <code>.Sence sence = 6;</code>
-     */
-    public boolean hasSence() {
-      return sence_ != null;
-    }
-    /**
-     * <pre>
-     *断线重连时候使用
-     * </pre>
-     *
-     * <code>.Sence sence = 6;</code>
-     */
-    public SenceProto.Sence getSence() {
-      return sence_ == null ? SenceProto.Sence.getDefaultInstance() : sence_;
-    }
-    /**
-     * <pre>
-     *断线重连时候使用
-     * </pre>
-     *
-     * <code>.Sence sence = 6;</code>
-     */
-    public SenceProto.SenceOrBuilder getSenceOrBuilder() {
-      return getSence();
-    }
-
-    public static final int ENTITYTYPES_FIELD_NUMBER = 7;
-    private java.util.List<EntityProto.EntityType> entityTypes_;
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    public java.util.List<EntityProto.EntityType> getEntityTypesList() {
-      return entityTypes_;
-    }
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    public java.util.List<? extends EntityProto.EntityTypeOrBuilder>
-        getEntityTypesOrBuilderList() {
-      return entityTypes_;
-    }
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    public int getEntityTypesCount() {
-      return entityTypes_.size();
-    }
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    public EntityProto.EntityType getEntityTypes(int index) {
-      return entityTypes_.get(index);
-    }
-    /**
-     * <code>repeated .EntityType entityTypes = 7;</code>
-     */
-    public EntityProto.EntityTypeOrBuilder getEntityTypesOrBuilder(
-        int index) {
-      return entityTypes_.get(index);
-    }
-
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -2280,12 +2136,6 @@ public final class UserProto {
       if (!getContentBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 5, content_);
       }
-      if (sence_ != null) {
-        output.writeMessage(6, getSence());
-      }
-      for (int i = 0; i < entityTypes_.size(); i++) {
-        output.writeMessage(7, entityTypes_.get(i));
-      }
       unknownFields.writeTo(output);
     }
 
@@ -2313,14 +2163,6 @@ public final class UserProto {
       if (!getContentBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, content_);
       }
-      if (sence_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getSence());
-      }
-      for (int i = 0; i < entityTypes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, entityTypes_.get(i));
-      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -2346,13 +2188,6 @@ public final class UserProto {
           .equals(other.getToken())) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
-      if (hasSence() != other.hasSence()) return false;
-      if (hasSence()) {
-        if (!getSence()
-            .equals(other.getSence())) return false;
-      }
-      if (!getEntityTypesList()
-          .equals(other.getEntityTypesList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2376,14 +2211,6 @@ public final class UserProto {
       hash = (53 * hash) + getToken().hashCode();
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
-      if (hasSence()) {
-        hash = (37 * hash) + SENCE_FIELD_NUMBER;
-        hash = (53 * hash) + getSence().hashCode();
-      }
-      if (getEntityTypesCount() > 0) {
-        hash = (37 * hash) + ENTITYTYPES_FIELD_NUMBER;
-        hash = (53 * hash) + getEntityTypesList().hashCode();
-      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2512,7 +2339,6 @@ public final class UserProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getEntityTypesFieldBuilder();
         }
       }
       @Override
@@ -2528,18 +2354,6 @@ public final class UserProto {
 
         content_ = "";
 
-        if (senceBuilder_ == null) {
-          sence_ = null;
-        } else {
-          sence_ = null;
-          senceBuilder_ = null;
-        }
-        if (entityTypesBuilder_ == null) {
-          entityTypes_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          entityTypesBuilder_.clear();
-        }
         return this;
       }
 
@@ -2566,26 +2380,11 @@ public final class UserProto {
       @Override
       public ResponseUserInfo buildPartial() {
         ResponseUserInfo result = new ResponseUserInfo(this);
-        int from_bitField0_ = bitField0_;
         result.msgId_ = msgId_;
         result.time_ = time_;
         result.result_ = result_;
         result.token_ = token_;
         result.content_ = content_;
-        if (senceBuilder_ == null) {
-          result.sence_ = sence_;
-        } else {
-          result.sence_ = senceBuilder_.build();
-        }
-        if (entityTypesBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            entityTypes_ = java.util.Collections.unmodifiableList(entityTypes_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.entityTypes_ = entityTypes_;
-        } else {
-          result.entityTypes_ = entityTypesBuilder_.build();
-        }
         onBuilt();
         return result;
       }
@@ -2651,35 +2450,6 @@ public final class UserProto {
           content_ = other.content_;
           onChanged();
         }
-        if (other.hasSence()) {
-          mergeSence(other.getSence());
-        }
-        if (entityTypesBuilder_ == null) {
-          if (!other.entityTypes_.isEmpty()) {
-            if (entityTypes_.isEmpty()) {
-              entityTypes_ = other.entityTypes_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureEntityTypesIsMutable();
-              entityTypes_.addAll(other.entityTypes_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.entityTypes_.isEmpty()) {
-            if (entityTypesBuilder_.isEmpty()) {
-              entityTypesBuilder_.dispose();
-              entityTypesBuilder_ = null;
-              entityTypes_ = other.entityTypes_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              entityTypesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getEntityTypesFieldBuilder() : null;
-            } else {
-              entityTypesBuilder_.addAllMessages(other.entityTypes_);
-            }
-          }
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -2708,7 +2478,6 @@ public final class UserProto {
         }
         return this;
       }
-      private int bitField0_;
 
       private long msgId_ ;
       /**
@@ -2969,399 +2738,6 @@ public final class UserProto {
         onChanged();
         return this;
       }
-
-      private SenceProto.Sence sence_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          SenceProto.Sence, SenceProto.Sence.Builder, SenceProto.SenceOrBuilder> senceBuilder_;
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      public boolean hasSence() {
-        return senceBuilder_ != null || sence_ != null;
-      }
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      public SenceProto.Sence getSence() {
-        if (senceBuilder_ == null) {
-          return sence_ == null ? SenceProto.Sence.getDefaultInstance() : sence_;
-        } else {
-          return senceBuilder_.getMessage();
-        }
-      }
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      public Builder setSence(SenceProto.Sence value) {
-        if (senceBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          sence_ = value;
-          onChanged();
-        } else {
-          senceBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      public Builder setSence(
-          SenceProto.Sence.Builder builderForValue) {
-        if (senceBuilder_ == null) {
-          sence_ = builderForValue.build();
-          onChanged();
-        } else {
-          senceBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      public Builder mergeSence(SenceProto.Sence value) {
-        if (senceBuilder_ == null) {
-          if (sence_ != null) {
-            sence_ =
-              SenceProto.Sence.newBuilder(sence_).mergeFrom(value).buildPartial();
-          } else {
-            sence_ = value;
-          }
-          onChanged();
-        } else {
-          senceBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      public Builder clearSence() {
-        if (senceBuilder_ == null) {
-          sence_ = null;
-          onChanged();
-        } else {
-          sence_ = null;
-          senceBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      public SenceProto.Sence.Builder getSenceBuilder() {
-        
-        onChanged();
-        return getSenceFieldBuilder().getBuilder();
-      }
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      public SenceProto.SenceOrBuilder getSenceOrBuilder() {
-        if (senceBuilder_ != null) {
-          return senceBuilder_.getMessageOrBuilder();
-        } else {
-          return sence_ == null ?
-              SenceProto.Sence.getDefaultInstance() : sence_;
-        }
-      }
-      /**
-       * <pre>
-       *断线重连时候使用
-       * </pre>
-       *
-       * <code>.Sence sence = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          SenceProto.Sence, SenceProto.Sence.Builder, SenceProto.SenceOrBuilder>
-          getSenceFieldBuilder() {
-        if (senceBuilder_ == null) {
-          senceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              SenceProto.Sence, SenceProto.Sence.Builder, SenceProto.SenceOrBuilder>(
-                  getSence(),
-                  getParentForChildren(),
-                  isClean());
-          sence_ = null;
-        }
-        return senceBuilder_;
-      }
-
-      private java.util.List<EntityProto.EntityType> entityTypes_ =
-        java.util.Collections.emptyList();
-      private void ensureEntityTypesIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          entityTypes_ = new java.util.ArrayList<EntityProto.EntityType>(entityTypes_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          EntityProto.EntityType, EntityProto.EntityType.Builder, EntityProto.EntityTypeOrBuilder> entityTypesBuilder_;
-
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public java.util.List<EntityProto.EntityType> getEntityTypesList() {
-        if (entityTypesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(entityTypes_);
-        } else {
-          return entityTypesBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public int getEntityTypesCount() {
-        if (entityTypesBuilder_ == null) {
-          return entityTypes_.size();
-        } else {
-          return entityTypesBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public EntityProto.EntityType getEntityTypes(int index) {
-        if (entityTypesBuilder_ == null) {
-          return entityTypes_.get(index);
-        } else {
-          return entityTypesBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder setEntityTypes(
-          int index, EntityProto.EntityType value) {
-        if (entityTypesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureEntityTypesIsMutable();
-          entityTypes_.set(index, value);
-          onChanged();
-        } else {
-          entityTypesBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder setEntityTypes(
-          int index, EntityProto.EntityType.Builder builderForValue) {
-        if (entityTypesBuilder_ == null) {
-          ensureEntityTypesIsMutable();
-          entityTypes_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          entityTypesBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder addEntityTypes(EntityProto.EntityType value) {
-        if (entityTypesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureEntityTypesIsMutable();
-          entityTypes_.add(value);
-          onChanged();
-        } else {
-          entityTypesBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder addEntityTypes(
-          int index, EntityProto.EntityType value) {
-        if (entityTypesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureEntityTypesIsMutable();
-          entityTypes_.add(index, value);
-          onChanged();
-        } else {
-          entityTypesBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder addEntityTypes(
-          EntityProto.EntityType.Builder builderForValue) {
-        if (entityTypesBuilder_ == null) {
-          ensureEntityTypesIsMutable();
-          entityTypes_.add(builderForValue.build());
-          onChanged();
-        } else {
-          entityTypesBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder addEntityTypes(
-          int index, EntityProto.EntityType.Builder builderForValue) {
-        if (entityTypesBuilder_ == null) {
-          ensureEntityTypesIsMutable();
-          entityTypes_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          entityTypesBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder addAllEntityTypes(
-          Iterable<? extends EntityProto.EntityType> values) {
-        if (entityTypesBuilder_ == null) {
-          ensureEntityTypesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, entityTypes_);
-          onChanged();
-        } else {
-          entityTypesBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder clearEntityTypes() {
-        if (entityTypesBuilder_ == null) {
-          entityTypes_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          entityTypesBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public Builder removeEntityTypes(int index) {
-        if (entityTypesBuilder_ == null) {
-          ensureEntityTypesIsMutable();
-          entityTypes_.remove(index);
-          onChanged();
-        } else {
-          entityTypesBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public EntityProto.EntityType.Builder getEntityTypesBuilder(
-          int index) {
-        return getEntityTypesFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public EntityProto.EntityTypeOrBuilder getEntityTypesOrBuilder(
-          int index) {
-        if (entityTypesBuilder_ == null) {
-          return entityTypes_.get(index);  } else {
-          return entityTypesBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public java.util.List<? extends EntityProto.EntityTypeOrBuilder>
-           getEntityTypesOrBuilderList() {
-        if (entityTypesBuilder_ != null) {
-          return entityTypesBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(entityTypes_);
-        }
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public EntityProto.EntityType.Builder addEntityTypesBuilder() {
-        return getEntityTypesFieldBuilder().addBuilder(
-            EntityProto.EntityType.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public EntityProto.EntityType.Builder addEntityTypesBuilder(
-          int index) {
-        return getEntityTypesFieldBuilder().addBuilder(
-            index, EntityProto.EntityType.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .EntityType entityTypes = 7;</code>
-       */
-      public java.util.List<EntityProto.EntityType.Builder>
-           getEntityTypesBuilderList() {
-        return getEntityTypesFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          EntityProto.EntityType, EntityProto.EntityType.Builder, EntityProto.EntityTypeOrBuilder>
-          getEntityTypesFieldBuilder() {
-        if (entityTypesBuilder_ == null) {
-          entityTypesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              EntityProto.EntityType, EntityProto.EntityType.Builder, EntityProto.EntityTypeOrBuilder>(
-                  entityTypes_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          entityTypes_ = null;
-        }
-        return entityTypesBuilder_;
-      }
       @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -3439,23 +2815,19 @@ public final class UserProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\nUser.proto\032\021EntityProto.proto\032\013Sence.p" +
-      "roto\"S\n\004User\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\020" +
-      "\n\010password\030\003 \001(\t\022\016\n\006typeId\030\005 \001(\r\022\017\n\007senc" +
-      "eId\030\006 \001(\r\"S\n\017RequestUserInfo\022\016\n\006msg_id\030\001" +
-      " \001(\004\022\014\n\004time\030\002 \001(\004\022\r\n\005token\030\004 \001(\t\022\023\n\004use" +
-      "r\030\005 \001(\0132\005.User\"\231\001\n\020ResponseUserInfo\022\016\n\006m" +
-      "sg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006result\030\003 \001(" +
-      "\005\022\r\n\005token\030\004 \001(\t\022\017\n\007content\030\005 \001(\t\022\025\n\005sen" +
-      "ce\030\006 \001(\0132\006.Sence\022 \n\013entityTypes\030\007 \003(\0132\013." +
-      "EntityTypeB)\n\034org.sq.gameDemo.common.pro" +
-      "toB\tUserProtob\006proto3"
+      "\n\nUser.proto\"S\n\004User\022\n\n\002id\030\001 \001(\r\022\014\n\004name" +
+      "\030\002 \001(\t\022\020\n\010password\030\003 \001(\t\022\016\n\006typeId\030\005 \001(\r" +
+      "\022\017\n\007senceId\030\006 \001(\r\"S\n\017RequestUserInfo\022\016\n\006" +
+      "msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\r\n\005token\030\004 \001(" +
+      "\t\022\023\n\004user\030\005 \001(\0132\005.User\"`\n\020ResponseUserIn" +
+      "fo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006resu" +
+      "lt\030\003 \001(\005\022\r\n\005token\030\004 \001(\t\022\017\n\007content\030\005 \001(\t" +
+      "B)\n\034org.sq.gameDemo.common.protoB\tUserPr" +
+      "otob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          EntityProto.getDescriptor(),
-          SenceProto.getDescriptor(),
         });
     internal_static_User_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -3474,9 +2846,7 @@ public final class UserProto {
     internal_static_ResponseUserInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseUserInfo_descriptor,
-        new String[] { "MsgId", "Time", "Result", "Token", "Content", "Sence", "EntityTypes", });
-    EntityProto.getDescriptor();
-    SenceProto.getDescriptor();
+        new String[] { "MsgId", "Time", "Result", "Token", "Content", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

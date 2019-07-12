@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "EntityTypeProto";
+//实体类型
+message EntityType {
+    int32 id = 1;
+    string name = 2;
+}
+
+//请求
+message EntityTypeRequestInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    int32 typeId = 3;       //获取全部写-1
+}
+//响应
+message EntityTypeResponseInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated EntityType entityType = 5;
+}
+

@@ -7,6 +7,7 @@ import org.sq.gameDemo.common.proto.EntityProto;
 @Data
 public class SenceEntity {
     private Integer id;
+    private Integer senceId;
     private Integer typeId;
     private int num;
     private int state;

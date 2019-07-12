@@ -22,9 +22,10 @@ message RequestUserInfo {
 message ResponseUserInfo {
     uint64 msg_id = 1;      //消息id
     uint64 time =2;        //时间戳(单位:毫秒)
-    string token = 3;       //返回token客户端保存
-    string content = 4;
+    int32 result  = 3;
+    string token = 4;       //返回token客户端保存
+    string content = 5;
 
-    Sence sence = 5; //断线重连时候使用
-    repeated EntityType entityTypes = 6;
+    Sence sence = 6; //断线重连时候使用
+    repeated EntityType entityTypes = 7;
 }

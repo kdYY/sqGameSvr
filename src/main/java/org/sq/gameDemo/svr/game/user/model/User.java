@@ -17,9 +17,7 @@ public class User {
     /**
      * 实体id
      */
-    private Integer typeId;
 
-    private Integer senceId;
 
     public Integer getId() {
         return id;
@@ -45,19 +43,5 @@ public class User {
         this.password = password == null ? null : password.trim();
     }
 
-    public Integer getTypeId() {
-        return typeId;
-    }
 
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
-    }
-
-    public Integer getSenceId() {
-        return senceId;
-    }
-
-    public void setSenceId(Integer senceId) {
-        this.senceId = senceId;
-    }
 }

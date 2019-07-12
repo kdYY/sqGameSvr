@@ -37,7 +37,8 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //玩家掉线，玩家数据 回写 到数据库进行保存，同时设置玩家数据在内存中保留的时间，避免内存泄漏
+        //玩家掉线，广播通知场景中其他玩家，
+        // 同时将玩家数据UserEntity 回写 到UserEntity表中进行保存，同时设置玩家数据在内存中保留的时间，避免内存泄漏
 
     }
 }

@@ -10,10 +10,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.OrderEnum;
-import org.sq.gameDemo.common.proto.EntityProto;
-import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.common.proto.SenceProto;
-import org.sq.gameDemo.common.proto.UserProto;
+import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.game.entity.model.EntityType;
@@ -95,18 +92,9 @@ public class UserController {
             if(loginUser == null) {
                 builder.setContent("no this user, please register");
             } else {
-                //TODO 考虑去掉
-                List<EntityType> entitieTypes = entityService.getEntitieTypes();
-                for (EntityType entitieType : entitieTypes) {
-
-                    builder.addEntityTypes(EntityProto.EntityType.newBuilder()
-                            .setId(entitieType.getId())
-                            .setName(entitieType.getName())
-                                    .build()
-                    );
-                }
                 String token = tokenEncryp(loginUser.getId());
                 builder.setToken(token);
+                //如果是老用户，UserEntity表中没有该数据
 
                 UserCache.updateUserToken(loginUser.getId(), token);
                 UserCache.updateChannelCache(msgEntity.getChannel(), loginUser.getId());
@@ -139,7 +127,7 @@ public class UserController {
                 UserCache.updateChannelCache(msgEntity.getChannel(), user.getId());
                 //TODO 上次离开的地方
                 builder.setContent("\r\nlogin success, \r\nhi! welcome back to 起源之地!! \r\n");
-                builder.setSence(SenceProto.Sence.newBuilder().setId(1).setName("起源之地").build());
+                //builder.setSence(SenceProto.Sence.newBuilder().setId(1).setName("起源之地").build());
             } else {
                 builder.setContent("reconnect fail, please relogin, enter \"help\" to get Help");
                 builder.setToken(null);
@@ -155,7 +143,7 @@ public class UserController {
 
     @OrderMapping(OrderEnum.GetRole)
     public MsgEntity getRoles(MsgEntity msgEntity) throws Exception {
-        EntityProto.ResponseEntityInfo.Builder builder =EntityProto.ResponseEntityInfo.newBuilder();
+        EntityTypeProto.EntityTypeResponseInfo.Builder builder = EntityTypeProto.EntityTypeResponseInfo.newBuilder();
         try {
             entityService.transformEntityTypeProto(builder);
         } catch (Exception e) {

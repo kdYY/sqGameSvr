@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.game.entity.model;
 
 import lombok.Data;
 import org.sq.gameDemo.common.proto.EntityProto;
+import org.sq.gameDemo.common.proto.EntityTypeProto;
 
 @Data
 public class EntityType {
@@ -18,8 +19,8 @@ public class EntityType {
                 '}';
     }
 
-    public static EntityProto.EntityType transform(EntityType entityType) {
-        return EntityProto.EntityType.newBuilder()
+    public static EntityTypeProto.EntityType transform(EntityType entityType) {
+        return EntityTypeProto.EntityType.newBuilder()
                 .setId(entityType.getId())
                 .setName(entityType.getName())
                 .build();
