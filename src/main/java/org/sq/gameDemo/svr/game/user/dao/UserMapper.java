@@ -1,13 +1,12 @@
 package org.sq.gameDemo.svr.game.user.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
-
-import java.util.List;
-
 @Mapper
 @Repository
 public interface UserMapper {
@@ -24,10 +23,5 @@ public interface UserMapper {
     int updateByExampleSelective(@Param("record") User record, @Param("example") UserExample example);
 
     int updateByExample(@Param("record") User record, @Param("example") UserExample example);
-
     User selectByPrimaryKey(int id);
-
-    int updateTypeIdByPrimaryKey(Integer userId, int typeId);
-
-    int updateSenceIdByPrimaryKey(Integer userId, int typeId);
 }

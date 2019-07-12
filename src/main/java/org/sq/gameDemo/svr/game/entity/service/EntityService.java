@@ -94,4 +94,9 @@ public class EntityService {
     public UserEntity getUserEntityByUserId(int userId) {
         return userEntityMapper.getUserEntityByUserId(userId);
     }
+
+
+    public void addUserEntity(UserEntity entity) {
+        userEntityMapper.insertSelective(entity);
+    }
 }

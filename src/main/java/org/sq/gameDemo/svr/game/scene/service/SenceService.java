@@ -72,11 +72,13 @@ public class SenceService {
                         entity.setTypeId(senceEntity.getTypeId());
                         entitys.add(entity);
                     }
-                    senceIdAndSenceEntityMap.put(senceEntity.getSenceId(), entitys);
+                    senceIdAndSenceEntityMap.put(senceConfigMsg.getSenceId(), entitys);
                     senceEntities.addAll(entitys);
                 }
                 senceConfigMsg.setSenceEntities(senceEntities);
-                senceConfigMsg.setUserEntities(senceIdAndUserEntityMap.get(senceConfigMsg.getSenceId()));
+                senceConfigMsg.setUserEntities(
+                        senceIdAndUserEntityMap.get(senceConfigMsg.getSenceId())
+                );
             }
 
             senceIdAndSenceMsgMap = senceConfigMsgList.stream()
@@ -135,7 +137,14 @@ public class SenceService {
     public void bindUserEntityInSence(UserEntity userEntity) throws BindRoleInSenceExistException {
         SenceConfigMsg msg = senceIdAndSenceMsgMap.get(userEntity.getSenceId());
         List<UserEntity> userEntities = msg.getUserEntities();
-        userEntities.add(userEntity);
+        if(userEntities == null) {
+            ArrayList<UserEntity> entities = new ArrayList<>();
+            entities.add(userEntity);
+            msg.setUserEntities(entities);
+        } else {
+            userEntities.add(userEntity);
+        }
+
         //广播通知
     }
 

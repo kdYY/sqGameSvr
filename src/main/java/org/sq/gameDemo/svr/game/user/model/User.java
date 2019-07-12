@@ -5,7 +5,7 @@ package org.sq.gameDemo.svr.game.user.model;
  * 
  * @author wcyong
  * 
- * @date 2019-07-10
+ * @date 2019-07-12
  */
 public class User {
     private Integer id;
@@ -13,11 +13,6 @@ public class User {
     private String name;
 
     private String password;
-
-    /**
-     * 实体id
-     */
-
 
     public Integer getId() {
         return id;
@@ -42,6 +37,4 @@ public class User {
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
     }
-
-
 }

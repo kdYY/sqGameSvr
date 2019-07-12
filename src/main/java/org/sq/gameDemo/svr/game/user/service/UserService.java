@@ -68,12 +68,5 @@ public class UserService {
         return false;
     }
 
-    public void updateUser(int userId, int typeId) {
-        userMapper.updateTypeIdByPrimaryKey(userId, typeId);
-    }
-
-    public void updateUser(User user) {
-        userMapper.updateByExampleSelective(user, new UserExample());
-    }
 
 }

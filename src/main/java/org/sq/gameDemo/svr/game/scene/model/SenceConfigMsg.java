@@ -15,6 +15,6 @@ public class  SenceConfigMsg {
     @JSONField(serialize = false)
     private String jsonStr;
 
-    private List<SenceEntity> senceEntities = new ArrayList<>();
-    private List<UserEntity> userEntities = new ArrayList<>();
+    private List<SenceEntity> senceEntities;
+    private List<UserEntity> userEntities;
 }

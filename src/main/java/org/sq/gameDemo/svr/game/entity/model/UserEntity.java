@@ -21,11 +21,6 @@ public class UserEntity {
 
     private Integer senceId;
 
-    public UserEntity(int typeId, String nick, int userId, int senceId) {
-        this.typeId = typeId;
-        this.nick = nick;
-        this.userId = userId;
-    }
 
     public static UserEntityProto.UserEntity transformProto(UserEntity userEntity) {
         return UserEntityProto.UserEntity.newBuilder()

@@ -68,7 +68,7 @@ public class UserExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-07-10
+     * @date 2019-07-12
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -310,126 +310,6 @@ public class UserExample {
             addCriterion("password not between", value1, value2, "password");
             return (Criteria) this;
         }
-
-        public Criteria andTypeIdIsNull() {
-            addCriterion("type_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdIsNotNull() {
-            addCriterion("type_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdEqualTo(Integer value) {
-            addCriterion("type_id =", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdNotEqualTo(Integer value) {
-            addCriterion("type_id <>", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdGreaterThan(Integer value) {
-            addCriterion("type_id >", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("type_id >=", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdLessThan(Integer value) {
-            addCriterion("type_id <", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdLessThanOrEqualTo(Integer value) {
-            addCriterion("type_id <=", value, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdIn(List<Integer> values) {
-            addCriterion("type_id in", values, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdNotIn(List<Integer> values) {
-            addCriterion("type_id not in", values, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdBetween(Integer value1, Integer value2) {
-            addCriterion("type_id between", value1, value2, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTypeIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("type_id not between", value1, value2, "typeId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdIsNull() {
-            addCriterion("sence_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdIsNotNull() {
-            addCriterion("sence_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdEqualTo(Integer value) {
-            addCriterion("sence_id =", value, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdNotEqualTo(Integer value) {
-            addCriterion("sence_id <>", value, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdGreaterThan(Integer value) {
-            addCriterion("sence_id >", value, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("sence_id >=", value, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdLessThan(Integer value) {
-            addCriterion("sence_id <", value, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdLessThanOrEqualTo(Integer value) {
-            addCriterion("sence_id <=", value, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdIn(List<Integer> values) {
-            addCriterion("sence_id in", values, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdNotIn(List<Integer> values) {
-            addCriterion("sence_id not in", values, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdBetween(Integer value1, Integer value2) {
-            addCriterion("sence_id between", value1, value2, "senceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSenceIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("sence_id not between", value1, value2, "senceId");
-            return (Criteria) this;
-        }
     }
 
     public static class Criteria extends GeneratedCriteria {
@@ -444,7 +324,7 @@ public class UserExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-07-10
+     * @date 2019-07-12
      */
     public static class Criterion {
         private String condition;

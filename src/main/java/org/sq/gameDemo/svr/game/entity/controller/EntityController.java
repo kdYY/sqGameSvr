@@ -53,9 +53,15 @@ public class EntityController {
 
             int typeId = requestInfo.getTypeId();
             //进行角色-场景id，类型id 初始化绑定
-            senceService.bindUserEntityInSence(new UserEntity(typeId, "玩家" + userId, userId, defaultSenceId));
-            //数据库角色类型数据更新
-            userService.updateUser(userId, typeId);
+            UserEntity entity = new UserEntity();
+            entity.setNick("玩家" + userId);
+            entity.setSenceId(defaultSenceId);
+            entity.setState(1);
+            entity.setTypeId(typeId);
+            entity.setUserId(userId);
+            senceService.bindUserEntityInSence(entity);
+            //数据库角色类型数据增加
+            entityService.addUserEntity(entity);
             //返回场景信息
             getUserSenceMsg(builder, defaultSenceId);
 
