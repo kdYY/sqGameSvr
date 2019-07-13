@@ -68,6 +68,7 @@ public class EntityService {
         EntityType entityTypeById = getEntityTypeById(senceEntity.getTypeId());
 
         return SenceEntityProto.SenceEntity.newBuilder()
+                .setId(senceEntity.getId())
                 .setNum(senceEntity.getNum())
                 .setState(senceEntity.getState())
                 .addType( EntityType.transform(entityTypeById))

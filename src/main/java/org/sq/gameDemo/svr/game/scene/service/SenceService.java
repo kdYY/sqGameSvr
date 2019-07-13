@@ -59,7 +59,6 @@ public class SenceService {
             entities = PoiUtil.readExcel(entityFileName, 0, EntityType.class);
             userEntityList = entityService.getUserEntityList();
             senceIdAndUserEntityMap = userEntityList.stream().collect(Collectors.groupingBy(UserEntity::getSenceId));
-
             for (SenceConfigMsg senceConfigMsg : senceConfigMsgList) {
                 List<SenceEntity> senceEntityList = JsonUtil.reSerializableJson(senceConfigMsg.getJsonStr(), SenceEntity.class);
                 ArrayList<SenceEntity> senceEntities = new ArrayList<>();
@@ -70,15 +69,15 @@ public class SenceService {
                         entity.setId(i);
                         entity.setState(senceEntity.getState());
                         entity.setTypeId(senceEntity.getTypeId());
+                        entity.setSenceId(senceConfigMsg.getSenceId());
                         entitys.add(entity);
                     }
                     senceIdAndSenceEntityMap.put(senceConfigMsg.getSenceId(), entitys);
                     senceEntities.addAll(entitys);
                 }
                 senceConfigMsg.setSenceEntities(senceEntities);
-                senceConfigMsg.setUserEntities(
-                        senceIdAndUserEntityMap.get(senceConfigMsg.getSenceId())
-                );
+                List<UserEntity> userEntities = senceIdAndUserEntityMap.get(senceConfigMsg.getSenceId());
+                senceConfigMsg.setUserEntities(userEntities);
             }
 
             senceIdAndSenceMsgMap = senceConfigMsgList.stream()
@@ -141,6 +140,8 @@ public class SenceService {
             ArrayList<UserEntity> entities = new ArrayList<>();
             entities.add(userEntity);
             msg.setUserEntities(entities);
+
+            senceIdAndUserEntityMap.put(msg.getSenceId(), entities);
         } else {
             userEntities.add(userEntity);
         }
