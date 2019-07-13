@@ -111,11 +111,11 @@ public class ProtoBufUtil {
         return goalBuilder;
     }
 
-    //获取方法 支持XXX(无参) set(一个参数 XXX)方法的获取
+    //对java API中的获取方法做一个基本类型的兼容
     private static <T> Method getMethod(T goalBuilder, String methodName, Class<?>... type) throws NoSuchMethodException {
         if(type == null || type.length == 0) {
             return goalBuilder.getClass().getDeclaredMethod(methodName);
-        } else {
+        } else if(type.length == 1) {
             String typeName = type[0].getName();
             try {
                 Method declaredMethod = goalBuilder.getClass().getDeclaredMethod(methodName, type[0]);
@@ -132,8 +132,9 @@ public class ProtoBufUtil {
                 }
             }
             throw  new NoSuchMethodException("没有此方法");
+        } else {
+            return  goalBuilder.getClass().getDeclaredMethod(methodName, type);
         }
-
 
     }
 
@@ -153,8 +154,5 @@ public class ProtoBufUtil {
     private static String upperCaseFirstLetter(String word) {
         return String.valueOf(word.charAt(0)).toUpperCase() + word.substring(1);
     }
-
-    public static void main(String[] args) {
-
-    }
+    
 }
