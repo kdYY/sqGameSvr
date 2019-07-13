@@ -3,11 +3,13 @@ package org.sq.gameDemo.svr.game.scene.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.common.proto.SenceEntityProto;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
-import org.sq.gameDemo.svr.common.CustomException.BindRoleInSenceExistException;
-import org.sq.gameDemo.svr.common.CustomException.RemoveFailedException;
+import org.sq.gameDemo.svr.common.customException.BindRoleInSenceExistException;
+import org.sq.gameDemo.svr.common.customException.RemoveFailedException;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.PoiUtil;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.entity.model.EntityType;
 import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
 import org.sq.gameDemo.svr.game.entity.model.UserEntity;
@@ -16,8 +18,8 @@ import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -101,13 +103,21 @@ public class SenceService {
         if((findSence=getSenecMsgById(senceId)) == null) {
             return;
         }
-
-        for (UserEntity userEntity : findSence.getUserEntities()) {
-            builder.addUserEntity(entityService.transformUserEntityProto(userEntity));
+        try {
+            ProtoBufUtil.transformProtoReturnBuilder(builder, findSence);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
-        for (SenceEntity senceEntity : findSence.getSenceEntities()) {
-            builder.addSenceEntity(entityService.transformSenceEntityProto(senceEntity));
-        }
+//        for (UserEntity userEntity : findSence.getUserEntities()) {
+//            builder.addUserEntity(entityService.transformUserEntityProto(userEntity));
+//        }
+//        for (SenceEntity senceEntity : findSence.getSenceEntities()) {
+//            builder.addSenceEntity(entityService.transformSenceEntityProto(senceEntity));
+//        }
     }
 
 

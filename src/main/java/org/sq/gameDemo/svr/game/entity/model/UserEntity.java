@@ -1,5 +1,6 @@
 package org.sq.gameDemo.svr.game.entity.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import org.sq.gameDemo.common.proto.EntityProto;
 import org.sq.gameDemo.common.proto.SenceProto;

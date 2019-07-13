@@ -1,27 +1,19 @@
 package org.sq.gameDemo.svr.game.entity.service;
 
-import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.sq.gameDemo.common.OrderEnum;
-import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.*;
-import org.sq.gameDemo.svr.common.CustomException.BindRoleInSenceExistException;
-import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.PoiUtil;
-import org.sq.gameDemo.svr.common.UserCache;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.entity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.entity.model.EntityType;
 import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
 import org.sq.gameDemo.svr.game.entity.model.UserEntity;
 import org.sq.gameDemo.svr.game.entity.model.UserEntityExample;
-import org.sq.gameDemo.svr.game.scene.model.GameScene;
-import org.sq.gameDemo.svr.game.scene.service.SenceService;
-import org.sq.gameDemo.svr.game.user.model.User;
-import org.sq.gameDemo.svr.game.user.service.UserService;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @Service
@@ -46,10 +38,10 @@ public class EntityService {
     }
 
 
-    public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) {
+    public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         for (EntityType entitieType : entitieTypes) {
             builder.addEntityType(
-                    EntityType.transform(entitieType)
+                    (EntityTypeProto.EntityType) ProtoBufUtil.transformProtoReturnBean(EntityTypeProto.EntityType.newBuilder(), entitieType)
             );
         }
     }

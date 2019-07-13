@@ -8,15 +8,14 @@ import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.common.proto.SenceProto;
 import org.sq.gameDemo.common.proto.UserEntityProto;
-import org.sq.gameDemo.svr.common.CustomException.BindRoleInSenceExistException;
-import org.sq.gameDemo.svr.common.CustomException.RemoveFailedException;
+import org.sq.gameDemo.svr.common.customException.BindRoleInSenceExistException;
+import org.sq.gameDemo.svr.common.customException.RemoveFailedException;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.game.entity.model.UserEntity;
 import org.sq.gameDemo.svr.game.entity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
-import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 
 @Controller
