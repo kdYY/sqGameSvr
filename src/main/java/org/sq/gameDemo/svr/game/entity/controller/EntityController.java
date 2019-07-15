@@ -80,7 +80,7 @@ public class EntityController {
         }
     }
 
-    private void getUserSenceMsg(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) {
+    private void getUserSenceMsg(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) throws Exception {
         //场景，场景中的角色信息
         GameScene sence = senceService.getSenceBySenceId(senceId);
         builder.setSence(GameScene.transformProto(sence));

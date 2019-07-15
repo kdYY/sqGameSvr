@@ -1,5 +1,8 @@
 package org.sq.gameDemo.svr.common.protoUtil;
 
+import org.sq.gameDemo.common.proto.EntityTypeProto;
+import org.sq.gameDemo.common.proto.SenceMsgProto;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -8,13 +11,13 @@ public class ProtoBufUtil {
     public static List<String> baseTypeList = Arrays.asList("int", "Integer", "float", "Float", "double", "Double", "byte", "Byte");
 
 
-    public static  <T,K> Object transformProtoReturnBean(T goalBuilder, K sourceBean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public static  <T,K> Object transformProtoReturnBean(T goalBuilder, K sourceBean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
         transformProtoReturnBuilder(goalBuilder, sourceBean);
         Method build = goalBuilder.getClass().getDeclaredMethod("build");
         return build.invoke(goalBuilder);
     }
     //
-    public static <T,K> T transformProtoReturnBuilder(T goalBuilder, K sourceBean) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public static <T,K> T transformProtoReturnBuilder(T goalBuilder, K sourceBean) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
         Method[] goalBuilderMethod = goalBuilder.getClass().getDeclaredMethods();
         Method[] sourceBeanMethods = sourceBean.getClass().getDeclaredMethods();
         Map<String, ProtoObject> feildNameIgnoreMap = new HashMap<>();
@@ -43,17 +46,16 @@ public class ProtoBufUtil {
                         break;
                     }
                     //如果K中有List,检查declaredMethods是否有add的方法，没有则跳过，有则加入执行
-                    String targetRepeatedName = annotation.TargetRepeatedName();
                     Class targetClass = annotation.TargetClass();
-                    String addMethodName = "add" + upperCaseFirstLetter(targetRepeatedName);
+                    String addMethodName = "add" + upperCaseFirstLetter(targetClass.getSimpleName());
+                    Method addMethod = null;
                     if(!targetClass.equals(Void.class)
-                            && targetRepeatedName != null
-                            && hasListAddMethond(goalBuilderMethod, targetRepeatedName, targetClass)) {
+                            && (addMethod = hasListAddMethond(goalBuilderMethod, addMethodName, targetClass)) != null) {
                         listClassMap.put(declaredField, targetClass);
                         //list的get方法
                         listGetMethodMap.put(declaredField, getMethod(sourceBean, getMethodName));
                         //add方法
-                        goalBuilderAddMethodMap.put(declaredField, getMethod(goalBuilder, addMethodName, targetClass));
+                        goalBuilderAddMethodMap.put(declaredField, addMethod);
                         inject = false;
                         break;
                     }
@@ -93,17 +95,21 @@ public class ProtoBufUtil {
         for (Map.Entry<Field, Class> entry : listClassMap.entrySet()) {
             Field field = entry.getKey();
             Class listClass = entry.getValue();
-            Method method = listGetMethodMap.get(field);
-            List<Object> invoke = (List<Object>) method.invoke(sourceBean);
+            //get方法
+            Method getListMethod = listGetMethodMap.get(field);
+            //add方法
+            Method addListMethod = goalBuilderAddMethodMap.get(field);
+            List<Object> invoke = (List<Object>) getListMethod.invoke(sourceBean);
             for (int i = 0; i < invoke.size(); i++) {
                 try {
                     Constructor cellConstruct = listClass.getDeclaredConstructor();
                     cellConstruct.setAccessible(true);
                     Object o = cellConstruct.newInstance();
-                    Object newBuilder = getMethod(listClass, "toBuilder").invoke(o);
-                    transformProtoReturnBuilder(newBuilder, invoke.get(i));
+                    Object newBuilder = getMethod(o, "newBuilder").invoke(null);
+                    addListMethod.invoke(goalBuilder, transformProtoReturnBean(newBuilder, invoke.get(i)));
                 } catch (InstantiationException e) {
                     e.printStackTrace();
+                    throw e;
                 }
 
             }
@@ -126,29 +132,31 @@ public class ProtoBufUtil {
                 Method[] declaredMethods = goalBuilder.getClass().getDeclaredMethods();
                 for (Method declaredMethod : declaredMethods) {
                     Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
-                    if(declaredMethod.getName().equals(methodName) && parameterTypes.length == 1 && baseTypeList.contains(parameterTypes[0])) {
-                        return declaredMethod;
+                    if(declaredMethod.getName().equals(methodName)) {
+                        if(parameterTypes.length == 1 && baseTypeList.contains(parameterTypes[0].getName())) {
+                            return declaredMethod;
+                        }
+
                     }
                 }
             }
-            throw  new NoSuchMethodException("没有此方法");
+            throw  new NoSuchMethodException("没有此方法，请检查proto文件是否跟bean定义的字段一致");
         } else {
             return  goalBuilder.getClass().getDeclaredMethod(methodName, type);
         }
 
     }
 
-    private static boolean hasListAddMethond(Method[] declaredMethods, String targetRepeatedName, Class targetClass) {
-        String targetAddMethodName = "add" + upperCaseFirstLetter(targetRepeatedName);
+    private static Method hasListAddMethond(Method[] declaredMethods, String targetAddMethodName, Class targetClass) {
         for (Method method : declaredMethods) {
             Type[] genericParameterTypes = method.getGenericParameterTypes();
             if(method.getName().equals(targetAddMethodName)
                     && method.getParameterTypes().length == 1
                     && genericParameterTypes[0].getTypeName().equals(targetClass.getName())) {
-                return true;
+                return method;
             }
         }
-        return false;
+        return null;
     }
 
     private static String upperCaseFirstLetter(String word) {

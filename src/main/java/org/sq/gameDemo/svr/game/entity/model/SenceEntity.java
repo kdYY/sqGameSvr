@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.game.entity.model;
 
 import lombok.Data;
 import org.sq.gameDemo.common.proto.EntityProto;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoObject;
 
 //场景实体
 @Data

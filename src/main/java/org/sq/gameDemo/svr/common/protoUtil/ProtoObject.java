@@ -8,5 +8,4 @@ import java.lang.annotation.*;
 public @interface ProtoObject {
     boolean Ignore() default false;
     Class TargetClass() default Void.class;
-    String TargetRepeatedName() default "";
 }

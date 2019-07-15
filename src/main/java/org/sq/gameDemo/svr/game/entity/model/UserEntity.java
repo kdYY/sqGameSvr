@@ -5,11 +5,13 @@ import lombok.Data;
 import org.sq.gameDemo.common.proto.EntityProto;
 import org.sq.gameDemo.common.proto.SenceProto;
 import org.sq.gameDemo.common.proto.UserEntityProto;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoObject;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 
 //用户实体
 @Data
 public class UserEntity {
+    @ProtoObject(Ignore = true)
     private Integer id;
 
     private Integer userId;

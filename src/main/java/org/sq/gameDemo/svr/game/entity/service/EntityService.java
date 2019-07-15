@@ -38,7 +38,7 @@ public class EntityService {
     }
 
 
-    public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         for (EntityType entitieType : entitieTypes) {
             builder.addEntityType(
                     (EntityTypeProto.EntityType) ProtoBufUtil.transformProtoReturnBean(EntityTypeProto.EntityType.newBuilder(), entitieType)
@@ -63,7 +63,6 @@ public class EntityService {
                 .setId(senceEntity.getId())
                 .setNum(senceEntity.getNum())
                 .setState(senceEntity.getState())
-                .addType( EntityType.transform(entityTypeById))
                 .build();
     }
     //实体转化为UserEntity
@@ -75,7 +74,6 @@ public class EntityService {
                 .setTypeId(userEntity.getTypeId())
                 .setUserId(userEntity.getUserId())
                 .setState(userEntity.getState())
-                .addType(EntityType.transform(entityTypeById))
                 .build();
     }
 

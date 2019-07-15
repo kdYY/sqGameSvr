@@ -3,7 +3,6 @@ package org.sq.gameDemo.svr.game.scene.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.sq.gameDemo.common.proto.SenceEntityProto;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.svr.common.customException.BindRoleInSenceExistException;
 import org.sq.gameDemo.svr.common.customException.RemoveFailedException;
@@ -18,7 +17,6 @@ import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,14 +49,14 @@ public class SenceService {
     private Map<Integer, SenceConfigMsg> senceIdAndSenceMsgMap;
 
     //存储所有初始化的实体信息
-    private List<EntityType> entities;
+    private List<EntityType> entityTypes;
 
     @PostConstruct
     private void initalSence() {
         try {
             gameScenes = PoiUtil.readExcel(senceFileName, 0, GameScene.class);
             List<SenceConfigMsg> senceConfigMsgList = PoiUtil.readExcel(sencedataFileName, 0, SenceConfigMsg.class);
-            entities = PoiUtil.readExcel(entityFileName, 0, EntityType.class);
+            entityTypes = PoiUtil.readExcel(entityFileName, 0, EntityType.class);
             userEntityList = entityService.getUserEntityList();
             senceIdAndUserEntityMap = userEntityList.stream().collect(Collectors.groupingBy(UserEntity::getSenceId));
             for (SenceConfigMsg senceConfigMsg : senceConfigMsgList) {
@@ -80,6 +78,7 @@ public class SenceService {
                 senceConfigMsg.setSenceEntities(senceEntities);
                 List<UserEntity> userEntities = senceIdAndUserEntityMap.get(senceConfigMsg.getSenceId());
                 senceConfigMsg.setUserEntities(userEntities);
+                senceConfigMsg.setEntityTypes(entityTypes);
             }
 
             senceIdAndSenceMsgMap = senceConfigMsgList.stream()
@@ -98,20 +97,13 @@ public class SenceService {
      * @param builder
      * @param senceId
      */
-    public void transformEntityResponseProto(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) {
+    public void transformEntityResponseProto(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) throws Exception{
         SenceConfigMsg findSence = null;
         if((findSence=getSenecMsgById(senceId)) == null) {
             return;
         }
-        try {
-            ProtoBufUtil.transformProtoReturnBuilder(builder, findSence);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
+        ProtoBufUtil.transformProtoReturnBuilder(builder, findSence);
+
 //        for (UserEntity userEntity : findSence.getUserEntities()) {
 //            builder.addUserEntity(entityService.transformUserEntityProto(userEntity));
 //        }
@@ -122,7 +114,7 @@ public class SenceService {
 
 
     public EntityType getEntityTypeById(int id) {
-        for (EntityType entityBaseType : entities) {
+        for (EntityType entityBaseType : entityTypes) {
             if(entityBaseType.getId() == id) {
                 return entityBaseType;
             }
