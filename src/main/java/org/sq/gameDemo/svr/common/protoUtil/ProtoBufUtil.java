@@ -57,11 +57,12 @@ public class ProtoBufUtil {
                     if(baseTypeList.contains(targetClass.getSimpleName())) {
                         //基础类型的class
                         if((addMethod = hasListAddMethond(goalBuilderMethod, targetName, targetClass)) != null) {
+                            //list的get方法
                             listClassMap.put(declaredField, targetClass);
                             //list的get方法
-                            goalBuildBaseTypeAddMethodMap.put(declaredField, getMethod(sourceBean, getMethodName));
+                            listGetMethodMap.put(declaredField, getMethod(sourceBean, getMethodName));
                             //add方法
-                            goalBuilderAddMethodMap.put(declaredField, addMethod);
+                            goalBuildBaseTypeAddMethodMap.put(declaredField, addMethod);
                         }
                     } else {
                         String addMethodName = "add" + upperCaseFirstLetter(targetClass.getSimpleName());
