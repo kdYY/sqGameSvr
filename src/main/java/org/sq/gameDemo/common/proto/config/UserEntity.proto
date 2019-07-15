@@ -6,11 +6,12 @@ option java_outer_classname = "UserEntityProto";
 
 //用户角色实体
 message UserEntity {
-    int32 typeId = 1; //其实可以去掉
+    int32 typeId = 1; //吧数据库中的typeId去掉,新建UserEntity表
     string nick = 2;//昵称
     int32 userId = 3;
     int32 state = 4;
-    repeated EntityType type = 5;
+    int32 senceId = 5;
+    
 }
 //请求
 message UserEntityRequestInfo {
@@ -25,6 +26,7 @@ message UserEntityResponseInfo {
     int32 result  = 2;
     uint64 time = 3;        //时间戳
     string content = 4;
-    repeated UserEntity userEntity = 5;
+    repeated EntityType type = 5;
+    repeated UserEntity userEntity = 6;
 }
 

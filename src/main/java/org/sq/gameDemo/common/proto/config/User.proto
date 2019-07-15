@@ -1,6 +1,4 @@
 syntax = "proto3";
-import "EntityProto.proto";
-import "Sence.proto";
 option java_package = "org.sq.gameDemo.common.proto";
 option java_outer_classname = "UserProto";
 message User {
@@ -15,7 +13,7 @@ message RequestUserInfo {
     uint64 msg_id = 1;      //消息id
     uint64 time =2;        //时间戳(单位:毫秒)
     string token = 4;
-
+    
     User user = 5;
 }
 
@@ -26,6 +24,4 @@ message ResponseUserInfo {
     string token = 4;       //返回token客户端保存
     string content = 5;
 
-    Sence sence = 6; //断线重连时候使用
-    repeated EntityType entityTypes = 7;
 }

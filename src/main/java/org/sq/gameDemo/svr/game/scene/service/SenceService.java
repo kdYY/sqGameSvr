@@ -42,9 +42,7 @@ public class SenceService {
 
     //场景用户角色信息
     private List<UserEntity> userEntityList;
-    private Map<Integer, List<UserEntity>> senceIdAndUserEntityMap = new ConcurrentHashMap<>();
-    //<typeId, 怪物>
-    private Map<Integer, List<SenceEntity>> senceIdAndSenceEntityMap = new ConcurrentHashMap<>();
+    private Map<Integer, List<UserEntity>> senceIdAndUserEntityMap;
     //<场景id,场景信息>
     private Map<Integer, SenceConfigMsg> senceIdAndSenceMsgMap;
 
@@ -70,9 +68,9 @@ public class SenceService {
                         entity.setState(senceEntity.getState());
                         entity.setTypeId(senceEntity.getTypeId());
                         entity.setSenceId(senceConfigMsg.getSenceId());
+                        entity.setNpcWord(senceEntity.getNpcWord());
                         entitys.add(entity);
                     }
-                    senceIdAndSenceEntityMap.put(senceConfigMsg.getSenceId(), entitys);
                     senceEntities.addAll(entitys);
                 }
                 senceConfigMsg.setSenceEntities(senceEntities);

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "EntityType.proto";
 option java_package = "org.sq.gameDemo.common.proto";
-option java_outer_classname = "EntityProto";
+option java_outer_classname = "SenceEntityProto";
 
 //场景实体 npc 野怪
 message SenceEntity {
@@ -10,7 +10,8 @@ message SenceEntity {
    int32 senceId = 2;
    int32 num = 3; //之后版本需要就去掉。。。
    int32 state = 4;
-   repeated EntityType type = 5;
+   int32 typeId = 5;
+   
 }
 //请求
 message RequestInfo {
@@ -25,6 +26,7 @@ message ResponseInfo {
     int32 result  = 2;
     uint64 time = 3;        //时间戳
     string content = 4;
-    repeated SenceEntity SenceEntity = 5;
+    repeated EntityType type = 5;
+    repeated SenceEntity SenceEntity = 6;
 }
 

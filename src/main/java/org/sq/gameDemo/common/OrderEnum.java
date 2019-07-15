@@ -1,12 +1,5 @@
 package org.sq.gameDemo.common;
 
-import com.google.protobuf.MessageLite;
-import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.common.proto.UserProto;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 public enum OrderEnum {
     ErrOrder("errOrder",101 ),
     SvrErr("svrErr", 102 ),
@@ -18,6 +11,7 @@ public enum OrderEnum {
     CheckToken("checkToken", 108),
     Aoi("aoi", 109),
     Move("move",  110),
+    TalkWithNpc("talkwithnpc", 111),
     ;
 
     private String order;

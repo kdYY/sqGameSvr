@@ -1,6 +1,7 @@
 package org.sq.gameDemo.svr.common.protoUtil;
 
 import org.sq.gameDemo.common.proto.EntityTypeProto;
+import org.sq.gameDemo.common.proto.SenceEntityProto;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
 
 import java.lang.annotation.Annotation;
@@ -19,13 +20,17 @@ public class ProtoBufUtil {
     //
     public static <T,K> T transformProtoReturnBuilder(T goalBuilder, K sourceBean) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
         Method[] goalBuilderMethod = goalBuilder.getClass().getDeclaredMethods();
-        Method[] sourceBeanMethods = sourceBean.getClass().getDeclaredMethods();
         Map<String, ProtoObject> feildNameIgnoreMap = new HashMap<>();
         Map<Field, Class> listClassMap = new HashMap<>();
+
         Map<Field, Method> listGetMethodMap = new HashMap<>();
         Map<Field, Method> goalBuilderAddMethodMap = new HashMap<>();
+        Map<Field, Method> goalBuildBaseTypeAddMethodMap = new HashMap<>();
+
         Map<Field, Method> sourceBeanGetMethodMap = new HashMap<>();
         Map<Field, Method> goalBuilderSetMethodMap = new HashMap<>();
+
+
         //获取K中的所有属性名称，排除@TransferProto(ignore=false)的属性, 获取需要注入List的属性
         Field[] declaredFields = sourceBean.getClass().getDeclaredFields();
         for (Field declaredField : declaredFields) {
@@ -46,19 +51,30 @@ public class ProtoBufUtil {
                         break;
                     }
                     //如果K中有List,检查declaredMethods是否有add的方法，没有则跳过，有则加入执行
-                    Class targetClass = annotation.TargetClass();
-                    String addMethodName = "add" + upperCaseFirstLetter(targetClass.getSimpleName());
                     Method addMethod = null;
-                    if(!targetClass.equals(Void.class)
-                            && (addMethod = hasListAddMethond(goalBuilderMethod, addMethodName, targetClass)) != null) {
-                        listClassMap.put(declaredField, targetClass);
-                        //list的get方法
-                        listGetMethodMap.put(declaredField, getMethod(sourceBean, getMethodName));
-                        //add方法
-                        goalBuilderAddMethodMap.put(declaredField, addMethod);
-                        inject = false;
-                        break;
+                    Class targetClass = annotation.TargetClass();
+                    String targetName = "add" + upperCaseFirstLetter(annotation.TargetName());
+                    if(baseTypeList.contains(targetClass.getSimpleName())) {
+                        //基础类型的class
+                        if((addMethod = hasListAddMethond(goalBuilderMethod, targetName, targetClass)) != null) {
+                            listClassMap.put(declaredField, targetClass);
+                            //list的get方法
+                            goalBuildBaseTypeAddMethodMap.put(declaredField, getMethod(sourceBean, getMethodName));
+                            //add方法
+                            goalBuilderAddMethodMap.put(declaredField, addMethod);
+                        }
+                    } else {
+                        String addMethodName = "add" + upperCaseFirstLetter(targetClass.getSimpleName());
+                        if(!targetClass.equals(Void.class)
+                                && (addMethod = hasListAddMethond(goalBuilderMethod, addMethodName, targetClass)) != null) {
+                            listClassMap.put(declaredField, targetClass);
+                            //list的get方法
+                            listGetMethodMap.put(declaredField, getMethod(sourceBean, getMethodName));
+                            //add方法
+                            goalBuilderAddMethodMap.put(declaredField, addMethod);
+                        }
                     }
+                    inject = false;
                     break;
                 }
             }
@@ -99,7 +115,8 @@ public class ProtoBufUtil {
             Method getListMethod = listGetMethodMap.get(field);
             //add方法
             Method addListMethod = goalBuilderAddMethodMap.get(field);
-            List<Object> invoke = (List<Object>) getListMethod.invoke(sourceBean);
+            List invoke = (List) getListMethod.invoke(sourceBean);
+
             for (int i = 0; i < invoke.size(); i++) {
                 try {
                     Constructor cellConstruct = listClass.getDeclaredConstructor();
@@ -113,6 +130,7 @@ public class ProtoBufUtil {
                 }
 
             }
+
         }
         return goalBuilder;
     }

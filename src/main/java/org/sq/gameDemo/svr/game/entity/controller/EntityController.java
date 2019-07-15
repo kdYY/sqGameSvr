@@ -158,5 +158,15 @@ public class EntityController {
         }
     }
 
+    @OrderMapping(OrderEnum.TalkWithNpc)
+    public MsgEntity talkWithNpc(MsgEntity msgEntity) throws Exception {
+
+
+        return msgEntity;
+    }
+
+
+
+
     public static final int defaultSenceId = 1;
 }
