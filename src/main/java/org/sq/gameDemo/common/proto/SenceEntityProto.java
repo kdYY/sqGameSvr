@@ -985,12 +985,17 @@ public final class SenceEntityProto {
     long getTime();
 
     /**
-     * <code>int32 typeId = 3;</code>
+     * <code>int32 id = 3;</code>
+     */
+    int getId();
+
+    /**
+     * <code>int32 typeId = 4;</code>
      */
     int getTypeId();
 
     /**
-     * <code>int32 senceId = 4;</code>
+     * <code>int32 senceId = 5;</code>
      */
     int getSenceId();
   }
@@ -1055,10 +1060,15 @@ public final class SenceEntityProto {
             }
             case 24: {
 
-              typeId_ = input.readInt32();
+              id_ = input.readInt32();
               break;
             }
             case 32: {
+
+              typeId_ = input.readInt32();
+              break;
+            }
+            case 40: {
 
               senceId_ = input.readInt32();
               break;
@@ -1121,19 +1131,28 @@ public final class SenceEntityProto {
       return time_;
     }
 
-    public static final int TYPEID_FIELD_NUMBER = 3;
+    public static final int ID_FIELD_NUMBER = 3;
+    private int id_;
+    /**
+     * <code>int32 id = 3;</code>
+     */
+    public int getId() {
+      return id_;
+    }
+
+    public static final int TYPEID_FIELD_NUMBER = 4;
     private int typeId_;
     /**
-     * <code>int32 typeId = 3;</code>
+     * <code>int32 typeId = 4;</code>
      */
     public int getTypeId() {
       return typeId_;
     }
 
-    public static final int SENCEID_FIELD_NUMBER = 4;
+    public static final int SENCEID_FIELD_NUMBER = 5;
     private int senceId_;
     /**
-     * <code>int32 senceId = 4;</code>
+     * <code>int32 senceId = 5;</code>
      */
     public int getSenceId() {
       return senceId_;
@@ -1159,11 +1178,14 @@ public final class SenceEntityProto {
       if (time_ != 0L) {
         output.writeUInt64(2, time_);
       }
+      if (id_ != 0) {
+        output.writeInt32(3, id_);
+      }
       if (typeId_ != 0) {
-        output.writeInt32(3, typeId_);
+        output.writeInt32(4, typeId_);
       }
       if (senceId_ != 0) {
-        output.writeInt32(4, senceId_);
+        output.writeInt32(5, senceId_);
       }
       unknownFields.writeTo(output);
     }
@@ -1182,13 +1204,17 @@ public final class SenceEntityProto {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(2, time_);
       }
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, id_);
+      }
       if (typeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, typeId_);
+          .computeInt32Size(4, typeId_);
       }
       if (senceId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, senceId_);
+          .computeInt32Size(5, senceId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1209,6 +1235,8 @@ public final class SenceEntityProto {
           != other.getMsgId()) return false;
       if (getTime()
           != other.getTime()) return false;
+      if (getId()
+          != other.getId()) return false;
       if (getTypeId()
           != other.getTypeId()) return false;
       if (getSenceId()
@@ -1230,6 +1258,8 @@ public final class SenceEntityProto {
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTime());
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
       hash = (37 * hash) + TYPEID_FIELD_NUMBER;
       hash = (53 * hash) + getTypeId();
       hash = (37 * hash) + SENCEID_FIELD_NUMBER;
@@ -1375,6 +1405,8 @@ public final class SenceEntityProto {
 
         time_ = 0L;
 
+        id_ = 0;
+
         typeId_ = 0;
 
         senceId_ = 0;
@@ -1407,6 +1439,7 @@ public final class SenceEntityProto {
         RequestInfo result = new RequestInfo(this);
         result.msgId_ = msgId_;
         result.time_ = time_;
+        result.id_ = id_;
         result.typeId_ = typeId_;
         result.senceId_ = senceId_;
         onBuilt();
@@ -1462,6 +1495,9 @@ public final class SenceEntityProto {
         }
         if (other.getTime() != 0L) {
           setTime(other.getTime());
+        }
+        if (other.getId() != 0) {
+          setId(other.getId());
         }
         if (other.getTypeId() != 0) {
           setTypeId(other.getTypeId());
@@ -1574,15 +1610,41 @@ public final class SenceEntityProto {
         return this;
       }
 
+      private int id_ ;
+      /**
+       * <code>int32 id = 3;</code>
+       */
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <code>int32 id = 3;</code>
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 id = 3;</code>
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
       private int typeId_ ;
       /**
-       * <code>int32 typeId = 3;</code>
+       * <code>int32 typeId = 4;</code>
        */
       public int getTypeId() {
         return typeId_;
       }
       /**
-       * <code>int32 typeId = 3;</code>
+       * <code>int32 typeId = 4;</code>
        */
       public Builder setTypeId(int value) {
         
@@ -1591,7 +1653,7 @@ public final class SenceEntityProto {
         return this;
       }
       /**
-       * <code>int32 typeId = 3;</code>
+       * <code>int32 typeId = 4;</code>
        */
       public Builder clearTypeId() {
         
@@ -1602,13 +1664,13 @@ public final class SenceEntityProto {
 
       private int senceId_ ;
       /**
-       * <code>int32 senceId = 4;</code>
+       * <code>int32 senceId = 5;</code>
        */
       public int getSenceId() {
         return senceId_;
       }
       /**
-       * <code>int32 senceId = 4;</code>
+       * <code>int32 senceId = 5;</code>
        */
       public Builder setSenceId(int value) {
         
@@ -1617,7 +1679,7 @@ public final class SenceEntityProto {
         return this;
       }
       /**
-       * <code>int32 senceId = 4;</code>
+       * <code>int32 senceId = 5;</code>
        */
       public Builder clearSenceId() {
         
@@ -3233,14 +3295,14 @@ public final class SenceEntityProto {
       "\n\021SenceEntity.proto\032\020EntityType.proto\"g\n" +
       "\013SenceEntity\022\n\n\002id\030\001 \001(\005\022\017\n\007senceId\030\002 \001(" +
       "\005\022\013\n\003num\030\003 \001(\005\022\r\n\005state\030\004 \001(\005\022\016\n\006typeId\030" +
-      "\005 \001(\005\022\017\n\007npcWord\030\006 \003(\t\"L\n\013RequestInfo\022\016\n" +
-      "\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006typeId\030\003 " +
-      "\001(\005\022\017\n\007senceId\030\004 \001(\005\"\213\001\n\014ResponseInfo\022\016\n" +
-      "\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 " +
-      "\001(\004\022\017\n\007content\030\004 \001(\t\022\031\n\004type\030\005 \003(\0132\013.Ent" +
-      "ityType\022!\n\013SenceEntity\030\006 \003(\0132\014.SenceEnti" +
-      "tyB0\n\034org.sq.gameDemo.common.protoB\020Senc" +
-      "eEntityProtob\006proto3"
+      "\005 \001(\005\022\017\n\007npcWord\030\006 \003(\t\"X\n\013RequestInfo\022\016\n" +
+      "\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022" +
+      "\016\n\006typeId\030\004 \001(\005\022\017\n\007senceId\030\005 \001(\005\"\213\001\n\014Res" +
+      "ponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(" +
+      "\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\031\n\004type" +
+      "\030\005 \003(\0132\013.EntityType\022!\n\013SenceEntity\030\006 \003(\013" +
+      "2\014.SenceEntityB0\n\034org.sq.gameDemo.common" +
+      ".protoB\020SenceEntityProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3258,7 +3320,7 @@ public final class SenceEntityProto {
     internal_static_RequestInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RequestInfo_descriptor,
-        new String[] { "MsgId", "Time", "TypeId", "SenceId", });
+        new String[] { "MsgId", "Time", "Id", "TypeId", "SenceId", });
     internal_static_ResponseInfo_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_ResponseInfo_fieldAccessorTable = new

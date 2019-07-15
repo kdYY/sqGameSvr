@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
+import org.sq.gameDemo.common.proto.SenceEntityProto;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.common.proto.SenceProto;
 import org.sq.gameDemo.common.proto.UserEntityProto;
@@ -12,6 +13,8 @@ import org.sq.gameDemo.svr.common.customException.BindRoleInSenceExistException;
 import org.sq.gameDemo.svr.common.customException.RemoveFailedException;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.UserCache;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
 import org.sq.gameDemo.svr.game.entity.model.UserEntity;
 import org.sq.gameDemo.svr.game.entity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
@@ -160,9 +163,22 @@ public class EntityController {
 
     @OrderMapping(OrderEnum.TalkWithNpc)
     public MsgEntity talkWithNpc(MsgEntity msgEntity) throws Exception {
-
-
-        return msgEntity;
+        SenceEntityProto.ResponseInfo.Builder builder = SenceEntityProto.ResponseInfo.newBuilder();
+        try {
+            SenceEntityProto.RequestInfo requestInfo = SenceEntityProto.RequestInfo.parseFrom(msgEntity.getData());
+            int npcId = requestInfo.getId();
+            Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
+            UserEntity userEntityByUserId = senceService.getUserEntityByUserId(userId);
+            SenceEntity senceEntity = senceService.getSenceEntityBySenceId(userEntityByUserId.getSenceId(), npcId);
+            builder.addSenceEntity( ProtoBufUtil.transformProtoReturnBuilder(SenceEntityProto.SenceEntity.newBuilder(), senceEntity).build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setContent("移动失败，系统err");
+            builder.setResult(500);//服务端异常
+        } finally {
+            msgEntity.setData(builder.build().toByteArray());
+            return msgEntity;
+        }
     }
 
 

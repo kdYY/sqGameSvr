@@ -9,7 +9,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 public class ProtoBufUtil {
-    public static List<String> baseTypeList = Arrays.asList("int", "Integer", "float", "Float", "double", "Double", "byte", "Byte");
+    public static List<String> baseTypeList = Arrays.asList("int", "Integer", "float", "Float", "double", "Double", "byte", "Byte", "String");
 
 
     public static  <T,K> Object transformProtoReturnBean(T goalBuilder, K sourceBean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
@@ -53,11 +53,11 @@ public class ProtoBufUtil {
                     //如果K中有List,检查declaredMethods是否有add的方法，没有则跳过，有则加入执行
                     Method addMethod = null;
                     Class targetClass = annotation.TargetClass();
-                    String targetName = "add" + upperCaseFirstLetter(annotation.TargetName());
-                    if(baseTypeList.contains(targetClass.getSimpleName())) {
+                    String simpleName = targetClass.getSimpleName();
+                    if(baseTypeList.contains(simpleName)) {
                         //基础类型的class
+                        String targetName = "add" + upperCaseFirstLetter(annotation.TargetName());
                         if((addMethod = hasListAddMethond(goalBuilderMethod, targetName, targetClass)) != null) {
-                            //list的get方法
                             listClassMap.put(declaredField, targetClass);
                             //list的get方法
                             listGetMethodMap.put(declaredField, getMethod(sourceBean, getMethodName));
@@ -65,7 +65,7 @@ public class ProtoBufUtil {
                             goalBuildBaseTypeAddMethodMap.put(declaredField, addMethod);
                         }
                     } else {
-                        String addMethodName = "add" + upperCaseFirstLetter(targetClass.getSimpleName());
+                        String addMethodName = "add" + upperCaseFirstLetter(simpleName);
                         if(!targetClass.equals(Void.class)
                                 && (addMethod = hasListAddMethond(goalBuilderMethod, addMethodName, targetClass)) != null) {
                             listClassMap.put(declaredField, targetClass);
@@ -114,22 +114,27 @@ public class ProtoBufUtil {
             Class listClass = entry.getValue();
             //get方法
             Method getListMethod = listGetMethodMap.get(field);
-            //add方法
-            Method addListMethod = goalBuilderAddMethodMap.get(field);
             List invoke = (List) getListMethod.invoke(sourceBean);
-
-            for (int i = 0; i < invoke.size(); i++) {
-                try {
-                    Constructor cellConstruct = listClass.getDeclaredConstructor();
-                    cellConstruct.setAccessible(true);
-                    Object o = cellConstruct.newInstance();
-                    Object newBuilder = getMethod(o, "newBuilder").invoke(null);
-                    addListMethod.invoke(goalBuilder, transformProtoReturnBean(newBuilder, invoke.get(i)));
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                    throw e;
+            if(invoke != null) {
+                if(baseTypeList.contains(listClass.getSimpleName())) {
+                    for (Object o : invoke) {
+                        goalBuildBaseTypeAddMethodMap.get(field).invoke(goalBuilder, o);
+                    }
+                    continue;
                 }
+                for (int i = 0; i < invoke.size(); i++) {
+                    try {
+                        Constructor cellConstruct = listClass.getDeclaredConstructor();
+                        cellConstruct.setAccessible(true);
+                        Object o = cellConstruct.newInstance();
+                        Object newBuilder = getMethod(o, "newBuilder").invoke(null);
+                        goalBuilderAddMethodMap.get(field).invoke(goalBuilder, transformProtoReturnBean(newBuilder, invoke.get(i)));
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
 
+                }
             }
 
         }
@@ -179,7 +184,13 @@ public class ProtoBufUtil {
     }
 
     private static String upperCaseFirstLetter(String word) {
-        return String.valueOf(word.charAt(0)).toUpperCase() + word.substring(1);
+        try {
+            return String.valueOf(word.charAt(0)).toUpperCase() + word.substring(1);
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.println(word);
+            throw e;
+        }
+
     }
     
 }

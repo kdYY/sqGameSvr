@@ -18,6 +18,7 @@ import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,6 +47,7 @@ public class SenceService {
     //<场景id,场景信息>
     private Map<Integer, SenceConfigMsg> senceIdAndSenceMsgMap;
 
+    private Map<Integer, List<SenceEntity>> senceIdAndNpcMap;
     //存储所有初始化的实体信息
     private List<EntityType> entityTypes;
 
@@ -73,6 +75,7 @@ public class SenceService {
                     }
                     senceEntities.addAll(entitys);
                 }
+
                 senceConfigMsg.setSenceEntities(senceEntities);
                 List<UserEntity> userEntities = senceIdAndUserEntityMap.get(senceConfigMsg.getSenceId());
                 senceConfigMsg.setUserEntities(userEntities);
@@ -82,6 +85,12 @@ public class SenceService {
             senceIdAndSenceMsgMap = senceConfigMsgList.stream()
                     .collect(Collectors.toMap(SenceConfigMsg::getSenceId, senceConfigMsg -> senceConfigMsg));
 
+            senceIdAndNpcMap = senceConfigMsgList.stream()
+                    .collect(Collectors.toMap(SenceConfigMsg::getSenceId,
+                            senceConfigMsg -> senceConfigMsg.getSenceEntities()
+                                    .stream()
+                                    .filter(senceentity -> senceentity.getTypeId() == 1)
+                                    .collect(Collectors.toList())));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -198,6 +207,15 @@ public class SenceService {
                 return userEntity;
             }
 
+        }
+        return null;
+    }
+
+    public synchronized SenceEntity getSenceEntityBySenceId(Integer senceId, Integer npcId) {
+        for (SenceEntity senceEntity : senceIdAndNpcMap.get(senceId)) {
+            if(senceEntity.getId().equals(npcId)) {
+                return senceEntity;
+            }
         }
         return null;
     }
