@@ -3,6 +3,10 @@ package org.sq.gameDemo.svr.common;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.sq.gameDemo.common.OrderEnum;
+import org.sq.gameDemo.common.entity.MsgEntity;
+import org.sq.gameDemo.common.proto.MessageProto;
+import org.sq.gameDemo.svr.common.customException.customException;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 
@@ -11,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 public class UserCache {
@@ -23,6 +28,9 @@ public class UserCache {
     public static Map<Channel,Integer> channelUserIdMap = new ConcurrentHashMap<>();
     //<UserId, User>
     public static Map<Integer, User> userMap = new ConcurrentHashMap<>();
+    //<SenceId, Channel>
+    public static Map<Integer, List<Channel>> senceChannelGroupMap = new ConcurrentHashMap<>();
+
 
     @PostConstruct
     public void init() {
@@ -32,6 +40,31 @@ public class UserCache {
         }
     }
 
+    /**
+     *
+     * @param senceId
+     * @param channel
+     * @param msg 要广播话语
+     */
+    public static void addChannelInGroup(Integer senceId, Channel channel, String msg) {
+        List<Channel> channelList = senceChannelGroupMap.get(senceId);
+        if(channelList == null) {
+            channelList = new CopyOnWriteArrayList<>();
+        }
+        channelList.add(channel);
+        //同时广播
+        broadcastChannelGroupBysenceId(channelList, msg);
+    }
+
+    public static void moveChannelInGroup(Integer senceId, Channel channel, String msg) {
+        List<Channel> channelList = senceChannelGroupMap.get(senceId);
+        if(channelList == null) {
+            throw new customException.RemoveFailedException("场景id不存在");
+        }
+        channelList.remove(channel);
+        //同时广播
+        broadcastChannelGroupBysenceId(channelList, msg);
+    }
 
     public static void updateUserToken(int userId, String token) {
         updateKey(tokenUserMap, token, userId);
@@ -59,12 +92,7 @@ public class UserCache {
     }
 
     private static Object getKeyByValue(Object value, Map map) {
-        for (Object key : map.keySet()) {
-            if(map.get(key).equals(value)) {
-                return key;
-            }
-        }
-        return null;
+        return  map.keySet().stream().filter(key -> map.get(key).equals(value)).findFirst().get();
     }
 
     public static void addUserMap(int userId, User user) {
@@ -73,6 +101,19 @@ public class UserCache {
 
     public static User getUserById(int userId) {
         return userMap.get(userId);
+    }
+
+    public static void broadcastChannelGroupBysenceId(List<Channel> channelGroup, String msg) {
+        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
+        builder.setContent(msg);
+        builder.setCmd(OrderEnum.BroadCast.getOrder());
+        MsgEntity msgEntity = new MsgEntity();
+        msgEntity.setData(builder.build().toByteArray());
+
+        channelGroup.forEach(channel -> {
+            msgEntity.setChannel(channel);
+            channel.writeAndFlush(msgEntity);
+        });
     }
 
 }

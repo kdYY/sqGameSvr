@@ -11,6 +11,7 @@ import org.sq.gameDemo.svr.game.entity.model.EntityType;
 import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
 import org.sq.gameDemo.svr.game.entity.model.UserEntity;
 import org.sq.gameDemo.svr.game.entity.model.UserEntityExample;
+import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
@@ -39,43 +40,17 @@ public class EntityService {
 
 
     public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
-        for (EntityType entitieType : entitieTypes) {
+        for (EntityType entityType : entitieTypes) {
             builder.addEntityType(
-                    (EntityTypeProto.EntityType) ProtoBufUtil.transformProtoReturnBean(EntityTypeProto.EntityType.newBuilder(), entitieType)
+                    (EntityTypeProto.EntityType) ProtoBufUtil.transformProtoReturnBean(EntityTypeProto.EntityType.newBuilder(), entityType)
             );
         }
     }
 
     public EntityType getEntityTypeById(int typeId) {
-        for (EntityType entitieType : entitieTypes) {
-            if(entitieType.getId() == typeId) {
-                return entitieType;
-            }
-        }
-        return null;
+        return  SenceService.getSingleByCondition(entitieTypes, o->o.getId() == typeId);
     }
 
-    //实体转化为SenceEntity
-    public SenceEntityProto.SenceEntity transformSenceEntityProto(SenceEntity senceEntity) {
-        EntityType entityTypeById = getEntityTypeById(senceEntity.getTypeId());
-
-        return SenceEntityProto.SenceEntity.newBuilder()
-                .setId(senceEntity.getId())
-                .setNum(senceEntity.getNum())
-                .setState(senceEntity.getState())
-                .build();
-    }
-    //实体转化为UserEntity
-    public UserEntityProto.UserEntity transformUserEntityProto(UserEntity userEntity) {
-        EntityType entityTypeById = getEntityTypeById(userEntity.getTypeId());
-
-        return UserEntityProto.UserEntity.newBuilder()
-                .setNick(userEntity.getNick())
-                .setTypeId(userEntity.getTypeId())
-                .setUserId(userEntity.getUserId())
-                .setState(userEntity.getState())
-                .build();
-    }
 
     //获取数据库中UserEntity实体
     public List<UserEntity> getUserEntityList() {

@@ -12,6 +12,7 @@ public enum OrderEnum {
     Aoi("aoi", 109),
     Move("move",  110),
     TalkWithNpc("talkwithnpc", 111),
+    BroadCast("broadCast", 111),
     ;
 
     private String order;

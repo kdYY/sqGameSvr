@@ -9,10 +9,9 @@ import org.sq.gameDemo.common.proto.SenceEntityProto;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.common.proto.SenceProto;
 import org.sq.gameDemo.common.proto.UserEntityProto;
-import org.sq.gameDemo.svr.common.customException.BindRoleInSenceExistException;
-import org.sq.gameDemo.svr.common.customException.RemoveFailedException;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.UserCache;
+import org.sq.gameDemo.svr.common.customException.customException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
 import org.sq.gameDemo.svr.game.entity.model.UserEntity;
@@ -50,7 +49,7 @@ public class EntityController {
             UserEntity userEntity = senceService.getUserEntityByUserId(userId, defaultSenceId);
             if(userEntity != null) {
                 //老用户
-                throw new BindRoleInSenceExistException();
+                throw new customException.BindRoleInSenceExistException();
             }
 
             int typeId = requestInfo.getTypeId();
@@ -61,16 +60,16 @@ public class EntityController {
             entity.setState(1);
             entity.setTypeId(typeId);
             entity.setUserId(userId);
-            senceService.bindUserEntityInSence(entity);
+            senceService.addUserEntityInSence(entity, msgEntity.getChannel());
             //数据库角色类型数据增加
             entityService.addUserEntity(entity);
+
             //返回场景信息
             getUserSenceMsg(builder, defaultSenceId);
 
-
             builder.setMsgId(requestInfo.getMsgId())
                     .setTime(requestInfo.getTime());
-        } catch (BindRoleInSenceExistException bindException) {
+        } catch (customException.BindRoleInSenceExistException bindException) {
             builder.setContent("角色只能绑定一次");
             builder.setResult(111);
         } catch (Exception e) {
@@ -127,29 +126,30 @@ public class EntityController {
             SenceProto.RequestSenceInfo requestInfo = SenceProto.RequestSenceInfo.parseFrom(data);
             int newSenceId = requestInfo.getSenceId();
             //判断场景id是否有效
-
-
+            if(senceService.getSenceBySenceId(newSenceId) == null) {
+                throw new customException.RemoveFailedException("场景id不存在");
+            }
             Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
             UserEntity userEntity = senceService.getUserEntityByUserId(userId);
             if(newSenceId == userEntity.getSenceId()) {
                 //不能移动到原来的场景
-                throw new BindRoleInSenceExistException();
+                throw new customException.BindRoleInSenceExistException();
             }
             //从场景中移除并获取
-            senceService.removeUserEntity(userEntity);
+            senceService.removeUserEntity(userEntity, msgEntity.getChannel());
             //改变用户的所在地
             userEntity.setSenceId(newSenceId);
             //进行重新绑定
-            senceService.bindUserEntityInSence(userEntity);
+            senceService.addUserEntityInSence(userEntity, msgEntity.getChannel());
             //修改用户的状态并进行数据库用户场景id更新
             getUserSenceMsg(builder, newSenceId);
             builder.setMsgId(requestInfo.getMsgId())
                     .setTime(requestInfo.getTime());
-        } catch (BindRoleInSenceExistException bindException) {
+        } catch (customException.BindRoleInSenceExistException bindException) {
             builder.setContent("你已经在这个场景中，输入getMap获取地图");
             builder.setResult(111);
-        } catch (RemoveFailedException re) {
-            builder.setContent("移动失败，系统繁忙");
+        } catch (customException.RemoveFailedException re) {
+            builder.setContent(re.getMessage());
             builder.setResult(222);
         } catch (Exception e) {
             e.printStackTrace();

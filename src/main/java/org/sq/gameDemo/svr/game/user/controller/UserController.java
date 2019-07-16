@@ -13,13 +13,12 @@ import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.UserCache;
-import org.sq.gameDemo.svr.game.entity.model.EntityType;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.game.entity.model.UserEntity;
 import org.sq.gameDemo.svr.game.entity.service.EntityService;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 /**
  * <b><code>UserController</code></b>
@@ -77,7 +76,7 @@ public class UserController {
     }
 
     @OrderMapping(OrderEnum.Login)
-    public MsgEntity login(MsgEntity msgEntity) {
+    public void login(MsgEntity msgEntity) {
         byte[] data = msgEntity.getData();
         UserProto.RequestUserInfo requestUserInfo = null;
         UserProto.ResponseUserInfo.Builder builder = UserProto.ResponseUserInfo.newBuilder();
@@ -91,11 +90,15 @@ public class UserController {
             User loginUser = userService.getUser(user);
             if(loginUser == null) {
                 builder.setContent("no this user, please register");
+                builder.setResult(404);//用户缺失
             } else {
                 String token = tokenEncryp(loginUser.getId());
                 builder.setToken(token);
-                //如果是老用户，UserEntity表中没有该数据
-
+                //如果是老用户，获取上次保存的UserEntity，找到对应场景
+                UserEntity userEntity = entityService.getUserEntityByUserId(loginUser.getId());
+                if(userEntity != null) {
+                    UserCache.addChannelInGroup(userEntity.getSenceId(), msgEntity.getChannel(), userEntity.getNick() + "已经上线！");
+                }
                 UserCache.updateUserToken(loginUser.getId(), token);
                 UserCache.updateChannelCache(msgEntity.getChannel(), loginUser.getId());
             }
@@ -104,7 +107,7 @@ public class UserController {
             builder.setResult(500);//服务端异常
         }
         msgEntity.setData(builder.build().toByteArray());
-        return msgEntity;
+        msgEntity.getChannel().writeAndFlush(msgEntity);
     }
 
 

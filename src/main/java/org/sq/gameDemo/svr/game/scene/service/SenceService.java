@@ -1,13 +1,14 @@
 package org.sq.gameDemo.svr.game.scene.service;
 
+import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
-import org.sq.gameDemo.svr.common.customException.BindRoleInSenceExistException;
-import org.sq.gameDemo.svr.common.customException.RemoveFailedException;
+import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.PoiUtil;
+import org.sq.gameDemo.svr.common.customException.customException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.entity.model.EntityType;
 import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
@@ -17,11 +18,8 @@ import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,47 +38,46 @@ public class SenceService {
     private String entityFileName;
     //存储场景
     private List<GameScene> gameScenes;
-
-    //场景用户角色信息
+    //<场景id,玩家集合>
     private List<UserEntity> userEntityList;
     private Map<Integer, List<UserEntity>> senceIdAndUserEntityMap;
     //<场景id,场景信息>
     private Map<Integer, SenceConfigMsg> senceIdAndSenceMsgMap;
-
+    //<场景id,怪物集合>
     private Map<Integer, List<SenceEntity>> senceIdAndNpcMap;
-    //存储所有初始化的实体信息
+    //存储所有角色类型
     private List<EntityType> entityTypes;
 
     @PostConstruct
-    private void initalSence() {
+    private void initalSence() throws Exception {
         try {
             gameScenes = PoiUtil.readExcel(senceFileName, 0, GameScene.class);
             List<SenceConfigMsg> senceConfigMsgList = PoiUtil.readExcel(sencedataFileName, 0, SenceConfigMsg.class);
             entityTypes = PoiUtil.readExcel(entityFileName, 0, EntityType.class);
             userEntityList = entityService.getUserEntityList();
             senceIdAndUserEntityMap = userEntityList.stream().collect(Collectors.groupingBy(UserEntity::getSenceId));
-            for (SenceConfigMsg senceConfigMsg : senceConfigMsgList) {
+
+            senceConfigMsgList.forEach(senceConfigMsg -> {
                 List<SenceEntity> senceEntityList = JsonUtil.reSerializableJson(senceConfigMsg.getJsonStr(), SenceEntity.class);
-                ArrayList<SenceEntity> senceEntities = new ArrayList<>();
+
+                ArrayList<SenceEntity> monsterListInSence = new ArrayList<>();
+
                 for (SenceEntity senceEntity : senceEntityList) {
-                    ArrayList<SenceEntity> entitys = new ArrayList<>();
                     for (int i = 0; i < senceEntity.getNum(); i++) {
-                        SenceEntity entity = new SenceEntity();
-                        entity.setId(i);
-                        entity.setState(senceEntity.getState());
-                        entity.setTypeId(senceEntity.getTypeId());
-                        entity.setSenceId(senceConfigMsg.getSenceId());
-                        entity.setNpcWord(senceEntity.getNpcWord());
-                        entitys.add(entity);
+                        SenceEntity monster = new SenceEntity();
+                        monster.setId(i);
+                        monster.setState(senceEntity.getState());
+                        monster.setTypeId(senceEntity.getTypeId());
+                        monster.setSenceId(senceConfigMsg.getSenceId());
+                        monster.setNpcWord(senceEntity.getNpcWord());
+                        monsterListInSence.add(monster);
                     }
-                    senceEntities.addAll(entitys);
                 }
 
-                senceConfigMsg.setSenceEntities(senceEntities);
-                List<UserEntity> userEntities = senceIdAndUserEntityMap.get(senceConfigMsg.getSenceId());
-                senceConfigMsg.setUserEntities(userEntities);
+                senceConfigMsg.setSenceEntities(monsterListInSence);
+                senceConfigMsg.setUserEntities(senceIdAndUserEntityMap.get(senceConfigMsg.getSenceId()));
                 senceConfigMsg.setEntityTypes(entityTypes);
-            }
+            });
 
             senceIdAndSenceMsgMap = senceConfigMsgList.stream()
                     .collect(Collectors.toMap(SenceConfigMsg::getSenceId, senceConfigMsg -> senceConfigMsg));
@@ -92,9 +89,10 @@ public class SenceService {
                                     .filter(senceentity -> senceentity.getTypeId() == 1)
                                     .collect(Collectors.toList())));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw  e;
         }
     }
+
     public SenceConfigMsg getSenecMsgById(int senceId) {
         return senceIdAndSenceMsgMap.get(senceId);
     }
@@ -107,42 +105,25 @@ public class SenceService {
     public void transformEntityResponseProto(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) throws Exception{
         SenceConfigMsg findSence = null;
         if((findSence=getSenecMsgById(senceId)) == null) {
-            return;
+            throw new customException.NoSuchSenceException("没有此场景");
         }
         ProtoBufUtil.transformProtoReturnBuilder(builder, findSence);
-
-//        for (UserEntity userEntity : findSence.getUserEntities()) {
-//            builder.addUserEntity(entityService.transformUserEntityProto(userEntity));
-//        }
-//        for (SenceEntity senceEntity : findSence.getSenceEntities()) {
-//            builder.addSenceEntity(entityService.transformSenceEntityProto(senceEntity));
-//        }
     }
 
 
     public EntityType getEntityTypeById(int id) {
-        for (EntityType entityBaseType : entityTypes) {
-            if(entityBaseType.getId() == id) {
-                return entityBaseType;
-            }
-        }
-        return null;
+        return getSingleByCondition(entityTypes, entityType -> entityType.getId() == id);
     }
 
     //创建用户 角色  根据id创建一个entity， 默认在场景 id = 1起源之地
 
 
     public GameScene getSenceBySenceId(int senceId) {
-        for (GameScene gameScene : gameScenes) {
-            if(gameScene.getId() == senceId) {
-                return gameScene;
-            }
-        }
-        return null;
+        return getSingleByCondition(gameScenes, gameScene -> gameScene.getId() == senceId);
     }
 
     //
-    public void bindUserEntityInSence(UserEntity userEntity) throws BindRoleInSenceExistException {
+    public void addUserEntityInSence(UserEntity userEntity, Channel channel) throws customException.BindRoleInSenceExistException {
         SenceConfigMsg msg = senceIdAndSenceMsgMap.get(userEntity.getSenceId());
         List<UserEntity> userEntities = msg.getUserEntities();
         if(userEntities == null) {
@@ -156,67 +137,48 @@ public class SenceService {
         }
 
         //广播通知
+        //增加进channelGroup
+        UserCache.addChannelInGroup(userEntity.getSenceId(), channel, userEntity.getNick() + "已经上线!");
     }
 
     private boolean checkUserEntityExistInSence(int userId, List<UserEntity> userEntities) {
-        for (UserEntity entity : userEntities) {
-            if(entity.getUserId() == userId) {
-                return true;
-            }
+        if(getSingleByCondition(userEntities, (o -> o.getUserId() == userId)) != null) {
+            return true;
         }
         return false;
     }
 
-//    public GameScene bindUserEntityAndGetSence(int senceId, UserEntity userEntity) {
-//        SenceConfigMsg msg = senceIdAndSenceMsgMap.get(senceId);
-//        if(msg != null) {
-//            msg.getUserEntities().add(userEntity);
-//            return getSenceBySenceId(senceId);
-//        } else {
-//            return null;
-//        }
-//
-//    }
-
     //从原来的remove掉，同时广播通知
-    public void removeUserEntity(UserEntity userEntity) throws RemoveFailedException{
+    public void removeUserEntity(UserEntity userEntity, Channel channel) throws customException.RemoveFailedException {
         UserEntity userEntityFind = getUserEntityByUserId(userEntity.getUserId(), userEntity.getSenceId());
         List<UserEntity> userEntities = senceIdAndUserEntityMap.get(userEntity.getSenceId());
         synchronized (userEntities) {
             if(!userEntities.remove(userEntityFind)) {
-                throw new RemoveFailedException();
+                throw new customException.RemoveFailedException("移动失败");
             }
         }
+        UserCache.moveChannelInGroup(userEntityFind.getSenceId(), channel, userEntity.getNick() + "已经下线!");
     }
 
 
     public UserEntity getUserEntityByUserId(int userId, int senceId) {
-        List<UserEntity> userEntities = senceIdAndUserEntityMap.get(senceId);
-        for (UserEntity userEntity : userEntities) {
-            if(userEntity.getUserId().equals(userId)) {
-                return userEntity;
-            }
-
-        }
-        return null;
+        return getSingleByCondition(senceIdAndUserEntityMap.get(senceId), (entity -> entity.getUserId().equals(userId)));
     }
 
     public synchronized UserEntity getUserEntityByUserId(Integer userId) {
-        for (UserEntity userEntity : userEntityList) {
-            if(userEntity.getUserId().equals(userId)) {
-                return userEntity;
-            }
-
-        }
-        return null;
+        return getSingleByCondition(userEntityList, (o -> o.getUserId().equals(userId)));
     }
 
     public synchronized SenceEntity getSenceEntityBySenceId(Integer senceId, Integer npcId) {
-        for (SenceEntity senceEntity : senceIdAndNpcMap.get(senceId)) {
-            if(senceEntity.getId().equals(npcId)) {
-                return senceEntity;
-            }
-        }
-        return null;
+        return getSingleByCondition(senceIdAndNpcMap.get(senceId), o -> o.getId().equals(npcId));
     }
+
+    public static <T> T getSingleByCondition(List<T> list, Function<T,Boolean> function) {
+        if(list == null || list.size() == 0) {
+            return null;
+        }
+        return list.stream().filter(o -> function.apply(o)).findFirst().get();
+    }
+
+
 }
