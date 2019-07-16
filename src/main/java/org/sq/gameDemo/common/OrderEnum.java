@@ -1,6 +1,7 @@
 package org.sq.gameDemo.common;
 
 public enum OrderEnum {
+    PING("ping", 100),
     ErrOrder("errOrder",101 ),
     SvrErr("svrErr", 102 ),
     Help("help", 103 ),

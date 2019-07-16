@@ -1,5 +1,6 @@
 package org.sq.gameDemo.svr.handler;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-
+        Channel channel = ctx.channel();
         System.out.println("channel active");
     }
 
@@ -25,7 +26,7 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MsgEntity msgEntity) throws Exception {
-        System.out.println("接受客户端发送1协议消息");
+
         DispatchRequest.dispatchRequest(ctx, msgEntity);
     }
 

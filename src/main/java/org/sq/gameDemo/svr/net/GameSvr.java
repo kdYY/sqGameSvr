@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.log4j.Logger;
+import org.sq.gameDemo.svr.handler.AcceptorIdleStateTrigger;
 
 import java.net.InetSocketAddress;
 
@@ -22,6 +23,7 @@ public class GameSvr {
 
     @Autowired
     private SvrChannelInitializer svrChannelInitializer;
+
 
 
 
@@ -39,6 +41,7 @@ public class GameSvr {
                     .childHandler(svrChannelInitializer)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
+
             future = b.bind(address).sync();
             System.out.println(GameSvr.class.getName() + " started and listen on " + future.channel().localAddress());
             channel = future.channel();

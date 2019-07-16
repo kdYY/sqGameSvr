@@ -3,18 +3,20 @@ package org.sq.gameDemo.svr.net;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.common.MsgDecoder;
 import org.sq.gameDemo.common.MsgEncoder;
-import org.sq.gameDemo.svr.common.NettyConstant;
+import org.sq.gameDemo.svr.handler.AcceptorIdleStateTrigger;
 import org.sq.gameDemo.svr.handler.SvrHandler;
+
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private SimpleChannelInboundHandler simpleChannelInboundHandler;
-
+    private final AcceptorIdleStateTrigger idleStateTrigger = new AcceptorIdleStateTrigger();
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         /*
@@ -49,8 +51,12 @@ public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
 //        ch.pipeline().addLast("decoder", new ProtobufDecoder());
 //        ch.pipeline().addLast("encoder",new ProtobufEncoder());
 //        ch.pipeline().addLast("handler", new SvrMessageHandler());
+
+        ch.pipeline().addLast(new IdleStateHandler(5, 0, 0, TimeUnit.SECONDS));
+        ch.pipeline().addLast(idleStateTrigger);
         ch.pipeline().addLast("decoder", new MsgDecoder());
         ch.pipeline().addLast("encoder",new MsgEncoder());
+
         ch.pipeline().addLast("handler", new SvrHandler());
     }
 

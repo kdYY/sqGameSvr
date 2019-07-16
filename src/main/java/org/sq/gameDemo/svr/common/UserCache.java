@@ -92,7 +92,13 @@ public class UserCache {
     }
 
     private static Object getKeyByValue(Object value, Map map) {
-        return  map.keySet().stream().filter(key -> map.get(key).equals(value)).findFirst().get();
+        if(map == null || map.size() == 0) {
+            return null;
+        }
+        return  map.keySet().stream().filter(key -> {
+            Object o = map.get(key);
+            return map.get(key).equals(value);
+        }).findFirst().get();
     }
 
     public static void addUserMap(int userId, User user) {

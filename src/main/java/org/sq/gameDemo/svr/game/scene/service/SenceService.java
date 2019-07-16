@@ -38,8 +38,9 @@ public class SenceService {
     private String entityFileName;
     //存储场景
     private List<GameScene> gameScenes;
-    //<场景id,玩家集合>
+    //所有的玩家集合
     private List<UserEntity> userEntityList;
+    //<场景id,玩家集合>
     private Map<Integer, List<UserEntity>> senceIdAndUserEntityMap;
     //<场景id,场景信息>
     private Map<Integer, SenceConfigMsg> senceIdAndSenceMsgMap;
@@ -110,19 +111,17 @@ public class SenceService {
         ProtoBufUtil.transformProtoReturnBuilder(builder, findSence);
     }
 
-
     public EntityType getEntityTypeById(int id) {
         return getSingleByCondition(entityTypes, entityType -> entityType.getId() == id);
     }
-
-    //创建用户 角色  根据id创建一个entity， 默认在场景 id = 1起源之地
-
 
     public GameScene getSenceBySenceId(int senceId) {
         return getSingleByCondition(gameScenes, gameScene -> gameScene.getId() == senceId);
     }
 
-    //
+    /**
+     *     將玩家角色加入场景，并广播通知
+     */
     public void addUserEntityInSence(UserEntity userEntity, Channel channel) throws customException.BindRoleInSenceExistException {
         SenceConfigMsg msg = senceIdAndSenceMsgMap.get(userEntity.getSenceId());
         List<UserEntity> userEntities = msg.getUserEntities();
@@ -135,20 +134,17 @@ public class SenceService {
         } else {
             userEntities.add(userEntity);
         }
-
         //广播通知
         //增加进channelGroup
         UserCache.addChannelInGroup(userEntity.getSenceId(), channel, userEntity.getNick() + "已经上线!");
     }
 
-    private boolean checkUserEntityExistInSence(int userId, List<UserEntity> userEntities) {
-        if(getSingleByCondition(userEntities, (o -> o.getUserId() == userId)) != null) {
-            return true;
-        }
-        return false;
-    }
-
-    //从原来的remove掉，同时广播通知
+    /**
+     * /从原来的remove掉，同时广播通知
+     * @param userEntity
+     * @param channel
+     * @throws customException.RemoveFailedException
+     */
     public void removeUserEntity(UserEntity userEntity, Channel channel) throws customException.RemoveFailedException {
         UserEntity userEntityFind = getUserEntityByUserId(userEntity.getUserId(), userEntity.getSenceId());
         List<UserEntity> userEntities = senceIdAndUserEntityMap.get(userEntity.getSenceId());
@@ -159,6 +155,15 @@ public class SenceService {
         }
         UserCache.moveChannelInGroup(userEntityFind.getSenceId(), channel, userEntity.getNick() + "已经下线!");
     }
+
+    private boolean checkUserEntityExistInSence(int userId, List<UserEntity> userEntities) {
+        if(getSingleByCondition(userEntities, (o -> o.getUserId() == userId)) != null) {
+            return true;
+        }
+        return false;
+    }
+
+
 
 
     public UserEntity getUserEntityByUserId(int userId, int senceId) {

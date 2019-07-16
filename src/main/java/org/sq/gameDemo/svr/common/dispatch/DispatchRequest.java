@@ -73,6 +73,9 @@ public class DispatchRequest{
     public void dispatch(ChannelHandlerContext ctx, MsgEntity msgEntity) {
         msgEntity.setChannel(ctx.channel());
         short cmdCode = msgEntity.getCmdCode();
+        if(OrderEnum.PING.getOrderCode() == cmdCode) {
+            return;
+        }
         System.out.println("server: dispatch->" + cmdCode + ":" + OrderEnum.getOrderByCode(cmdCode));
         executorService.submit(()->{
             Object response = null;
