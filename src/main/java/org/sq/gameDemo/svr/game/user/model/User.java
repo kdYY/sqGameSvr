@@ -1,6 +1,6 @@
 package org.sq.gameDemo.svr.game.user.model;
 
-import org.sq.gameDemo.svr.common.protoUtil.ProtoObject;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 
 /**
  * 
@@ -16,7 +16,7 @@ public class User {
 
     private String password;
 
-    @ProtoObject(Ignore = true)
+    @ProtoField(Ignore = true)
     private String token;
 
     public Integer getId() {

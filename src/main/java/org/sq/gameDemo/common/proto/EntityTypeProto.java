@@ -14,6 +14,104 @@ public final class EntityTypeProto {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  /**
+   * Protobuf enum {@code AttackType}
+   */
+  public enum AttackType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>AP = 0;</code>
+     */
+    AP(0),
+    /**
+     * <code>AD = 1;</code>
+     */
+    AD(1),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>AP = 0;</code>
+     */
+    public static final int AP_VALUE = 0;
+    /**
+     * <code>AD = 1;</code>
+     */
+    public static final int AD_VALUE = 1;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @Deprecated
+    public static AttackType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static AttackType forNumber(int value) {
+      switch (value) {
+        case 0: return AP;
+        case 1: return AD;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<AttackType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        AttackType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<AttackType>() {
+            public AttackType findValueByNumber(int number) {
+              return AttackType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return EntityTypeProto.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final AttackType[] VALUES = values();
+
+    public static AttackType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private AttackType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:AttackType)
+  }
+
   public interface EntityTypeOrBuilder extends
       // @@protoc_insertion_point(interface_extends:EntityType)
       com.google.protobuf.MessageOrBuilder {
@@ -32,6 +130,25 @@ public final class EntityTypeProto {
      */
     com.google.protobuf.ByteString
         getNameBytes();
+
+    /**
+     * <code>int32 baseMP = 3;</code>
+     */
+    int getBaseMP();
+
+    /**
+     * <code>int32 baseHP = 4;</code>
+     */
+    int getBaseHP();
+
+    /**
+     * <code>.AttackType type = 5;</code>
+     */
+    int getTypeValue();
+    /**
+     * <code>.AttackType type = 5;</code>
+     */
+    AttackType getType();
   }
   /**
    * <pre>
@@ -51,6 +168,7 @@ public final class EntityTypeProto {
     }
     private EntityType() {
       name_ = "";
+      type_ = 0;
     }
 
     @Override
@@ -92,6 +210,22 @@ public final class EntityTypeProto {
               String s = input.readStringRequireUtf8();
 
               name_ = s;
+              break;
+            }
+            case 24: {
+
+              baseMP_ = input.readInt32();
+              break;
+            }
+            case 32: {
+
+              baseHP_ = input.readInt32();
+              break;
+            }
+            case 40: {
+              int rawValue = input.readEnum();
+
+              type_ = rawValue;
               break;
             }
             default: {
@@ -169,6 +303,41 @@ public final class EntityTypeProto {
       }
     }
 
+    public static final int BASEMP_FIELD_NUMBER = 3;
+    private int baseMP_;
+    /**
+     * <code>int32 baseMP = 3;</code>
+     */
+    public int getBaseMP() {
+      return baseMP_;
+    }
+
+    public static final int BASEHP_FIELD_NUMBER = 4;
+    private int baseHP_;
+    /**
+     * <code>int32 baseHP = 4;</code>
+     */
+    public int getBaseHP() {
+      return baseHP_;
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 5;
+    private int type_;
+    /**
+     * <code>.AttackType type = 5;</code>
+     */
+    public int getTypeValue() {
+      return type_;
+    }
+    /**
+     * <code>.AttackType type = 5;</code>
+     */
+    public AttackType getType() {
+      @SuppressWarnings("deprecation")
+      AttackType result = AttackType.valueOf(type_);
+      return result == null ? AttackType.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -189,6 +358,15 @@ public final class EntityTypeProto {
       if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
+      if (baseMP_ != 0) {
+        output.writeInt32(3, baseMP_);
+      }
+      if (baseHP_ != 0) {
+        output.writeInt32(4, baseHP_);
+      }
+      if (type_ != AttackType.AP.getNumber()) {
+        output.writeEnum(5, type_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -204,6 +382,18 @@ public final class EntityTypeProto {
       }
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
+      }
+      if (baseMP_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, baseMP_);
+      }
+      if (baseHP_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, baseHP_);
+      }
+      if (type_ != AttackType.AP.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(5, type_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -224,6 +414,11 @@ public final class EntityTypeProto {
           != other.getId()) return false;
       if (!getName()
           .equals(other.getName())) return false;
+      if (getBaseMP()
+          != other.getBaseMP()) return false;
+      if (getBaseHP()
+          != other.getBaseHP()) return false;
+      if (type_ != other.type_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -239,6 +434,12 @@ public final class EntityTypeProto {
       hash = (53 * hash) + getId();
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + BASEMP_FIELD_NUMBER;
+      hash = (53 * hash) + getBaseMP();
+      hash = (37 * hash) + BASEHP_FIELD_NUMBER;
+      hash = (53 * hash) + getBaseHP();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + type_;
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -380,6 +581,12 @@ public final class EntityTypeProto {
 
         name_ = "";
 
+        baseMP_ = 0;
+
+        baseHP_ = 0;
+
+        type_ = 0;
+
         return this;
       }
 
@@ -408,6 +615,9 @@ public final class EntityTypeProto {
         EntityType result = new EntityType(this);
         result.id_ = id_;
         result.name_ = name_;
+        result.baseMP_ = baseMP_;
+        result.baseHP_ = baseHP_;
+        result.type_ = type_;
         onBuilt();
         return result;
       }
@@ -462,6 +672,15 @@ public final class EntityTypeProto {
         if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
+        }
+        if (other.getBaseMP() != 0) {
+          setBaseMP(other.getBaseMP());
+        }
+        if (other.getBaseHP() != 0) {
+          setBaseHP(other.getBaseHP());
+        }
+        if (other.type_ != 0) {
+          setTypeValue(other.getTypeValue());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -583,6 +802,103 @@ public final class EntityTypeProto {
   checkByteStringIsUtf8(value);
         
         name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int baseMP_ ;
+      /**
+       * <code>int32 baseMP = 3;</code>
+       */
+      public int getBaseMP() {
+        return baseMP_;
+      }
+      /**
+       * <code>int32 baseMP = 3;</code>
+       */
+      public Builder setBaseMP(int value) {
+        
+        baseMP_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 baseMP = 3;</code>
+       */
+      public Builder clearBaseMP() {
+        
+        baseMP_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int baseHP_ ;
+      /**
+       * <code>int32 baseHP = 4;</code>
+       */
+      public int getBaseHP() {
+        return baseHP_;
+      }
+      /**
+       * <code>int32 baseHP = 4;</code>
+       */
+      public Builder setBaseHP(int value) {
+        
+        baseHP_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 baseHP = 4;</code>
+       */
+      public Builder clearBaseHP() {
+        
+        baseHP_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int type_ = 0;
+      /**
+       * <code>.AttackType type = 5;</code>
+       */
+      public int getTypeValue() {
+        return type_;
+      }
+      /**
+       * <code>.AttackType type = 5;</code>
+       */
+      public Builder setTypeValue(int value) {
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.AttackType type = 5;</code>
+       */
+      public AttackType getType() {
+        @SuppressWarnings("deprecation")
+        AttackType result = AttackType.valueOf(type_);
+        return result == null ? AttackType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.AttackType type = 5;</code>
+       */
+      public Builder setType(AttackType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        type_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.AttackType type = 5;</code>
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
         onChanged();
         return this;
       }
@@ -2498,14 +2814,16 @@ public final class EntityTypeProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\020EntityType.proto\"&\n\nEntityType\022\n\n\002id\030\001" +
-      " \001(\005\022\014\n\004name\030\002 \001(\t\"E\n\025EntityTypeRequestI" +
-      "nfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006typ" +
-      "eId\030\003 \001(\005\"x\n\026EntityTypeResponseInfo\022\016\n\006m" +
-      "sg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(" +
-      "\004\022\017\n\007content\030\004 \001(\t\022\037\n\nentityType\030\005 \003(\0132\013" +
-      ".EntityTypeB/\n\034org.sq.gameDemo.common.pr" +
-      "otoB\017EntityTypeProtob\006proto3"
+      "\n\020EntityType.proto\"a\n\nEntityType\022\n\n\002id\030\001" +
+      " \001(\005\022\014\n\004name\030\002 \001(\t\022\016\n\006baseMP\030\003 \001(\005\022\016\n\006ba" +
+      "seHP\030\004 \001(\005\022\031\n\004type\030\005 \001(\0162\013.AttackType\"E\n" +
+      "\025EntityTypeRequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014" +
+      "\n\004time\030\002 \001(\004\022\016\n\006typeId\030\003 \001(\005\"x\n\026EntityTy" +
+      "peResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result" +
+      "\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\037\n" +
+      "\nentityType\030\005 \003(\0132\013.EntityType*\034\n\nAttack" +
+      "Type\022\006\n\002AP\020\000\022\006\n\002AD\020\001B/\n\034org.sq.gameDemo." +
+      "common.protoB\017EntityTypeProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2516,7 +2834,7 @@ public final class EntityTypeProto {
     internal_static_EntityType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_EntityType_descriptor,
-        new String[] { "Id", "Name", });
+        new String[] { "Id", "Name", "BaseMP", "BaseHP", "Type", });
     internal_static_EntityTypeRequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_EntityTypeRequestInfo_fieldAccessorTable = new

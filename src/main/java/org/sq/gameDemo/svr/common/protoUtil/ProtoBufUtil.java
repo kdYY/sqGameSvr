@@ -1,9 +1,5 @@
 package org.sq.gameDemo.svr.common.protoUtil;
 
-import org.sq.gameDemo.common.proto.EntityTypeProto;
-import org.sq.gameDemo.common.proto.SenceEntityProto;
-import org.sq.gameDemo.common.proto.SenceMsgProto;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -20,7 +16,7 @@ public class ProtoBufUtil {
     //
     public static <T,K> T transformProtoReturnBuilder(T goalBuilder, K sourceBean) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
         Method[] goalBuilderMethod = goalBuilder.getClass().getDeclaredMethods();
-        Map<String, ProtoObject> feildNameIgnoreMap = new HashMap<>();
+        Map<String, ProtoField> feildNameIgnoreMap = new HashMap<>();
         Map<Field, Class> listClassMap = new HashMap<>();
 
         Map<Field, Method> listGetMethodMap = new HashMap<>();
@@ -30,6 +26,8 @@ public class ProtoBufUtil {
         Map<Field, Method> sourceBeanGetMethodMap = new HashMap<>();
         Map<Field, Method> goalBuilderSetMethodMap = new HashMap<>();
 
+
+        Map<Field, Method> sourceBeanFunctionMap = new HashMap<>();
 
         //获取K中的所有属性名称，排除@TransferProto(ignore=false)的属性, 获取需要注入List的属性
         Field[] declaredFields = sourceBean.getClass().getDeclaredFields();
@@ -42,17 +40,32 @@ public class ProtoBufUtil {
 
 
             for (Annotation declaredAnnotation : declaredAnnotations) {
-                if(declaredAnnotation instanceof ProtoObject) {
-                    ProtoObject annotation = (ProtoObject) declaredAnnotation;
+                if(declaredAnnotation instanceof ProtoField) {
+                    ProtoField annotation = (ProtoField) declaredAnnotation;
                     //查看ignore屬性
                     if(annotation.Ignore()) {
                         feildNameIgnoreMap.put(fieldName, annotation);
                         inject = false;
                         break;
                     }
+                    Class targetClass = annotation.TargetClass();
+                    //如果K中有Function需要执行的，加入执行
+                    if(!annotation.Function().isEmpty()) {
+                        Method method;
+                        if(!targetClass.equals(Void.class)
+                                && !annotation.TargetName().isEmpty()) {
+                            method = sourceBean.getClass().getMethod(annotation.Function(), targetClass);
+                        } else {
+                            method = sourceBean.getClass().getDeclaredMethod(annotation.Function());
+                        }
+                        sourceBeanFunctionMap.put(declaredField, method);
+                        inject = false;
+                        break;
+                    }
+
                     //如果K中有List,检查declaredMethods是否有add的方法，没有则跳过，有则加入执行
                     Method addMethod = null;
-                    Class targetClass = annotation.TargetClass();
+
                     String simpleName = targetClass.getSimpleName();
                     if(baseTypeList.contains(simpleName)) {
                         //基础类型的class
@@ -100,12 +113,16 @@ public class ProtoBufUtil {
             }
         }
         //进行方法执行
-        Set<Map.Entry<Field, Method>> getMethodSet = sourceBeanGetMethodMap.entrySet();
-        for (Map.Entry<Field, Method>  getMethodEntry: getMethodSet) {
+        for (Map.Entry<Field, Method>  getMethodEntry: sourceBeanGetMethodMap.entrySet()) {
             Method getMethod = getMethodEntry.getValue();
             Method setMethod = goalBuilderSetMethodMap.get(getMethodEntry.getKey());
             Object invoke = getMethod.invoke(sourceBean);
             setMethod.invoke(goalBuilder, invoke);
+        }
+
+        for (Map.Entry<Field, Method> fieldMethodEntry : sourceBeanFunctionMap.entrySet()) {
+            Method method = fieldMethodEntry.getValue();
+            method.invoke(sourceBean, goalBuilder);
         }
         //return goalBuilder.setId(sence.getId()).setName(sence.getName()).build();
 

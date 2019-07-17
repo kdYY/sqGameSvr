@@ -1,5 +1,7 @@
 package org.sq.gameDemo.common;
 
+import org.sq.gameDemo.common.proto.EntityTypeProto;
+
 public enum OrderEnum {
     PING("ping", 100),
     ErrOrder("errOrder",101 ),
@@ -30,6 +32,7 @@ public enum OrderEnum {
                 return orderEnum.orderCode;
             }
         }
+
         return -1;
     }
 

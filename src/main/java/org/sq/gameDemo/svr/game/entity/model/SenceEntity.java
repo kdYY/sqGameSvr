@@ -1,8 +1,7 @@
 package org.sq.gameDemo.svr.game.entity.model;
 
 import lombok.Data;
-import org.sq.gameDemo.common.proto.EntityProto;
-import org.sq.gameDemo.svr.common.protoUtil.ProtoObject;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class SenceEntity {
     private int num;
     private int state;
 
-    @ProtoObject(TargetClass = String.class, TargetName = "npcWord")
+    @ProtoField(TargetClass = String.class, TargetName = "npcWord")
     private List<String> npcWord;
 //    public SenceEntity(Integer id, Integer typeId, int state) {
 //        this.id = id;
