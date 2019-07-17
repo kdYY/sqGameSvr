@@ -7,7 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
+import org.sq.gameDemo.common.proto.SenceEntityProto;
+import org.sq.gameDemo.svr.common.SpringUtil;
+import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.dispatch.DispatchRequest;
+import org.sq.gameDemo.svr.game.entity.model.UserEntity;
+import org.sq.gameDemo.svr.game.scene.service.SenceService;
+
 @Slf4j
 public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
    // private static final Logger log = Logger.getLogger(SvrMessageHandler.class);
@@ -41,6 +47,9 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //玩家掉线，广播通知场景中其他玩家，
         // 同时将玩家数据UserEntity 回写 到UserEntity表中进行保存，同时设置玩家数据在内存中保留的时间，避免内存泄漏
-
+        Integer userId = UserCache.getUserIdByChannel(ctx.channel());
+        SenceService bean = SpringUtil.getBean(SenceService.class);
+        bean.removeUserEntityAndGet(bean.getUserEntityByUserId(userId), ctx.channel());
+        UserCache.removeChannle(ctx.channel(), userId);
     }
 }

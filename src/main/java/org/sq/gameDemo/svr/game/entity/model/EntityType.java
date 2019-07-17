@@ -9,20 +9,10 @@ public class EntityType {
     private int id;
     private String name;
 
+    private int baseMP;
+    private int baseHP;
 
+    private String typeName; //AP型， AD型
 
-    @Override
-    public String toString() {
-        return "EntityType{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
-    public static EntityTypeProto.EntityType transform(EntityType entityType) {
-        return EntityTypeProto.EntityType.newBuilder()
-                .setId(entityType.getId())
-                .setName(entityType.getName())
-                .build();
-    }
+    
 }

@@ -49,7 +49,7 @@ public class EntityController {
             UserEntity userEntity = senceService.getUserEntityByUserId(userId, defaultSenceId);
             if(userEntity != null) {
                 //老用户
-                throw new customException.BindRoleInSenceExistException();
+                throw new customException.BindRoleInSenceException();
             }
 
             int typeId = requestInfo.getTypeId();
@@ -69,7 +69,7 @@ public class EntityController {
 
             builder.setMsgId(requestInfo.getMsgId())
                     .setTime(requestInfo.getTime());
-        } catch (customException.BindRoleInSenceExistException bindException) {
+        } catch (customException.BindRoleInSenceException bindException) {
             builder.setContent("角色只能绑定一次");
             builder.setResult(111);
         } catch (Exception e) {
@@ -133,10 +133,10 @@ public class EntityController {
             UserEntity userEntity = senceService.getUserEntityByUserId(userId);
             if(newSenceId == userEntity.getSenceId()) {
                 //不能移动到原来的场景
-                throw new customException.BindRoleInSenceExistException();
+                throw new customException.BindRoleInSenceException();
             }
             //从场景中移除并获取
-            senceService.removeUserEntity(userEntity, msgEntity.getChannel());
+            senceService.removeUserEntityAndGet(userEntity, msgEntity.getChannel());
             //改变用户的所在地
             userEntity.setSenceId(newSenceId);
             //进行重新绑定
@@ -145,7 +145,7 @@ public class EntityController {
             getUserSenceMsg(builder, newSenceId);
             builder.setMsgId(requestInfo.getMsgId())
                     .setTime(requestInfo.getTime());
-        } catch (customException.BindRoleInSenceExistException bindException) {
+        } catch (customException.BindRoleInSenceException bindException) {
             builder.setContent("你已经在这个场景中，输入getMap获取地图");
             builder.setResult(111);
         } catch (customException.RemoveFailedException re) {

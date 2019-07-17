@@ -13,9 +13,10 @@ import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.UserCache;
-import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.common.customException.customException;
 import org.sq.gameDemo.svr.game.entity.model.UserEntity;
 import org.sq.gameDemo.svr.game.entity.service.EntityService;
+import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private EntityService entityService;
+    @Autowired
+    private SenceService senceService;
 
     @OrderMapping(OrderEnum.Register)
     public MsgEntity register(MsgEntity msgEntity) {
@@ -63,7 +66,7 @@ public class UserController {
                     builder.setContent("fail, try again");
                 } else {
                     builder.setContent("success");
-                    UserCache.addUserMap(userSave.getId(), userService.getUser(userSave.getId()));
+                    UserCache.addUserMap(userSave.getId(), userSave);
                 }
             }
 
@@ -92,19 +95,30 @@ public class UserController {
                 builder.setContent("no this user, please register");
                 builder.setResult(404);//用户缺失
             } else {
-                String token = tokenEncryp(loginUser.getId());
+                Integer userId = loginUser.getId();
+                String token = tokenEncryp(userId);
                 builder.setToken(token);
+                UserCache.updateUserToken(userId, token);
+                //从数据库更新
+                userService.updateTokenByUserId(userId, token);
+
+                UserCache.updateChannelCache(msgEntity.getChannel(), userId);
                 //如果是老用户，获取上次保存的UserEntity，找到对应场景
-                UserEntity userEntity = entityService.getUserEntityByUserId(loginUser.getId());
+                UserEntity userEntity = entityService.getUserEntityByUserId(userId);
                 if(userEntity != null) {
                     UserCache.addChannelInGroup(userEntity.getSenceId(), msgEntity.getChannel(), userEntity.getNick() + "已经上线！");
+                    String lastSence = senceService.getSenceBySenceId(userEntity.getSenceId()).getName();
+                    builder.setContent(lastSence);
+                } else {
+                    throw new customException.BindRoleInSenceException("login success, 请绑定角色，help获取帮助信息");
                 }
-                UserCache.updateUserToken(loginUser.getId(), token);
-                UserCache.updateChannelCache(msgEntity.getChannel(), loginUser.getId());
             }
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
             builder.setResult(500);//服务端异常
+        } catch (customException.BindRoleInSenceException e1) {
+            builder.setResult(404);
+            builder.setContent(e1.getMessage());
         }
         msgEntity.setData(builder.build().toByteArray());
         msgEntity.getChannel().writeAndFlush(msgEntity);
@@ -119,28 +133,41 @@ public class UserController {
         try {
             byte[] data = msgEntity.getData();
             UserProto.RequestUserInfo requestUserInfo = UserProto.RequestUserInfo.parseFrom(data);
-            UserProto.User user = requestUserInfo.getUser();
             String userToken = requestUserInfo.getToken();
 
 
             builder.setMsgId(requestUserInfo.getMsgId());
             builder.setTime(requestUserInfo.getTime());
+            //Integer userId = UserCache.tokenUserMap.get(userToken);
+            User user = userService.getUserByToken(userToken);
+            if(userToken != null && !userToken.equals("") && user != null) {
 
-            if(userToken != null && userToken.length() != 0 && UserCache.tokenUserMap.get(userToken) != null) {
                 UserCache.updateChannelCache(msgEntity.getChannel(), user.getId());
-                //TODO 上次离开的地方
-                builder.setContent("\r\nlogin success, \r\nhi! welcome back to 起源之地!! \r\n");
+                UserEntity userEntity = entityService.getUserEntityByUserId(user.getId());
+                if(userEntity != null) {
+                    UserCache.addChannelInGroup(userEntity.getSenceId(), msgEntity.getChannel(), userEntity.getNick() + "已经上线！");
+                    String lastSence = senceService.getSenceBySenceId(userEntity.getSenceId()).getName();
+                    builder.setContent(lastSence);
+                } else {
+                    builder.setContent("\r\nlogin success, \r\nbind your Role \r\n");
+                }
+                builder.setToken(userToken);
                 //builder.setSence(SenceProto.Sence.newBuilder().setId(1).setName("起源之地").build());
             } else {
                 builder.setContent("reconnect fail, please relogin, enter \"help\" to get Help");
-                builder.setToken(null);
+                builder.setResult(404);
+                builder.setToken("");
             }
+            return msgEntity;
         } catch (Exception e) {
             e.printStackTrace();
             builder.setResult(500);//服务端异常
+            return msgEntity;
+        }finally {
+            msgEntity.setData(builder.build().toByteArray());
+
         }
-        msgEntity.setData(builder.build().toByteArray());
-        return msgEntity;
+
     }
 
 

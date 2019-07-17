@@ -1,11 +1,13 @@
 package org.sq.gameDemo.svr.game.user.model;
 
+import org.sq.gameDemo.svr.common.protoUtil.ProtoObject;
+
 /**
  * 
  * 
  * @author wcyong
  * 
- * @date 2019-07-12
+ * @date 2019-07-17
  */
 public class User {
     private Integer id;
@@ -13,6 +15,9 @@ public class User {
     private String name;
 
     private String password;
+
+    @ProtoObject(Ignore = true)
+    private String token;
 
     public Integer getId() {
         return id;
@@ -36,5 +41,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token == null ? null : token.trim();
     }
 }

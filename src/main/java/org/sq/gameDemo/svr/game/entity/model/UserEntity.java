@@ -25,6 +25,7 @@ public class UserEntity {
     private Integer senceId;
 
 
+
     public static UserEntityProto.UserEntity transformProto(UserEntity userEntity) {
         return UserEntityProto.UserEntity.newBuilder()
                 .setNick(userEntity.getNick())

@@ -31,9 +31,6 @@ public class UserService {
     private UserMapper userMapper;
 
 
-    public User getUser(Integer id){
-        return userMapper.selectByPrimaryKey(id);
-    }
 
     public User getUser(UserProto.User user){
         UserExample userExample = new UserExample();
@@ -72,4 +69,17 @@ public class UserService {
     }
 
 
+    public void updateTokenByUserId(Integer userId, String token) {
+        userMapper.updateTokenByUserId(userId, token);
+    }
+
+    public User getUserByToken(String userToken) {
+        UserExample example = new UserExample();
+        example.createCriteria().andTokenEqualTo(userToken);
+        List<User> users = userMapper.selectByExample(example);
+        if(users != null && users.size() != 0) {
+            return users.get(0);
+        }
+        return null;
+    }
 }

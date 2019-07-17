@@ -13,7 +13,12 @@ public class customException{
             super(message);
         }
     }
-    public static class BindRoleInSenceExistException  extends RuntimeException  {
+    public static class BindRoleInSenceException extends RuntimeException  {
+        public BindRoleInSenceException() {
+        }
 
+        public BindRoleInSenceException(String message) {
+            super(message);
+        }
     }
 }

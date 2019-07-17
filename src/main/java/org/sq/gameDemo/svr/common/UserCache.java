@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -30,6 +31,10 @@ public class UserCache {
     public static Map<Integer, User> userMap = new ConcurrentHashMap<>();
     //<SenceId, Channel>
     public static Map<Integer, List<Channel>> senceChannelGroupMap = new ConcurrentHashMap<>();
+
+    public static void removeChannle(Channel channel, Integer userId) {
+        channelUserIdMap.remove(channel, userId);
+    }
 
 
     @PostConstruct
@@ -50,6 +55,10 @@ public class UserCache {
         List<Channel> channelList = senceChannelGroupMap.get(senceId);
         if(channelList == null) {
             channelList = new CopyOnWriteArrayList<>();
+            senceChannelGroupMap.put(senceId, channelList);
+        } else {
+            //移除之前的channel
+
         }
         channelList.add(channel);
         //同时广播
@@ -68,6 +77,7 @@ public class UserCache {
 
     public static void updateUserToken(int userId, String token) {
         updateKey(tokenUserMap, token, userId);
+
     }
 
     public static void updateChannelCache(Channel newChannel, int userId) {
@@ -83,22 +93,23 @@ public class UserCache {
     }
 
     private static void updateKey(Map map, Object newKey, Object value) {
-        Object overTimeKey = getKeyByValue(value, map);
-        if(overTimeKey != null && !overTimeKey.equals(value)) {
+        Optional overTimeKey = getKeyByValue(value, map);
+        if(!overTimeKey.equals(Optional.empty()) && !value.equals(overTimeKey.get())) {
             map.remove(overTimeKey);
         }
         map.put(newKey,value);
 
     }
 
-    private static Object getKeyByValue(Object value, Map map) {
+    private static Optional getKeyByValue(Object value, Map map) {
         if(map == null || map.size() == 0) {
-            return null;
+            return Optional.empty();
         }
-        return  map.keySet().stream().filter(key -> {
+        return map.keySet().stream().filter(key -> {
             Object o = map.get(key);
             return map.get(key).equals(value);
-        }).findFirst().get();
+        }).findFirst();
+
     }
 
     public static void addUserMap(int userId, User user) {
@@ -115,7 +126,7 @@ public class UserCache {
         builder.setCmd(OrderEnum.BroadCast.getOrder());
         MsgEntity msgEntity = new MsgEntity();
         msgEntity.setData(builder.build().toByteArray());
-
+        msgEntity.setCmdCode(OrderEnum.BroadCast.getOrderCode());
         channelGroup.forEach(channel -> {
             msgEntity.setChannel(channel);
             channel.writeAndFlush(msgEntity);

@@ -122,7 +122,7 @@ public class SenceService {
     /**
      *     將玩家角色加入场景，并广播通知
      */
-    public void addUserEntityInSence(UserEntity userEntity, Channel channel) throws customException.BindRoleInSenceExistException {
+    public void addUserEntityInSence(UserEntity userEntity, Channel channel) throws customException.BindRoleInSenceException {
         SenceConfigMsg msg = senceIdAndSenceMsgMap.get(userEntity.getSenceId());
         List<UserEntity> userEntities = msg.getUserEntities();
         if(userEntities == null) {
@@ -139,13 +139,15 @@ public class SenceService {
         UserCache.addChannelInGroup(userEntity.getSenceId(), channel, userEntity.getNick() + "已经上线!");
     }
 
+
+
     /**
      * /从原来的remove掉，同时广播通知
      * @param userEntity
      * @param channel
      * @throws customException.RemoveFailedException
      */
-    public void removeUserEntity(UserEntity userEntity, Channel channel) throws customException.RemoveFailedException {
+    public UserEntity removeUserEntityAndGet(UserEntity userEntity, Channel channel) throws customException.RemoveFailedException {
         UserEntity userEntityFind = getUserEntityByUserId(userEntity.getUserId(), userEntity.getSenceId());
         List<UserEntity> userEntities = senceIdAndUserEntityMap.get(userEntity.getSenceId());
         synchronized (userEntities) {
@@ -154,6 +156,7 @@ public class SenceService {
             }
         }
         UserCache.moveChannelInGroup(userEntityFind.getSenceId(), channel, userEntity.getNick() + "已经下线!");
+        return userEntityFind;
     }
 
     private boolean checkUserEntityExistInSence(int userId, List<UserEntity> userEntities) {
@@ -182,7 +185,11 @@ public class SenceService {
         if(list == null || list.size() == 0) {
             return null;
         }
-        return list.stream().filter(o -> function.apply(o)).findFirst().get();
+        Optional<T> first = list.stream().filter(o -> function.apply(o)).findFirst();
+        if(first.equals(Optional.empty())) {
+            return null;
+        }
+        return first.get();
     }
 
 
