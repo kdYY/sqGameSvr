@@ -16,6 +16,7 @@ public enum OrderEnum {
     Move("move",  110),
     TalkWithNpc("talkwithnpc", 111),
     BroadCast("broadCast", 112),
+    Exit("exit", 113),
     ;
 
     private String order;

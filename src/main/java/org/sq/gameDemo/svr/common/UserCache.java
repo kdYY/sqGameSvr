@@ -1,6 +1,7 @@
 package org.sq.gameDemo.svr.common;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.common.OrderEnum;
@@ -36,6 +37,10 @@ public class UserCache {
         channelUserIdMap.remove(channel, userId);
     }
 
+    public static void removeChannle(Channel channel) {
+        channelUserIdMap.remove(channel);
+    }
+
 
     @PostConstruct
     public void init() {
@@ -49,20 +54,17 @@ public class UserCache {
      *
      * @param senceId
      * @param channel
-     * @param msg 要广播话语
+     * @param msgByteArray 要广播话语
      */
-    public static void addChannelInGroup(Integer senceId, Channel channel, String msg) {
+    public static void addChannelInGroup(Integer senceId, Channel channel, byte[] msgByteArray) {
         List<Channel> channelList = senceChannelGroupMap.get(senceId);
         if(channelList == null) {
             channelList = new CopyOnWriteArrayList<>();
             senceChannelGroupMap.put(senceId, channelList);
-        } else {
-            //移除之前的channel
-
         }
         channelList.add(channel);
         //同时广播
-        broadcastChannelGroupBysenceId(channelList, msg);
+        broadCastUserEntity(channelList, msgByteArray);
     }
 
     public static void moveChannelInGroup(Integer senceId, Channel channel, String msg) {
@@ -123,7 +125,6 @@ public class UserCache {
     public static void broadcastChannelGroupBysenceId(List<Channel> channelGroup, String msg) {
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setContent(msg);
-        builder.setCmd(OrderEnum.BroadCast.getOrder());
         MsgEntity msgEntity = new MsgEntity();
         msgEntity.setData(builder.build().toByteArray());
         msgEntity.setCmdCode(OrderEnum.BroadCast.getOrderCode());
@@ -131,6 +132,22 @@ public class UserCache {
             msgEntity.setChannel(channel);
             channel.writeAndFlush(msgEntity);
         });
+    }
+
+
+
+    public static void broadCastUserEntity(List<Channel> channelGroup, byte[] protoByte) {
+        MsgEntity msgEntity = new MsgEntity();
+        msgEntity.setData(protoByte);
+        msgEntity.setCmdCode(OrderEnum.BroadCast.getOrderCode());
+        channelGroup.forEach(channel -> {
+            msgEntity.setChannel(channel);
+            channel.writeAndFlush(msgEntity);
+        });
+    }
+
+    public boolean isUserOnline(Channel channel) {
+        return UserCache.getUserIdByChannel(channel) > 0;
     }
 
 }

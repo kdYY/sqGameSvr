@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SvrChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    private SimpleChannelInboundHandler simpleChannelInboundHandler;
     private final AcceptorIdleStateTrigger idleStateTrigger = new AcceptorIdleStateTrigger();
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {

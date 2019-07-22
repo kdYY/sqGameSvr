@@ -92,7 +92,7 @@ public class PoiUtil {
         }
 
         //此次读取是否为标题行读取
-        boolean titleRow = (rowNum == 0 && listRef.ref == null);
+        boolean titleRow = (rowNum == 0 && Objects.isNull(listRef.ref));
         List<Object> rowData = new ArrayList<>();
         Object instance = clazz.newInstance();
         int lastCellNum = row.getLastCellNum() & '\uffff'; //盗poi的...

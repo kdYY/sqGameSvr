@@ -6,9 +6,7 @@ import org.sq.gameDemo.common.proto.EntityTypeProto;
 import org.sq.gameDemo.common.proto.SenceEntityProto;
 import org.sq.gameDemo.common.proto.UserEntityProto;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
-import org.sq.gameDemo.svr.game.entity.model.EntityType;
-import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
-import org.sq.gameDemo.svr.game.entity.model.UserEntity;
+import org.sq.gameDemo.svr.game.characterEntity.model.*;
 
 import java.util.List;
 
@@ -17,15 +15,15 @@ public class  SenceConfigMsg {
     @ProtoField(Ignore = true)
     private int senceId;
 
-    @ProtoField(Ignore = true)
-    @JSONField(serialize = false)
-    private String jsonStr;
-
     @ProtoField(TargetClass = EntityTypeProto.EntityType.class)
     private List<EntityType> entityTypes;
-    @ProtoField(TargetClass = SenceEntityProto.SenceEntity.class)
-    private List<SenceEntity> senceEntities;
-    @ProtoField(TargetClass = UserEntityProto.UserEntity.class)
-    private List<UserEntity> userEntities;
 
+    @ProtoField(TargetClass = SenceEntityProto.Monster.class)
+    private List<Monster> monsterList;
+
+    @ProtoField(TargetClass = UserEntityProto.Player.class)
+    private List<Player> playerList;
+
+    @ProtoField(TargetClass = UserEntityProto.Npc.class)
+    private List<Npc> npcList;
 }

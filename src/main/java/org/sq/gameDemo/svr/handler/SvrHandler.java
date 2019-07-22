@@ -4,15 +4,17 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.sq.gameDemo.common.entity.MsgEntity;
-import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.common.proto.SenceEntityProto;
+import org.sq.gameDemo.svr.common.PlayerCache;
 import org.sq.gameDemo.svr.common.SpringUtil;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.dispatch.DispatchRequest;
-import org.sq.gameDemo.svr.game.entity.model.UserEntity;
+import org.sq.gameDemo.svr.game.characterEntity.model.Player;
+import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
+import org.sq.gameDemo.svr.game.user.service.UserService;
+
+import java.util.Optional;
 
 @Slf4j
 public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
@@ -22,6 +24,7 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         System.out.println("channel active");
+        super.channelActive(ctx);
     }
 
     /**
@@ -32,7 +35,6 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MsgEntity msgEntity) throws Exception {
-
         DispatchRequest.dispatchRequest(ctx, msgEntity);
     }
 
@@ -47,9 +49,18 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //玩家掉线，广播通知场景中其他玩家，
         // 同时将玩家数据UserEntity 回写 到UserEntity表中进行保存，同时设置玩家数据在内存中保留的时间，避免内存泄漏
-        Integer userId = UserCache.getUserIdByChannel(ctx.channel());
-        SenceService bean = SpringUtil.getBean(SenceService.class);
-        bean.removeUserEntityAndGet(bean.getUserEntityByUserId(userId), ctx.channel());
-        UserCache.removeChannle(ctx.channel(), userId);
+        UserService bean = SpringUtil.getBean(UserService.class);
+        bean.userOffLine(ctx.channel());
+        //清除player缓存
+        Optional.ofNullable(PlayerCache.channelPlayerCache.getIfPresent(ctx.channel())).ifPresent(
+                obj -> {
+                    PlayerCache.channelPlayerCache.invalidate(obj);
+                    PlayerCache.IdChannelCache.invalidate(obj.getId());
+                }
+        );
+        super.channelInactive(ctx);
     }
+
+
+
 }

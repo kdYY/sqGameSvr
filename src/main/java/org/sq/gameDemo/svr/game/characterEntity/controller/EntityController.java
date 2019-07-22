@@ -1,34 +1,53 @@
-package org.sq.gameDemo.svr.game.entity.controller;
+package org.sq.gameDemo.svr.game.characterEntity.controller;
 
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
-import org.sq.gameDemo.common.proto.SenceEntityProto;
-import org.sq.gameDemo.common.proto.SenceMsgProto;
-import org.sq.gameDemo.common.proto.SenceProto;
-import org.sq.gameDemo.common.proto.UserEntityProto;
+import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.OrderMapping;
+import org.sq.gameDemo.svr.common.PlayerCache;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.customException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
-import org.sq.gameDemo.svr.game.entity.model.SenceEntity;
-import org.sq.gameDemo.svr.game.entity.model.UserEntity;
-import org.sq.gameDemo.svr.game.entity.service.EntityService;
+import org.sq.gameDemo.svr.game.characterEntity.model.Npc;
+import org.sq.gameDemo.svr.game.characterEntity.model.Player;
+import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
+import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
+import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
-import org.sq.gameDemo.svr.game.user.service.UserService;
 
 @Controller
 public class EntityController {
-    @Autowired
-    private UserService userService;
     @Autowired
     private SenceService senceService;
     @Autowired
     private EntityService entityService;
 
+    @Autowired
+    private PlayerCache playerCache;
+
+
+    /**
+     * 获取所有角色
+     * @param msgEntity
+     * @return
+     * @throws Exception
+     */
+    @OrderMapping(OrderEnum.GetRole)
+    public MsgEntity getRoles(MsgEntity msgEntity) throws Exception {
+        EntityTypeProto.EntityTypeResponseInfo.Builder builder = EntityTypeProto.EntityTypeResponseInfo.newBuilder();
+        try {
+            entityService.transformEntityTypeProto(builder);
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setResult(500);//服务端异常
+        }
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
+    }
 
     /**
      * 绑定角色
@@ -43,29 +62,14 @@ public class EntityController {
         try {
             byte[] data = msgEntity.getData();
             UserEntityProto.UserEntityRequestInfo requestInfo = UserEntityProto.UserEntityRequestInfo.parseFrom(data);
-
+            int typeId = requestInfo.getTypeId();
             Integer userId = UserCache.getUserIdByChannel(channel);
 
-            UserEntity userEntity = senceService.getUserEntityByUserId(userId, defaultSenceId);
-            if(userEntity != null) {
-                //老用户
-                throw new customException.BindRoleInSenceException();
-            }
-
-            int typeId = requestInfo.getTypeId();
-            //进行角色-场景id，类型id 初始化绑定
-            UserEntity entity = new UserEntity();
-            entity.setNick("玩家" + userId);
-            entity.setSenceId(defaultSenceId);
-            entity.setState(1);
-            entity.setTypeId(typeId);
-            entity.setUserId(userId);
-            senceService.addUserEntityInSence(entity, msgEntity.getChannel());
-            //数据库角色类型数据增加
-            entityService.addUserEntity(entity);
+            //创建玩家角色
+            UserEntity player = entityService.playerCreate(typeId, userId, channel);
 
             //返回场景信息
-            getUserSenceMsg(builder, defaultSenceId);
+            getUserSenceMsg(builder, player.getSenceId());
 
             builder.setMsgId(requestInfo.getMsgId())
                     .setTime(requestInfo.getTime());
@@ -81,6 +85,8 @@ public class EntityController {
             channel.writeAndFlush(msgEntity);
         }
     }
+
+
 
     private void getUserSenceMsg(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) throws Exception {
         //场景，场景中的角色信息
@@ -99,10 +105,11 @@ public class EntityController {
         try {
             byte[] data = msgEntity.getData();
             SenceMsgProto.SenceMsgRequestInfo requestInfo = SenceMsgProto.SenceMsgRequestInfo.parseFrom(data);
-            Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
-            UserEntity userEntity = senceService.getUserEntityByUserId(userId);
+           // TODO 优化UserCache结构
+            // Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
+            Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
             //获取场景，场景中的角色信息
-            getUserSenceMsg(builder, userEntity.getSenceId());
+            getUserSenceMsg(builder, player.getSenceId());
             builder.setMsgId(requestInfo.getMsgId())
                     .setTime(requestInfo.getTime());
         } catch (Exception e) {
@@ -121,30 +128,31 @@ public class EntityController {
     @OrderMapping(OrderEnum.Move)
     public MsgEntity move(MsgEntity msgEntity) throws Exception {
         SenceMsgProto.SenceMsgResponseInfo.Builder builder = SenceMsgProto.SenceMsgResponseInfo.newBuilder();
+        byte[] data = msgEntity.getData();
+        SenceProto.RequestSenceInfo requestInfo = SenceProto.RequestSenceInfo.parseFrom(data);
         try {
-            byte[] data = msgEntity.getData();
-            SenceProto.RequestSenceInfo requestInfo = SenceProto.RequestSenceInfo.parseFrom(data);
+
             int newSenceId = requestInfo.getSenceId();
             //判断场景id是否有效
             if(senceService.getSenceBySenceId(newSenceId) == null) {
                 throw new customException.RemoveFailedException("场景id不存在");
             }
-            Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
-            UserEntity userEntity = senceService.getUserEntityByUserId(userId);
-            if(newSenceId == userEntity.getSenceId()) {
+
+            Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
+
+            if(newSenceId == player.getSenceId()) {
                 //不能移动到原来的场景
                 throw new customException.BindRoleInSenceException();
             }
             //从场景中移除并获取
-            senceService.removeUserEntityAndGet(userEntity, msgEntity.getChannel());
+            senceService.removePlayerAndGet(player.getUserId(), msgEntity.getChannel());
             //改变用户的所在地
-            userEntity.setSenceId(newSenceId);
+            player.setSenceId(newSenceId);
             //进行重新绑定
-            senceService.addUserEntityInSence(userEntity, msgEntity.getChannel());
+            senceService.addPlayerInSence(player, msgEntity.getChannel());
             //修改用户的状态并进行数据库用户场景id更新
             getUserSenceMsg(builder, newSenceId);
-            builder.setMsgId(requestInfo.getMsgId())
-                    .setTime(requestInfo.getTime());
+
         } catch (customException.BindRoleInSenceException bindException) {
             builder.setContent("你已经在这个场景中，输入getMap获取地图");
             builder.setResult(111);
@@ -156,24 +164,38 @@ public class EntityController {
             builder.setContent("移动失败，系统err");
             builder.setResult(500);//服务端异常
         } finally {
+
+            builder.setMsgId(requestInfo.getMsgId())
+                    .setTime(requestInfo.getTime());
             msgEntity.setData(builder.build().toByteArray());
             return msgEntity;
         }
     }
 
+    /**
+     * 获取指定npc语录
+     * @param msgEntity
+     * @return
+     * @throws Exception
+     */
     @OrderMapping(OrderEnum.TalkWithNpc)
     public MsgEntity talkWithNpc(MsgEntity msgEntity) throws Exception {
         SenceEntityProto.ResponseInfo.Builder builder = SenceEntityProto.ResponseInfo.newBuilder();
         try {
             SenceEntityProto.RequestInfo requestInfo = SenceEntityProto.RequestInfo.parseFrom(msgEntity.getData());
             int npcId = requestInfo.getId();
+
             Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
-            UserEntity userEntityByUserId = senceService.getUserEntityByUserId(userId);
-            SenceEntity senceEntity = senceService.getSenceEntityBySenceId(userEntityByUserId.getSenceId(), npcId);
-            builder.addSenceEntity( ProtoBufUtil.transformProtoReturnBuilder(SenceEntityProto.SenceEntity.newBuilder(), senceEntity).build());
+            Player player = entityService.getInitedPlayer(userId, msgEntity.getChannel());
+            Npc npc = senceService.getNpcBySenceIdAndId(player.getSenceId(), npcId);
+
+            SenceEntityProto.SenceEntity npcProto =
+                    ProtoBufUtil.transformProtoReturnBuilder(SenceEntityProto.SenceEntity.newBuilder(), npc)
+                            .build();
+            builder.addSenceEntity(npcProto);
         } catch (Exception e) {
             e.printStackTrace();
-            builder.setContent("移动失败，系统err");
+            builder.setContent("系统err");
             builder.setResult(500);//服务端异常
         } finally {
             msgEntity.setData(builder.build().toByteArray());
@@ -184,5 +206,5 @@ public class EntityController {
 
 
 
-    public static final int defaultSenceId = 1;
+
 }

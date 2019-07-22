@@ -42,7 +42,6 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
-        <!-- 热部署用，改变代码不需要重启项目  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -99,7 +98,12 @@
 			<version>1.18.8</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<!-- 谷歌工具包 -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>26.0-jre</version>
+		</dependency>
 
 	</dependencies>
 

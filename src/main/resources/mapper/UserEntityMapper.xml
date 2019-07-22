@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.sq.gameDemo.svr.game.entity.dao.UserEntityMapper" >
+<mapper namespace="org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper" >
 
-    <resultMap id="BaseResultMap" type="org.sq.gameDemo.svr.game.entity.model.UserEntity" >
+    <resultMap id="BaseResultMap" type="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="user_id" property="userId" jdbcType="INTEGER" />
         <result column="nick" property="nick" jdbcType="VARCHAR" />
@@ -75,7 +75,7 @@
         id, user_id, nick, state, type_id, sence_id
     </sql>
 
-    <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.entity.model.UserEntityExample" >
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntityExample" >
         select
         <if test="distinct" >
             distinct
@@ -102,14 +102,14 @@
         where id = #{id,jdbcType=INTEGER}
     </delete>
 
-    <delete id="deleteByExample" parameterType="org.sq.gameDemo.svr.game.entity.model.UserEntityExample" >
+    <delete id="deleteByExample" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntityExample" >
         delete from user_entity
         <if test="_parameter != null" >
             <include refid="Example_Where_Clause" />
         </if>
     </delete>
 
-    <insert id="insert" parameterType="org.sq.gameDemo.svr.game.entity.model.UserEntity" >
+    <insert id="insert" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
         insert into user_entity (id, user_id, nick, 
             state, type_id, sence_id
             )
@@ -118,7 +118,7 @@
             )
     </insert>
 
-    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.entity.model.UserEntity" >
+    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
         insert into user_entity
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -162,7 +162,7 @@
         </trim>
     </insert>
 
-    <select id="countByExample" parameterType="org.sq.gameDemo.svr.game.entity.model.UserEntityExample" resultType="java.lang.Integer" >
+    <select id="countByExample" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntityExample" resultType="java.lang.Integer" >
         select count(*) from user_entity
         <if test="_parameter != null" >
             <include refid="Example_Where_Clause" />
@@ -209,7 +209,7 @@
         </if>
     </update>
 
-    <update id="updateByPrimaryKeySelective" parameterType="org.sq.gameDemo.svr.game.entity.model.UserEntity" >
+    <update id="updateByPrimaryKeySelective" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
         update user_entity
         <set >
             <if test="userId != null" >
@@ -231,7 +231,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="org.sq.gameDemo.svr.game.entity.model.UserEntity" >
+    <update id="updateByPrimaryKey" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
         update user_entity
         set user_id = #{userId,jdbcType=INTEGER},
             nick = #{nick,jdbcType=VARCHAR},

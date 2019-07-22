@@ -1,4 +1,4 @@
-package org.sq.gameDemo.svr.game.entity.model;
+package org.sq.gameDemo.svr.game.characterEntity.model;
 
 import java.util.ArrayList;
 import java.util.List;
