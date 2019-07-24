@@ -763,51 +763,75 @@ public final class SenceMsgProto {
             int index);
 
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    java.util.List<SenceEntityProto.SenceEntity>
-        getSenceEntityList();
+    java.util.List<NpcPt.Npc>
+        getNpcList();
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    SenceEntityProto.SenceEntity getSenceEntity(int index);
+    NpcPt.Npc getNpc(int index);
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    int getSenceEntityCount();
+    int getNpcCount();
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    java.util.List<? extends SenceEntityProto.SenceEntityOrBuilder>
-        getSenceEntityOrBuilderList();
+    java.util.List<? extends NpcPt.NpcOrBuilder>
+        getNpcOrBuilderList();
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    SenceEntityProto.SenceEntityOrBuilder getSenceEntityOrBuilder(
+    NpcPt.NpcOrBuilder getNpcOrBuilder(
             int index);
 
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    java.util.List<UserEntityProto.UserEntity>
-        getUserEntityList();
+    java.util.List<MonsterPt.Monster>
+        getMonsterList();
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    UserEntityProto.UserEntity getUserEntity(int index);
+    MonsterPt.Monster getMonster(int index);
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    int getUserEntityCount();
+    int getMonsterCount();
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    java.util.List<? extends UserEntityProto.UserEntityOrBuilder>
-        getUserEntityOrBuilderList();
+    java.util.List<? extends MonsterPt.MonsterOrBuilder>
+        getMonsterOrBuilderList();
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    UserEntityProto.UserEntityOrBuilder getUserEntityOrBuilder(
+    MonsterPt.MonsterOrBuilder getMonsterOrBuilder(
+            int index);
+
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    java.util.List<PlayerPt.Player>
+        getPlayerList();
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    PlayerPt.Player getPlayer(int index);
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    int getPlayerCount();
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    java.util.List<? extends PlayerPt.PlayerOrBuilder>
+        getPlayerOrBuilderList();
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    PlayerPt.PlayerOrBuilder getPlayerOrBuilder(
             int index);
   }
   /**
@@ -829,8 +853,9 @@ public final class SenceMsgProto {
     private SenceMsgResponseInfo() {
       content_ = "";
       entityType_ = java.util.Collections.emptyList();
-      senceEntity_ = java.util.Collections.emptyList();
-      userEntity_ = java.util.Collections.emptyList();
+      npc_ = java.util.Collections.emptyList();
+      monster_ = java.util.Collections.emptyList();
+      player_ = java.util.Collections.emptyList();
     }
 
     @Override
@@ -909,20 +934,29 @@ public final class SenceMsgProto {
             }
             case 58: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                senceEntity_ = new java.util.ArrayList<SenceEntityProto.SenceEntity>();
+                npc_ = new java.util.ArrayList<NpcPt.Npc>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              senceEntity_.add(
-                  input.readMessage(SenceEntityProto.SenceEntity.parser(), extensionRegistry));
+              npc_.add(
+                  input.readMessage(NpcPt.Npc.parser(), extensionRegistry));
               break;
             }
             case 66: {
               if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                userEntity_ = new java.util.ArrayList<UserEntityProto.UserEntity>();
+                monster_ = new java.util.ArrayList<MonsterPt.Monster>();
                 mutable_bitField0_ |= 0x00000004;
               }
-              userEntity_.add(
-                  input.readMessage(UserEntityProto.UserEntity.parser(), extensionRegistry));
+              monster_.add(
+                  input.readMessage(MonsterPt.Monster.parser(), extensionRegistry));
+              break;
+            }
+            case 74: {
+              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+                player_ = new java.util.ArrayList<PlayerPt.Player>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              player_.add(
+                  input.readMessage(PlayerPt.Player.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -944,10 +978,13 @@ public final class SenceMsgProto {
           entityType_ = java.util.Collections.unmodifiableList(entityType_);
         }
         if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          senceEntity_ = java.util.Collections.unmodifiableList(senceEntity_);
+          npc_ = java.util.Collections.unmodifiableList(npc_);
         }
         if (((mutable_bitField0_ & 0x00000004) != 0)) {
-          userEntity_ = java.util.Collections.unmodifiableList(userEntity_);
+          monster_ = java.util.Collections.unmodifiableList(monster_);
+        }
+        if (((mutable_bitField0_ & 0x00000008) != 0)) {
+          player_ = java.util.Collections.unmodifiableList(player_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1091,74 +1128,109 @@ public final class SenceMsgProto {
       return entityType_.get(index);
     }
 
-    public static final int SENCEENTITY_FIELD_NUMBER = 7;
-    private java.util.List<SenceEntityProto.SenceEntity> senceEntity_;
+    public static final int NPC_FIELD_NUMBER = 7;
+    private java.util.List<NpcPt.Npc> npc_;
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    public java.util.List<SenceEntityProto.SenceEntity> getSenceEntityList() {
-      return senceEntity_;
+    public java.util.List<NpcPt.Npc> getNpcList() {
+      return npc_;
     }
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    public java.util.List<? extends SenceEntityProto.SenceEntityOrBuilder>
-        getSenceEntityOrBuilderList() {
-      return senceEntity_;
+    public java.util.List<? extends NpcPt.NpcOrBuilder>
+        getNpcOrBuilderList() {
+      return npc_;
     }
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    public int getSenceEntityCount() {
-      return senceEntity_.size();
+    public int getNpcCount() {
+      return npc_.size();
     }
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    public SenceEntityProto.SenceEntity getSenceEntity(int index) {
-      return senceEntity_.get(index);
+    public NpcPt.Npc getNpc(int index) {
+      return npc_.get(index);
     }
     /**
-     * <code>repeated .SenceEntity SenceEntity = 7;</code>
+     * <code>repeated .Npc npc = 7;</code>
      */
-    public SenceEntityProto.SenceEntityOrBuilder getSenceEntityOrBuilder(
+    public NpcPt.NpcOrBuilder getNpcOrBuilder(
         int index) {
-      return senceEntity_.get(index);
+      return npc_.get(index);
     }
 
-    public static final int USERENTITY_FIELD_NUMBER = 8;
-    private java.util.List<UserEntityProto.UserEntity> userEntity_;
+    public static final int MONSTER_FIELD_NUMBER = 8;
+    private java.util.List<MonsterPt.Monster> monster_;
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    public java.util.List<UserEntityProto.UserEntity> getUserEntityList() {
-      return userEntity_;
+    public java.util.List<MonsterPt.Monster> getMonsterList() {
+      return monster_;
     }
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    public java.util.List<? extends UserEntityProto.UserEntityOrBuilder>
-        getUserEntityOrBuilderList() {
-      return userEntity_;
+    public java.util.List<? extends MonsterPt.MonsterOrBuilder>
+        getMonsterOrBuilderList() {
+      return monster_;
     }
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    public int getUserEntityCount() {
-      return userEntity_.size();
+    public int getMonsterCount() {
+      return monster_.size();
     }
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    public UserEntityProto.UserEntity getUserEntity(int index) {
-      return userEntity_.get(index);
+    public MonsterPt.Monster getMonster(int index) {
+      return monster_.get(index);
     }
     /**
-     * <code>repeated .UserEntity UserEntity = 8;</code>
+     * <code>repeated .Monster monster = 8;</code>
      */
-    public UserEntityProto.UserEntityOrBuilder getUserEntityOrBuilder(
+    public MonsterPt.MonsterOrBuilder getMonsterOrBuilder(
         int index) {
-      return userEntity_.get(index);
+      return monster_.get(index);
+    }
+
+    public static final int PLAYER_FIELD_NUMBER = 9;
+    private java.util.List<PlayerPt.Player> player_;
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    public java.util.List<PlayerPt.Player> getPlayerList() {
+      return player_;
+    }
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    public java.util.List<? extends PlayerPt.PlayerOrBuilder>
+        getPlayerOrBuilderList() {
+      return player_;
+    }
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    public int getPlayerCount() {
+      return player_.size();
+    }
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    public PlayerPt.Player getPlayer(int index) {
+      return player_.get(index);
+    }
+    /**
+     * <code>repeated .Player player = 9;</code>
+     */
+    public PlayerPt.PlayerOrBuilder getPlayerOrBuilder(
+        int index) {
+      return player_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1193,11 +1265,14 @@ public final class SenceMsgProto {
       for (int i = 0; i < entityType_.size(); i++) {
         output.writeMessage(6, entityType_.get(i));
       }
-      for (int i = 0; i < senceEntity_.size(); i++) {
-        output.writeMessage(7, senceEntity_.get(i));
+      for (int i = 0; i < npc_.size(); i++) {
+        output.writeMessage(7, npc_.get(i));
       }
-      for (int i = 0; i < userEntity_.size(); i++) {
-        output.writeMessage(8, userEntity_.get(i));
+      for (int i = 0; i < monster_.size(); i++) {
+        output.writeMessage(8, monster_.get(i));
+      }
+      for (int i = 0; i < player_.size(); i++) {
+        output.writeMessage(9, player_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1231,13 +1306,17 @@ public final class SenceMsgProto {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, entityType_.get(i));
       }
-      for (int i = 0; i < senceEntity_.size(); i++) {
+      for (int i = 0; i < npc_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, senceEntity_.get(i));
+          .computeMessageSize(7, npc_.get(i));
       }
-      for (int i = 0; i < userEntity_.size(); i++) {
+      for (int i = 0; i < monster_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, userEntity_.get(i));
+          .computeMessageSize(8, monster_.get(i));
+      }
+      for (int i = 0; i < player_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, player_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1269,10 +1348,12 @@ public final class SenceMsgProto {
       }
       if (!getEntityTypeList()
           .equals(other.getEntityTypeList())) return false;
-      if (!getSenceEntityList()
-          .equals(other.getSenceEntityList())) return false;
-      if (!getUserEntityList()
-          .equals(other.getUserEntityList())) return false;
+      if (!getNpcList()
+          .equals(other.getNpcList())) return false;
+      if (!getMonsterList()
+          .equals(other.getMonsterList())) return false;
+      if (!getPlayerList()
+          .equals(other.getPlayerList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1302,13 +1383,17 @@ public final class SenceMsgProto {
         hash = (37 * hash) + ENTITYTYPE_FIELD_NUMBER;
         hash = (53 * hash) + getEntityTypeList().hashCode();
       }
-      if (getSenceEntityCount() > 0) {
-        hash = (37 * hash) + SENCEENTITY_FIELD_NUMBER;
-        hash = (53 * hash) + getSenceEntityList().hashCode();
+      if (getNpcCount() > 0) {
+        hash = (37 * hash) + NPC_FIELD_NUMBER;
+        hash = (53 * hash) + getNpcList().hashCode();
       }
-      if (getUserEntityCount() > 0) {
-        hash = (37 * hash) + USERENTITY_FIELD_NUMBER;
-        hash = (53 * hash) + getUserEntityList().hashCode();
+      if (getMonsterCount() > 0) {
+        hash = (37 * hash) + MONSTER_FIELD_NUMBER;
+        hash = (53 * hash) + getMonsterList().hashCode();
+      }
+      if (getPlayerCount() > 0) {
+        hash = (37 * hash) + PLAYER_FIELD_NUMBER;
+        hash = (53 * hash) + getPlayerList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1443,8 +1528,9 @@ public final class SenceMsgProto {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getEntityTypeFieldBuilder();
-          getSenceEntityFieldBuilder();
-          getUserEntityFieldBuilder();
+          getNpcFieldBuilder();
+          getMonsterFieldBuilder();
+          getPlayerFieldBuilder();
         }
       }
       @Override
@@ -1470,17 +1556,23 @@ public final class SenceMsgProto {
         } else {
           entityTypeBuilder_.clear();
         }
-        if (senceEntityBuilder_ == null) {
-          senceEntity_ = java.util.Collections.emptyList();
+        if (npcBuilder_ == null) {
+          npc_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000002);
         } else {
-          senceEntityBuilder_.clear();
+          npcBuilder_.clear();
         }
-        if (userEntityBuilder_ == null) {
-          userEntity_ = java.util.Collections.emptyList();
+        if (monsterBuilder_ == null) {
+          monster_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000004);
         } else {
-          userEntityBuilder_.clear();
+          monsterBuilder_.clear();
+        }
+        if (playerBuilder_ == null) {
+          player_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        } else {
+          playerBuilder_.clear();
         }
         return this;
       }
@@ -1527,23 +1619,32 @@ public final class SenceMsgProto {
         } else {
           result.entityType_ = entityTypeBuilder_.build();
         }
-        if (senceEntityBuilder_ == null) {
+        if (npcBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0)) {
-            senceEntity_ = java.util.Collections.unmodifiableList(senceEntity_);
+            npc_ = java.util.Collections.unmodifiableList(npc_);
             bitField0_ = (bitField0_ & ~0x00000002);
           }
-          result.senceEntity_ = senceEntity_;
+          result.npc_ = npc_;
         } else {
-          result.senceEntity_ = senceEntityBuilder_.build();
+          result.npc_ = npcBuilder_.build();
         }
-        if (userEntityBuilder_ == null) {
+        if (monsterBuilder_ == null) {
           if (((bitField0_ & 0x00000004) != 0)) {
-            userEntity_ = java.util.Collections.unmodifiableList(userEntity_);
+            monster_ = java.util.Collections.unmodifiableList(monster_);
             bitField0_ = (bitField0_ & ~0x00000004);
           }
-          result.userEntity_ = userEntity_;
+          result.monster_ = monster_;
         } else {
-          result.userEntity_ = userEntityBuilder_.build();
+          result.monster_ = monsterBuilder_.build();
+        }
+        if (playerBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0)) {
+            player_ = java.util.Collections.unmodifiableList(player_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.player_ = player_;
+        } else {
+          result.player_ = playerBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1635,55 +1736,81 @@ public final class SenceMsgProto {
             }
           }
         }
-        if (senceEntityBuilder_ == null) {
-          if (!other.senceEntity_.isEmpty()) {
-            if (senceEntity_.isEmpty()) {
-              senceEntity_ = other.senceEntity_;
+        if (npcBuilder_ == null) {
+          if (!other.npc_.isEmpty()) {
+            if (npc_.isEmpty()) {
+              npc_ = other.npc_;
               bitField0_ = (bitField0_ & ~0x00000002);
             } else {
-              ensureSenceEntityIsMutable();
-              senceEntity_.addAll(other.senceEntity_);
+              ensureNpcIsMutable();
+              npc_.addAll(other.npc_);
             }
             onChanged();
           }
         } else {
-          if (!other.senceEntity_.isEmpty()) {
-            if (senceEntityBuilder_.isEmpty()) {
-              senceEntityBuilder_.dispose();
-              senceEntityBuilder_ = null;
-              senceEntity_ = other.senceEntity_;
+          if (!other.npc_.isEmpty()) {
+            if (npcBuilder_.isEmpty()) {
+              npcBuilder_.dispose();
+              npcBuilder_ = null;
+              npc_ = other.npc_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              senceEntityBuilder_ = 
+              npcBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getSenceEntityFieldBuilder() : null;
+                   getNpcFieldBuilder() : null;
             } else {
-              senceEntityBuilder_.addAllMessages(other.senceEntity_);
+              npcBuilder_.addAllMessages(other.npc_);
             }
           }
         }
-        if (userEntityBuilder_ == null) {
-          if (!other.userEntity_.isEmpty()) {
-            if (userEntity_.isEmpty()) {
-              userEntity_ = other.userEntity_;
+        if (monsterBuilder_ == null) {
+          if (!other.monster_.isEmpty()) {
+            if (monster_.isEmpty()) {
+              monster_ = other.monster_;
               bitField0_ = (bitField0_ & ~0x00000004);
             } else {
-              ensureUserEntityIsMutable();
-              userEntity_.addAll(other.userEntity_);
+              ensureMonsterIsMutable();
+              monster_.addAll(other.monster_);
             }
             onChanged();
           }
         } else {
-          if (!other.userEntity_.isEmpty()) {
-            if (userEntityBuilder_.isEmpty()) {
-              userEntityBuilder_.dispose();
-              userEntityBuilder_ = null;
-              userEntity_ = other.userEntity_;
+          if (!other.monster_.isEmpty()) {
+            if (monsterBuilder_.isEmpty()) {
+              monsterBuilder_.dispose();
+              monsterBuilder_ = null;
+              monster_ = other.monster_;
               bitField0_ = (bitField0_ & ~0x00000004);
-              userEntityBuilder_ = 
+              monsterBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getUserEntityFieldBuilder() : null;
+                   getMonsterFieldBuilder() : null;
             } else {
-              userEntityBuilder_.addAllMessages(other.userEntity_);
+              monsterBuilder_.addAllMessages(other.monster_);
+            }
+          }
+        }
+        if (playerBuilder_ == null) {
+          if (!other.player_.isEmpty()) {
+            if (player_.isEmpty()) {
+              player_ = other.player_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensurePlayerIsMutable();
+              player_.addAll(other.player_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.player_.isEmpty()) {
+            if (playerBuilder_.isEmpty()) {
+              playerBuilder_.dispose();
+              playerBuilder_ = null;
+              player_ = other.player_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+              playerBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getPlayerFieldBuilder() : null;
+            } else {
+              playerBuilder_.addAllMessages(other.player_);
             }
           }
         }
@@ -2245,484 +2372,724 @@ public final class SenceMsgProto {
         return entityTypeBuilder_;
       }
 
-      private java.util.List<SenceEntityProto.SenceEntity> senceEntity_ =
+      private java.util.List<NpcPt.Npc> npc_ =
         java.util.Collections.emptyList();
-      private void ensureSenceEntityIsMutable() {
+      private void ensureNpcIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          senceEntity_ = new java.util.ArrayList<SenceEntityProto.SenceEntity>(senceEntity_);
+          npc_ = new java.util.ArrayList<NpcPt.Npc>(npc_);
           bitField0_ |= 0x00000002;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          SenceEntityProto.SenceEntity, SenceEntityProto.SenceEntity.Builder, SenceEntityProto.SenceEntityOrBuilder> senceEntityBuilder_;
+          NpcPt.Npc, NpcPt.Npc.Builder, NpcPt.NpcOrBuilder> npcBuilder_;
 
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public java.util.List<SenceEntityProto.SenceEntity> getSenceEntityList() {
-        if (senceEntityBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(senceEntity_);
+      public java.util.List<NpcPt.Npc> getNpcList() {
+        if (npcBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(npc_);
         } else {
-          return senceEntityBuilder_.getMessageList();
+          return npcBuilder_.getMessageList();
         }
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public int getSenceEntityCount() {
-        if (senceEntityBuilder_ == null) {
-          return senceEntity_.size();
+      public int getNpcCount() {
+        if (npcBuilder_ == null) {
+          return npc_.size();
         } else {
-          return senceEntityBuilder_.getCount();
+          return npcBuilder_.getCount();
         }
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public SenceEntityProto.SenceEntity getSenceEntity(int index) {
-        if (senceEntityBuilder_ == null) {
-          return senceEntity_.get(index);
+      public NpcPt.Npc getNpc(int index) {
+        if (npcBuilder_ == null) {
+          return npc_.get(index);
         } else {
-          return senceEntityBuilder_.getMessage(index);
+          return npcBuilder_.getMessage(index);
         }
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder setSenceEntity(
-          int index, SenceEntityProto.SenceEntity value) {
-        if (senceEntityBuilder_ == null) {
+      public Builder setNpc(
+          int index, NpcPt.Npc value) {
+        if (npcBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureSenceEntityIsMutable();
-          senceEntity_.set(index, value);
+          ensureNpcIsMutable();
+          npc_.set(index, value);
           onChanged();
         } else {
-          senceEntityBuilder_.setMessage(index, value);
+          npcBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder setSenceEntity(
-          int index, SenceEntityProto.SenceEntity.Builder builderForValue) {
-        if (senceEntityBuilder_ == null) {
-          ensureSenceEntityIsMutable();
-          senceEntity_.set(index, builderForValue.build());
+      public Builder setNpc(
+          int index, NpcPt.Npc.Builder builderForValue) {
+        if (npcBuilder_ == null) {
+          ensureNpcIsMutable();
+          npc_.set(index, builderForValue.build());
           onChanged();
         } else {
-          senceEntityBuilder_.setMessage(index, builderForValue.build());
+          npcBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder addSenceEntity(SenceEntityProto.SenceEntity value) {
-        if (senceEntityBuilder_ == null) {
+      public Builder addNpc(NpcPt.Npc value) {
+        if (npcBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureSenceEntityIsMutable();
-          senceEntity_.add(value);
+          ensureNpcIsMutable();
+          npc_.add(value);
           onChanged();
         } else {
-          senceEntityBuilder_.addMessage(value);
+          npcBuilder_.addMessage(value);
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder addSenceEntity(
-          int index, SenceEntityProto.SenceEntity value) {
-        if (senceEntityBuilder_ == null) {
+      public Builder addNpc(
+          int index, NpcPt.Npc value) {
+        if (npcBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureSenceEntityIsMutable();
-          senceEntity_.add(index, value);
+          ensureNpcIsMutable();
+          npc_.add(index, value);
           onChanged();
         } else {
-          senceEntityBuilder_.addMessage(index, value);
+          npcBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder addSenceEntity(
-          SenceEntityProto.SenceEntity.Builder builderForValue) {
-        if (senceEntityBuilder_ == null) {
-          ensureSenceEntityIsMutable();
-          senceEntity_.add(builderForValue.build());
+      public Builder addNpc(
+          NpcPt.Npc.Builder builderForValue) {
+        if (npcBuilder_ == null) {
+          ensureNpcIsMutable();
+          npc_.add(builderForValue.build());
           onChanged();
         } else {
-          senceEntityBuilder_.addMessage(builderForValue.build());
+          npcBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder addSenceEntity(
-          int index, SenceEntityProto.SenceEntity.Builder builderForValue) {
-        if (senceEntityBuilder_ == null) {
-          ensureSenceEntityIsMutable();
-          senceEntity_.add(index, builderForValue.build());
+      public Builder addNpc(
+          int index, NpcPt.Npc.Builder builderForValue) {
+        if (npcBuilder_ == null) {
+          ensureNpcIsMutable();
+          npc_.add(index, builderForValue.build());
           onChanged();
         } else {
-          senceEntityBuilder_.addMessage(index, builderForValue.build());
+          npcBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder addAllSenceEntity(
-          Iterable<? extends SenceEntityProto.SenceEntity> values) {
-        if (senceEntityBuilder_ == null) {
-          ensureSenceEntityIsMutable();
+      public Builder addAllNpc(
+          Iterable<? extends NpcPt.Npc> values) {
+        if (npcBuilder_ == null) {
+          ensureNpcIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, senceEntity_);
+              values, npc_);
           onChanged();
         } else {
-          senceEntityBuilder_.addAllMessages(values);
+          npcBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder clearSenceEntity() {
-        if (senceEntityBuilder_ == null) {
-          senceEntity_ = java.util.Collections.emptyList();
+      public Builder clearNpc() {
+        if (npcBuilder_ == null) {
+          npc_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
         } else {
-          senceEntityBuilder_.clear();
+          npcBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public Builder removeSenceEntity(int index) {
-        if (senceEntityBuilder_ == null) {
-          ensureSenceEntityIsMutable();
-          senceEntity_.remove(index);
+      public Builder removeNpc(int index) {
+        if (npcBuilder_ == null) {
+          ensureNpcIsMutable();
+          npc_.remove(index);
           onChanged();
         } else {
-          senceEntityBuilder_.remove(index);
+          npcBuilder_.remove(index);
         }
         return this;
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public SenceEntityProto.SenceEntity.Builder getSenceEntityBuilder(
+      public NpcPt.Npc.Builder getNpcBuilder(
           int index) {
-        return getSenceEntityFieldBuilder().getBuilder(index);
+        return getNpcFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public SenceEntityProto.SenceEntityOrBuilder getSenceEntityOrBuilder(
+      public NpcPt.NpcOrBuilder getNpcOrBuilder(
           int index) {
-        if (senceEntityBuilder_ == null) {
-          return senceEntity_.get(index);  } else {
-          return senceEntityBuilder_.getMessageOrBuilder(index);
+        if (npcBuilder_ == null) {
+          return npc_.get(index);  } else {
+          return npcBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public java.util.List<? extends SenceEntityProto.SenceEntityOrBuilder>
-           getSenceEntityOrBuilderList() {
-        if (senceEntityBuilder_ != null) {
-          return senceEntityBuilder_.getMessageOrBuilderList();
+      public java.util.List<? extends NpcPt.NpcOrBuilder>
+           getNpcOrBuilderList() {
+        if (npcBuilder_ != null) {
+          return npcBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(senceEntity_);
+          return java.util.Collections.unmodifiableList(npc_);
         }
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public SenceEntityProto.SenceEntity.Builder addSenceEntityBuilder() {
-        return getSenceEntityFieldBuilder().addBuilder(
-            SenceEntityProto.SenceEntity.getDefaultInstance());
+      public NpcPt.Npc.Builder addNpcBuilder() {
+        return getNpcFieldBuilder().addBuilder(
+            NpcPt.Npc.getDefaultInstance());
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public SenceEntityProto.SenceEntity.Builder addSenceEntityBuilder(
+      public NpcPt.Npc.Builder addNpcBuilder(
           int index) {
-        return getSenceEntityFieldBuilder().addBuilder(
-            index, SenceEntityProto.SenceEntity.getDefaultInstance());
+        return getNpcFieldBuilder().addBuilder(
+            index, NpcPt.Npc.getDefaultInstance());
       }
       /**
-       * <code>repeated .SenceEntity SenceEntity = 7;</code>
+       * <code>repeated .Npc npc = 7;</code>
        */
-      public java.util.List<SenceEntityProto.SenceEntity.Builder>
-           getSenceEntityBuilderList() {
-        return getSenceEntityFieldBuilder().getBuilderList();
+      public java.util.List<NpcPt.Npc.Builder>
+           getNpcBuilderList() {
+        return getNpcFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          SenceEntityProto.SenceEntity, SenceEntityProto.SenceEntity.Builder, SenceEntityProto.SenceEntityOrBuilder>
-          getSenceEntityFieldBuilder() {
-        if (senceEntityBuilder_ == null) {
-          senceEntityBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              SenceEntityProto.SenceEntity, SenceEntityProto.SenceEntity.Builder, SenceEntityProto.SenceEntityOrBuilder>(
-                  senceEntity_,
+          NpcPt.Npc, NpcPt.Npc.Builder, NpcPt.NpcOrBuilder>
+          getNpcFieldBuilder() {
+        if (npcBuilder_ == null) {
+          npcBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              NpcPt.Npc, NpcPt.Npc.Builder, NpcPt.NpcOrBuilder>(
+                  npc_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
                   isClean());
-          senceEntity_ = null;
+          npc_ = null;
         }
-        return senceEntityBuilder_;
+        return npcBuilder_;
       }
 
-      private java.util.List<UserEntityProto.UserEntity> userEntity_ =
+      private java.util.List<MonsterPt.Monster> monster_ =
         java.util.Collections.emptyList();
-      private void ensureUserEntityIsMutable() {
+      private void ensureMonsterIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
-          userEntity_ = new java.util.ArrayList<UserEntityProto.UserEntity>(userEntity_);
+          monster_ = new java.util.ArrayList<MonsterPt.Monster>(monster_);
           bitField0_ |= 0x00000004;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          UserEntityProto.UserEntity, UserEntityProto.UserEntity.Builder, UserEntityProto.UserEntityOrBuilder> userEntityBuilder_;
+          MonsterPt.Monster, MonsterPt.Monster.Builder, MonsterPt.MonsterOrBuilder> monsterBuilder_;
 
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public java.util.List<UserEntityProto.UserEntity> getUserEntityList() {
-        if (userEntityBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(userEntity_);
+      public java.util.List<MonsterPt.Monster> getMonsterList() {
+        if (monsterBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(monster_);
         } else {
-          return userEntityBuilder_.getMessageList();
+          return monsterBuilder_.getMessageList();
         }
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public int getUserEntityCount() {
-        if (userEntityBuilder_ == null) {
-          return userEntity_.size();
+      public int getMonsterCount() {
+        if (monsterBuilder_ == null) {
+          return monster_.size();
         } else {
-          return userEntityBuilder_.getCount();
+          return monsterBuilder_.getCount();
         }
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public UserEntityProto.UserEntity getUserEntity(int index) {
-        if (userEntityBuilder_ == null) {
-          return userEntity_.get(index);
+      public MonsterPt.Monster getMonster(int index) {
+        if (monsterBuilder_ == null) {
+          return monster_.get(index);
         } else {
-          return userEntityBuilder_.getMessage(index);
+          return monsterBuilder_.getMessage(index);
         }
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder setUserEntity(
-          int index, UserEntityProto.UserEntity value) {
-        if (userEntityBuilder_ == null) {
+      public Builder setMonster(
+          int index, MonsterPt.Monster value) {
+        if (monsterBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureUserEntityIsMutable();
-          userEntity_.set(index, value);
+          ensureMonsterIsMutable();
+          monster_.set(index, value);
           onChanged();
         } else {
-          userEntityBuilder_.setMessage(index, value);
+          monsterBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder setUserEntity(
-          int index, UserEntityProto.UserEntity.Builder builderForValue) {
-        if (userEntityBuilder_ == null) {
-          ensureUserEntityIsMutable();
-          userEntity_.set(index, builderForValue.build());
+      public Builder setMonster(
+          int index, MonsterPt.Monster.Builder builderForValue) {
+        if (monsterBuilder_ == null) {
+          ensureMonsterIsMutable();
+          monster_.set(index, builderForValue.build());
           onChanged();
         } else {
-          userEntityBuilder_.setMessage(index, builderForValue.build());
+          monsterBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder addUserEntity(UserEntityProto.UserEntity value) {
-        if (userEntityBuilder_ == null) {
+      public Builder addMonster(MonsterPt.Monster value) {
+        if (monsterBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureUserEntityIsMutable();
-          userEntity_.add(value);
+          ensureMonsterIsMutable();
+          monster_.add(value);
           onChanged();
         } else {
-          userEntityBuilder_.addMessage(value);
+          monsterBuilder_.addMessage(value);
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder addUserEntity(
-          int index, UserEntityProto.UserEntity value) {
-        if (userEntityBuilder_ == null) {
+      public Builder addMonster(
+          int index, MonsterPt.Monster value) {
+        if (monsterBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureUserEntityIsMutable();
-          userEntity_.add(index, value);
+          ensureMonsterIsMutable();
+          monster_.add(index, value);
           onChanged();
         } else {
-          userEntityBuilder_.addMessage(index, value);
+          monsterBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder addUserEntity(
-          UserEntityProto.UserEntity.Builder builderForValue) {
-        if (userEntityBuilder_ == null) {
-          ensureUserEntityIsMutable();
-          userEntity_.add(builderForValue.build());
+      public Builder addMonster(
+          MonsterPt.Monster.Builder builderForValue) {
+        if (monsterBuilder_ == null) {
+          ensureMonsterIsMutable();
+          monster_.add(builderForValue.build());
           onChanged();
         } else {
-          userEntityBuilder_.addMessage(builderForValue.build());
+          monsterBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder addUserEntity(
-          int index, UserEntityProto.UserEntity.Builder builderForValue) {
-        if (userEntityBuilder_ == null) {
-          ensureUserEntityIsMutable();
-          userEntity_.add(index, builderForValue.build());
+      public Builder addMonster(
+          int index, MonsterPt.Monster.Builder builderForValue) {
+        if (monsterBuilder_ == null) {
+          ensureMonsterIsMutable();
+          monster_.add(index, builderForValue.build());
           onChanged();
         } else {
-          userEntityBuilder_.addMessage(index, builderForValue.build());
+          monsterBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder addAllUserEntity(
-          Iterable<? extends UserEntityProto.UserEntity> values) {
-        if (userEntityBuilder_ == null) {
-          ensureUserEntityIsMutable();
+      public Builder addAllMonster(
+          Iterable<? extends MonsterPt.Monster> values) {
+        if (monsterBuilder_ == null) {
+          ensureMonsterIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, userEntity_);
+              values, monster_);
           onChanged();
         } else {
-          userEntityBuilder_.addAllMessages(values);
+          monsterBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder clearUserEntity() {
-        if (userEntityBuilder_ == null) {
-          userEntity_ = java.util.Collections.emptyList();
+      public Builder clearMonster() {
+        if (monsterBuilder_ == null) {
+          monster_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000004);
           onChanged();
         } else {
-          userEntityBuilder_.clear();
+          monsterBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public Builder removeUserEntity(int index) {
-        if (userEntityBuilder_ == null) {
-          ensureUserEntityIsMutable();
-          userEntity_.remove(index);
+      public Builder removeMonster(int index) {
+        if (monsterBuilder_ == null) {
+          ensureMonsterIsMutable();
+          monster_.remove(index);
           onChanged();
         } else {
-          userEntityBuilder_.remove(index);
+          monsterBuilder_.remove(index);
         }
         return this;
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public UserEntityProto.UserEntity.Builder getUserEntityBuilder(
+      public MonsterPt.Monster.Builder getMonsterBuilder(
           int index) {
-        return getUserEntityFieldBuilder().getBuilder(index);
+        return getMonsterFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public UserEntityProto.UserEntityOrBuilder getUserEntityOrBuilder(
+      public MonsterPt.MonsterOrBuilder getMonsterOrBuilder(
           int index) {
-        if (userEntityBuilder_ == null) {
-          return userEntity_.get(index);  } else {
-          return userEntityBuilder_.getMessageOrBuilder(index);
+        if (monsterBuilder_ == null) {
+          return monster_.get(index);  } else {
+          return monsterBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public java.util.List<? extends UserEntityProto.UserEntityOrBuilder>
-           getUserEntityOrBuilderList() {
-        if (userEntityBuilder_ != null) {
-          return userEntityBuilder_.getMessageOrBuilderList();
+      public java.util.List<? extends MonsterPt.MonsterOrBuilder>
+           getMonsterOrBuilderList() {
+        if (monsterBuilder_ != null) {
+          return monsterBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(userEntity_);
+          return java.util.Collections.unmodifiableList(monster_);
         }
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public UserEntityProto.UserEntity.Builder addUserEntityBuilder() {
-        return getUserEntityFieldBuilder().addBuilder(
-            UserEntityProto.UserEntity.getDefaultInstance());
+      public MonsterPt.Monster.Builder addMonsterBuilder() {
+        return getMonsterFieldBuilder().addBuilder(
+            MonsterPt.Monster.getDefaultInstance());
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public UserEntityProto.UserEntity.Builder addUserEntityBuilder(
+      public MonsterPt.Monster.Builder addMonsterBuilder(
           int index) {
-        return getUserEntityFieldBuilder().addBuilder(
-            index, UserEntityProto.UserEntity.getDefaultInstance());
+        return getMonsterFieldBuilder().addBuilder(
+            index, MonsterPt.Monster.getDefaultInstance());
       }
       /**
-       * <code>repeated .UserEntity UserEntity = 8;</code>
+       * <code>repeated .Monster monster = 8;</code>
        */
-      public java.util.List<UserEntityProto.UserEntity.Builder>
-           getUserEntityBuilderList() {
-        return getUserEntityFieldBuilder().getBuilderList();
+      public java.util.List<MonsterPt.Monster.Builder>
+           getMonsterBuilderList() {
+        return getMonsterFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          UserEntityProto.UserEntity, UserEntityProto.UserEntity.Builder, UserEntityProto.UserEntityOrBuilder>
-          getUserEntityFieldBuilder() {
-        if (userEntityBuilder_ == null) {
-          userEntityBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              UserEntityProto.UserEntity, UserEntityProto.UserEntity.Builder, UserEntityProto.UserEntityOrBuilder>(
-                  userEntity_,
+          MonsterPt.Monster, MonsterPt.Monster.Builder, MonsterPt.MonsterOrBuilder>
+          getMonsterFieldBuilder() {
+        if (monsterBuilder_ == null) {
+          monsterBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              MonsterPt.Monster, MonsterPt.Monster.Builder, MonsterPt.MonsterOrBuilder>(
+                  monster_,
                   ((bitField0_ & 0x00000004) != 0),
                   getParentForChildren(),
                   isClean());
-          userEntity_ = null;
+          monster_ = null;
         }
-        return userEntityBuilder_;
+        return monsterBuilder_;
+      }
+
+      private java.util.List<PlayerPt.Player> player_ =
+        java.util.Collections.emptyList();
+      private void ensurePlayerIsMutable() {
+        if (!((bitField0_ & 0x00000008) != 0)) {
+          player_ = new java.util.ArrayList<PlayerPt.Player>(player_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          PlayerPt.Player, PlayerPt.Player.Builder, PlayerPt.PlayerOrBuilder> playerBuilder_;
+
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public java.util.List<PlayerPt.Player> getPlayerList() {
+        if (playerBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(player_);
+        } else {
+          return playerBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public int getPlayerCount() {
+        if (playerBuilder_ == null) {
+          return player_.size();
+        } else {
+          return playerBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public PlayerPt.Player getPlayer(int index) {
+        if (playerBuilder_ == null) {
+          return player_.get(index);
+        } else {
+          return playerBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder setPlayer(
+          int index, PlayerPt.Player value) {
+        if (playerBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePlayerIsMutable();
+          player_.set(index, value);
+          onChanged();
+        } else {
+          playerBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder setPlayer(
+          int index, PlayerPt.Player.Builder builderForValue) {
+        if (playerBuilder_ == null) {
+          ensurePlayerIsMutable();
+          player_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          playerBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder addPlayer(PlayerPt.Player value) {
+        if (playerBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePlayerIsMutable();
+          player_.add(value);
+          onChanged();
+        } else {
+          playerBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder addPlayer(
+          int index, PlayerPt.Player value) {
+        if (playerBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePlayerIsMutable();
+          player_.add(index, value);
+          onChanged();
+        } else {
+          playerBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder addPlayer(
+          PlayerPt.Player.Builder builderForValue) {
+        if (playerBuilder_ == null) {
+          ensurePlayerIsMutable();
+          player_.add(builderForValue.build());
+          onChanged();
+        } else {
+          playerBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder addPlayer(
+          int index, PlayerPt.Player.Builder builderForValue) {
+        if (playerBuilder_ == null) {
+          ensurePlayerIsMutable();
+          player_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          playerBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder addAllPlayer(
+          Iterable<? extends PlayerPt.Player> values) {
+        if (playerBuilder_ == null) {
+          ensurePlayerIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, player_);
+          onChanged();
+        } else {
+          playerBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder clearPlayer() {
+        if (playerBuilder_ == null) {
+          player_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+        } else {
+          playerBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public Builder removePlayer(int index) {
+        if (playerBuilder_ == null) {
+          ensurePlayerIsMutable();
+          player_.remove(index);
+          onChanged();
+        } else {
+          playerBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public PlayerPt.Player.Builder getPlayerBuilder(
+          int index) {
+        return getPlayerFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public PlayerPt.PlayerOrBuilder getPlayerOrBuilder(
+          int index) {
+        if (playerBuilder_ == null) {
+          return player_.get(index);  } else {
+          return playerBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public java.util.List<? extends PlayerPt.PlayerOrBuilder>
+           getPlayerOrBuilderList() {
+        if (playerBuilder_ != null) {
+          return playerBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(player_);
+        }
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public PlayerPt.Player.Builder addPlayerBuilder() {
+        return getPlayerFieldBuilder().addBuilder(
+            PlayerPt.Player.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public PlayerPt.Player.Builder addPlayerBuilder(
+          int index) {
+        return getPlayerFieldBuilder().addBuilder(
+            index, PlayerPt.Player.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Player player = 9;</code>
+       */
+      public java.util.List<PlayerPt.Player.Builder>
+           getPlayerBuilderList() {
+        return getPlayerFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          PlayerPt.Player, PlayerPt.Player.Builder, PlayerPt.PlayerOrBuilder>
+          getPlayerFieldBuilder() {
+        if (playerBuilder_ == null) {
+          playerBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              PlayerPt.Player, PlayerPt.Player.Builder, PlayerPt.PlayerOrBuilder>(
+                  player_,
+                  ((bitField0_ & 0x00000008) != 0),
+                  getParentForChildren(),
+                  isClean());
+          player_ = null;
+        }
+        return playerBuilder_;
       }
       @Override
       public final Builder setUnknownFields(
@@ -2796,25 +3163,26 @@ public final class SenceMsgProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\016SenceMsg.proto\032\020EntityType.proto\032\021Senc" +
-      "eEntity.proto\032\020UserEntity.proto\032\013Sence.p" +
-      "roto\"D\n\023SenceMsgRequestInfo\022\016\n\006msg_id\030\001 " +
-      "\001(\004\022\014\n\004time\030\002 \001(\004\022\017\n\007senceId\030\003 \001(\005\"\321\001\n\024S" +
-      "enceMsgResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006r" +
-      "esult\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001" +
-      "(\t\022\025\n\005sence\030\005 \001(\0132\006.Sence\022\037\n\nentityType\030" +
-      "\006 \003(\0132\013.EntityType\022!\n\013SenceEntity\030\007 \003(\0132" +
-      "\014.SenceEntity\022\037\n\nUserEntity\030\010 \003(\0132\013.User" +
-      "EntityB-\n\034org.sq.gameDemo.common.protoB\r" +
-      "SenceMsgProtob\006proto3"
+      "\n\016SenceMsg.proto\032\020EntityType.proto\032\014Play" +
+      "er.proto\032\tNpc.proto\032\013Sence.proto\032\rMonste" +
+      "r.proto\"D\n\023SenceMsgRequestInfo\022\016\n\006msg_id" +
+      "\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\017\n\007senceId\030\003 \001(\005\"\324\001" +
+      "\n\024SenceMsgResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016" +
+      "\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030" +
+      "\004 \001(\t\022\025\n\005sence\030\005 \001(\0132\006.Sence\022\037\n\nentityTy" +
+      "pe\030\006 \003(\0132\013.EntityType\022\021\n\003npc\030\007 \003(\0132\004.Npc" +
+      "\022\031\n\007monster\030\010 \003(\0132\010.Monster\022\027\n\006player\030\t " +
+      "\003(\0132\007.PlayerB-\n\034org.sq.gameDemo.common.p" +
+      "rotoB\rSenceMsgProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           EntityTypeProto.getDescriptor(),
-          SenceEntityProto.getDescriptor(),
-          UserEntityProto.getDescriptor(),
+          PlayerPt.getDescriptor(),
+          NpcPt.getDescriptor(),
           SenceProto.getDescriptor(),
+          MonsterPt.getDescriptor(),
         });
     internal_static_SenceMsgRequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -2827,11 +3195,12 @@ public final class SenceMsgProto {
     internal_static_SenceMsgResponseInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SenceMsgResponseInfo_descriptor,
-        new String[] { "MsgId", "Result", "Time", "Content", "Sence", "EntityType", "SenceEntity", "UserEntity", });
+        new String[] { "MsgId", "Result", "Time", "Content", "Sence", "EntityType", "Npc", "Monster", "Player", });
     EntityTypeProto.getDescriptor();
-    SenceEntityProto.getDescriptor();
-    UserEntityProto.getDescriptor();
+    PlayerPt.getDescriptor();
+    NpcPt.getDescriptor();
     SenceProto.getDescriptor();
+    MonsterPt.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -12,17 +12,17 @@ import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 
 import java.util.List;
 
+/**
+ * 场景配置读取类
+ */
 @Data
 public class SenceConfig {
-    @ProtoField(Ignore = true)
     private int senceId;
 
-    @ProtoField(Ignore = true)
-    @JSONField(serialize = false)
     private String jsonStr;
 
     @Data
-    public class tmpConf {
+    public static class tmpConf {
         private int id;
         private int num;
     }

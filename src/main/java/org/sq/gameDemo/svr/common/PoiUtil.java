@@ -2,8 +2,8 @@ package org.sq.gameDemo.svr.common;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Row;
-import org.sq.gameDemo.common.proto.EntityProto;
-import org.sq.gameDemo.svr.game.scene.model.GameScene;
+import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
+import org.sq.gameDemo.svr.game.skills.model.Skill;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -14,6 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PoiUtil {
+
+    public static List<String> supportTypeList =
+            Arrays.asList("int", "Integer", "float", "Float", "long", "Long", "double", "Double", "String");
+
     /**
      * 主方法
      * @param fileName excel文件流
@@ -24,22 +28,21 @@ public class PoiUtil {
      */
     public static List readExcel(String fileName, int sheetNum, Class clazz) throws Exception{
         //1.读取Excel文档对象
-        int fieldNum = clazz.getDeclaredMethods().length;
         //将class的Field的名称<name, setName()>记录到map中
         Map<String, Method> setMethodMap = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
             String name = field.getName();
-            try{
-                Method setMethod = clazz.getDeclaredMethod(
-                        "set" + String.valueOf(name.charAt(0)).toUpperCase()+ field.getName().substring(1),
-                        field.getType());
-                setMethodMap.put(name, setMethod);
-            }catch (NoSuchMethodException e) {
-                continue;
+            if(supportTypeList.contains(field.getType().getSimpleName())) {
+                try{
+                    Method setMethod = clazz.getDeclaredMethod(
+                            "set" + String.valueOf(name.charAt(0)).toUpperCase()+ field.getName().substring(1),
+                            field.getType());
+                    setMethodMap.put(name, setMethod);
+                }catch (NoSuchMethodException e) {
+                    continue;
+                }
+
             }
-
-
-
         }
 
         ArrayList excelData = new ArrayList<>();
@@ -60,6 +63,7 @@ public class PoiUtil {
                     Object singleRow = getSingleRow(sheet, i, setMethodMap, listRef, clazz);
                     excelData.add(singleRow);
                 }catch (Exception e) {
+                    e.printStackTrace();
                     throw new Exception("该路径下 " + file.getPath() + " 文件内容有誤");
                 }
             }
@@ -108,7 +112,8 @@ public class PoiUtil {
                 Field declaredField = clazz.getDeclaredField(String.valueOf(listRef.ref.get(j)));
                 Class<?> type = declaredField.getType();
                 value = getValueFromCell(cell, type);
-                setMethod.get(listRef.ref.get(j)).invoke(instance, value);
+                Method set = setMethod.get(listRef.ref.get(j));
+                set.invoke(instance, value);
             }
 
         }
@@ -126,7 +131,7 @@ public class PoiUtil {
      */
     private static Object getValueFromCell(HSSFCell cell, Class expectClazz) {
         Object value = null;
-        String typeName = expectClazz.getTypeName();
+        String typeName = expectClazz.getSimpleName();
 
         switch (cell.getCellType()) {
             case HSSFCell.CELL_TYPE_STRING:
@@ -148,14 +153,18 @@ public class PoiUtil {
                 } else {
                     Double cellValue = cell.getNumericCellValue();
                     value = new DecimalFormat("0").format(cellValue);
+                    //做一个基本类型的兼容
                     if(typeName.equals("int") || typeName.equals("Integer")) {
-                        value = Integer.valueOf(new DecimalFormat("0").format(cellValue));
+                        value = cellValue.intValue();
                     }
                     if(typeName.equals("double") || typeName.equals("Double")) {
-                        value = cellValue;
+                        value = cellValue.doubleValue();
                     }
                     if(typeName.equals("float") || typeName.equals("Float")) {
                         value = cellValue.floatValue();
+                    }
+                    if(typeName.equals("long") || typeName.equals("Long")) {
+                        value = cellValue.longValue();
                     }
                 }
                 break;
@@ -189,7 +198,10 @@ public class PoiUtil {
         return true;
     }
 
-
+    public static void main(String[] args) throws Exception {
+        List<SenceEntity> senceConfigs = PoiUtil.readExcel("senceEntity2.xls", 0, SenceEntity.class);
+        System.out.println(senceConfigs.toString());
+    }
 
 
 

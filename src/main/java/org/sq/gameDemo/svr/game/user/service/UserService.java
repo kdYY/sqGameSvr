@@ -8,10 +8,13 @@ package org.sq.gameDemo.svr.game.user.service;
 
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.Opt;
 import org.springframework.transaction.annotation.Transactional;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.common.UserCache;
+import org.sq.gameDemo.svr.common.customException.customException;
+import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -22,8 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <b><code>UserService</code></b>
@@ -43,6 +48,8 @@ public class UserService {
     private EntityService entityService;
     @Autowired
     private SenceService senceService;
+    @Autowired
+    private PlayerCache playerCache;
 
 
     public User getUser(UserProto.User user){
@@ -96,7 +103,7 @@ public class UserService {
         return null;
     }
 
-    public void playerRegister(MessageProto.Msg.Builder builder, UserProto.User proto) throws Exception {
+    public void userRegister(MessageProto.Msg.Builder builder, UserProto.User proto) throws Exception {
         User userSave = new User();
         userSave.setName(proto.getName());
         userSave.setPassword(proto.getPassword());
@@ -116,32 +123,36 @@ public class UserService {
 
     public void checkUserToken(Channel channel, UserProto.ResponseUserInfo.Builder builder, String userToken) {
         User user = getUserByToken(userToken);
+
         if(userToken != null && !userToken.equals("") && user != null) {
-
-            UserCache.updateChannelCache(channel, user.getId());
-
-            if(entityService.hasPlayer(channel)) {
-                Player player = entityService.getInitedPlayer(user.getId(), channel);
-                entityService.playerOnline(player, channel);
-                String lastSence = senceService.getSenceBySenceId(player.getSenceId()).getName();
-                builder.setContent(lastSence);
-            } else {
-                builder.setContent("\r\nlogin success, \r\nbind your Role \r\n");
+            try {
+                entityService.playerLogin(channel, builder, user.getId());
+            }  catch (customException.BindRoleInSenceException e1) {
+                builder.setContent("reconnect fail, please relogin, enter \"help\" to get Help");
+                builder.setResult(404);
+                builder.setToken("");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            builder.setToken(userToken);
-            //builder.setSence(SenceProto.Sence.newBuilder().setId(1).setName("起源之地").build());
-        } else {
-            builder.setContent("reconnect fail, please relogin, enter \"help\" to get Help");
-            builder.setResult(404);
-            builder.setToken("");
         }
+
     }
 
     public void userOffLine(Channel channel) {
         Integer userId = UserCache.getUserIdByChannel(channel);
-        UserEntity userEntity = senceService.removePlayerAndGet(userId, channel);
-        UserCache.removeChannle(channel, userId);
-        log.info(userEntity.getName() + "下线");
+        Player player = senceService.removePlayerAndGet(userId, channel);
+        //清除playerCache中的数据
+        playerCache.removePlayerByChannel(channel);
+        playerCache.removePlayerChannel(player.getId());
+        UserCache.removeChannle(channel, player.getUserId());
+        log.info(player.getName() + "下线");
     }
 
+    public User getUserById(Integer userId) {
+        User user = null;
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andIdEqualTo(userId);
+        return Optional.ofNullable(Optional.ofNullable(userMapper.selectByExample(userExample))
+                .orElseGet(ArrayList::new).get(0)).orElseGet(null);
+    }
 }

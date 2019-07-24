@@ -2,6 +2,9 @@ package org.sq.gameDemo.svr.game.roleAttribute.model;
 
 import lombok.Data;
 
+/**
+ * 角色基本属性类
+ */
 @Data
 public class RoleAttribute {
     //ID

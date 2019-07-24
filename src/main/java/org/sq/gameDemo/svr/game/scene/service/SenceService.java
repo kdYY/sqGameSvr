@@ -12,7 +12,7 @@ import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.common.customException.customException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
-import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
+import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -21,7 +21,6 @@ import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 @Service
@@ -32,7 +31,7 @@ public class SenceService {
     @Autowired
     private SenceEntityCache senceEntityCache;
     @Autowired
-    private EntityTypeCache typeCache;
+    private PlayerCache playerCache;
 
     @Value("${excel.sence}")
     private String senceFileName;
@@ -65,12 +64,13 @@ public class SenceService {
             ArrayList<Monster> monsterListinSence = new ArrayList<>();
             ArrayList<Npc> npclistinsence = new ArrayList<>();
             for (SenceConfig.tmpConf tmpConf : tmpConfList) {
-                SenceEntity senceEntity = senceEntityCache.get(tmpConf.getId());
+                SenceEntity senceEntity = senceEntityCache.get((long) tmpConf.getId());
                 if(senceEntity.getTypeId().equals(Constant.Monster)) {
                     for (int i = 0; i < tmpConf.getNum(); i++) {
                         Monster monster = new Monster();
                         BeanUtils.copyProperties(senceEntity, monster);
-                        monster.setId(i);
+                        monster.setId(ConcurrentSnowFlake.getInstance().nextID());
+                        monster.setSenceId(config.getSenceId());
                         monsterListinSence.add(monster);
                     }
                 }
@@ -78,14 +78,15 @@ public class SenceService {
                     for (int i = 0; i < tmpConf.getNum(); i++) {
                         Npc npc = new Npc();
                         BeanUtils.copyProperties(senceEntity, npc);
-                        npc.setId(i);
+                        npc.setId(ConcurrentSnowFlake.getInstance().nextID());
+                        npc.setSenceId(config.getSenceId());
                         npclistinsence.add(npc);
                     }
                 }
             }
             SenceConfigMsg senceConfigMsg = new SenceConfigMsg();
             senceConfigMsg.setSenceId(config.getSenceId());
-            senceConfigMsg.setEntityTypes(typeCache.getAllEntityTypes());
+            //senceConfigMsg.setEntityTypeList(typeCache.getAllEntityTypes());
             senceConfigMsg.setMonsterList(monsterListinSence);
             senceConfigMsg.setNpcList(npclistinsence);
 
@@ -145,6 +146,7 @@ public class SenceService {
             //增加进channelGroup
             MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
             builder.setContent(player.getName() + "已经上线!");
+            // TODO 将channel放在player，广播也放在player
             UserCache.addChannelInGroup(player.getSenceId(), channel, builder.build().toByteArray());
         });
 
@@ -158,7 +160,7 @@ public class SenceService {
      * @param channel
      * @throws customException.RemoveFailedException
      */
-    public UserEntity removePlayerAndGet(Integer usrId, Channel channel) throws customException.RemoveFailedException {
+    public Player removePlayerAndGet(Integer usrId, Channel channel) throws customException.RemoveFailedException {
         if(!entityService.hasPlayer(channel)) {
             System.out.println("player找不到,出现脏数据");
         }
@@ -169,6 +171,7 @@ public class SenceService {
                 throw new customException.RemoveFailedException("移动失败");
             }
             UserCache.moveChannelInGroup(player.getSenceId(), channel, player.getName() + "已经下线!");
+
         });
         return player;
     }

@@ -1,4 +1,4 @@
-package org.sq.gameDemo.svr.common;
+package org.sq.gameDemo.svr.game.characterEntity.dao;
 
 
 import com.google.common.cache.Cache;
@@ -39,16 +39,15 @@ public class PlayerCache  {
     public  static Cache<Long, Channel> IdChannelCache = CacheBuilder.newBuilder().build();
 
     /**
-     *  键为channel id
+     *  键为channel
      */
-
     public Player getPlayerByChannel(Channel channel) {
         return channelPlayerCache.getIfPresent(channel);
     }
 
 
     /**
-     *  值为玩家
+     *  值为player
      */
     public void putChannelPlayer(Channel channel, Player player) {
         Channel old = getChannelByPlayerId(player.getId());
@@ -58,17 +57,17 @@ public class PlayerCache  {
 
 
     /**
-     *  通过 channel Id 清除玩家信息
+     *  通过 channel清除玩家信息
      */
-    public void  removePlayerByChannelId(String channelId) {
-        channelPlayerCache.invalidate(channelId);
+    public void removePlayerByChannel(Channel channel) {
+        channelPlayerCache.invalidate(channel);
     }
 
 
     /**
      * 玩家id来保存ChannelHandlerContext
      */
-    public void savePlayerChannel(long playerId, Channel channel) {
+    public void savePlayerChannel(Long playerId, Channel channel) {
         IdChannelCache.put(playerId, channel);
     }
 
@@ -77,12 +76,12 @@ public class PlayerCache  {
      *  根据玩家id获取ChannelHandlerContext
      * @param playerId 玩家id
      */
-    public Channel getChannelByPlayerId(long playerId) {
+    public Channel getChannelByPlayerId(Long playerId) {
         return IdChannelCache.getIfPresent(playerId);
     }
 
 
-    public  void removePlayerChannel(long playerId) {
+    public  void removePlayerChannel(Long playerId) {
         IdChannelCache.invalidate(playerId);
     }
 

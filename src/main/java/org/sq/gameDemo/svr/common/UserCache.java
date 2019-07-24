@@ -8,7 +8,9 @@ import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.svr.common.customException.customException;
+import org.sq.gameDemo.svr.game.user.dao.UserMapper;
 import org.sq.gameDemo.svr.game.user.model.User;
+import org.sq.gameDemo.svr.game.user.model.UserExample;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 
 import javax.annotation.PostConstruct;
@@ -23,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class UserCache {
 
     @Autowired
-    private UserService userService;
+    private UserMapper userMapper;
     //<Token, UserId>
     public static Map<String, Integer> tokenUserMap = new HashMap<>();
     //<Channel, UserId>
@@ -44,7 +46,7 @@ public class UserCache {
 
     @PostConstruct
     public void init() {
-        List<User> userList = userService.listUser();
+        List<User> userList = userMapper.selectByExample(new UserExample());
         for (User user : userList) {
             userMap.put(user.getId(), user);
         }

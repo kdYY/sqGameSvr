@@ -5,6 +5,9 @@ import org.sq.gameDemo.common.proto.SenceProto;
 
 import java.lang.reflect.Method;
 
+/**
+ * 场景类
+ */
 public class GameScene {
     private int id;
     private String name;

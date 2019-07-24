@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-//场景实体
+/**
+ * 场景非角色单位
+ */
 @Data
 public class SenceEntity{
-    private Integer id;
+    private Long id;
     private String name;
     private Integer senceId;
     private Integer typeId;//角色类型
@@ -22,11 +24,15 @@ public class SenceEntity{
     private Long attack;
     private Long refreshTime; //刷新时间
 
+    @ProtoField(Ignore = true)
     private String skillStr;
+
     // 当前使用技能的集合
+    @ProtoField(Ignore = true)
     Map<Integer, Skill> skillMap = new ConcurrentHashMap<>();
 
     // 当前攻击对象
+    @ProtoField(Ignore = true)
     private Character target;
 
 

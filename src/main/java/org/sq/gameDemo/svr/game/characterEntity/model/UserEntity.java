@@ -7,11 +7,12 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-//角色实体
+/**
+ *场景角色单位
+ */
 @Data
 public class UserEntity {
-    @ProtoField(Ignore = true)
-    private Integer id;
+    private Long id;
 
     /**
      * 玩家昵称

@@ -28,7 +28,7 @@ public class EntityTypeCache {
 
 
     //存储所有角色类型
-    private List<EntityType> entityTypes;
+    private static List<EntityType> entityTypes;
 
     @PostConstruct
     private void init() throws Exception {
@@ -38,10 +38,10 @@ public class EntityTypeCache {
             put(type.getId(), type);
         }
         entityTypes = entityTypeCache.asMap().values().stream().collect(Collectors.toList());
-        log.info("基础角色表加载完毕");
+        log.info("基础角色类型EntityType加载完毕");
     }
 
-    public List<EntityType> getAllEntityTypes() {
+    public static List<EntityType> getAllEntityTypes() {
         return entityTypes;
     }
 

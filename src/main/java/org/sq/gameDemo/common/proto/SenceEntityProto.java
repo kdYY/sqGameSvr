@@ -19,56 +19,68 @@ public final class SenceEntityProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 id = 1;</code>
+     * <code>uint64 id = 1;</code>
      */
-    int getId();
+    long getId();
 
     /**
-     * <code>int32 senceId = 2;</code>
+     * <code>string name = 2;</code>
+     */
+    String getName();
+    /**
+     * <code>string name = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>int32 senceId = 3;</code>
      */
     int getSenceId();
 
     /**
-     * <pre>
-     *之后版本需要就去掉。。。
-     * </pre>
-     *
-     * <code>int32 num = 3;</code>
-     */
-    int getNum();
-
-    /**
-     * <code>int32 state = 4;</code>
-     */
-    int getState();
-
-    /**
-     * <code>int32 typeId = 5;</code>
+     * <code>int32 typeId = 4;</code>
      */
     int getTypeId();
 
     /**
-     * <code>repeated string npcWord = 6;</code>
+     * <code>int32 state = 5;</code>
      */
-    java.util.List<String>
-        getNpcWordList();
+    int getState();
+
     /**
-     * <code>repeated string npcWord = 6;</code>
+     * <code>uint64 hp = 6;</code>
      */
-    int getNpcWordCount();
+    long getHp();
+
     /**
-     * <code>repeated string npcWord = 6;</code>
+     * <code>uint64 mp = 7;</code>
      */
-    String getNpcWord(int index);
+    long getMp();
+
     /**
-     * <code>repeated string npcWord = 6;</code>
+     * <code>uint64 attack = 8;</code>
+     */
+    long getAttack();
+
+    /**
+     * <code>uint64 refreshTime = 9;</code>
+     */
+    long getRefreshTime();
+
+    /**
+     * <code>string npcWord = 10;</code>
+     */
+    String getNpcWord();
+    /**
+     * <code>string npcWord = 10;</code>
      */
     com.google.protobuf.ByteString
-        getNpcWordBytes(int index);
+        getNpcWordBytes();
   }
   /**
    * <pre>
-   *场景实体 npc 野怪
+   *场景实体
    * </pre>
    *
    * Protobuf type {@code SenceEntity}
@@ -83,7 +95,8 @@ public final class SenceEntityProto {
       super(builder);
     }
     private SenceEntity() {
-      npcWord_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      name_ = "";
+      npcWord_ = "";
     }
 
     @Override
@@ -106,7 +119,6 @@ public final class SenceEntityProto {
       if (extensionRegistry == null) {
         throw new NullPointerException();
       }
-      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -119,36 +131,54 @@ public final class SenceEntityProto {
               break;
             case 8: {
 
-              id_ = input.readInt32();
+              id_ = input.readUInt64();
               break;
             }
-            case 16: {
+            case 18: {
+              String s = input.readStringRequireUtf8();
 
-              senceId_ = input.readInt32();
+              name_ = s;
               break;
             }
             case 24: {
 
-              num_ = input.readInt32();
+              senceId_ = input.readInt32();
               break;
             }
             case 32: {
 
-              state_ = input.readInt32();
+              typeId_ = input.readInt32();
               break;
             }
             case 40: {
 
-              typeId_ = input.readInt32();
+              state_ = input.readInt32();
               break;
             }
-            case 50: {
+            case 48: {
+
+              hp_ = input.readUInt64();
+              break;
+            }
+            case 56: {
+
+              mp_ = input.readUInt64();
+              break;
+            }
+            case 64: {
+
+              attack_ = input.readUInt64();
+              break;
+            }
+            case 72: {
+
+              refreshTime_ = input.readUInt64();
+              break;
+            }
+            case 82: {
               String s = input.readStringRequireUtf8();
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                npcWord_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              npcWord_.add(s);
+
+              npcWord_ = s;
               break;
             }
             default: {
@@ -166,9 +196,6 @@ public final class SenceEntityProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          npcWord_ = npcWord_.getUnmodifiableView();
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -187,81 +214,143 @@ public final class SenceEntityProto {
     }
 
     public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    private long id_;
     /**
-     * <code>int32 id = 1;</code>
+     * <code>uint64 id = 1;</code>
      */
-    public int getId() {
+    public long getId() {
       return id_;
     }
 
-    public static final int SENCEID_FIELD_NUMBER = 2;
+    public static final int NAME_FIELD_NUMBER = 2;
+    private volatile Object name_;
+    /**
+     * <code>string name = 2;</code>
+     */
+    public String getName() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string name = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SENCEID_FIELD_NUMBER = 3;
     private int senceId_;
     /**
-     * <code>int32 senceId = 2;</code>
+     * <code>int32 senceId = 3;</code>
      */
     public int getSenceId() {
       return senceId_;
     }
 
-    public static final int NUM_FIELD_NUMBER = 3;
-    private int num_;
-    /**
-     * <pre>
-     *之后版本需要就去掉。。。
-     * </pre>
-     *
-     * <code>int32 num = 3;</code>
-     */
-    public int getNum() {
-      return num_;
-    }
-
-    public static final int STATE_FIELD_NUMBER = 4;
-    private int state_;
-    /**
-     * <code>int32 state = 4;</code>
-     */
-    public int getState() {
-      return state_;
-    }
-
-    public static final int TYPEID_FIELD_NUMBER = 5;
+    public static final int TYPEID_FIELD_NUMBER = 4;
     private int typeId_;
     /**
-     * <code>int32 typeId = 5;</code>
+     * <code>int32 typeId = 4;</code>
      */
     public int getTypeId() {
       return typeId_;
     }
 
-    public static final int NPCWORD_FIELD_NUMBER = 6;
-    private com.google.protobuf.LazyStringList npcWord_;
+    public static final int STATE_FIELD_NUMBER = 5;
+    private int state_;
     /**
-     * <code>repeated string npcWord = 6;</code>
+     * <code>int32 state = 5;</code>
      */
-    public com.google.protobuf.ProtocolStringList
-        getNpcWordList() {
-      return npcWord_;
+    public int getState() {
+      return state_;
+    }
+
+    public static final int HP_FIELD_NUMBER = 6;
+    private long hp_;
+    /**
+     * <code>uint64 hp = 6;</code>
+     */
+    public long getHp() {
+      return hp_;
+    }
+
+    public static final int MP_FIELD_NUMBER = 7;
+    private long mp_;
+    /**
+     * <code>uint64 mp = 7;</code>
+     */
+    public long getMp() {
+      return mp_;
+    }
+
+    public static final int ATTACK_FIELD_NUMBER = 8;
+    private long attack_;
+    /**
+     * <code>uint64 attack = 8;</code>
+     */
+    public long getAttack() {
+      return attack_;
+    }
+
+    public static final int REFRESHTIME_FIELD_NUMBER = 9;
+    private long refreshTime_;
+    /**
+     * <code>uint64 refreshTime = 9;</code>
+     */
+    public long getRefreshTime() {
+      return refreshTime_;
+    }
+
+    public static final int NPCWORD_FIELD_NUMBER = 10;
+    private volatile Object npcWord_;
+    /**
+     * <code>string npcWord = 10;</code>
+     */
+    public String getNpcWord() {
+      Object ref = npcWord_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        npcWord_ = s;
+        return s;
+      }
     }
     /**
-     * <code>repeated string npcWord = 6;</code>
-     */
-    public int getNpcWordCount() {
-      return npcWord_.size();
-    }
-    /**
-     * <code>repeated string npcWord = 6;</code>
-     */
-    public String getNpcWord(int index) {
-      return npcWord_.get(index);
-    }
-    /**
-     * <code>repeated string npcWord = 6;</code>
+     * <code>string npcWord = 10;</code>
      */
     public com.google.protobuf.ByteString
-        getNpcWordBytes(int index) {
-      return npcWord_.getByteString(index);
+        getNpcWordBytes() {
+      Object ref = npcWord_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        npcWord_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -278,23 +367,35 @@ public final class SenceEntityProto {
     @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
+      if (id_ != 0L) {
+        output.writeUInt64(1, id_);
+      }
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
       if (senceId_ != 0) {
-        output.writeInt32(2, senceId_);
-      }
-      if (num_ != 0) {
-        output.writeInt32(3, num_);
-      }
-      if (state_ != 0) {
-        output.writeInt32(4, state_);
+        output.writeInt32(3, senceId_);
       }
       if (typeId_ != 0) {
-        output.writeInt32(5, typeId_);
+        output.writeInt32(4, typeId_);
       }
-      for (int i = 0; i < npcWord_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, npcWord_.getRaw(i));
+      if (state_ != 0) {
+        output.writeInt32(5, state_);
+      }
+      if (hp_ != 0L) {
+        output.writeUInt64(6, hp_);
+      }
+      if (mp_ != 0L) {
+        output.writeUInt64(7, mp_);
+      }
+      if (attack_ != 0L) {
+        output.writeUInt64(8, attack_);
+      }
+      if (refreshTime_ != 0L) {
+        output.writeUInt64(9, refreshTime_);
+      }
+      if (!getNpcWordBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, npcWord_);
       }
       unknownFields.writeTo(output);
     }
@@ -305,33 +406,43 @@ public final class SenceEntityProto {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
+      if (id_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+          .computeUInt64Size(1, id_);
+      }
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
       if (senceId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, senceId_);
-      }
-      if (num_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, num_);
-      }
-      if (state_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, state_);
+          .computeInt32Size(3, senceId_);
       }
       if (typeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, typeId_);
+          .computeInt32Size(4, typeId_);
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < npcWord_.size(); i++) {
-          dataSize += computeStringSizeNoTag(npcWord_.getRaw(i));
-        }
-        size += dataSize;
-        size += 1 * getNpcWordList().size();
+      if (state_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, state_);
+      }
+      if (hp_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(6, hp_);
+      }
+      if (mp_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(7, mp_);
+      }
+      if (attack_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(8, attack_);
+      }
+      if (refreshTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(9, refreshTime_);
+      }
+      if (!getNpcWordBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, npcWord_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -350,16 +461,24 @@ public final class SenceEntityProto {
 
       if (getId()
           != other.getId()) return false;
+      if (!getName()
+          .equals(other.getName())) return false;
       if (getSenceId()
           != other.getSenceId()) return false;
-      if (getNum()
-          != other.getNum()) return false;
-      if (getState()
-          != other.getState()) return false;
       if (getTypeId()
           != other.getTypeId()) return false;
-      if (!getNpcWordList()
-          .equals(other.getNpcWordList())) return false;
+      if (getState()
+          != other.getState()) return false;
+      if (getHp()
+          != other.getHp()) return false;
+      if (getMp()
+          != other.getMp()) return false;
+      if (getAttack()
+          != other.getAttack()) return false;
+      if (getRefreshTime()
+          != other.getRefreshTime()) return false;
+      if (!getNpcWord()
+          .equals(other.getNpcWord())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -372,19 +491,30 @@ public final class SenceEntityProto {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getId());
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + SENCEID_FIELD_NUMBER;
       hash = (53 * hash) + getSenceId();
-      hash = (37 * hash) + NUM_FIELD_NUMBER;
-      hash = (53 * hash) + getNum();
-      hash = (37 * hash) + STATE_FIELD_NUMBER;
-      hash = (53 * hash) + getState();
       hash = (37 * hash) + TYPEID_FIELD_NUMBER;
       hash = (53 * hash) + getTypeId();
-      if (getNpcWordCount() > 0) {
-        hash = (37 * hash) + NPCWORD_FIELD_NUMBER;
-        hash = (53 * hash) + getNpcWordList().hashCode();
-      }
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + getState();
+      hash = (37 * hash) + HP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getHp());
+      hash = (37 * hash) + MP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMp());
+      hash = (37 * hash) + ATTACK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getAttack());
+      hash = (37 * hash) + REFRESHTIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRefreshTime());
+      hash = (37 * hash) + NPCWORD_FIELD_NUMBER;
+      hash = (53 * hash) + getNpcWord().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -482,7 +612,7 @@ public final class SenceEntityProto {
     }
     /**
      * <pre>
-     *场景实体 npc 野怪
+     *场景实体
      * </pre>
      *
      * Protobuf type {@code SenceEntity}
@@ -522,18 +652,26 @@ public final class SenceEntityProto {
       @Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
+        id_ = 0L;
+
+        name_ = "";
 
         senceId_ = 0;
 
-        num_ = 0;
+        typeId_ = 0;
 
         state_ = 0;
 
-        typeId_ = 0;
+        hp_ = 0L;
 
-        npcWord_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
+        mp_ = 0L;
+
+        attack_ = 0L;
+
+        refreshTime_ = 0L;
+
+        npcWord_ = "";
+
         return this;
       }
 
@@ -560,16 +698,15 @@ public final class SenceEntityProto {
       @Override
       public SenceEntity buildPartial() {
         SenceEntity result = new SenceEntity(this);
-        int from_bitField0_ = bitField0_;
         result.id_ = id_;
+        result.name_ = name_;
         result.senceId_ = senceId_;
-        result.num_ = num_;
-        result.state_ = state_;
         result.typeId_ = typeId_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          npcWord_ = npcWord_.getUnmodifiableView();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
+        result.state_ = state_;
+        result.hp_ = hp_;
+        result.mp_ = mp_;
+        result.attack_ = attack_;
+        result.refreshTime_ = refreshTime_;
         result.npcWord_ = npcWord_;
         onBuilt();
         return result;
@@ -619,29 +756,36 @@ public final class SenceEntityProto {
 
       public Builder mergeFrom(SenceEntity other) {
         if (other == SenceEntity.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
+        if (other.getId() != 0L) {
           setId(other.getId());
+        }
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
         }
         if (other.getSenceId() != 0) {
           setSenceId(other.getSenceId());
         }
-        if (other.getNum() != 0) {
-          setNum(other.getNum());
+        if (other.getTypeId() != 0) {
+          setTypeId(other.getTypeId());
         }
         if (other.getState() != 0) {
           setState(other.getState());
         }
-        if (other.getTypeId() != 0) {
-          setTypeId(other.getTypeId());
+        if (other.getHp() != 0L) {
+          setHp(other.getHp());
         }
-        if (!other.npcWord_.isEmpty()) {
-          if (npcWord_.isEmpty()) {
-            npcWord_ = other.npcWord_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureNpcWordIsMutable();
-            npcWord_.addAll(other.npcWord_);
-          }
+        if (other.getMp() != 0L) {
+          setMp(other.getMp());
+        }
+        if (other.getAttack() != 0L) {
+          setAttack(other.getAttack());
+        }
+        if (other.getRefreshTime() != 0L) {
+          setRefreshTime(other.getRefreshTime());
+        }
+        if (!other.getNpcWord().isEmpty()) {
+          npcWord_ = other.npcWord_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -672,43 +816,111 @@ public final class SenceEntityProto {
         }
         return this;
       }
-      private int bitField0_;
 
-      private int id_ ;
+      private long id_ ;
       /**
-       * <code>int32 id = 1;</code>
+       * <code>uint64 id = 1;</code>
        */
-      public int getId() {
+      public long getId() {
         return id_;
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>uint64 id = 1;</code>
        */
-      public Builder setId(int value) {
+      public Builder setId(long value) {
         
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>uint64 id = 1;</code>
        */
       public Builder clearId() {
         
-        id_ = 0;
+        id_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private Object name_ = "";
+      /**
+       * <code>string name = 2;</code>
+       */
+      public String getName() {
+        Object ref = name_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>string name = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string name = 2;</code>
+       */
+      public Builder setName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 2;</code>
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 2;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
         onChanged();
         return this;
       }
 
       private int senceId_ ;
       /**
-       * <code>int32 senceId = 2;</code>
+       * <code>int32 senceId = 3;</code>
        */
       public int getSenceId() {
         return senceId_;
       }
       /**
-       * <code>int32 senceId = 2;</code>
+       * <code>int32 senceId = 3;</code>
        */
       public Builder setSenceId(int value) {
         
@@ -717,7 +929,7 @@ public final class SenceEntityProto {
         return this;
       }
       /**
-       * <code>int32 senceId = 2;</code>
+       * <code>int32 senceId = 3;</code>
        */
       public Builder clearSenceId() {
         
@@ -726,79 +938,15 @@ public final class SenceEntityProto {
         return this;
       }
 
-      private int num_ ;
-      /**
-       * <pre>
-       *之后版本需要就去掉。。。
-       * </pre>
-       *
-       * <code>int32 num = 3;</code>
-       */
-      public int getNum() {
-        return num_;
-      }
-      /**
-       * <pre>
-       *之后版本需要就去掉。。。
-       * </pre>
-       *
-       * <code>int32 num = 3;</code>
-       */
-      public Builder setNum(int value) {
-        
-        num_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *之后版本需要就去掉。。。
-       * </pre>
-       *
-       * <code>int32 num = 3;</code>
-       */
-      public Builder clearNum() {
-        
-        num_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int state_ ;
-      /**
-       * <code>int32 state = 4;</code>
-       */
-      public int getState() {
-        return state_;
-      }
-      /**
-       * <code>int32 state = 4;</code>
-       */
-      public Builder setState(int value) {
-        
-        state_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 state = 4;</code>
-       */
-      public Builder clearState() {
-        
-        state_ = 0;
-        onChanged();
-        return this;
-      }
-
       private int typeId_ ;
       /**
-       * <code>int32 typeId = 5;</code>
+       * <code>int32 typeId = 4;</code>
        */
       public int getTypeId() {
         return typeId_;
       }
       /**
-       * <code>int32 typeId = 5;</code>
+       * <code>int32 typeId = 4;</code>
        */
       public Builder setTypeId(int value) {
         
@@ -807,7 +955,7 @@ public final class SenceEntityProto {
         return this;
       }
       /**
-       * <code>int32 typeId = 5;</code>
+       * <code>int32 typeId = 4;</code>
        */
       public Builder clearTypeId() {
         
@@ -816,96 +964,201 @@ public final class SenceEntityProto {
         return this;
       }
 
-      private com.google.protobuf.LazyStringList npcWord_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureNpcWordIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          npcWord_ = new com.google.protobuf.LazyStringArrayList(npcWord_);
-          bitField0_ |= 0x00000001;
-         }
+      private int state_ ;
+      /**
+       * <code>int32 state = 5;</code>
+       */
+      public int getState() {
+        return state_;
       }
       /**
-       * <code>repeated string npcWord = 6;</code>
+       * <code>int32 state = 5;</code>
        */
-      public com.google.protobuf.ProtocolStringList
-          getNpcWordList() {
-        return npcWord_.getUnmodifiableView();
-      }
-      /**
-       * <code>repeated string npcWord = 6;</code>
-       */
-      public int getNpcWordCount() {
-        return npcWord_.size();
-      }
-      /**
-       * <code>repeated string npcWord = 6;</code>
-       */
-      public String getNpcWord(int index) {
-        return npcWord_.get(index);
-      }
-      /**
-       * <code>repeated string npcWord = 6;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNpcWordBytes(int index) {
-        return npcWord_.getByteString(index);
-      }
-      /**
-       * <code>repeated string npcWord = 6;</code>
-       */
-      public Builder setNpcWord(
-          int index, String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureNpcWordIsMutable();
-        npcWord_.set(index, value);
+      public Builder setState(int value) {
+        
+        state_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string npcWord = 6;</code>
+       * <code>int32 state = 5;</code>
        */
-      public Builder addNpcWord(
+      public Builder clearState() {
+        
+        state_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long hp_ ;
+      /**
+       * <code>uint64 hp = 6;</code>
+       */
+      public long getHp() {
+        return hp_;
+      }
+      /**
+       * <code>uint64 hp = 6;</code>
+       */
+      public Builder setHp(long value) {
+        
+        hp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 hp = 6;</code>
+       */
+      public Builder clearHp() {
+        
+        hp_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long mp_ ;
+      /**
+       * <code>uint64 mp = 7;</code>
+       */
+      public long getMp() {
+        return mp_;
+      }
+      /**
+       * <code>uint64 mp = 7;</code>
+       */
+      public Builder setMp(long value) {
+        
+        mp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 mp = 7;</code>
+       */
+      public Builder clearMp() {
+        
+        mp_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long attack_ ;
+      /**
+       * <code>uint64 attack = 8;</code>
+       */
+      public long getAttack() {
+        return attack_;
+      }
+      /**
+       * <code>uint64 attack = 8;</code>
+       */
+      public Builder setAttack(long value) {
+        
+        attack_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 attack = 8;</code>
+       */
+      public Builder clearAttack() {
+        
+        attack_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long refreshTime_ ;
+      /**
+       * <code>uint64 refreshTime = 9;</code>
+       */
+      public long getRefreshTime() {
+        return refreshTime_;
+      }
+      /**
+       * <code>uint64 refreshTime = 9;</code>
+       */
+      public Builder setRefreshTime(long value) {
+        
+        refreshTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 refreshTime = 9;</code>
+       */
+      public Builder clearRefreshTime() {
+        
+        refreshTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private Object npcWord_ = "";
+      /**
+       * <code>string npcWord = 10;</code>
+       */
+      public String getNpcWord() {
+        Object ref = npcWord_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          npcWord_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>string npcWord = 10;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNpcWordBytes() {
+        Object ref = npcWord_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          npcWord_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string npcWord = 10;</code>
+       */
+      public Builder setNpcWord(
           String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureNpcWordIsMutable();
-        npcWord_.add(value);
+  
+        npcWord_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string npcWord = 6;</code>
-       */
-      public Builder addAllNpcWord(
-          Iterable<String> values) {
-        ensureNpcWordIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, npcWord_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string npcWord = 6;</code>
+       * <code>string npcWord = 10;</code>
        */
       public Builder clearNpcWord() {
-        npcWord_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
+        npcWord_ = getDefaultInstance().getNpcWord();
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string npcWord = 6;</code>
+       * <code>string npcWord = 10;</code>
        */
-      public Builder addNpcWordBytes(
+      public Builder setNpcWordBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-        ensureNpcWordIsMutable();
-        npcWord_.add(value);
+        
+        npcWord_ = value;
         onChanged();
         return this;
       }
@@ -3292,17 +3545,19 @@ public final class SenceEntityProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\021SenceEntity.proto\032\020EntityType.proto\"g\n" +
-      "\013SenceEntity\022\n\n\002id\030\001 \001(\005\022\017\n\007senceId\030\002 \001(" +
-      "\005\022\013\n\003num\030\003 \001(\005\022\r\n\005state\030\004 \001(\005\022\016\n\006typeId\030" +
-      "\005 \001(\005\022\017\n\007npcWord\030\006 \003(\t\"X\n\013RequestInfo\022\016\n" +
-      "\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022" +
-      "\016\n\006typeId\030\004 \001(\005\022\017\n\007senceId\030\005 \001(\005\"\213\001\n\014Res" +
-      "ponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(" +
-      "\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\031\n\004type" +
-      "\030\005 \003(\0132\013.EntityType\022!\n\013SenceEntity\030\006 \003(\013" +
-      "2\014.SenceEntityB0\n\034org.sq.gameDemo.common" +
-      ".protoB\020SenceEntityProtob\006proto3"
+      "\n\021SenceEntity.proto\032\020EntityType.proto\"\245\001" +
+      "\n\013SenceEntity\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022" +
+      "\017\n\007senceId\030\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\r\n\005stat" +
+      "e\030\005 \001(\005\022\n\n\002hp\030\006 \001(\004\022\n\n\002mp\030\007 \001(\004\022\016\n\006attac" +
+      "k\030\010 \001(\004\022\023\n\013refreshTime\030\t \001(\004\022\017\n\007npcWord\030" +
+      "\n \001(\t\"X\n\013RequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004" +
+      "time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\017" +
+      "\n\007senceId\030\005 \001(\005\"\213\001\n\014ResponseInfo\022\016\n\006msg_" +
+      "id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017" +
+      "\n\007content\030\004 \001(\t\022\031\n\004type\030\005 \003(\0132\013.EntityTy" +
+      "pe\022!\n\013SenceEntity\030\006 \003(\0132\014.SenceEntityB0\n" +
+      "\034org.sq.gameDemo.common.protoB\020SenceEnti" +
+      "tyProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3314,7 +3569,7 @@ public final class SenceEntityProto {
     internal_static_SenceEntity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SenceEntity_descriptor,
-        new String[] { "Id", "SenceId", "Num", "State", "TypeId", "NpcWord", });
+        new String[] { "Id", "Name", "SenceId", "TypeId", "State", "Hp", "Mp", "Attack", "RefreshTime", "NpcWord", });
     internal_static_RequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_RequestInfo_fieldAccessorTable = new

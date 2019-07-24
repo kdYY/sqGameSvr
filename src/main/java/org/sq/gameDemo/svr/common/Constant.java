@@ -11,4 +11,6 @@ public interface Constant {
     public static String DefaultPlayerName = "玩家";
     public static Integer NPC = 1;
     public static Integer Monster = 2;
+    public static Integer SVR_ERR = 500;
+    public static Integer ORDER_ERR = 404;
 }

@@ -5,12 +5,12 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 import java.util.Map;
 
 /**
- * 规范角色的必有的属性方法
+ * 场景上的一个单位，规范角色的必有的属性方法
  */
 public interface Character {
 
     //角色id
-    Integer getId();
+    Long getId();
 
     //角色名
     String getName();
@@ -27,7 +27,7 @@ public interface Character {
     Integer getState();
     void setState(Integer state);
 
-    //角色拥有的技能
+    //角色正在使用的技能
     Map<Integer, Skill> getSkillMap();
     void setSkillMap(Map<Integer, Skill> skillMap);
 

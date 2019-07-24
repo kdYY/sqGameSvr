@@ -5,13 +5,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.sq.gameDemo.common.entity.MsgEntity;
-import org.sq.gameDemo.svr.common.PlayerCache;
+import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.common.SpringUtil;
-import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.dispatch.DispatchRequest;
-import org.sq.gameDemo.svr.game.characterEntity.model.Player;
-import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
-import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 
 import java.util.Optional;

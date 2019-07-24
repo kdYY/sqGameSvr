@@ -3,11 +3,7 @@ package org.sq.gameDemo.svr.game.user.model;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 
 /**
- * 
- * 
- * @author wcyong
- * 
- * @date 2019-07-17
+ * 用户类
  */
 public class User {
     private Integer id;

@@ -8,11 +8,14 @@ import java.nio.channels.Channel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+/**
+ * 玩家类
+ */
 @Data
 @EqualsAndHashCode(callSuper=true)
 public class Player extends UserEntity implements Character {
 
-    private Channel channel;
 
     /**
      *  等级，根据经验计算得出

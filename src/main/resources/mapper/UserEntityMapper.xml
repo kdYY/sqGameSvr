@@ -4,11 +4,12 @@
 
     <resultMap id="BaseResultMap" type="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
         <id column="id" property="id" jdbcType="INTEGER" />
-        <result column="user_id" property="userId" jdbcType="INTEGER" />
-        <result column="nick" property="nick" jdbcType="VARCHAR" />
-        <result column="state" property="state" jdbcType="INTEGER" />
-        <result column="type_id" property="typeId" jdbcType="INTEGER" />
-        <result column="sence_id" property="senceId" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="TINYINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="state" property="state" jdbcType="TINYINT" />
+        <result column="type_id" property="typeId" jdbcType="TINYINT" />
+        <result column="sence_id" property="senceId" jdbcType="TINYINT" />
+        <result column="exp" property="exp" jdbcType="INTEGER" />
     </resultMap>
 
     <sql id="Example_Where_Clause" >
@@ -72,7 +73,7 @@
     </sql>
 
     <sql id="Base_Column_List" >
-        id, user_id, nick, state, type_id, sence_id
+        id, user_id, name, state, type_id, sence_id, exp
     </sql>
 
     <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntityExample" >
@@ -91,7 +92,7 @@
     </select>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-        select 
+        select
         <include refid="Base_Column_List" />
         from user_entity
         where id = #{id,jdbcType=INTEGER}
@@ -110,12 +111,12 @@
     </delete>
 
     <insert id="insert" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
-        insert into user_entity (id, user_id, nick, 
-            state, type_id, sence_id
-            )
-        values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{nick,jdbcType=VARCHAR}, 
-            #{state,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, #{senceId,jdbcType=INTEGER}
-            )
+        insert into user_entity (id, user_id, name,
+            state, type_id, sence_id,
+            exp)
+        values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
+            #{state,jdbcType=TINYINT}, #{typeId,jdbcType=TINYINT}, #{senceId,jdbcType=TINYINT},
+            #{exp,jdbcType=INTEGER})
     </insert>
 
     <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
@@ -127,8 +128,8 @@
             <if test="userId != null" >
                 user_id,
             </if>
-            <if test="nick != null" >
-                nick,
+            <if test="name != null" >
+                name,
             </if>
             <if test="state != null" >
                 state,
@@ -139,25 +140,31 @@
             <if test="senceId != null" >
                 sence_id,
             </if>
+            <if test="exp != null" >
+                exp,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
                 #{id,jdbcType=INTEGER},
             </if>
             <if test="userId != null" >
-                #{userId,jdbcType=INTEGER},
+                #{userId,jdbcType=TINYINT},
             </if>
-            <if test="nick != null" >
-                #{nick,jdbcType=VARCHAR},
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
             </if>
             <if test="state != null" >
-                #{state,jdbcType=INTEGER},
+                #{state,jdbcType=TINYINT},
             </if>
             <if test="typeId != null" >
-                #{typeId,jdbcType=INTEGER},
+                #{typeId,jdbcType=TINYINT},
             </if>
             <if test="senceId != null" >
-                #{senceId,jdbcType=INTEGER},
+                #{senceId,jdbcType=TINYINT},
+            </if>
+            <if test="exp != null" >
+                #{exp,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -176,19 +183,22 @@
                 id = #{record.id,jdbcType=INTEGER},
             </if>
             <if test="record.userId != null" >
-                user_id = #{record.userId,jdbcType=INTEGER},
+                user_id = #{record.userId,jdbcType=TINYINT},
             </if>
-            <if test="record.nick != null" >
-                nick = #{record.nick,jdbcType=VARCHAR},
+            <if test="record.name != null" >
+                name = #{record.name,jdbcType=VARCHAR},
             </if>
             <if test="record.state != null" >
-                state = #{record.state,jdbcType=INTEGER},
+                state = #{record.state,jdbcType=TINYINT},
             </if>
             <if test="record.typeId != null" >
-                type_id = #{record.typeId,jdbcType=INTEGER},
+                type_id = #{record.typeId,jdbcType=TINYINT},
             </if>
             <if test="record.senceId != null" >
-                sence_id = #{record.senceId,jdbcType=INTEGER},
+                sence_id = #{record.senceId,jdbcType=TINYINT},
+            </if>
+            <if test="record.exp != null" >
+                exp = #{record.exp,jdbcType=INTEGER},
             </if>
         </set>
         <if test="_parameter != null" >
@@ -199,11 +209,12 @@
     <update id="updateByExample" parameterType="map" >
         update user_entity
         set id = #{record.id,jdbcType=INTEGER},
-            user_id = #{record.userId,jdbcType=INTEGER},
-            nick = #{record.nick,jdbcType=VARCHAR},
-            state = #{record.state,jdbcType=INTEGER},
-            type_id = #{record.typeId,jdbcType=INTEGER},
-            sence_id = #{record.senceId,jdbcType=INTEGER}
+        user_id = #{record.userId,jdbcType=TINYINT},
+        name = #{record.name,jdbcType=VARCHAR},
+        state = #{record.state,jdbcType=TINYINT},
+        type_id = #{record.typeId,jdbcType=TINYINT},
+        sence_id = #{record.senceId,jdbcType=TINYINT},
+        exp = #{record.exp,jdbcType=INTEGER}
         <if test="_parameter != null" >
             <include refid="Update_By_Example_Where_Clause" />
         </if>
@@ -213,19 +224,22 @@
         update user_entity
         <set >
             <if test="userId != null" >
-                user_id = #{userId,jdbcType=INTEGER},
+                user_id = #{userId,jdbcType=TINYINT},
             </if>
-            <if test="nick != null" >
-                nick = #{nick,jdbcType=VARCHAR},
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
             </if>
             <if test="state != null" >
-                state = #{state,jdbcType=INTEGER},
+                state = #{state,jdbcType=TINYINT},
             </if>
             <if test="typeId != null" >
-                type_id = #{typeId,jdbcType=INTEGER},
+                type_id = #{typeId,jdbcType=TINYINT},
             </if>
             <if test="senceId != null" >
-                sence_id = #{senceId,jdbcType=INTEGER},
+                sence_id = #{senceId,jdbcType=TINYINT},
+            </if>
+            <if test="exp != null" >
+                exp = #{exp,jdbcType=INTEGER},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
@@ -233,18 +247,19 @@
 
     <update id="updateByPrimaryKey" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
         update user_entity
-        set user_id = #{userId,jdbcType=INTEGER},
-            nick = #{nick,jdbcType=VARCHAR},
-            state = #{state,jdbcType=INTEGER},
-            type_id = #{typeId,jdbcType=INTEGER},
-            sence_id = #{senceId,jdbcType=INTEGER}
+        set user_id = #{userId,jdbcType=TINYINT},
+            name = #{name,jdbcType=VARCHAR},
+            state = #{state,jdbcType=TINYINT},
+            type_id = #{typeId,jdbcType=TINYINT},
+            sence_id = #{senceId,jdbcType=TINYINT},
+            exp = #{exp,jdbcType=INTEGER}
         where id = #{id,jdbcType=INTEGER}
     </update>
+
     <select id="getUserEntityByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select
         <include refid="Base_Column_List" />
         from user_entity
         where user_id = #{userId,jdbcType=INTEGER}
     </select>
-
 </mapper>

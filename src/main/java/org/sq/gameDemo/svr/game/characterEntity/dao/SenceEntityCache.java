@@ -20,7 +20,7 @@ public class SenceEntityCache {
     @Value("${excel.senceEntity}")
     private String fileName;
 
-    public static Cache<Integer, SenceEntity> senceEntityCache = CacheBuilder.newBuilder()
+    public static Cache<Long, SenceEntity> senceEntityCache = CacheBuilder.newBuilder()
             .removalListener(
                     cacheObj -> log.info(cacheObj.getKey() + "基础角色被移除, 原因是" + cacheObj.getCause())
             ).build();
@@ -31,15 +31,15 @@ public class SenceEntityCache {
         for (SenceEntity senceEntity : senceEntityList) {
             put(senceEntity.getId(), senceEntity);
         }
-        log.info("基础角色表加载完毕");
+        log.info("非玩家角色加载完毕");
     }
 
 
-    public SenceEntity get(Integer id) {
+    public SenceEntity get(Long id) {
         return senceEntityCache.getIfPresent(id);
     }
 
-    public void put(Integer id, SenceEntity value) {
+    public void put(Long id, SenceEntity value) {
         senceEntityCache.put(id,value);
     }
 

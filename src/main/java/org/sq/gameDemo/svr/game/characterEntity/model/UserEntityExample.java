@@ -68,7 +68,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-07-12
+     * @date 2019-07-24
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -181,123 +181,123 @@ public class UserEntityExample {
             return (Criteria) this;
         }
 
-        public Criteria andUserIdEqualTo(Integer value) {
+        public Criteria andUserIdEqualTo(Byte value) {
             addCriterion("user_id =", value, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotEqualTo(Integer value) {
+        public Criteria andUserIdNotEqualTo(Byte value) {
             addCriterion("user_id <>", value, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdGreaterThan(Integer value) {
+        public Criteria andUserIdGreaterThan(Byte value) {
             addCriterion("user_id >", value, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andUserIdGreaterThanOrEqualTo(Byte value) {
             addCriterion("user_id >=", value, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdLessThan(Integer value) {
+        public Criteria andUserIdLessThan(Byte value) {
             addCriterion("user_id <", value, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdLessThanOrEqualTo(Integer value) {
+        public Criteria andUserIdLessThanOrEqualTo(Byte value) {
             addCriterion("user_id <=", value, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdIn(List<Integer> values) {
+        public Criteria andUserIdIn(List<Byte> values) {
             addCriterion("user_id in", values, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotIn(List<Integer> values) {
+        public Criteria andUserIdNotIn(List<Byte> values) {
             addCriterion("user_id not in", values, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdBetween(Integer value1, Integer value2) {
+        public Criteria andUserIdBetween(Byte value1, Byte value2) {
             addCriterion("user_id between", value1, value2, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andUserIdNotBetween(Byte value1, Byte value2) {
             addCriterion("user_id not between", value1, value2, "userId");
             return (Criteria) this;
         }
 
-        public Criteria andNickIsNull() {
-            addCriterion("nick is null");
+        public Criteria andNameIsNull() {
+            addCriterion("name is null");
             return (Criteria) this;
         }
 
-        public Criteria andNickIsNotNull() {
-            addCriterion("nick is not null");
+        public Criteria andNameIsNotNull() {
+            addCriterion("name is not null");
             return (Criteria) this;
         }
 
-        public Criteria andNickEqualTo(String value) {
-            addCriterion("nick =", value, "nick");
+        public Criteria andNameEqualTo(String value) {
+            addCriterion("name =", value, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickNotEqualTo(String value) {
-            addCriterion("nick <>", value, "nick");
+        public Criteria andNameNotEqualTo(String value) {
+            addCriterion("name <>", value, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickGreaterThan(String value) {
-            addCriterion("nick >", value, "nick");
+        public Criteria andNameGreaterThan(String value) {
+            addCriterion("name >", value, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickGreaterThanOrEqualTo(String value) {
-            addCriterion("nick >=", value, "nick");
+        public Criteria andNameGreaterThanOrEqualTo(String value) {
+            addCriterion("name >=", value, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickLessThan(String value) {
-            addCriterion("nick <", value, "nick");
+        public Criteria andNameLessThan(String value) {
+            addCriterion("name <", value, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickLessThanOrEqualTo(String value) {
-            addCriterion("nick <=", value, "nick");
+        public Criteria andNameLessThanOrEqualTo(String value) {
+            addCriterion("name <=", value, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickLike(String value) {
-            addCriterion("nick like", value, "nick");
+        public Criteria andNameLike(String value) {
+            addCriterion("name like", value, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickNotLike(String value) {
-            addCriterion("nick not like", value, "nick");
+        public Criteria andNameNotLike(String value) {
+            addCriterion("name not like", value, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickIn(List<String> values) {
-            addCriterion("nick in", values, "nick");
+        public Criteria andNameIn(List<String> values) {
+            addCriterion("name in", values, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickNotIn(List<String> values) {
-            addCriterion("nick not in", values, "nick");
+        public Criteria andNameNotIn(List<String> values) {
+            addCriterion("name not in", values, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickBetween(String value1, String value2) {
-            addCriterion("nick between", value1, value2, "nick");
+        public Criteria andNameBetween(String value1, String value2) {
+            addCriterion("name between", value1, value2, "name");
             return (Criteria) this;
         }
 
-        public Criteria andNickNotBetween(String value1, String value2) {
-            addCriterion("nick not between", value1, value2, "nick");
+        public Criteria andNameNotBetween(String value1, String value2) {
+            addCriterion("name not between", value1, value2, "name");
             return (Criteria) this;
         }
 
@@ -311,52 +311,52 @@ public class UserEntityExample {
             return (Criteria) this;
         }
 
-        public Criteria andStateEqualTo(Integer value) {
+        public Criteria andStateEqualTo(Byte value) {
             addCriterion("state =", value, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateNotEqualTo(Integer value) {
+        public Criteria andStateNotEqualTo(Byte value) {
             addCriterion("state <>", value, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateGreaterThan(Integer value) {
+        public Criteria andStateGreaterThan(Byte value) {
             addCriterion("state >", value, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateGreaterThanOrEqualTo(Integer value) {
+        public Criteria andStateGreaterThanOrEqualTo(Byte value) {
             addCriterion("state >=", value, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateLessThan(Integer value) {
+        public Criteria andStateLessThan(Byte value) {
             addCriterion("state <", value, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateLessThanOrEqualTo(Integer value) {
+        public Criteria andStateLessThanOrEqualTo(Byte value) {
             addCriterion("state <=", value, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateIn(List<Integer> values) {
+        public Criteria andStateIn(List<Byte> values) {
             addCriterion("state in", values, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateNotIn(List<Integer> values) {
+        public Criteria andStateNotIn(List<Byte> values) {
             addCriterion("state not in", values, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateBetween(Integer value1, Integer value2) {
+        public Criteria andStateBetween(Byte value1, Byte value2) {
             addCriterion("state between", value1, value2, "state");
             return (Criteria) this;
         }
 
-        public Criteria andStateNotBetween(Integer value1, Integer value2) {
+        public Criteria andStateNotBetween(Byte value1, Byte value2) {
             addCriterion("state not between", value1, value2, "state");
             return (Criteria) this;
         }
@@ -371,52 +371,52 @@ public class UserEntityExample {
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdEqualTo(Integer value) {
+        public Criteria andTypeIdEqualTo(Byte value) {
             addCriterion("type_id =", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdNotEqualTo(Integer value) {
+        public Criteria andTypeIdNotEqualTo(Byte value) {
             addCriterion("type_id <>", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdGreaterThan(Integer value) {
+        public Criteria andTypeIdGreaterThan(Byte value) {
             addCriterion("type_id >", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andTypeIdGreaterThanOrEqualTo(Byte value) {
             addCriterion("type_id >=", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdLessThan(Integer value) {
+        public Criteria andTypeIdLessThan(Byte value) {
             addCriterion("type_id <", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdLessThanOrEqualTo(Integer value) {
+        public Criteria andTypeIdLessThanOrEqualTo(Byte value) {
             addCriterion("type_id <=", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdIn(List<Integer> values) {
+        public Criteria andTypeIdIn(List<Byte> values) {
             addCriterion("type_id in", values, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdNotIn(List<Integer> values) {
+        public Criteria andTypeIdNotIn(List<Byte> values) {
             addCriterion("type_id not in", values, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdBetween(Integer value1, Integer value2) {
+        public Criteria andTypeIdBetween(Byte value1, Byte value2) {
             addCriterion("type_id between", value1, value2, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andTypeIdNotBetween(Byte value1, Byte value2) {
             addCriterion("type_id not between", value1, value2, "typeId");
             return (Criteria) this;
         }
@@ -431,53 +431,113 @@ public class UserEntityExample {
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdEqualTo(Integer value) {
+        public Criteria andSenceIdEqualTo(Byte value) {
             addCriterion("sence_id =", value, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdNotEqualTo(Integer value) {
+        public Criteria andSenceIdNotEqualTo(Byte value) {
             addCriterion("sence_id <>", value, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdGreaterThan(Integer value) {
+        public Criteria andSenceIdGreaterThan(Byte value) {
             addCriterion("sence_id >", value, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andSenceIdGreaterThanOrEqualTo(Byte value) {
             addCriterion("sence_id >=", value, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdLessThan(Integer value) {
+        public Criteria andSenceIdLessThan(Byte value) {
             addCriterion("sence_id <", value, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdLessThanOrEqualTo(Integer value) {
+        public Criteria andSenceIdLessThanOrEqualTo(Byte value) {
             addCriterion("sence_id <=", value, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdIn(List<Integer> values) {
+        public Criteria andSenceIdIn(List<Byte> values) {
             addCriterion("sence_id in", values, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdNotIn(List<Integer> values) {
+        public Criteria andSenceIdNotIn(List<Byte> values) {
             addCriterion("sence_id not in", values, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdBetween(Integer value1, Integer value2) {
+        public Criteria andSenceIdBetween(Byte value1, Byte value2) {
             addCriterion("sence_id between", value1, value2, "senceId");
             return (Criteria) this;
         }
 
-        public Criteria andSenceIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andSenceIdNotBetween(Byte value1, Byte value2) {
             addCriterion("sence_id not between", value1, value2, "senceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpIsNull() {
+            addCriterion("exp is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpIsNotNull() {
+            addCriterion("exp is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpEqualTo(Integer value) {
+            addCriterion("exp =", value, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpNotEqualTo(Integer value) {
+            addCriterion("exp <>", value, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpGreaterThan(Integer value) {
+            addCriterion("exp >", value, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpGreaterThanOrEqualTo(Integer value) {
+            addCriterion("exp >=", value, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpLessThan(Integer value) {
+            addCriterion("exp <", value, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpLessThanOrEqualTo(Integer value) {
+            addCriterion("exp <=", value, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpIn(List<Integer> values) {
+            addCriterion("exp in", values, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpNotIn(List<Integer> values) {
+            addCriterion("exp not in", values, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpBetween(Integer value1, Integer value2) {
+            addCriterion("exp between", value1, value2, "exp");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpNotBetween(Integer value1, Integer value2) {
+            addCriterion("exp not between", value1, value2, "exp");
             return (Criteria) this;
         }
     }
@@ -494,7 +554,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-07-12
+     * @date 2019-07-24
      */
     public static class Criterion {
         private String condition;

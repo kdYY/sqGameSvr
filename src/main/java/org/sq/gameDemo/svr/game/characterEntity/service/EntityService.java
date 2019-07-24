@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.common.proto.*;
+import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
-import org.sq.gameDemo.svr.common.PlayerCache;
+import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
+import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.common.PoiUtil;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.customException;
@@ -39,28 +41,16 @@ public class EntityService {
     private SenceService senceService;
     @Autowired
     private PlayerCache playerCache;
+    @Autowired
+    private EntityTypeCache entityTypeCache;
 
     @Autowired
     private RoleAttributeService attributeService;
 
-    @Value("${excel.entity}")
-    private String entityFileName;
-
-    //存储所有的实体信息
-    private List<EntityType> entitieTypes;
-
-    @PostConstruct
-    public void init() {
-        try {
-            entitieTypes = PoiUtil.readExcel(entityFileName, 0, EntityType.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
     public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
-        for (EntityType entityType : entitieTypes) {
+        for (EntityType entityType : entityTypeCache.getAllEntityTypes()) {
             builder.addEntityType(
                     (EntityTypeProto.EntityType) ProtoBufUtil.transformProtoReturnBean(EntityTypeProto.EntityType.newBuilder(), entityType)
             );
@@ -89,9 +79,6 @@ public class EntityService {
             BeanUtils.copyProperties(usrEntity,playerCached);
             //初始化玩家
             initPlayer(playerCached);
-            //将角色增加进场景
-            senceService.addPlayerInSence(playerCached, channel);
-
             playerCache.putChannelPlayer(channel, playerCached);
             playerCache.savePlayerChannel(playerCached.getId(), channel);
         }
@@ -107,6 +94,8 @@ public class EntityService {
     }
 
     public void initPlayer(Player player) {
+        //初始化playerId
+        player.setId(ConcurrentSnowFlake.getInstance().nextID());
         //初始化场景id
         player.setSenceId(defaultSenceId);
         //初始化状态
@@ -130,11 +119,13 @@ public class EntityService {
         /**
          * AP英雄的增益
          */
-        if(Constant.AP.equals(entitieTypes.get(player.getTypeId()).getTypeName())) {
-           totalAttack +=  Math.round(
-                   Optional.ofNullable(roleAttributeMap.get(5).getValue() * Constant.hpAttackIncreaseRate)
-                           .orElse(100 * Constant.hpAttackIncreaseRate)
-                    );
+        String typeName = "";
+        EntityType type = EntityTypeCache.getAllEntityTypes().get(player.getTypeId());
+        if(Objects.nonNull(type) && Constant.AP.equals(typeName)) {
+            totalAttack +=  Math.round(
+                    Optional.ofNullable(roleAttributeMap.get(5).getValue() * Constant.hpAttackIncreaseRate)
+                            .orElse(100 * Constant.hpAttackIncreaseRate)
+            );
         }
         player.setAttack(totalAttack);
     }
@@ -143,10 +134,16 @@ public class EntityService {
      * 用户登录
      * @param channel
      * @param builder
-     * @param user
+     * @param userId
      */
-    public void playerLogin(Channel channel, UserProto.ResponseUserInfo.Builder builder, UserProto.User user) {
-        User loginUser = userService.getUser(user);
+    public void playerLogin(Channel channel, UserProto.ResponseUserInfo.Builder builder, Integer userId) throws Exception {
+        if(isPlayerOnline(channel)) {
+            builder.setContent("用户已登录");
+            builder.setResult(222);
+            return;
+        }
+
+        User loginUser = userService.getUserById(userId);
 
         if(Objects.isNull(loginUser)) {
             builder.setContent("no this user, please register");
@@ -154,7 +151,6 @@ public class EntityService {
             return;
         }
 
-        Integer userId = loginUser.getId();
         //进行token加密
         String token = tokenEncryp(userId);
         //从数据库更新
@@ -167,18 +163,27 @@ public class EntityService {
         UserCache.updateChannelCache(channel, userId);
 
         //如果已经绑定角色的用户，获取上次保存的玩家角色，返回上次所在场景地
-        if(hasPlayer(channel)) {
-            //进行广播
+        if(hasUserEntity(userId)) {
+            //初始化好玩家并加入场景
             Player player = getInitedPlayer(userId, channel);
-            MessageProto.Msg.Builder msgbuilder = MessageProto.Msg.newBuilder();
-            msgbuilder.setContent(player.getName() + "已经上线!");
-            UserCache.addChannelInGroup(player.getSenceId(), channel, msgbuilder.build().toByteArray());
+
+            //将角色增加进场景
+            senceService.addPlayerInSence(player, channel);
 
             String lastSence = senceService.getSenceBySenceId(player.getSenceId()).getName();
             builder.setContent(lastSence);
         } else {
             throw new customException.BindRoleInSenceException("login game server success, please bind your role，enter \"help\" to get help message");
         }
+    }
+
+    private boolean isPlayerOnline(Channel channel) {
+        return Objects.nonNull(playerCache.getPlayerByChannel(channel));
+    }
+
+    //注册同时已经bind了的
+    public boolean hasUserEntity(int userId) {
+        return Objects.nonNull(userEntityMapper.getUserEntityByUserId(userId));
     }
 
     //token鉴权
@@ -203,7 +208,9 @@ public class EntityService {
         //数据库角色类型数据增加
         addUserEntity(userEntity);
         //返回初始化完毕的玩家
-        return getInitedPlayer(userId, channel);
+        Player initedPlayer = getInitedPlayer(userId, channel);
+        senceService.addPlayerInSence(initedPlayer, channel);
+        return initedPlayer;
     }
 
     public void playerOnline(Player player, Channel channel) {

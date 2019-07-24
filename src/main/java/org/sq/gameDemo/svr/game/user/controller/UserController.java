@@ -18,7 +18,6 @@ import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.customException;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
-import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -59,7 +58,7 @@ public class UserController {
 
             builder.setMsgId(requestUserInfo.getMsgId());
             builder.setTime(requestUserInfo.getTime());
-            userService.playerRegister(builder, userProto);
+            userService.userRegister(builder, userProto);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,13 +84,13 @@ public class UserController {
             UserProto.User user = requestUserInfo.getUser();
             builder.setMsgId(requestUserInfo.getMsgId());
             builder.setTime(requestUserInfo.getTime());
-            entityService.playerLogin(channel, builder, user);
-        } catch (InvalidProtocolBufferException e) {
-            e.printStackTrace();
-            builder.setResult(500);//服务端异常
+            entityService.playerLogin(channel, builder, user.getId());
         } catch (customException.BindRoleInSenceException e1) {
             builder.setResult(404);
             builder.setContent(e1.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setResult(500);//服务端异常
         } finally {
             msgEntity.setData(builder.build().toByteArray());
             channel.writeAndFlush(msgEntity);

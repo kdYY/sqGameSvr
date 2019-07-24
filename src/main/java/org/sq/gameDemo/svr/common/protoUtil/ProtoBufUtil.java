@@ -1,12 +1,15 @@
 package org.sq.gameDemo.svr.common.protoUtil;
 
+import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProtoBufUtil {
-    public static List<String> baseTypeList = Arrays.asList("int", "Integer", "float", "Float", "double", "Double", "byte", "Byte", "String");
-
+    public static List<String> baseTypeList =
+            Arrays.asList("int", "Integer", "float", "Float", "long", "Long", "double", "Double", "String");
 
     public static  <T,K> Object transformProtoReturnBean(T goalBuilder, K sourceBean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
         transformProtoReturnBuilder(goalBuilder, sourceBean);
@@ -30,8 +33,10 @@ public class ProtoBufUtil {
         Map<Field, Method> sourceBeanFunctionMap = new HashMap<>();
 
         //获取K中的所有属性名称，排除@TransferProto(ignore=false)的属性, 获取需要注入List的属性
-        Field[] declaredFields = sourceBean.getClass().getDeclaredFields();
+        List<Field> declaredFields = getClassField(sourceBean.getClass());//.getFields();
         for (Field declaredField : declaredFields) {
+            declaredField.setAccessible(true);
+
             boolean inject = true;
             Annotation[] declaredAnnotations = declaredField.getDeclaredAnnotations();
             String fieldName = declaredField.getName();
@@ -209,5 +214,52 @@ public class ProtoBufUtil {
         }
 
     }
-    
+
+    static List<Field> getClassField(Class cur_class) {
+        String class_name = cur_class.getName();
+        Field[] obj_fields = cur_class.getDeclaredFields();
+        List<Field> collect = Arrays.stream(obj_fields).collect(Collectors.toList());
+        //Method[] methods = cur_class.getDeclaredMethods();
+
+        if (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class) {
+            collect.addAll(getClassField(cur_class.getSuperclass()));
+        }
+        return collect;
+    }
+
+    static List<Method> getClassMethod(Class cur_class) {
+        String class_name = cur_class.getName();
+        Method[] methods = cur_class.getDeclaredMethods();
+        List<Method> collect = Arrays.stream(methods).collect(Collectors.toList());
+
+        if (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class) {
+            collect.addAll(getClassMethod(cur_class.getSuperclass()));
+        }
+        return collect;
+    }
+
+    static List<Annotation> getClassAnnotation(Class cur_class) {
+        String class_name = cur_class.getName();
+        Annotation[] annotations = cur_class.getDeclaredAnnotations();
+        List<Annotation> collect = Arrays.stream(annotations).collect(Collectors.toList());
+
+        if (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class ) {
+            collect.addAll(getClassAnnotation(cur_class.getSuperclass()));
+        }
+        return collect;
+    }
+
+    public static void main(String[] args) {
+        List<Field> classFieldAndMethod = getClassField(Monster.class);
+        classFieldAndMethod.forEach(o->{
+            o.setAccessible(true);
+            System.out.println(o.getName());
+        });
+        List<Method> classMethod = getClassMethod(Monster.class);
+        classMethod.forEach(o -> {
+            o.setAccessible(true);
+            System.out.println(o.getName());
+        });
+
+    }
 }

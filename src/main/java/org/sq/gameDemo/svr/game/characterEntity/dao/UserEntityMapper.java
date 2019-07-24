@@ -1,12 +1,12 @@
 package org.sq.gameDemo.svr.game.characterEntity.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntityExample;
-
-import java.util.List;
 @Mapper
 @Repository
 public interface UserEntityMapper {

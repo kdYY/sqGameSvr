@@ -48,14 +48,14 @@ public final class UserProto {
         getPasswordBytes();
 
     /**
-     * <code>uint32 typeId = 5;</code>
+     * <code>string token = 4;</code>
      */
-    int getTypeId();
-
+    String getToken();
     /**
-     * <code>uint32 senceId = 6;</code>
+     * <code>string token = 4;</code>
      */
-    int getSenceId();
+    com.google.protobuf.ByteString
+        getTokenBytes();
   }
   /**
    * Protobuf type {@code User}
@@ -72,6 +72,7 @@ public final class UserProto {
     private User() {
       name_ = "";
       password_ = "";
+      token_ = "";
     }
 
     @Override
@@ -121,14 +122,10 @@ public final class UserProto {
               password_ = s;
               break;
             }
-            case 40: {
+            case 34: {
+              String s = input.readStringRequireUtf8();
 
-              typeId_ = input.readUInt32();
-              break;
-            }
-            case 48: {
-
-              senceId_ = input.readUInt32();
+              token_ = s;
               break;
             }
             default: {
@@ -244,22 +241,38 @@ public final class UserProto {
       }
     }
 
-    public static final int TYPEID_FIELD_NUMBER = 5;
-    private int typeId_;
+    public static final int TOKEN_FIELD_NUMBER = 4;
+    private volatile Object token_;
     /**
-     * <code>uint32 typeId = 5;</code>
+     * <code>string token = 4;</code>
      */
-    public int getTypeId() {
-      return typeId_;
+    public String getToken() {
+      Object ref = token_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        token_ = s;
+        return s;
+      }
     }
-
-    public static final int SENCEID_FIELD_NUMBER = 6;
-    private int senceId_;
     /**
-     * <code>uint32 senceId = 6;</code>
+     * <code>string token = 4;</code>
      */
-    public int getSenceId() {
-      return senceId_;
+    public com.google.protobuf.ByteString
+        getTokenBytes() {
+      Object ref = token_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        token_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -285,11 +298,8 @@ public final class UserProto {
       if (!getPasswordBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, password_);
       }
-      if (typeId_ != 0) {
-        output.writeUInt32(5, typeId_);
-      }
-      if (senceId_ != 0) {
-        output.writeUInt32(6, senceId_);
+      if (!getTokenBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, token_);
       }
       unknownFields.writeTo(output);
     }
@@ -310,13 +320,8 @@ public final class UserProto {
       if (!getPasswordBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, password_);
       }
-      if (typeId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(5, typeId_);
-      }
-      if (senceId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(6, senceId_);
+      if (!getTokenBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, token_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -339,10 +344,8 @@ public final class UserProto {
           .equals(other.getName())) return false;
       if (!getPassword()
           .equals(other.getPassword())) return false;
-      if (getTypeId()
-          != other.getTypeId()) return false;
-      if (getSenceId()
-          != other.getSenceId()) return false;
+      if (!getToken()
+          .equals(other.getToken())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -360,10 +363,8 @@ public final class UserProto {
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
       hash = (53 * hash) + getPassword().hashCode();
-      hash = (37 * hash) + TYPEID_FIELD_NUMBER;
-      hash = (53 * hash) + getTypeId();
-      hash = (37 * hash) + SENCEID_FIELD_NUMBER;
-      hash = (53 * hash) + getSenceId();
+      hash = (37 * hash) + TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getToken().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -503,9 +504,7 @@ public final class UserProto {
 
         password_ = "";
 
-        typeId_ = 0;
-
-        senceId_ = 0;
+        token_ = "";
 
         return this;
       }
@@ -536,8 +535,7 @@ public final class UserProto {
         result.id_ = id_;
         result.name_ = name_;
         result.password_ = password_;
-        result.typeId_ = typeId_;
-        result.senceId_ = senceId_;
+        result.token_ = token_;
         onBuilt();
         return result;
       }
@@ -597,11 +595,9 @@ public final class UserProto {
           password_ = other.password_;
           onChanged();
         }
-        if (other.getTypeId() != 0) {
-          setTypeId(other.getTypeId());
-        }
-        if (other.getSenceId() != 0) {
-          setSenceId(other.getSenceId());
+        if (!other.getToken().isEmpty()) {
+          token_ = other.token_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -808,54 +804,71 @@ public final class UserProto {
         return this;
       }
 
-      private int typeId_ ;
+      private Object token_ = "";
       /**
-       * <code>uint32 typeId = 5;</code>
+       * <code>string token = 4;</code>
        */
-      public int getTypeId() {
-        return typeId_;
+      public String getToken() {
+        Object ref = token_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          token_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
       /**
-       * <code>uint32 typeId = 5;</code>
+       * <code>string token = 4;</code>
        */
-      public Builder setTypeId(int value) {
-        
-        typeId_ = value;
+      public com.google.protobuf.ByteString
+          getTokenBytes() {
+        Object ref = token_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          token_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string token = 4;</code>
+       */
+      public Builder setToken(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        token_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>uint32 typeId = 5;</code>
+       * <code>string token = 4;</code>
        */
-      public Builder clearTypeId() {
+      public Builder clearToken() {
         
-        typeId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int senceId_ ;
-      /**
-       * <code>uint32 senceId = 6;</code>
-       */
-      public int getSenceId() {
-        return senceId_;
-      }
-      /**
-       * <code>uint32 senceId = 6;</code>
-       */
-      public Builder setSenceId(int value) {
-        
-        senceId_ = value;
+        token_ = getDefaultInstance().getToken();
         onChanged();
         return this;
       }
       /**
-       * <code>uint32 senceId = 6;</code>
+       * <code>string token = 4;</code>
        */
-      public Builder clearSenceId() {
+      public Builder setTokenBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
         
-        senceId_ = 0;
+        token_ = value;
         onChanged();
         return this;
       }
@@ -2815,15 +2828,14 @@ public final class UserProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\nUser.proto\"S\n\004User\022\n\n\002id\030\001 \001(\r\022\014\n\004name" +
-      "\030\002 \001(\t\022\020\n\010password\030\003 \001(\t\022\016\n\006typeId\030\005 \001(\r" +
-      "\022\017\n\007senceId\030\006 \001(\r\"S\n\017RequestUserInfo\022\016\n\006" +
-      "msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\r\n\005token\030\004 \001(" +
-      "\t\022\023\n\004user\030\005 \001(\0132\005.User\"`\n\020ResponseUserIn" +
-      "fo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006resu" +
-      "lt\030\003 \001(\005\022\r\n\005token\030\004 \001(\t\022\017\n\007content\030\005 \001(\t" +
-      "B)\n\034org.sq.gameDemo.common.protoB\tUserPr" +
-      "otob\006proto3"
+      "\n\nUser.proto\"A\n\004User\022\n\n\002id\030\001 \001(\r\022\014\n\004name" +
+      "\030\002 \001(\t\022\020\n\010password\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\"" +
+      "S\n\017RequestUserInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004ti" +
+      "me\030\002 \001(\004\022\r\n\005token\030\004 \001(\t\022\023\n\004user\030\005 \001(\0132\005." +
+      "User\"`\n\020ResponseUserInfo\022\016\n\006msg_id\030\001 \001(\004" +
+      "\022\014\n\004time\030\002 \001(\004\022\016\n\006result\030\003 \001(\005\022\r\n\005token\030" +
+      "\004 \001(\t\022\017\n\007content\030\005 \001(\tB)\n\034org.sq.gameDem" +
+      "o.common.protoB\tUserProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2834,7 +2846,7 @@ public final class UserProto {
     internal_static_User_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_User_descriptor,
-        new String[] { "Id", "Name", "Password", "TypeId", "SenceId", });
+        new String[] { "Id", "Name", "Password", "Token", });
     internal_static_RequestUserInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_RequestUserInfo_fieldAccessorTable = new

@@ -19,31 +19,19 @@ public final class UserEntityProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     *吧数据库中的typeId去掉,新建UserEntity表
-     * </pre>
-     *
-     * <code>int32 typeId = 1;</code>
+     * <code>uint64 id = 1;</code>
      */
-    int getTypeId();
+    long getId();
 
     /**
-     * <pre>
-     *昵称
-     * </pre>
-     *
-     * <code>string nick = 2;</code>
+     * <code>string name = 2;</code>
      */
-    String getNick();
+    String getName();
     /**
-     * <pre>
-     *昵称
-     * </pre>
-     *
-     * <code>string nick = 2;</code>
+     * <code>string name = 2;</code>
      */
     com.google.protobuf.ByteString
-        getNickBytes();
+        getNameBytes();
 
     /**
      * <code>int32 userId = 3;</code>
@@ -56,9 +44,19 @@ public final class UserEntityProto {
     int getState();
 
     /**
-     * <code>int32 senceId = 5;</code>
+     * <code>int32 typeId = 5;</code>
+     */
+    int getTypeId();
+
+    /**
+     * <code>int32 senceId = 6;</code>
      */
     int getSenceId();
+
+    /**
+     * <code>int32 exp = 7;</code>
+     */
+    int getExp();
   }
   /**
    * <pre>
@@ -77,7 +75,7 @@ public final class UserEntityProto {
       super(builder);
     }
     private UserEntity() {
-      nick_ = "";
+      name_ = "";
     }
 
     @Override
@@ -112,13 +110,13 @@ public final class UserEntityProto {
               break;
             case 8: {
 
-              typeId_ = input.readInt32();
+              id_ = input.readUInt64();
               break;
             }
             case 18: {
               String s = input.readStringRequireUtf8();
 
-              nick_ = s;
+              name_ = s;
               break;
             }
             case 24: {
@@ -133,7 +131,17 @@ public final class UserEntityProto {
             }
             case 40: {
 
+              typeId_ = input.readInt32();
+              break;
+            }
+            case 48: {
+
               senceId_ = input.readInt32();
+              break;
+            }
+            case 56: {
+
+              exp_ = input.readInt32();
               break;
             }
             default: {
@@ -168,55 +176,43 @@ public final class UserEntityProto {
               UserEntity.class, Builder.class);
     }
 
-    public static final int TYPEID_FIELD_NUMBER = 1;
-    private int typeId_;
+    public static final int ID_FIELD_NUMBER = 1;
+    private long id_;
     /**
-     * <pre>
-     *吧数据库中的typeId去掉,新建UserEntity表
-     * </pre>
-     *
-     * <code>int32 typeId = 1;</code>
+     * <code>uint64 id = 1;</code>
      */
-    public int getTypeId() {
-      return typeId_;
+    public long getId() {
+      return id_;
     }
 
-    public static final int NICK_FIELD_NUMBER = 2;
-    private volatile Object nick_;
+    public static final int NAME_FIELD_NUMBER = 2;
+    private volatile Object name_;
     /**
-     * <pre>
-     *昵称
-     * </pre>
-     *
-     * <code>string nick = 2;</code>
+     * <code>string name = 2;</code>
      */
-    public String getNick() {
-      Object ref = nick_;
+    public String getName() {
+      Object ref = name_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         String s = bs.toStringUtf8();
-        nick_ = s;
+        name_ = s;
         return s;
       }
     }
     /**
-     * <pre>
-     *昵称
-     * </pre>
-     *
-     * <code>string nick = 2;</code>
+     * <code>string name = 2;</code>
      */
     public com.google.protobuf.ByteString
-        getNickBytes() {
-      Object ref = nick_;
+        getNameBytes() {
+      Object ref = name_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (String) ref);
-        nick_ = b;
+        name_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -241,13 +237,31 @@ public final class UserEntityProto {
       return state_;
     }
 
-    public static final int SENCEID_FIELD_NUMBER = 5;
+    public static final int TYPEID_FIELD_NUMBER = 5;
+    private int typeId_;
+    /**
+     * <code>int32 typeId = 5;</code>
+     */
+    public int getTypeId() {
+      return typeId_;
+    }
+
+    public static final int SENCEID_FIELD_NUMBER = 6;
     private int senceId_;
     /**
-     * <code>int32 senceId = 5;</code>
+     * <code>int32 senceId = 6;</code>
      */
     public int getSenceId() {
       return senceId_;
+    }
+
+    public static final int EXP_FIELD_NUMBER = 7;
+    private int exp_;
+    /**
+     * <code>int32 exp = 7;</code>
+     */
+    public int getExp() {
+      return exp_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -264,11 +278,11 @@ public final class UserEntityProto {
     @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (typeId_ != 0) {
-        output.writeInt32(1, typeId_);
+      if (id_ != 0L) {
+        output.writeUInt64(1, id_);
       }
-      if (!getNickBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, nick_);
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
       if (userId_ != 0) {
         output.writeInt32(3, userId_);
@@ -276,8 +290,14 @@ public final class UserEntityProto {
       if (state_ != 0) {
         output.writeInt32(4, state_);
       }
+      if (typeId_ != 0) {
+        output.writeInt32(5, typeId_);
+      }
       if (senceId_ != 0) {
-        output.writeInt32(5, senceId_);
+        output.writeInt32(6, senceId_);
+      }
+      if (exp_ != 0) {
+        output.writeInt32(7, exp_);
       }
       unknownFields.writeTo(output);
     }
@@ -288,12 +308,12 @@ public final class UserEntityProto {
       if (size != -1) return size;
 
       size = 0;
-      if (typeId_ != 0) {
+      if (id_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, typeId_);
+          .computeUInt64Size(1, id_);
       }
-      if (!getNickBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, nick_);
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
       if (userId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -303,9 +323,17 @@ public final class UserEntityProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, state_);
       }
+      if (typeId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, typeId_);
+      }
       if (senceId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, senceId_);
+          .computeInt32Size(6, senceId_);
+      }
+      if (exp_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(7, exp_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -322,16 +350,20 @@ public final class UserEntityProto {
       }
       UserEntity other = (UserEntity) obj;
 
-      if (getTypeId()
-          != other.getTypeId()) return false;
-      if (!getNick()
-          .equals(other.getNick())) return false;
+      if (getId()
+          != other.getId()) return false;
+      if (!getName()
+          .equals(other.getName())) return false;
       if (getUserId()
           != other.getUserId()) return false;
       if (getState()
           != other.getState()) return false;
+      if (getTypeId()
+          != other.getTypeId()) return false;
       if (getSenceId()
           != other.getSenceId()) return false;
+      if (getExp()
+          != other.getExp()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -343,16 +375,21 @@ public final class UserEntityProto {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + TYPEID_FIELD_NUMBER;
-      hash = (53 * hash) + getTypeId();
-      hash = (37 * hash) + NICK_FIELD_NUMBER;
-      hash = (53 * hash) + getNick().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getId());
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + USERID_FIELD_NUMBER;
       hash = (53 * hash) + getUserId();
       hash = (37 * hash) + STATE_FIELD_NUMBER;
       hash = (53 * hash) + getState();
+      hash = (37 * hash) + TYPEID_FIELD_NUMBER;
+      hash = (53 * hash) + getTypeId();
       hash = (37 * hash) + SENCEID_FIELD_NUMBER;
       hash = (53 * hash) + getSenceId();
+      hash = (37 * hash) + EXP_FIELD_NUMBER;
+      hash = (53 * hash) + getExp();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -490,15 +527,19 @@ public final class UserEntityProto {
       @Override
       public Builder clear() {
         super.clear();
-        typeId_ = 0;
+        id_ = 0L;
 
-        nick_ = "";
+        name_ = "";
 
         userId_ = 0;
 
         state_ = 0;
 
+        typeId_ = 0;
+
         senceId_ = 0;
+
+        exp_ = 0;
 
         return this;
       }
@@ -526,11 +567,13 @@ public final class UserEntityProto {
       @Override
       public UserEntity buildPartial() {
         UserEntity result = new UserEntity(this);
-        result.typeId_ = typeId_;
-        result.nick_ = nick_;
+        result.id_ = id_;
+        result.name_ = name_;
         result.userId_ = userId_;
         result.state_ = state_;
+        result.typeId_ = typeId_;
         result.senceId_ = senceId_;
+        result.exp_ = exp_;
         onBuilt();
         return result;
       }
@@ -579,11 +622,11 @@ public final class UserEntityProto {
 
       public Builder mergeFrom(UserEntity other) {
         if (other == UserEntity.getDefaultInstance()) return this;
-        if (other.getTypeId() != 0) {
-          setTypeId(other.getTypeId());
+        if (other.getId() != 0L) {
+          setId(other.getId());
         }
-        if (!other.getNick().isEmpty()) {
-          nick_ = other.nick_;
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
           onChanged();
         }
         if (other.getUserId() != 0) {
@@ -592,8 +635,14 @@ public final class UserEntityProto {
         if (other.getState() != 0) {
           setState(other.getState());
         }
+        if (other.getTypeId() != 0) {
+          setTypeId(other.getTypeId());
+        }
         if (other.getSenceId() != 0) {
           setSenceId(other.getSenceId());
+        }
+        if (other.getExp() != 0) {
+          setExp(other.getExp());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -624,129 +673,97 @@ public final class UserEntityProto {
         return this;
       }
 
-      private int typeId_ ;
+      private long id_ ;
       /**
-       * <pre>
-       *吧数据库中的typeId去掉,新建UserEntity表
-       * </pre>
-       *
-       * <code>int32 typeId = 1;</code>
+       * <code>uint64 id = 1;</code>
        */
-      public int getTypeId() {
-        return typeId_;
+      public long getId() {
+        return id_;
       }
       /**
-       * <pre>
-       *吧数据库中的typeId去掉,新建UserEntity表
-       * </pre>
-       *
-       * <code>int32 typeId = 1;</code>
+       * <code>uint64 id = 1;</code>
        */
-      public Builder setTypeId(int value) {
+      public Builder setId(long value) {
         
-        typeId_ = value;
+        id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <pre>
-       *吧数据库中的typeId去掉,新建UserEntity表
-       * </pre>
-       *
-       * <code>int32 typeId = 1;</code>
+       * <code>uint64 id = 1;</code>
        */
-      public Builder clearTypeId() {
+      public Builder clearId() {
         
-        typeId_ = 0;
+        id_ = 0L;
         onChanged();
         return this;
       }
 
-      private Object nick_ = "";
+      private Object name_ = "";
       /**
-       * <pre>
-       *昵称
-       * </pre>
-       *
-       * <code>string nick = 2;</code>
+       * <code>string name = 2;</code>
        */
-      public String getNick() {
-        Object ref = nick_;
+      public String getName() {
+        Object ref = name_;
         if (!(ref instanceof String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           String s = bs.toStringUtf8();
-          nick_ = s;
+          name_ = s;
           return s;
         } else {
           return (String) ref;
         }
       }
       /**
-       * <pre>
-       *昵称
-       * </pre>
-       *
-       * <code>string nick = 2;</code>
+       * <code>string name = 2;</code>
        */
       public com.google.protobuf.ByteString
-          getNickBytes() {
-        Object ref = nick_;
+          getNameBytes() {
+        Object ref = name_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (String) ref);
-          nick_ = b;
+          name_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <pre>
-       *昵称
-       * </pre>
-       *
-       * <code>string nick = 2;</code>
+       * <code>string name = 2;</code>
        */
-      public Builder setNick(
+      public Builder setName(
           String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        nick_ = value;
+        name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <pre>
-       *昵称
-       * </pre>
-       *
-       * <code>string nick = 2;</code>
+       * <code>string name = 2;</code>
        */
-      public Builder clearNick() {
+      public Builder clearName() {
         
-        nick_ = getDefaultInstance().getNick();
+        name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <pre>
-       *昵称
-       * </pre>
-       *
-       * <code>string nick = 2;</code>
+       * <code>string name = 2;</code>
        */
-      public Builder setNickBytes(
+      public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
         
-        nick_ = value;
+        name_ = value;
         onChanged();
         return this;
       }
@@ -803,15 +820,41 @@ public final class UserEntityProto {
         return this;
       }
 
+      private int typeId_ ;
+      /**
+       * <code>int32 typeId = 5;</code>
+       */
+      public int getTypeId() {
+        return typeId_;
+      }
+      /**
+       * <code>int32 typeId = 5;</code>
+       */
+      public Builder setTypeId(int value) {
+        
+        typeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 typeId = 5;</code>
+       */
+      public Builder clearTypeId() {
+        
+        typeId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private int senceId_ ;
       /**
-       * <code>int32 senceId = 5;</code>
+       * <code>int32 senceId = 6;</code>
        */
       public int getSenceId() {
         return senceId_;
       }
       /**
-       * <code>int32 senceId = 5;</code>
+       * <code>int32 senceId = 6;</code>
        */
       public Builder setSenceId(int value) {
         
@@ -820,11 +863,37 @@ public final class UserEntityProto {
         return this;
       }
       /**
-       * <code>int32 senceId = 5;</code>
+       * <code>int32 senceId = 6;</code>
        */
       public Builder clearSenceId() {
         
         senceId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int exp_ ;
+      /**
+       * <code>int32 exp = 7;</code>
+       */
+      public int getExp() {
+        return exp_;
+      }
+      /**
+       * <code>int32 exp = 7;</code>
+       */
+      public Builder setExp(int value) {
+        
+        exp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 exp = 7;</code>
+       */
+      public Builder clearExp() {
+        
+        exp_ = 0;
         onChanged();
         return this;
       }
@@ -3149,17 +3218,18 @@ public final class UserEntityProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\020UserEntity.proto\032\020EntityType.proto\"Z\n\n" +
-      "UserEntity\022\016\n\006typeId\030\001 \001(\005\022\014\n\004nick\030\002 \001(\t" +
-      "\022\016\n\006userId\030\003 \001(\005\022\r\n\005state\030\004 \001(\005\022\017\n\007sence" +
-      "Id\030\005 \001(\005\"V\n\025UserEntityRequestInfo\022\016\n\006msg" +
-      "_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006typeId\030\003 \001(\005\022" +
-      "\017\n\007senceId\030\004 \001(\005\"\223\001\n\026UserEntityResponseI" +
-      "nfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004t" +
-      "ime\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\031\n\004type\030\005 \003(\013" +
-      "2\013.EntityType\022\037\n\nuserEntity\030\006 \003(\0132\013.User" +
-      "EntityB/\n\034org.sq.gameDemo.common.protoB\017" +
-      "UserEntityProtob\006proto3"
+      "\n\020UserEntity.proto\032\020EntityType.proto\"s\n\n" +
+      "UserEntity\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\016\n\006" +
+      "userId\030\003 \001(\005\022\r\n\005state\030\004 \001(\005\022\016\n\006typeId\030\005 " +
+      "\001(\005\022\017\n\007senceId\030\006 \001(\005\022\013\n\003exp\030\007 \001(\005\"V\n\025Use" +
+      "rEntityRequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004ti" +
+      "me\030\002 \001(\004\022\016\n\006typeId\030\003 \001(\005\022\017\n\007senceId\030\004 \001(" +
+      "\005\"\223\001\n\026UserEntityResponseInfo\022\016\n\006msg_id\030\001" +
+      " \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007co" +
+      "ntent\030\004 \001(\t\022\031\n\004type\030\005 \003(\0132\013.EntityType\022\037" +
+      "\n\nuserEntity\030\006 \003(\0132\013.UserEntityB/\n\034org.s" +
+      "q.gameDemo.common.protoB\017UserEntityProto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3171,7 +3241,7 @@ public final class UserEntityProto {
     internal_static_UserEntity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_UserEntity_descriptor,
-        new String[] { "TypeId", "Nick", "UserId", "State", "SenceId", });
+        new String[] { "Id", "Name", "UserId", "State", "TypeId", "SenceId", "Exp", });
     internal_static_UserEntityRequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_UserEntityRequestInfo_fieldAccessorTable = new
