@@ -120,7 +120,9 @@ public class ProtoBufUtil {
         //进行方法执行
         for (Map.Entry<Field, Method>  getMethodEntry: sourceBeanGetMethodMap.entrySet()) {
             Method getMethod = getMethodEntry.getValue();
-            Method setMethod = goalBuilderSetMethodMap.get(getMethodEntry.getKey());
+            Field field = getMethodEntry.getKey();
+            field.setAccessible(true);
+            Method setMethod = goalBuilderSetMethodMap.get(field);
             Object invoke = getMethod.invoke(sourceBean);
             setMethod.invoke(goalBuilder, invoke);
         }
@@ -166,29 +168,26 @@ public class ProtoBufUtil {
     //对java API中的获取方法做一个基本类型的兼容
     private static <T> Method getMethod(T goalBuilder, String methodName, Class<?>... type) throws NoSuchMethodException {
         if(type == null || type.length == 0) {
-            return goalBuilder.getClass().getDeclaredMethod(methodName);
+            return getDeclaredMethod(goalBuilder.getClass(), methodName);
         } else if(type.length == 1) {
             String typeName = type[0].getName();
             try {
-                Method declaredMethod = goalBuilder.getClass().getDeclaredMethod(methodName, type[0]);
+                Method declaredMethod = getDeclaredMethod(goalBuilder.getClass(),methodName, type[0]);
                 if(declaredMethod != null) {
                     return declaredMethod;
                 }
             } catch (NoSuchMethodException e) {
-                Method[] declaredMethods = goalBuilder.getClass().getDeclaredMethods();
+                List<Method> declaredMethods = getClassMethod(goalBuilder.getClass(), methodName);
                 for (Method declaredMethod : declaredMethods) {
                     Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
-                    if(declaredMethod.getName().equals(methodName)) {
-                        if(parameterTypes.length == 1 && baseTypeList.contains(parameterTypes[0].getName())) {
-                            return declaredMethod;
-                        }
-
+                    if(parameterTypes.length == 1 && baseTypeList.contains(parameterTypes[0].getName())) {
+                        return declaredMethod;
                     }
                 }
             }
             throw  new NoSuchMethodException("没有此方法，请检查proto文件是否跟bean定义的字段一致");
         } else {
-            return  goalBuilder.getClass().getDeclaredMethod(methodName, type);
+            return  getDeclaredMethod(goalBuilder.getClass(),methodName, type);
         }
 
     }
@@ -238,6 +237,35 @@ public class ProtoBufUtil {
         return collect;
     }
 
+    static List<Method> getClassMethod(Class cur_class, String methodName) {
+        Method[] methods = cur_class.getDeclaredMethods();
+        List<Method> collect = Arrays.stream(methods)
+                .filter(method -> method.getName().equals(methodName)).collect(Collectors.toList());
+
+        if (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class) {
+            collect.addAll(getClassMethod(cur_class.getSuperclass(), methodName));
+        }
+        return collect;
+    }
+
+
+    static Method getDeclaredMethod(Class cur_class, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException{
+        Method result = null;
+        try {
+            result = cur_class.getDeclaredMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            //System.out.println("在" + cur_class.getName() + "中没有这个方法" + methodName);
+            //e.printStackTrace();
+        }
+        if (result == null && (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class)) {
+            result = getDeclaredMethod(cur_class.getSuperclass(), methodName);
+            if(result == null) {
+                throw new NoSuchMethodException("在" + cur_class.getName() + "中递归找不到该方法" + methodName);
+            }
+        }
+        return result;
+    }
+
     static List<Annotation> getClassAnnotation(Class cur_class) {
         String class_name = cur_class.getName();
         Annotation[] annotations = cur_class.getDeclaredAnnotations();
@@ -249,17 +277,17 @@ public class ProtoBufUtil {
         return collect;
     }
 
-    public static void main(String[] args) {
-        List<Field> classFieldAndMethod = getClassField(Monster.class);
-        classFieldAndMethod.forEach(o->{
-            o.setAccessible(true);
-            System.out.println(o.getName());
-        });
-        List<Method> classMethod = getClassMethod(Monster.class);
-        classMethod.forEach(o -> {
-            o.setAccessible(true);
-            System.out.println(o.getName());
-        });
-
-    }
+//    public static void main(String[] args) {
+//        List<Field> classFieldAndMethod = getClassField(Monster.class);
+//        classFieldAndMethod.forEach(o->{
+//            o.setAccessible(true);
+//            System.out.println(o.getName());
+//        });
+//        List<Method> classMethod = getClassMethod(Monster.class);
+//        classMethod.forEach(o -> {
+//            o.setAccessible(true);
+//            System.out.println(o.getName());
+//        });
+//
+//    }
 }

@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.game.characterEntity.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 
 import java.nio.channels.Channel;
@@ -33,6 +34,7 @@ public class Player extends UserEntity implements Character {
      */
     private Long attack;
 
+    @ProtoField(Ignore = true)
     private Map<Integer,RoleAttribute> roleAttributeMap = new ConcurrentHashMap<>();
 
     /**
