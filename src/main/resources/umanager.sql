@@ -44,6 +44,6 @@ CREATE TABLE `user_entity` (
   `userId` int(11) NOT NULL,
   `nick` varchar(255) NOT NULL,
   `state` int(11) NOT NULL,
-  `typeId` int(11) NOT NULL,
+  `rangeId` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

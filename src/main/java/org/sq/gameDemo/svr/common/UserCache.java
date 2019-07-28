@@ -1,17 +1,16 @@
 package org.sq.gameDemo.svr.common;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.svr.common.customException.customException;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.user.dao.UserMapper;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
-import org.sq.gameDemo.svr.game.user.service.UserService;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -66,7 +65,7 @@ public class UserCache {
         }
         channelList.add(channel);
         //同时广播
-        broadCastUserEntity(channelList, msgByteArray);
+        broadCastPlayerGroup(channelList, msgByteArray);
     }
 
     public static void moveChannelInGroup(Integer senceId, Channel channel, String msg) {
@@ -76,7 +75,7 @@ public class UserCache {
         }
         channelList.remove(channel);
         //同时广播
-        broadcastChannelGroupBysenceId(channelList, msg);
+        broadcastChannelGroupBysenceId(senceId, msg);
     }
 
     public static void updateUserToken(int userId, String token) {
@@ -124,24 +123,18 @@ public class UserCache {
         return userMap.get(userId);
     }
 
-    public static void broadcastChannelGroupBysenceId(List<Channel> channelGroup, String msg) {
+    public static void broadcastChannelGroupBysenceId(Integer senceId, String msg) {
+        List<Channel> channelGroup = senceChannelGroupMap.get(senceId);
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setContent(msg);
-        MsgEntity msgEntity = new MsgEntity();
-        msgEntity.setData(builder.build().toByteArray());
-        msgEntity.setCmdCode(OrderEnum.BroadCast.getOrderCode());
-        channelGroup.forEach(channel -> {
-            msgEntity.setChannel(channel);
-            channel.writeAndFlush(msgEntity);
-        });
+
+        broadCastPlayerGroup(channelGroup,builder.build().toByteArray());
     }
 
 
 
-    public static void broadCastUserEntity(List<Channel> channelGroup, byte[] protoByte) {
-        MsgEntity msgEntity = new MsgEntity();
-        msgEntity.setData(protoByte);
-        msgEntity.setCmdCode(OrderEnum.BroadCast.getOrderCode());
+    public static void broadCastPlayerGroup(List<Channel> channelGroup, byte[] protoByte) {
+        MsgEntity msgEntity = ProtoBufUtil.getBroadCastEntity(protoByte);
         channelGroup.forEach(channel -> {
             msgEntity.setChannel(channel);
             channel.writeAndFlush(msgEntity);

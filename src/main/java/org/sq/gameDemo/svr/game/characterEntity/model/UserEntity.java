@@ -48,11 +48,12 @@ public class UserEntity {
 
     // 当前使用技能的集合
     @ProtoField(Ignore = true)
-    private Map<Integer, Skill> skillMap = new ConcurrentHashMap<>();
+    private Map<Integer, Skill> skillInUsedMap = new ConcurrentHashMap<>();
 
     // 当前攻击对象
     @ProtoField(Ignore = true)
     private Character target;
+
 
 
 }

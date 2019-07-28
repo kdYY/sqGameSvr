@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.game.skills.model;
 
 
 import lombok.Data;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 
 /**
  * 角色技能类
@@ -49,6 +50,11 @@ public class Skill {
     private Integer grade;
 
     /**
+     * 技能释放时间
+     */
+    private Long castTime;
+
+    /**
      * buff类型，暂无
      */
     private Integer buff;
@@ -57,5 +63,8 @@ public class Skill {
      * 技能描述
      */
     private String   description;
+
+    @ProtoField(Ignore = true)
+    private boolean inCD = false;
 }
 

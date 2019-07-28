@@ -1,5 +1,7 @@
 package org.sq.gameDemo.svr.game.skills.model;
 
+import java.util.Arrays;
+
 /**
  * 技能作用范围
  */
@@ -9,7 +11,7 @@ public enum SkillRange {
     /**
      * 作用在自身
      */
-    SELF(1),
+    Self(1),
 
 
     /**
@@ -37,17 +39,21 @@ public enum SkillRange {
 
 
     ;
-    int typeId;
+    int rangeId;
 
     SkillRange(int typeId) {
-        this.typeId = typeId;
+        this.rangeId = typeId;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public int getRangeId() {
+        return rangeId;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setRangeId(int rangeId) {
+        this.rangeId = rangeId;
+    }
+
+    public static SkillRange getSkillRangeByRangeId(int typeId) {
+       return Arrays.stream(SkillRange.values()).filter(t -> t.getRangeId() == typeId).findFirst().orElse(null);
     }
 }

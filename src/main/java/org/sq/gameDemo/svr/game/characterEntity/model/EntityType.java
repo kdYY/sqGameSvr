@@ -1,6 +1,7 @@
 package org.sq.gameDemo.svr.game.characterEntity.model;
 
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import org.sq.gameDemo.common.proto.EntityTypeProto;
 import org.sq.gameDemo.common.proto.SkillPt;
 import org.sq.gameDemo.svr.common.Constant;
@@ -9,6 +10,7 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 角色类型，战士，法师...
@@ -40,6 +42,10 @@ public class EntityType {
     }
 
 
+    /**
+     * 获取角色技能
+     * @return
+     */
     public List<Skill> getSkillList() {
         if(Objects.nonNull(skillList)) {
             skillList = new ArrayList<>();
@@ -47,7 +53,25 @@ public class EntityType {
                 Optional.ofNullable(SkillCache.skillCache.getIfPresent(Integer.valueOf(skillId)))
                         .ifPresent(skill -> skillList.add(skill));
             });
+
         }
         return skillList;
+    }
+
+    @ProtoField(Ignore = true)
+    private Map<Integer, Skill> skillMap;
+
+    public Map<Integer, Skill> getSkillMap() {
+
+        if(Objects.isNull(skillMap) && !this.skillStr.equals("")) {
+            this.skillMap = skillList.stream().collect(Collectors.toMap(Skill::getId, skill -> skill));
+        }
+        return this.skillMap;
+
+//        return Optional
+//                .ofNullable(this.getSkillInUsedMap())
+//                .orElse(
+//                        skillList.stream().collect(Collectors.toMap(Skill::getId, skill -> skill))
+//                );
     }
 }

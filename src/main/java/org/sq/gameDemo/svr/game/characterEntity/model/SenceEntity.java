@@ -29,7 +29,7 @@ public class SenceEntity{
 
     // 当前使用技能的集合
     @ProtoField(Ignore = true)
-    Map<Integer, Skill> skillMap = new ConcurrentHashMap<>();
+    Map<Integer, Skill> skillInUsedMap = new ConcurrentHashMap<>();
 
     // 当前攻击对象
     @ProtoField(Ignore = true)

@@ -1,5 +1,8 @@
 package org.sq.gameDemo.svr.common.protoUtil;
 
+import org.sq.gameDemo.common.OrderEnum;
+import org.sq.gameDemo.common.entity.MsgEntity;
+import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 
 import java.lang.annotation.Annotation;
@@ -290,4 +293,18 @@ public class ProtoBufUtil {
 //        });
 //
 //    }
+
+    //返回广播信息体
+    public static MsgEntity getBroadCastEntity(byte[] protoByte) {
+        MsgEntity msgEntity = new MsgEntity();
+        msgEntity.setData(protoByte);
+        msgEntity.setCmdCode(OrderEnum.BroadCast.getOrderCode());
+        return msgEntity;
+    }
+
+    //返回广播信息体
+    public static MsgEntity getBroadCastDefaultEntity(String content) {
+        byte[] protoByte = MessageProto.Msg.newBuilder().setContent(content).build().toByteArray();
+        return getBroadCastEntity(protoByte);
+    }
 }

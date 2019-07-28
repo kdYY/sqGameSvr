@@ -7,7 +7,7 @@
         <result column="user_id" property="userId" jdbcType="TINYINT" />
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="state" property="state" jdbcType="TINYINT" />
-        <result column="type_id" property="typeId" jdbcType="TINYINT" />
+        <result column="type_id" property="rangeId" jdbcType="TINYINT" />
         <result column="sence_id" property="senceId" jdbcType="TINYINT" />
         <result column="exp" property="exp" jdbcType="INTEGER" />
     </resultMap>
@@ -115,7 +115,7 @@
             state, type_id, sence_id,
             exp)
         values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
-            #{state,jdbcType=TINYINT}, #{typeId,jdbcType=TINYINT}, #{senceId,jdbcType=TINYINT},
+            #{state,jdbcType=TINYINT}, #{rangeId,jdbcType=TINYINT}, #{senceId,jdbcType=TINYINT},
             #{exp,jdbcType=INTEGER})
     </insert>
 
@@ -134,7 +134,7 @@
             <if test="state != null" >
                 state,
             </if>
-            <if test="typeId != null" >
+            <if test="rangeId != null" >
                 type_id,
             </if>
             <if test="senceId != null" >
@@ -157,8 +157,8 @@
             <if test="state != null" >
                 #{state,jdbcType=TINYINT},
             </if>
-            <if test="typeId != null" >
-                #{typeId,jdbcType=TINYINT},
+            <if test="rangeId != null" >
+                #{rangeId,jdbcType=TINYINT},
             </if>
             <if test="senceId != null" >
                 #{senceId,jdbcType=TINYINT},
@@ -191,8 +191,8 @@
             <if test="record.state != null" >
                 state = #{record.state,jdbcType=TINYINT},
             </if>
-            <if test="record.typeId != null" >
-                type_id = #{record.typeId,jdbcType=TINYINT},
+            <if test="record.rangeId != null" >
+                type_id = #{record.rangeId,jdbcType=TINYINT},
             </if>
             <if test="record.senceId != null" >
                 sence_id = #{record.senceId,jdbcType=TINYINT},
@@ -212,7 +212,7 @@
         user_id = #{record.userId,jdbcType=TINYINT},
         name = #{record.name,jdbcType=VARCHAR},
         state = #{record.state,jdbcType=TINYINT},
-        type_id = #{record.typeId,jdbcType=TINYINT},
+        type_id = #{record.rangeId,jdbcType=TINYINT},
         sence_id = #{record.senceId,jdbcType=TINYINT},
         exp = #{record.exp,jdbcType=INTEGER}
         <if test="_parameter != null" >
@@ -232,8 +232,8 @@
             <if test="state != null" >
                 state = #{state,jdbcType=TINYINT},
             </if>
-            <if test="typeId != null" >
-                type_id = #{typeId,jdbcType=TINYINT},
+            <if test="rangeId != null" >
+                type_id = #{rangeId,jdbcType=TINYINT},
             </if>
             <if test="senceId != null" >
                 sence_id = #{senceId,jdbcType=TINYINT},
@@ -250,7 +250,7 @@
         set user_id = #{userId,jdbcType=TINYINT},
             name = #{name,jdbcType=VARCHAR},
             state = #{state,jdbcType=TINYINT},
-            type_id = #{typeId,jdbcType=TINYINT},
+            type_id = #{rangeId,jdbcType=TINYINT},
             sence_id = #{senceId,jdbcType=TINYINT},
             exp = #{exp,jdbcType=INTEGER}
         where id = #{id,jdbcType=INTEGER}

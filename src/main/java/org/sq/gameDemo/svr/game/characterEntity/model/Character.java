@@ -21,15 +21,15 @@ public interface Character {
 
     //角色mp
     Long getMp();
-    void setMp(Long hp);
+    void setMp(Long mp);
 
     //角色状态，生存 or 死亡
     Integer getState();
     void setState(Integer state);
 
     //角色正在使用的技能
-    Map<Integer, Skill> getSkillMap();
-    void setSkillMap(Map<Integer, Skill> skillMap);
+    Map<Integer, Skill> getSkillInUsedMap();
+    void setSkillInUsedMap(Map<Integer, Skill> skillMap);
 
 
 

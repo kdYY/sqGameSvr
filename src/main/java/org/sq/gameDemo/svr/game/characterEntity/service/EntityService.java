@@ -79,6 +79,7 @@ public class EntityService {
             BeanUtils.copyProperties(usrEntity,playerCached);
             //初始化玩家
             initPlayer(playerCached);
+
             playerCache.putChannelPlayer(channel, playerCached);
             playerCache.savePlayerChannel(playerCached.getId(), channel);
         }
