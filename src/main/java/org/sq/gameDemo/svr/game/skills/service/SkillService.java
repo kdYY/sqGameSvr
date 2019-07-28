@@ -51,15 +51,24 @@ public class SkillService {
         targeterBelong(attacter.getId(), targeter);
         //开启cd
         makeSkillInCD(attacter, skill);
-        //技能释放时间，延迟释放
+        //技能若是有释放时间，延迟释放
         if(skill.getCastTime() > 0) {
-
+            UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), "技能开始释放，需要" + skill.getCastTime()/1000 + "秒");
+            TimedTaskManager.schedule(skill.getCastTime(),
+                    ()->{
+                        senecMsg.getSingleThreadSchedule().execute(
+                                () -> {
+                                    UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), content);
+                                    skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
+                                }
+                        );
+            });
         } else {
-            skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
-            //通知
             UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), content);
+            skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
 
         }
+
 
     }
 

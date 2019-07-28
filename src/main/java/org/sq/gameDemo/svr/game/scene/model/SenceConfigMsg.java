@@ -1,5 +1,6 @@
 package org.sq.gameDemo.svr.game.scene.model;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Data;
 import org.sq.gameDemo.common.proto.EntityTypeProto;
 import org.sq.gameDemo.common.proto.MonsterPt;
@@ -10,6 +11,9 @@ import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * 场景信息存储类
@@ -37,4 +41,13 @@ public class  SenceConfigMsg {
         }
         return entityTypeList;
     }
+
+    @ProtoField(Ignore = true)
+    private static ThreadFactory sceneThreadFactory = new ThreadFactoryBuilder()
+            .setNameFormat("scene-loop-%d").setUncaughtExceptionHandler((t,e) -> e.printStackTrace()).build();
+    /** 通过一个场景一个线程处理器的方法保证每个场景的指令循序 */
+
+    @ProtoField(Ignore = true)
+    ScheduledExecutorService singleThreadSchedule = Executors.newSingleThreadScheduledExecutor(sceneThreadFactory);
+
 }

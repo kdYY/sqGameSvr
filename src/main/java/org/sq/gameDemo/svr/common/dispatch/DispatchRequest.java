@@ -8,12 +8,13 @@ import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.svr.common.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static org.sq.gameDemo.common.OrderEnum.SvrErr;
 
@@ -100,22 +101,36 @@ public class DispatchRequest{
     private Object getResponse(MsgEntity msgEntity) throws IllegalAccessException, InvocationTargetException {
 
         OrderBean orderBean;
-        Object response;
+        Object response = null;
         short cmdCode = msgEntity.getCmdCode();
         orderBean = request2Handler.get(OrderEnum.getOrderByCode(cmdCode));
-//        if(orderBean == null) {
-//            orderBean = request2Handler.get(OrderEnum.ErrOrder.getOrder());
-//        }
+        if(Objects.nonNull(orderBean)) {
+            Object bean = SpringUtil.getBean(orderBean.getBeanName());
+            byte[] data = msgEntity.getData();
 
-        Object bean = SpringUtil.getBean(orderBean.getBeanName());
-        byte[] data = msgEntity.getData();
+            Method method = orderBean.getMethod();
+            boolean singleParam =  method.getParameterCount() == 1 ? (method.getParameterTypes()[0].equals(MsgEntity.class)) : true;
+            if(method.getParameterCount() <= 1 || singleParam) {
+                if(method.getParameterCount() == 0) {
+                    response = method.invoke(bean);
+                } else {
+                    response = method.invoke(bean, msgEntity);
+                }
+            } else {
 
-        Method method = orderBean.getMethod();
-        if(method.getParameterCount() == 0) {
-            response = method.invoke(bean);
-        } else {
-            response = method.invoke(bean, msgEntity);
+                List<Class> requiredParamType = new ArrayList<>();
+                Arrays.stream(method.getParameters()).forEach(
+                        parameter -> {
+                            ReqParseProto annotation = parameter.getAnnotation(ReqParseProto.class);
+                            Class<?> type = parameter.getType();
+                            if(Objects.nonNull(annotation) && annotation.required()) {
+                                requiredParamType.add(type);
+                            }
+                        }
+                );
+            }
         }
+
         return response;
     }
 

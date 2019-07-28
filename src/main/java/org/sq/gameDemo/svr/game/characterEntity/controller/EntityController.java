@@ -3,6 +3,7 @@ package org.sq.gameDemo.svr.game.characterEntity.controller;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.*;
@@ -129,7 +130,7 @@ public class EntityController {
      *
      */
     @OrderMapping(OrderEnum.Move)
-    public MsgEntity move(MsgEntity msgEntity) throws Exception {
+    public MsgEntity move(@RequestParam MsgEntity msgEntity) throws Exception {
         SenceMsgProto.SenceMsgResponseInfo.Builder builder = SenceMsgProto.SenceMsgResponseInfo.newBuilder();
         byte[] data = msgEntity.getData();
         SenceProto.RequestSenceInfo requestInfo = SenceProto.RequestSenceInfo.parseFrom(data);
@@ -210,7 +211,6 @@ public class EntityController {
             return msgEntity;
         }
     }
-
 
 
 

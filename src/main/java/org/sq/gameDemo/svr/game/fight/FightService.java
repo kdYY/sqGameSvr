@@ -33,16 +33,16 @@ public class FightService {
 
 
     /**
-     * 玩家使用技能打怪物
+     * 玩家使用技能打群怪
      * @param player
      * @param skillId
      * @param targetIdList
      */
-    public void skillAttackMonster(Player player, Integer skillId, List<Long> targetIdList) {
+    public void skillAttackManyMonster(Player player, Integer skillId, List<Long> targetIdList) {
         Skill skill = checkSkillState(player, skillId, targetIdList);
 
         Optional.ofNullable(skill).ifPresent(
-                o -> targetIdList.forEach(monsterId -> skillAttackMonster(player, monsterId, o))
+                o -> targetIdList.forEach(monsterId -> skillAttackSingleMonster(player, monsterId, o))
         );
 
 
@@ -54,7 +54,7 @@ public class FightService {
      * @param skillId
      * @param targetIdList
      */
-    public Skill checkSkillState(Player player,  Integer skillId, List<Long> targetIdList) {
+    private Skill checkSkillState(Player player,  Integer skillId, List<Long> targetIdList) {
         Skill skill = skillCache.get(skillId);
         if(!skillService.skillCanUse(player, skill, targetIdList)) {
             return null;
@@ -63,12 +63,12 @@ public class FightService {
     }
 
     /**
-     * 玩家使用技能打怪物
+     * 玩家使用技能打单体怪物
      * @param player
      * @param monsterId
      * @param skill
      */
-    private void skillAttackMonster(Player player, Long monsterId, Skill skill) {
+    private void skillAttackSingleMonster(Player player, Long monsterId, Skill skill) {
         SenceConfigMsg senecMsg = senceService.getSenecMsgById(player.getSenceId());
 
         //找到怪物

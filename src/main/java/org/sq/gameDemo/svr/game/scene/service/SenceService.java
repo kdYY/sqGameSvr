@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.game.scene.service;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.channel.Channel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.function.Function;
 
 @Service
@@ -176,13 +180,6 @@ public class SenceService {
         return player;
     }
 
-//    private boolean checkUserEntityExistInSence(int userId, List<UserEntity> userEntities) {
-//        if(!Objects.isNull(getSingleByCondition(userEntities, (o -> o.getUserId() == userId)))) {
-//            return true;
-//        }
-//        return false;
-//    }
-
 
 
     public synchronized Npc getNpcBySenceIdAndId(Integer senceId, Integer npcId) {
@@ -201,6 +198,5 @@ public class SenceService {
         }
         return first.get();
     }
-
 
 }
