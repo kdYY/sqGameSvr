@@ -229,17 +229,6 @@ public class ProtoBufUtil {
         return collect;
     }
 
-    static List<Method> getClassMethod(Class cur_class) {
-        String class_name = cur_class.getName();
-        Method[] methods = cur_class.getDeclaredMethods();
-        List<Method> collect = Arrays.stream(methods).collect(Collectors.toList());
-
-        if (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class) {
-            collect.addAll(getClassMethod(cur_class.getSuperclass()));
-        }
-        return collect;
-    }
-
     static List<Method> getClassMethod(Class cur_class, String methodName) {
         Method[] methods = cur_class.getDeclaredMethods();
         List<Method> collect = Arrays.stream(methods)

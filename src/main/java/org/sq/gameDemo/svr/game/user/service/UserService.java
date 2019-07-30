@@ -8,13 +8,13 @@ package org.sq.gameDemo.svr.game.user.service;
 
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.nullness.Opt;
 import org.springframework.transaction.annotation.Transactional;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.customException;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
+import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -25,10 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <b><code>UserService</code></b>
@@ -50,21 +49,10 @@ public class UserService {
     private SenceService senceService;
     @Autowired
     private PlayerCache playerCache;
+    @Autowired
+    private UserEntityMapper userEntityMapper;
 
 
-    public User getUser(UserProto.User user){
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andNameEqualTo(user.getName()).andPasswordEqualTo(user.getPassword());
-        List<User> users = userMapper.selectByExample(userExample);
-        if(users.size() != 0) {
-            return users.get(0);
-        }
-        return null;
-    }
-
-    public List<User> listUser(){
-        return userMapper.selectByExample(new UserExample());
-    }
 
     @Transactional
     public int addUser(User user) throws Exception{
@@ -93,7 +81,20 @@ public class UserService {
         userMapper.updateTokenByUserId(userId, token);
     }
 
+    /**
+     * 获取用户，如果缓存没有，去数据库查
+     * @param userToken
+     * @return
+     */
     public User getUserByToken(String userToken) {
+        Integer userIdCache = UserCache.getUserIdByToken(userToken);
+        if(Objects.nonNull(userIdCache)) {
+            User userCache = UserCache.getUserById(userIdCache);
+            if(userCache != null ) {
+                return userCache;
+            }
+        }
+
         UserExample example = new UserExample();
         example.createCriteria().andTokenEqualTo(userToken);
         List<User> users = userMapper.selectByExample(example);
@@ -116,24 +117,32 @@ public class UserService {
                 builder.setContent("fail, try again");
             } else {
                 builder.setContent("success");
-                UserCache.addUserMap(userSave.getId(), userSave);
             }
         }
     }
 
     public void checkUserToken(Channel channel, UserProto.ResponseUserInfo.Builder builder, String userToken) {
-        User user = getUserByToken(userToken);
 
-        if(userToken != null && !userToken.equals("") && user != null) {
-            try {
-                entityService.playerLogin(channel, builder, user.getId());
-            }  catch (customException.BindRoleInSenceException e1) {
-                builder.setContent("reconnect fail, please relogin, enter \"help\" to get Help");
+        if(userToken != null && !userToken.equals("")) {
+            User user = getUserByToken(userToken);
+            if(user == null) {
                 builder.setResult(404);
                 builder.setToken("");
-            } catch (Exception e) {
-                e.printStackTrace();
+            } else {
+                try {
+                    entityService.playerLogin(channel, builder, user);
+                }  catch (customException.BindRoleInSenceException e1) {
+                    builder.setContent(e1.getMessage());
+                    builder.setResult(404);
+                    builder.setToken("");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        } else {
+            builder.setContent("reconnect fail, please relogin, enter \"help\" to get Help");
+            builder.setResult(404);
+            builder.setToken("");
         }
 
     }
@@ -142,9 +151,11 @@ public class UserService {
         Integer userId = UserCache.getUserIdByChannel(channel);
         Player player = senceService.removePlayerAndGet(userId, channel);
         //清除playerCache中的数据
-        playerCache.removePlayerByChannel(channel);
-        playerCache.removePlayerChannel(player.getId());
+        playerCache.removePlayerCache(channel);
         UserCache.removeChannle(channel, player.getUserId());
+        UserEntity userEntityByUserId = userEntityMapper.getUserEntityByUserId(player.getUserId());
+        userEntityByUserId.setSenceId(player.getSenceId());
+        userEntityMapper.updateByPrimaryKeySelective(userEntityByUserId);
         log.info(player.getName() + "下线");
     }
 
@@ -152,7 +163,22 @@ public class UserService {
         User user = null;
         UserExample userExample = new UserExample();
         userExample.createCriteria().andIdEqualTo(userId);
-        return Optional.ofNullable(Optional.ofNullable(userMapper.selectByExample(userExample))
-                .orElseGet(ArrayList::new).get(0)).orElseGet(null);
+
+        List<User> userList = userMapper.selectByExample(userExample);
+        if(userList != null && userList.size() >= 1) {
+            return userList.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public User loginUser(UserProto.User user){
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andNameEqualTo(user.getName()).andPasswordEqualTo(user.getPassword());
+        List<User> users = userMapper.selectByExample(userExample);
+        if(users.size() != 0) {
+            return users.get(0);
+        }
+        return null;
     }
 }

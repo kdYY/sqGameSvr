@@ -52,7 +52,7 @@ public class UserCache {
     }
 
     /**
-     *
+     * 玩家进入场景
      * @param senceId
      * @param channel
      * @param msgByteArray 要广播话语
@@ -68,6 +68,12 @@ public class UserCache {
         broadCastPlayerGroup(channelList, msgByteArray);
     }
 
+    /**
+     * 玩家退出场景
+     * @param senceId
+     * @param channel
+     * @param msg
+     */
     public static void moveChannelInGroup(Integer senceId, Channel channel, String msg) {
         List<Channel> channelList = senceChannelGroupMap.get(senceId);
         if(channelList == null) {
@@ -78,12 +84,12 @@ public class UserCache {
         broadcastChannelGroupBysenceId(senceId, msg);
     }
 
-    public static void updateUserToken(int userId, String token) {
+    private static void updateUserToken(int userId, String token) {
         updateKey(tokenUserMap, token, userId);
 
     }
 
-    public static void updateChannelCache(Channel newChannel, int userId) {
+    private static void updateChannelCache(Channel newChannel, int userId) {
         updateKey(channelUserIdMap, newChannel, userId);
     }
 
@@ -93,6 +99,10 @@ public class UserCache {
 
     public static Integer getUserIdByToken(String token) {
         return tokenUserMap.get(token);
+    }
+
+    public static Channel getUserChannelByUserId(Integer userId) {
+        return (Channel) getKeyByValue(userId, channelUserIdMap).orElse(null);
     }
 
     private static void updateKey(Map map, Object newKey, Object value) {
@@ -115,9 +125,19 @@ public class UserCache {
 
     }
 
-    public static void addUserMap(int userId, User user) {
+
+    private static void registerUserInCache(int userId, User user) {
         userMap.put(userId, user);
     }
+
+    public static void updateUserCache(int userId, User user, Channel channel) {
+        updateUserToken(userId, user.getToken());
+        updateChannelCache(channel, userId);
+        if(userMap.get(userId) == null) {
+            registerUserInCache(userId, user);
+        }
+    }
+
 
     public static User getUserById(int userId) {
         return userMap.get(userId);
@@ -139,10 +159,6 @@ public class UserCache {
             msgEntity.setChannel(channel);
             channel.writeAndFlush(msgEntity);
         });
-    }
-
-    public boolean isUserOnline(Channel channel) {
-        return UserCache.getUserIdByChannel(channel) > 0;
     }
 
 }

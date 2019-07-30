@@ -59,8 +59,11 @@ public class PlayerCache  {
     /**
      *  通过 channel清除玩家信息
      */
-    public void removePlayerByChannel(Channel channel) {
-        channelPlayerCache.invalidate(channel);
+    public void removePlayerCache(Channel channel) {
+        Optional.ofNullable(getPlayerByChannel(channel)).ifPresent(player -> {
+            removePlayerChannel(player.getId());
+            channelPlayerCache.invalidate(channel);
+        });
     }
 
 

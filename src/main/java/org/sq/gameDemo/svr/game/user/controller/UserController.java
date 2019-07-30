@@ -6,7 +6,6 @@
 
 package org.sq.gameDemo.svr.game.user.controller;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -16,8 +15,11 @@ import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.customException;
+import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
+import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
+import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
-import org.sq.gameDemo.svr.game.scene.service.SenceService;
+import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,7 +43,7 @@ public class UserController {
     @Autowired
     private EntityService entityService;
     @Autowired
-    private SenceService senceService;
+    private PlayerCache playerCache;
 
     /**
      * 玩家注册
@@ -84,7 +86,8 @@ public class UserController {
             UserProto.User user = requestUserInfo.getUser();
             builder.setMsgId(requestUserInfo.getMsgId());
             builder.setTime(requestUserInfo.getTime());
-            entityService.playerLogin(channel, builder, user.getId());
+            User loginUser = userService.loginUser(user);
+            entityService.playerLogin(channel, builder, loginUser);
         } catch (customException.BindRoleInSenceException e1) {
             builder.setResult(404);
             builder.setContent(e1.getMessage());
@@ -105,12 +108,11 @@ public class UserController {
      * @throws Exception
      */
     @OrderMapping(OrderEnum.CheckToken)
-    public MsgEntity checkToken(MsgEntity msgEntity) throws Exception {
-        UserProto.ResponseUserInfo.Builder builder = UserProto.ResponseUserInfo.newBuilder();
+    public MsgEntity checkToken(MsgEntity msgEntity,
+                                @ReqParseParam UserProto.RequestUserInfo requestUserInfo,
+                                @RespBuilderParam UserProto.ResponseUserInfo.Builder builder) throws Exception {
 
         try {
-            byte[] data = msgEntity.getData();
-            UserProto.RequestUserInfo requestUserInfo = UserProto.RequestUserInfo.parseFrom(data);
             builder.setMsgId(requestUserInfo.getMsgId());
             builder.setTime(requestUserInfo.getTime());
             Channel channel = msgEntity.getChannel();
@@ -132,13 +134,15 @@ public class UserController {
     @OrderMapping(OrderEnum.Exit)
     public void loginOut(MsgEntity msgEntity) {
         Channel channel = msgEntity.getChannel();
-        UserCache.removeChannle(channel);
+
+        userService.userOffLine(channel);
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setMsgId(2L);
         builder.setContent("期待下次回来~ 再见");
+        builder.setResult(200);
         msgEntity.setData(builder.build().toByteArray());
         channel.writeAndFlush(msgEntity);
-        channel.close();
+        //channel.close();
         log.info("玩家退出登陆");
     }
 

@@ -3,12 +3,13 @@ package org.sq.gameDemo.svr.game.characterEntity.controller;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.OrderMapping;
+import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
+import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.customException;
@@ -38,8 +39,8 @@ public class EntityController {
      * @throws Exception
      */
     @OrderMapping(OrderEnum.GetRole)
-    public MsgEntity getRoles(MsgEntity msgEntity) throws Exception {
-        EntityTypeProto.EntityTypeResponseInfo.Builder builder = EntityTypeProto.EntityTypeResponseInfo.newBuilder();
+    public MsgEntity getRoles(MsgEntity msgEntity,
+                              @RespBuilderParam EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws Exception {
         try {
             entityService.transformEntityTypeProto(builder);
         } catch (Exception e) {
@@ -56,13 +57,12 @@ public class EntityController {
      * @throws Exception
      */
     @OrderMapping(OrderEnum.BindRole)
-    public void bindRole(MsgEntity msgEntity) throws Exception {
+    public void bindRole(MsgEntity msgEntity,
+                         @ReqParseParam UserEntityProto.UserEntityRequestInfo requestInfo,
+                         @RespBuilderParam SenceMsgProto.SenceMsgResponseInfo.Builder builder) throws Exception {
 
-        SenceMsgProto.SenceMsgResponseInfo.Builder builder = SenceMsgProto.SenceMsgResponseInfo.newBuilder();
         Channel channel = msgEntity.getChannel();
         try {
-            byte[] data = msgEntity.getData();
-            UserEntityProto.UserEntityRequestInfo requestInfo = UserEntityProto.UserEntityRequestInfo.parseFrom(data);
             int typeId = requestInfo.getTypeId();
             Integer userId = UserCache.getUserIdByChannel(channel);
 
@@ -103,14 +103,11 @@ public class EntityController {
      *
      */
     @OrderMapping(OrderEnum.Aoi)
-    public MsgEntity aoi(MsgEntity msgEntity) {
+    public MsgEntity aoi(MsgEntity msgEntity,
+                         @ReqParseParam SenceMsgProto.SenceMsgRequestInfo requestInfo,
+                         @RespBuilderParam SenceMsgProto.SenceMsgResponseInfo.Builder builder) {
 
-        SenceMsgProto.SenceMsgResponseInfo.Builder builder = SenceMsgProto.SenceMsgResponseInfo.newBuilder();
         try {
-            byte[] data = msgEntity.getData();
-            SenceMsgProto.SenceMsgRequestInfo requestInfo = SenceMsgProto.SenceMsgRequestInfo.parseFrom(data);
-            // TODO 优化UserCache结构
-            // Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
             Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
             //获取场景，场景中的角色信息
             getUserSenceMsg(builder, player.getSenceId());
@@ -125,15 +122,15 @@ public class EntityController {
         }
     }
 
+
     /**
      获取场景信息
      *
      */
     @OrderMapping(OrderEnum.Move)
-    public MsgEntity move(@RequestParam MsgEntity msgEntity) throws Exception {
-        SenceMsgProto.SenceMsgResponseInfo.Builder builder = SenceMsgProto.SenceMsgResponseInfo.newBuilder();
-        byte[] data = msgEntity.getData();
-        SenceProto.RequestSenceInfo requestInfo = SenceProto.RequestSenceInfo.parseFrom(data);
+    public MsgEntity move(MsgEntity msgEntity,
+                          @ReqParseParam SenceProto.RequestSenceInfo requestInfo,
+                          @RespBuilderParam SenceMsgProto.SenceMsgResponseInfo.Builder builder) throws Exception {
         String content = "";
         try {
 
@@ -184,12 +181,11 @@ public class EntityController {
      * @throws Exception
      */
     @OrderMapping(OrderEnum.TalkWithNpc)
-    public MsgEntity talkWithNpc(MsgEntity msgEntity) throws Exception {
-        NpcPt.NpcRespInfo.Builder builder = NpcPt.NpcRespInfo.newBuilder();
+    public MsgEntity talkWithNpc(MsgEntity msgEntity,
+                                 @ReqParseParam NpcPt.NpcReqInfo requestInfo,
+                                 @RespBuilderParam NpcPt.NpcRespInfo.Builder builder) throws Exception {
         try {
-            NpcPt.NpcReqInfo requestInfo =  NpcPt.NpcReqInfo.parseFrom(msgEntity.getData());
             int npcId = requestInfo.getId();
-
             Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
             Player player = entityService.getInitedPlayer(userId, msgEntity.getChannel());
             Npc npc = senceService.getNpcBySenceIdAndId(player.getSenceId(), npcId);

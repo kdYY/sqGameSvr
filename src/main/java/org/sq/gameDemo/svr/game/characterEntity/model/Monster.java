@@ -13,5 +13,11 @@ public class Monster extends SenceEntity implements Character {
     //野怪攻击速度
     private Integer attackSpeed = 1000;
 
+    public Integer getAttackSpeed() {
+        return attackSpeed;
+    }
 
+    public void setAttackSpeed(Integer attackSpeed) {
+        this.attackSpeed = attackSpeed;
+    }
 }

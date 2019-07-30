@@ -6,15 +6,18 @@ import org.springframework.stereotype.Component;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
+import org.sq.gameDemo.common.proto.PlayerPt;
 import org.sq.gameDemo.svr.common.*;
+import org.sq.gameDemo.svr.common.customException.customException;
+import sun.reflect.annotation.AnnotationType;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.annotation.AnnotationTypeMismatchException;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 import static org.sq.gameDemo.common.OrderEnum.SvrErr;
 
@@ -65,7 +68,6 @@ public class DispatchRequest{
     }
 
 
-    // TODO 改造成Queue进行消费处理也不错
     /**
      * 根据requestOrder，分发执行方法
      * @param ctx
@@ -98,6 +100,13 @@ public class DispatchRequest{
         });
     }
 
+    /**
+     * 获取方法执行后的返回值
+     * @param msgEntity
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     private Object getResponse(MsgEntity msgEntity) throws IllegalAccessException, InvocationTargetException {
 
         OrderBean orderBean;
@@ -106,32 +115,95 @@ public class DispatchRequest{
         orderBean = request2Handler.get(OrderEnum.getOrderByCode(cmdCode));
         if(Objects.nonNull(orderBean)) {
             Object bean = SpringUtil.getBean(orderBean.getBeanName());
-            byte[] data = msgEntity.getData();
 
             Method method = orderBean.getMethod();
-            boolean singleParam =  method.getParameterCount() == 1 ? (method.getParameterTypes()[0].equals(MsgEntity.class)) : true;
-            if(method.getParameterCount() <= 1 || singleParam) {
-                if(method.getParameterCount() == 0) {
-                    response = method.invoke(bean);
-                } else {
-                    response = method.invoke(bean, msgEntity);
-                }
-            } else {
+            boolean a = method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(MsgEntity.class);
+            //没有参数
+            if(method.getParameterCount() == 0) {
+                response = method.invoke(bean);
+            }
+            //有参数
+            else {
+                List<Object> requiredParamList = new ArrayList<>();
 
-                List<Class> requiredParamType = new ArrayList<>();
                 Arrays.stream(method.getParameters()).forEach(
-                        parameter -> {
-                            ReqParseProto annotation = parameter.getAnnotation(ReqParseProto.class);
-                            Class<?> type = parameter.getType();
-                            if(Objects.nonNull(annotation) && annotation.required()) {
-                                requiredParamType.add(type);
-                            }
+                    parameter -> {
+                        Class<?> paramType = parameter.getType();
+
+                        if(paramType.equals(MsgEntity.class)) {
+                            requiredParamList.add(msgEntity);
+                        } else {
+                            /**
+                             * 获取注解上有ProtoParam注解的所有注解，并添加实例化参数
+                             */
+                            Arrays.stream(parameter.getDeclaredAnnotations()).forEach(
+                                paramAnno -> {
+                                    ProtoParam type = paramAnno.annotationType().getDeclaredAnnotation(ProtoParam.class);
+                                    if(type != null) {
+                                        Optional.ofNullable( getParamInjectObj(paramType, paramAnno, msgEntity) )
+                                                .ifPresent(obj -> requiredParamList.add(obj));
+                                    }
+//                                    Optional.ofNullable(paramAnno.getClass().getDeclaredAnnotation(ProtoParam.class))
+//                                            .ifPresent( o-> {
+//
+//                                            });
+                            });
+
                         }
+                    }
                 );
+                if(requiredParamList.size() != 0) {
+                    response = method.invoke(bean, requiredParamList.toArray());
+                } else {
+                    throw new customException.ParamNoMatchException("请求参数不匹配");
+                }
+
             }
         }
 
         return response;
+    }
+
+
+    private Object  getParamInjectObj(Class paramType, Annotation paramAnno, MsgEntity msgEntity) {
+        if(Objects.nonNull(paramAnno)) {
+            if(paramAnno.annotationType().equals(RespBuilderParam.class)) {
+                String requestProto = paramType.getTypeName();
+                String build = requestProto.substring(0, requestProto.lastIndexOf("$"));
+                try {
+                    return invokeStaticMethod(Class.forName(build), "newBuilder");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(paramAnno.annotationType().equals(ReqParseParam.class)) {
+                    return invokeStaticMethod(paramType, "parseFrom", msgEntity);
+
+            }
+        }
+        return null;
+
+    }
+
+    private Object invokeStaticMethod(Class<?> clazz, String methodName, Object... msgEntity) {
+        try {
+            Method method = null;
+            if(msgEntity != null &&msgEntity.length != 0) {
+                method = clazz.getDeclaredMethod(methodName, ((MsgEntity)msgEntity[0]).getData().getClass());
+                return method.invoke(null, ((MsgEntity)msgEntity[0]).getData());
+            } else {
+
+                method = clazz.getDeclaredMethod(methodName);
+                return method.invoke(null);
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -142,6 +214,20 @@ public class DispatchRequest{
         builder.setContent("服务端异常");
         errEntity.setData(builder.build().toByteArray());
         return errEntity;
+    }
+
+    public static void main(String[] args) {
+        AnnotatedType[] annotatedInterfaces = ReqParseParam.class.getAnnotatedInterfaces();
+        Annotation[] annotations = ReqParseParam.class.getAnnotations();
+        Annotation[] declaredAnnotations = ReqParseParam.class.getDeclaredAnnotations();
+        ProtoParam declaredAnnotation = ReqParseParam.class.getDeclaredAnnotation(ProtoParam.class);
+        Class<? extends Annotation> aClass = ReqParseParam.class;
+        ProtoParam declaredAnnotation1 = aClass.getDeclaredAnnotation(ProtoParam.class);
+        Field[] declaredFields = ReqParseParam.class.getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            declaredField.setAccessible(true);
+            declaredField.getAnnotations();
+        }
     }
 }
 

@@ -21,4 +21,13 @@ public class customException{
             super(message);
         }
     }
+
+    public static class ParamNoMatchException extends RuntimeException  {
+        public ParamNoMatchException() {
+        }
+
+        public ParamNoMatchException(String message) {
+            super(message);
+        }
+    }
 }
