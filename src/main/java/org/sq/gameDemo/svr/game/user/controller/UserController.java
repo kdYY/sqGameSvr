@@ -13,8 +13,7 @@ import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.OrderMapping;
-import org.sq.gameDemo.svr.common.UserCache;
-import org.sq.gameDemo.svr.common.customException.customException;
+import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
 import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
@@ -88,7 +87,7 @@ public class UserController {
             builder.setTime(requestUserInfo.getTime());
             User loginUser = userService.loginUser(user);
             entityService.playerLogin(channel, builder, loginUser);
-        } catch (customException.BindRoleInSenceException e1) {
+        } catch (CustomException.BindRoleInSenceException e1) {
             builder.setResult(404);
             builder.setContent(e1.getMessage());
         } catch (Exception e) {

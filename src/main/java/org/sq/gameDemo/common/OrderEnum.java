@@ -17,6 +17,8 @@ public enum OrderEnum {
     TalkWithNpc("talkwithnpc", 111),
     BroadCast("broadCast", 112),
     Exit("exit", 113),
+    SkillAttack("skillAttack", 114),
+    ShowPlayer("ShowPlayer", 115)
     ;
 
     private String order;

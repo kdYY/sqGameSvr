@@ -6,18 +6,14 @@ import org.springframework.stereotype.Component;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.common.proto.PlayerPt;
 import org.sq.gameDemo.svr.common.*;
-import org.sq.gameDemo.svr.common.customException.customException;
-import sun.reflect.annotation.AnnotationType;
+import org.sq.gameDemo.svr.common.customException.CustomException;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.AnnotationTypeMismatchException;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 import static org.sq.gameDemo.common.OrderEnum.SvrErr;
 
@@ -155,7 +151,7 @@ public class DispatchRequest{
                 if(requiredParamList.size() != 0) {
                     response = method.invoke(bean, requiredParamList.toArray());
                 } else {
-                    throw new customException.ParamNoMatchException("请求参数不匹配");
+                    throw new CustomException.ParamNoMatchException("请求参数不匹配");
                 }
 
             }

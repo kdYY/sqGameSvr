@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.common.UserCache;
-import org.sq.gameDemo.svr.common.customException.customException;
+import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
@@ -27,7 +27,6 @@ import org.sq.gameDemo.svr.game.user.model.UserExample;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * <b><code>UserService</code></b>
@@ -131,7 +130,7 @@ public class UserService {
             } else {
                 try {
                     entityService.playerLogin(channel, builder, user);
-                }  catch (customException.BindRoleInSenceException e1) {
+                }  catch (CustomException.BindRoleInSenceException e1) {
                     builder.setContent(e1.getMessage());
                     builder.setResult(404);
                     builder.setToken("");

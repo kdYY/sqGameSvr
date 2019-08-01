@@ -246,8 +246,7 @@ public class ProtoBufUtil {
         try {
             result = cur_class.getDeclaredMethod(methodName, parameterTypes);
         } catch (NoSuchMethodException e) {
-            //System.out.println("在" + cur_class.getName() + "中没有这个方法" + methodName);
-            //e.printStackTrace();
+           // e.printStackTrace();
         }
         if (result == null && (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class)) {
             result = getDeclaredMethod(cur_class.getSuperclass(), methodName);
@@ -269,20 +268,6 @@ public class ProtoBufUtil {
         return collect;
     }
 
-//    public static void main(String[] args) {
-//        List<Field> classFieldAndMethod = getClassField(Monster.class);
-//        classFieldAndMethod.forEach(o->{
-//            o.setAccessible(true);
-//            System.out.println(o.getName());
-//        });
-//        List<Method> classMethod = getClassMethod(Monster.class);
-//        classMethod.forEach(o -> {
-//            o.setAccessible(true);
-//            System.out.println(o.getName());
-//        });
-//
-//    }
-
     //返回广播信息体
     public static MsgEntity getBroadCastEntity(byte[] protoByte) {
         MsgEntity msgEntity = new MsgEntity();
@@ -292,8 +277,8 @@ public class ProtoBufUtil {
     }
 
     //返回广播信息体
-    public static MsgEntity getBroadCastDefaultEntity(String content) {
-        byte[] protoByte = MessageProto.Msg.newBuilder().setContent(content).build().toByteArray();
+    public static MsgEntity getBroadCastDefaultEntity(String broadCastContend) {
+        byte[] protoByte = MessageProto.Msg.newBuilder().setContent(broadCastContend).build().toByteArray();
         return getBroadCastEntity(protoByte);
     }
 }

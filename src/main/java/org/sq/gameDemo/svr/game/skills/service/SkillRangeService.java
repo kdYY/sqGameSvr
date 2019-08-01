@@ -43,7 +43,13 @@ public class SkillRangeService {
         target.setHp(attacter.getHp() + skill.getHeal());
 
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
-                target.getName() + "受到单体治疗技能:" + skill.getName() + "受到" + skill.getHeal() + "治疗，目前hp为" + attacter.getHp());
+                target.getName()
+                        + "受到单体治疗技能:"
+                        + skill.getName()
+                        + "受到"
+                        + skill.getHeal()
+                        + "治疗，目前hp为"
+                        + attacter.getHp());
 
     }
 
@@ -53,7 +59,13 @@ public class SkillRangeService {
         target.setHp(attacter.getHp() + skill.getHeal());
 
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
-                target.getName() + "受到两方治疗技能:" + skill.getName() + "受到" + skill.getHeal() + "治疗，目前hp为" + attacter.getHp());
+                target.getName()
+                        + "受到两方治疗技能:"
+                        + skill.getName()
+                        + "受到"
+                        + skill.getHeal()
+                        + "治疗，目前hp为"
+                        + attacter.getHp());
 
 
     }
@@ -64,19 +76,28 @@ public class SkillRangeService {
         target.setHp(attacter.getHp() + skill.getHeal());
 
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
-                target.getName() + "受到群体治疗技能:" + skill.getName() + "受到" + skill.getHeal() + "治疗，目前hp为" + attacter.getHp());
+                target.getName()
+                        + "受到群体治疗技能:"
+                        + skill.getName()
+                        + "受到"
+                        + skill.getHeal()
+                        + "治疗，目前hp为"
+                        + attacter.getHp());
 
     }
-
-
-
 
     private void skillSingleEnemy(Character attacter, Character target, SenceConfigMsg senecMsg, Skill skill) {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(target.getHp() - skill.getHurt());
 
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
-                target.getName() + "受到单体攻击技能:" + skill.getName() + "攻击，受到" + skill.getHurt() + "伤害，目前hp为" + attacter.getHp());
+                target.getName()
+                        + "受到单体攻击技能:"
+                        + skill.getName()
+                        + "攻击，受到"
+                        + skill.getHurt()
+                        + "伤害，目前hp为"
+                        + attacter.getHp());
 
     }
 
@@ -85,11 +106,14 @@ public class SkillRangeService {
         target.setHp(target.getHp() - skill.getHurt());
 
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
-                target.getName() + "受到群体攻击技能:" + skill.getName() + "攻击，受到" + skill.getHurt() + "伤害，目前hp为" + attacter.getHp());
+                target.getName()
+                        + "受到群体攻击技能:"
+                        + skill.getName()
+                        + "攻击，受到"
+                        + skill.getHurt()
+                        + "伤害，目前hp为"
+                        + attacter.getHp());
 
     }
-
-
-
 
 }

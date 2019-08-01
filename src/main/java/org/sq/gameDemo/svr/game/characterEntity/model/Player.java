@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.game.characterEntity.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.LevelEvent;
@@ -40,13 +41,13 @@ public class Player extends UserEntity implements Character {
     private Map<Integer,RoleAttribute> roleAttributeMap = new ConcurrentHashMap<>();
 
     /**
-     *  经验增加, 影响等级
+     *  经验增加, 影响等级 需要加锁，场景线程在读取经验， 同时事件总线线程可能在增加经验
      * @param exp 经验
      */
-    public void addExp(Integer exp) {
+    public synchronized void addExp(Integer exp) {
         this.setExp(this.getExp() + exp);
 
-        int newLevel = this.getExp() / 100;
+        int newLevel = this.getExp() / Constant.LEVEL_DIVISOR;
 
         // 如果等级发生变化，进行提示
         if (newLevel != this.getLevel()) {

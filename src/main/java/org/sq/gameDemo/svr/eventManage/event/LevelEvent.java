@@ -13,5 +13,5 @@ public class LevelEvent extends Event {
 
     private Player player;
 
-    private Integer level;
+    private Integer newlevel;
 }

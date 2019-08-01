@@ -1238,9 +1238,9 @@ public final class NpcPt {
     long getTime();
 
     /**
-     * <code>int32 id = 3;</code>
+     * <code>uint64 id = 3;</code>
      */
-    int getId();
+    long getId();
 
     /**
      * <code>int32 typeId = 4;</code>
@@ -1313,7 +1313,7 @@ public final class NpcPt {
             }
             case 24: {
 
-              id_ = input.readInt32();
+              id_ = input.readUInt64();
               break;
             }
             case 32: {
@@ -1385,11 +1385,11 @@ public final class NpcPt {
     }
 
     public static final int ID_FIELD_NUMBER = 3;
-    private int id_;
+    private long id_;
     /**
-     * <code>int32 id = 3;</code>
+     * <code>uint64 id = 3;</code>
      */
-    public int getId() {
+    public long getId() {
       return id_;
     }
 
@@ -1431,8 +1431,8 @@ public final class NpcPt {
       if (time_ != 0L) {
         output.writeUInt64(2, time_);
       }
-      if (id_ != 0) {
-        output.writeInt32(3, id_);
+      if (id_ != 0L) {
+        output.writeUInt64(3, id_);
       }
       if (typeId_ != 0) {
         output.writeInt32(4, typeId_);
@@ -1457,9 +1457,9 @@ public final class NpcPt {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(2, time_);
       }
-      if (id_ != 0) {
+      if (id_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, id_);
+          .computeUInt64Size(3, id_);
       }
       if (typeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -1512,7 +1512,8 @@ public final class NpcPt {
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTime());
       hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getId());
       hash = (37 * hash) + TYPEID_FIELD_NUMBER;
       hash = (53 * hash) + getTypeId();
       hash = (37 * hash) + SENCEID_FIELD_NUMBER;
@@ -1658,7 +1659,7 @@ public final class NpcPt {
 
         time_ = 0L;
 
-        id_ = 0;
+        id_ = 0L;
 
         typeId_ = 0;
 
@@ -1749,7 +1750,7 @@ public final class NpcPt {
         if (other.getTime() != 0L) {
           setTime(other.getTime());
         }
-        if (other.getId() != 0) {
+        if (other.getId() != 0L) {
           setId(other.getId());
         }
         if (other.getTypeId() != 0) {
@@ -1863,28 +1864,28 @@ public final class NpcPt {
         return this;
       }
 
-      private int id_ ;
+      private long id_ ;
       /**
-       * <code>int32 id = 3;</code>
+       * <code>uint64 id = 3;</code>
        */
-      public int getId() {
+      public long getId() {
         return id_;
       }
       /**
-       * <code>int32 id = 3;</code>
+       * <code>uint64 id = 3;</code>
        */
-      public Builder setId(int value) {
+      public Builder setId(long value) {
         
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 id = 3;</code>
+       * <code>uint64 id = 3;</code>
        */
       public Builder clearId() {
         
-        id_ = 0;
+        id_ = 0L;
         onChanged();
         return this;
       }
@@ -3551,7 +3552,7 @@ public final class NpcPt {
       "\001(\004\022\n\n\002mp\030\007 \001(\004\022\016\n\006attack\030\010 \001(\004\022\023\n\013refre" +
       "shTime\030\t \001(\004\022\017\n\007npcWord\030\n \001(\t\"W\n\nNpcReqI" +
       "nfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\n\n\002id\030" +
-      "\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\017\n\007senceId\030\005 \001(\005\"z" +
+      "\003 \001(\004\022\016\n\006typeId\030\004 \001(\005\022\017\n\007senceId\030\005 \001(\005\"z" +
       "\n\013NpcRespInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030" +
       "\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\031\n\004" +
       "type\030\005 \003(\0132\013.EntityType\022\021\n\003npc\030\006 \003(\0132\004.N" +

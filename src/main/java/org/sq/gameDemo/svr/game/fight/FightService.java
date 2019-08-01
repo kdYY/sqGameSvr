@@ -6,12 +6,14 @@ import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
+import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,9 +33,12 @@ public class FightService {
     @Autowired
     private SkillCache skillCache;
 
+    @Autowired
+    private MonsterAIService monsterAIService;
+
 
     /**
-     * 玩家使用技能打群怪
+     * 玩家使用技能打群怪,
      * @param player
      * @param skillId
      * @param targetIdList
@@ -42,11 +47,23 @@ public class FightService {
         Skill skill = checkSkillState(player, skillId, targetIdList);
 
         Optional.ofNullable(skill).ifPresent(
-                o -> targetIdList.forEach(monsterId -> skillAttackSingleMonster(player, monsterId, o))
+                o -> targetIdList.forEach(monsterId -> {
+                    //玩家攻打怪物
+                    try {
+                        skillAttackSingleMonster(player, monsterId, o);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                })
         );
-
-
     }
+
+    public void skillAttackSingleMonster(Player player, Integer skillId, Long targetId) {
+        ArrayList<Long> targetIdList = new ArrayList<>();
+        targetIdList.add(targetId);
+        skillAttackManyMonster(player, skillId, targetIdList);
+    }
+
 
     /**
      * 检查技能状态
@@ -56,6 +73,7 @@ public class FightService {
      */
     private Skill checkSkillState(Player player,  Integer skillId, List<Long> targetIdList) {
         Skill skill = skillCache.get(skillId);
+
         if(!skillService.skillCanUse(player, skill, targetIdList)) {
             return null;
         }
@@ -68,7 +86,7 @@ public class FightService {
      * @param monsterId
      * @param skill
      */
-    private void skillAttackSingleMonster(Player player, Long monsterId, Skill skill) {
+    private void skillAttackSingleMonster(Player player, Long monsterId, Skill skill) throws Exception {
         SenceConfigMsg senecMsg = senceService.getSenecMsgById(player.getSenceId());
 
         //找到怪物
@@ -78,11 +96,17 @@ public class FightService {
                 .findFirst()
                 .orElse(null);
 
+
         if(Objects.isNull(targetMonster)) {
             playerCache.getChannelByPlayerId(player.getId())
                     .writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("目标怪物不存在，请检查怪物id"));
         } else {
-            skillService.characterUseSkillAttack(player, targetMonster, skill, senecMsg);
+            player.setTarget(targetMonster);
+            //如果使用技能成功
+            if(skillService.characterUseSkillAttack(player, targetMonster, skill, senecMsg)) {
+                    monsterAIService.monsterBeAttacked(player, targetMonster, senecMsg, skill);
+            }
+
         }
 
     }

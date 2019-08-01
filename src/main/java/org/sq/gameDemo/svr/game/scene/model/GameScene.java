@@ -38,9 +38,9 @@ public class GameScene {
     }
 
     //记得写个工具类...免得老是写这些恶心的方法...
-    public static SenceProto.Sence transformProto(GameScene sence) {
-        return SenceProto.Sence.newBuilder().setId(sence.getId()).setName(sence.getName()).build();
-    }
+//    public static SenceProto.Sence transformProto(GameScene sence) {
+//        return SenceProto.Sence.newBuilder().setId(sence.getId()).setName(sence.getName()).build();
+//    }
 
 
 }

@@ -29,7 +29,7 @@ public class EventBus {
      * @param eventClass 事件的类对象类型
      * @param eventHandler 事件处理器
      */
-    public static <E extends Event> void subscribe(Class<? extends Event> eventClass, EventHandler<E> eventHandler) {
+    public static <E extends Event> void registe(Class<? extends Event> eventClass, EventHandler<E> eventHandler) {
 
         List<EventHandler> eventHandlerList = listenerMap.get(eventClass);
         if (null == eventHandlerList) {

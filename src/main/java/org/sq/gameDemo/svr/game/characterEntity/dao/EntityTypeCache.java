@@ -45,12 +45,12 @@ public class EntityTypeCache {
         return entityTypes;
     }
 
-    public EntityType get(Integer id) {
-        return entityTypeCache.getIfPresent(id);
+    public EntityType get(Integer typeId) {
+        return entityTypeCache.getIfPresent(typeId);
     }
 
-    public void put(Integer id, EntityType value) {
-        entityTypeCache.put(id,value);
+    public void put(Integer typeId, EntityType value) {
+        entityTypeCache.put(typeId,value);
     }
 
     public Map<Integer,EntityType> entityTypeMap() {

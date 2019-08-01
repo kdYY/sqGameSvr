@@ -11,15 +11,16 @@ import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
+import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
-import org.sq.gameDemo.svr.game.characterEntity.model.EntityType;
-import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.model.SkillRange;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
@@ -43,32 +44,40 @@ public class SkillService {
      * @param skill
      * @param senecMsg
      */
-    public void characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
-        String content = "场景id" + senecMsg.getSenceId() + ": " + attacter.getName() + "开始使用技能" + skill.getName();
-        log.debug(content);
+    public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
 
-        //如何attacter是boss，开启首刀仇恨
-        targeterBelong(attacter.getId(), targeter);
-        //开启cd
-        makeSkillInCD(attacter, skill);
-        //技能若是有释放时间，延迟释放
-        if(skill.getCastTime() > 0) {
-            UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), "技能开始释放，需要" + skill.getCastTime()/1000 + "秒");
-            TimedTaskManager.schedule(skill.getCastTime(),
-                    ()->{
-                        senecMsg.getSingleThreadSchedule().execute(
-                                () -> {
-                                    UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), content);
-                                    skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
-                                }
-                        );
-            });
-        } else {
-            UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), content);
-            skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
-
+        if(targeter instanceof Npc && attacter instanceof UserEntity) {
+            Channel channel = playerCache.getChannelByPlayerId(attacter.getId());
+            channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("npc不能被砍..."));
+            return false;
         }
 
+        String content = attacter.getName() + "(id=" + attacter.getId() + ")开始使用技能"
+                + skill.getName() + "攻击" + targeter
+                + "(id=" + targeter.getId() + ")";
+
+        log.debug(content);
+
+        //开启cd
+        makeSkillInCD(attacter, skill);
+        //技能若是有释放时间，则延迟释放
+
+        if(attacter instanceof UserEntity && skill.getCastTime() > 0) {
+            UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
+                    attacter.getName() + "开始释放技能，需要" + skill.getCastTime()/1000 + "秒");
+        }
+
+
+        TimedTaskManager.schedule(skill.getCastTime() <= 0 ? 0: skill.getCastTime() ,
+                ()->{
+                    senecMsg.getSingleThreadSchedule().execute(
+                            () -> {
+                                UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), content);
+                                skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
+                            }
+                    );
+                });
+        return true;
 
     }
 
@@ -87,11 +96,6 @@ public class SkillService {
         TimedTaskManager.schedule(skill.getCd(), () -> attacter.getSkillInUsedMap().remove(skill.getId()) );
     }
 
-
-    //标记boss归属者
-    private void targeterBelong(Long id, Character targeter) {
-
-    }
 
     /**
      * 判断技能是否能使用

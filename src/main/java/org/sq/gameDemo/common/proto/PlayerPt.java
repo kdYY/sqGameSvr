@@ -1232,6 +1232,11 @@ public final class PlayerPt {
      * <code>int32 senceId = 4;</code>
      */
     int getSenceId();
+
+    /**
+     * <code>uint64 playerId = 5;</code>
+     */
+    long getPlayerId();
   }
   /**
    * <pre>
@@ -1300,6 +1305,11 @@ public final class PlayerPt {
             case 32: {
 
               senceId_ = input.readInt32();
+              break;
+            }
+            case 40: {
+
+              playerId_ = input.readUInt64();
               break;
             }
             default: {
@@ -1378,6 +1388,15 @@ public final class PlayerPt {
       return senceId_;
     }
 
+    public static final int PLAYERID_FIELD_NUMBER = 5;
+    private long playerId_;
+    /**
+     * <code>uint64 playerId = 5;</code>
+     */
+    public long getPlayerId() {
+      return playerId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -1404,6 +1423,9 @@ public final class PlayerPt {
       if (senceId_ != 0) {
         output.writeInt32(4, senceId_);
       }
+      if (playerId_ != 0L) {
+        output.writeUInt64(5, playerId_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -1429,6 +1451,10 @@ public final class PlayerPt {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, senceId_);
       }
+      if (playerId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(5, playerId_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1452,6 +1478,8 @@ public final class PlayerPt {
           != other.getTypeId()) return false;
       if (getSenceId()
           != other.getSenceId()) return false;
+      if (getPlayerId()
+          != other.getPlayerId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1473,6 +1501,9 @@ public final class PlayerPt {
       hash = (53 * hash) + getTypeId();
       hash = (37 * hash) + SENCEID_FIELD_NUMBER;
       hash = (53 * hash) + getSenceId();
+      hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPlayerId());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1618,6 +1649,8 @@ public final class PlayerPt {
 
         senceId_ = 0;
 
+        playerId_ = 0L;
+
         return this;
       }
 
@@ -1648,6 +1681,7 @@ public final class PlayerPt {
         result.time_ = time_;
         result.typeId_ = typeId_;
         result.senceId_ = senceId_;
+        result.playerId_ = playerId_;
         onBuilt();
         return result;
       }
@@ -1707,6 +1741,9 @@ public final class PlayerPt {
         }
         if (other.getSenceId() != 0) {
           setSenceId(other.getSenceId());
+        }
+        if (other.getPlayerId() != 0L) {
+          setPlayerId(other.getPlayerId());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1864,6 +1901,32 @@ public final class PlayerPt {
         onChanged();
         return this;
       }
+
+      private long playerId_ ;
+      /**
+       * <code>uint64 playerId = 5;</code>
+       */
+      public long getPlayerId() {
+        return playerId_;
+      }
+      /**
+       * <code>uint64 playerId = 5;</code>
+       */
+      public Builder setPlayerId(long value) {
+        
+        playerId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 playerId = 5;</code>
+       */
+      public Builder clearPlayerId() {
+        
+        playerId_ = 0L;
+        onChanged();
+        return this;
+      }
       @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -2001,6 +2064,30 @@ public final class PlayerPt {
      */
     PlayerOrBuilder getPlayerOrBuilder(
             int index);
+
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    java.util.List<SkillPt.Skill>
+        getSkillList();
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    SkillPt.Skill getSkill(int index);
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    int getSkillCount();
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    java.util.List<? extends SkillPt.SkillOrBuilder>
+        getSkillOrBuilderList();
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    SkillPt.SkillOrBuilder getSkillOrBuilder(
+            int index);
   }
   /**
    * <pre>
@@ -2022,6 +2109,7 @@ public final class PlayerPt {
       content_ = "";
       type_ = java.util.Collections.emptyList();
       player_ = java.util.Collections.emptyList();
+      skill_ = java.util.Collections.emptyList();
     }
 
     @Override
@@ -2094,6 +2182,15 @@ public final class PlayerPt {
                   input.readMessage(Player.parser(), extensionRegistry));
               break;
             }
+            case 58: {
+              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+                skill_ = new java.util.ArrayList<SkillPt.Skill>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              skill_.add(
+                  input.readMessage(SkillPt.Skill.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -2114,6 +2211,9 @@ public final class PlayerPt {
         }
         if (((mutable_bitField0_ & 0x00000002) != 0)) {
           player_ = java.util.Collections.unmodifiableList(player_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) != 0)) {
+          skill_ = java.util.Collections.unmodifiableList(skill_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -2271,6 +2371,41 @@ public final class PlayerPt {
       return player_.get(index);
     }
 
+    public static final int SKILL_FIELD_NUMBER = 7;
+    private java.util.List<SkillPt.Skill> skill_;
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    public java.util.List<SkillPt.Skill> getSkillList() {
+      return skill_;
+    }
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    public java.util.List<? extends SkillPt.SkillOrBuilder>
+        getSkillOrBuilderList() {
+      return skill_;
+    }
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    public int getSkillCount() {
+      return skill_.size();
+    }
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    public SkillPt.Skill getSkill(int index) {
+      return skill_.get(index);
+    }
+    /**
+     * <code>repeated .Skill skill = 7;</code>
+     */
+    public SkillPt.SkillOrBuilder getSkillOrBuilder(
+        int index) {
+      return skill_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -2302,6 +2437,9 @@ public final class PlayerPt {
       }
       for (int i = 0; i < player_.size(); i++) {
         output.writeMessage(6, player_.get(i));
+      }
+      for (int i = 0; i < skill_.size(); i++) {
+        output.writeMessage(7, skill_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -2335,6 +2473,10 @@ public final class PlayerPt {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, player_.get(i));
       }
+      for (int i = 0; i < skill_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, skill_.get(i));
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -2362,6 +2504,8 @@ public final class PlayerPt {
           .equals(other.getTypeList())) return false;
       if (!getPlayerList()
           .equals(other.getPlayerList())) return false;
+      if (!getSkillList()
+          .equals(other.getSkillList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2390,6 +2534,10 @@ public final class PlayerPt {
       if (getPlayerCount() > 0) {
         hash = (37 * hash) + PLAYER_FIELD_NUMBER;
         hash = (53 * hash) + getPlayerList().hashCode();
+      }
+      if (getSkillCount() > 0) {
+        hash = (37 * hash) + SKILL_FIELD_NUMBER;
+        hash = (53 * hash) + getSkillList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -2525,6 +2673,7 @@ public final class PlayerPt {
                 .alwaysUseFieldBuilders) {
           getTypeFieldBuilder();
           getPlayerFieldBuilder();
+          getSkillFieldBuilder();
         }
       }
       @Override
@@ -2549,6 +2698,12 @@ public final class PlayerPt {
           bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           playerBuilder_.clear();
+        }
+        if (skillBuilder_ == null) {
+          skill_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          skillBuilder_.clear();
         }
         return this;
       }
@@ -2598,6 +2753,15 @@ public final class PlayerPt {
           result.player_ = player_;
         } else {
           result.player_ = playerBuilder_.build();
+        }
+        if (skillBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0)) {
+            skill_ = java.util.Collections.unmodifiableList(skill_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.skill_ = skill_;
+        } else {
+          result.skill_ = skillBuilder_.build();
         }
         onBuilt();
         return result;
@@ -2709,6 +2873,32 @@ public final class PlayerPt {
                    getPlayerFieldBuilder() : null;
             } else {
               playerBuilder_.addAllMessages(other.player_);
+            }
+          }
+        }
+        if (skillBuilder_ == null) {
+          if (!other.skill_.isEmpty()) {
+            if (skill_.isEmpty()) {
+              skill_ = other.skill_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureSkillIsMutable();
+              skill_.addAll(other.skill_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.skill_.isEmpty()) {
+            if (skillBuilder_.isEmpty()) {
+              skillBuilder_.dispose();
+              skillBuilder_ = null;
+              skill_ = other.skill_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              skillBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getSkillFieldBuilder() : null;
+            } else {
+              skillBuilder_.addAllMessages(other.skill_);
             }
           }
         }
@@ -3392,6 +3582,246 @@ public final class PlayerPt {
         }
         return playerBuilder_;
       }
+
+      private java.util.List<SkillPt.Skill> skill_ =
+        java.util.Collections.emptyList();
+      private void ensureSkillIsMutable() {
+        if (!((bitField0_ & 0x00000004) != 0)) {
+          skill_ = new java.util.ArrayList<SkillPt.Skill>(skill_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          SkillPt.Skill, SkillPt.Skill.Builder, SkillPt.SkillOrBuilder> skillBuilder_;
+
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public java.util.List<SkillPt.Skill> getSkillList() {
+        if (skillBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(skill_);
+        } else {
+          return skillBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public int getSkillCount() {
+        if (skillBuilder_ == null) {
+          return skill_.size();
+        } else {
+          return skillBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public SkillPt.Skill getSkill(int index) {
+        if (skillBuilder_ == null) {
+          return skill_.get(index);
+        } else {
+          return skillBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder setSkill(
+          int index, SkillPt.Skill value) {
+        if (skillBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSkillIsMutable();
+          skill_.set(index, value);
+          onChanged();
+        } else {
+          skillBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder setSkill(
+          int index, SkillPt.Skill.Builder builderForValue) {
+        if (skillBuilder_ == null) {
+          ensureSkillIsMutable();
+          skill_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          skillBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder addSkill(SkillPt.Skill value) {
+        if (skillBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSkillIsMutable();
+          skill_.add(value);
+          onChanged();
+        } else {
+          skillBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder addSkill(
+          int index, SkillPt.Skill value) {
+        if (skillBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSkillIsMutable();
+          skill_.add(index, value);
+          onChanged();
+        } else {
+          skillBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder addSkill(
+          SkillPt.Skill.Builder builderForValue) {
+        if (skillBuilder_ == null) {
+          ensureSkillIsMutable();
+          skill_.add(builderForValue.build());
+          onChanged();
+        } else {
+          skillBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder addSkill(
+          int index, SkillPt.Skill.Builder builderForValue) {
+        if (skillBuilder_ == null) {
+          ensureSkillIsMutable();
+          skill_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          skillBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder addAllSkill(
+          Iterable<? extends SkillPt.Skill> values) {
+        if (skillBuilder_ == null) {
+          ensureSkillIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, skill_);
+          onChanged();
+        } else {
+          skillBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder clearSkill() {
+        if (skillBuilder_ == null) {
+          skill_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          skillBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public Builder removeSkill(int index) {
+        if (skillBuilder_ == null) {
+          ensureSkillIsMutable();
+          skill_.remove(index);
+          onChanged();
+        } else {
+          skillBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public SkillPt.Skill.Builder getSkillBuilder(
+          int index) {
+        return getSkillFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public SkillPt.SkillOrBuilder getSkillOrBuilder(
+          int index) {
+        if (skillBuilder_ == null) {
+          return skill_.get(index);  } else {
+          return skillBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public java.util.List<? extends SkillPt.SkillOrBuilder>
+           getSkillOrBuilderList() {
+        if (skillBuilder_ != null) {
+          return skillBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(skill_);
+        }
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public SkillPt.Skill.Builder addSkillBuilder() {
+        return getSkillFieldBuilder().addBuilder(
+            SkillPt.Skill.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public SkillPt.Skill.Builder addSkillBuilder(
+          int index) {
+        return getSkillFieldBuilder().addBuilder(
+            index, SkillPt.Skill.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Skill skill = 7;</code>
+       */
+      public java.util.List<SkillPt.Skill.Builder>
+           getSkillBuilderList() {
+        return getSkillFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          SkillPt.Skill, SkillPt.Skill.Builder, SkillPt.SkillOrBuilder>
+          getSkillFieldBuilder() {
+        if (skillBuilder_ == null) {
+          skillBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              SkillPt.Skill, SkillPt.Skill.Builder, SkillPt.SkillOrBuilder>(
+                  skill_,
+                  ((bitField0_ & 0x00000004) != 0),
+                  getParentForChildren(),
+                  isClean());
+          skill_ = null;
+        }
+        return skillBuilder_;
+      }
       @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -3469,23 +3899,25 @@ public final class PlayerPt {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\014Player.proto\032\020EntityType.proto\"\246\001\n\006Pla" +
-      "yer\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\016\n\006userId\030" +
-      "\003 \001(\005\022\r\n\005state\030\004 \001(\005\022\016\n\006typeId\030\005 \001(\005\022\017\n\007" +
-      "senceId\030\006 \001(\005\022\013\n\003exp\030\007 \001(\005\022\r\n\005level\030\010 \001(" +
-      "\005\022\n\n\002hp\030\t \001(\004\022\n\n\002mp\030\n \001(\004\022\016\n\006attack\030\013 \001(" +
-      "\004\"N\n\rPlayerReqInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004ti" +
-      "me\030\002 \001(\004\022\016\n\006typeId\030\003 \001(\005\022\017\n\007senceId\030\004 \001(" +
-      "\005\"\203\001\n\016PlayerRespInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006" +
-      "result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 " +
-      "\001(\t\022\031\n\004type\030\005 \003(\0132\013.EntityType\022\027\n\006player" +
-      "\030\006 \003(\0132\007.PlayerB(\n\034org.sq.gameDemo.commo" +
-      "n.protoB\010PlayerPtb\006proto3"
+      "\n\014Player.proto\032\020EntityType.proto\032\013Skill." +
+      "proto\"\246\001\n\006Player\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001" +
+      "(\t\022\016\n\006userId\030\003 \001(\005\022\r\n\005state\030\004 \001(\005\022\016\n\006typ" +
+      "eId\030\005 \001(\005\022\017\n\007senceId\030\006 \001(\005\022\013\n\003exp\030\007 \001(\005\022" +
+      "\r\n\005level\030\010 \001(\005\022\n\n\002hp\030\t \001(\004\022\n\n\002mp\030\n \001(\004\022\016" +
+      "\n\006attack\030\013 \001(\004\"`\n\rPlayerReqInfo\022\016\n\006msg_i" +
+      "d\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006typeId\030\003 \001(\005\022\017\n" +
+      "\007senceId\030\004 \001(\005\022\020\n\010playerId\030\005 \001(\004\"\232\001\n\016Pla" +
+      "yerRespInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 " +
+      "\001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\031\n\004ty" +
+      "pe\030\005 \003(\0132\013.EntityType\022\027\n\006player\030\006 \003(\0132\007." +
+      "Player\022\025\n\005skill\030\007 \003(\0132\006.SkillB(\n\034org.sq." +
+      "gameDemo.common.protoB\010PlayerPtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           EntityTypeProto.getDescriptor(),
+          SkillPt.getDescriptor(),
         });
     internal_static_Player_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -3498,14 +3930,15 @@ public final class PlayerPt {
     internal_static_PlayerReqInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_PlayerReqInfo_descriptor,
-        new String[] { "MsgId", "Time", "TypeId", "SenceId", });
+        new String[] { "MsgId", "Time", "TypeId", "SenceId", "PlayerId", });
     internal_static_PlayerRespInfo_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_PlayerRespInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_PlayerRespInfo_descriptor,
-        new String[] { "MsgId", "Result", "Time", "Content", "Type", "Player", });
+        new String[] { "MsgId", "Result", "Time", "Content", "Type", "Player", "Skill", });
     EntityTypeProto.getDescriptor();
+    SkillPt.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

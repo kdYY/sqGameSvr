@@ -1,6 +1,6 @@
 package org.sq.gameDemo.svr.common.customException;
 
-public class customException{
+public class CustomException {
 
     public static class RemoveFailedException extends RuntimeException{
         public RemoveFailedException(String message) {

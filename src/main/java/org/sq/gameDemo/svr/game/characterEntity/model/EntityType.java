@@ -31,7 +31,7 @@ public class EntityType {
     private String skillStr;
 
     @ProtoField(TargetName = "skill", TargetClass = SkillPt.Skill.class)
-    private List<Skill> skillList;
+    private List<Skill> skillList = new ArrayList<>();
 
     @ProtoField(TargetName = "type", Function = "getType", TargetClass = EntityTypeProto.EntityType.Builder.class)
     private String typeName; //AP型， AD型
@@ -47,8 +47,7 @@ public class EntityType {
      * @return
      */
     public List<Skill> getSkillList() {
-        if(Objects.nonNull(skillList)) {
-            skillList = new ArrayList<>();
+        if(skillList.size() <= 0 && !this.skillStr.equals("")) {
             Arrays.stream(skillStr.split(",")).forEach(skillId -> {
                 Optional.ofNullable(SkillCache.skillCache.getIfPresent(Integer.valueOf(skillId)))
                         .ifPresent(skill -> skillList.add(skill));
@@ -64,14 +63,8 @@ public class EntityType {
     public Map<Integer, Skill> getSkillMap() {
 
         if(Objects.isNull(skillMap) && !this.skillStr.equals("")) {
-            this.skillMap = skillList.stream().collect(Collectors.toMap(Skill::getId, skill -> skill));
+            this.skillMap = this.getSkillList().stream().collect(Collectors.toMap(Skill::getId, skill -> skill));
         }
         return this.skillMap;
-
-//        return Optional
-//                .ofNullable(this.getSkillInUsedMap())
-//                .orElse(
-//                        skillList.stream().collect(Collectors.toMap(Skill::getId, skill -> skill))
-//                );
     }
 }

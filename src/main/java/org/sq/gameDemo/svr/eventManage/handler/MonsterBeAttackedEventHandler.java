@@ -7,6 +7,7 @@ import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.LevelEvent;
+import org.sq.gameDemo.svr.eventManage.event.MonsterBeAttackedEvent;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
@@ -18,9 +19,10 @@ import java.util.Optional;
  * @version 1.00
  * Description: 等级事件处理
  */
-@Slf4j
+
 @Component
-public class LevelEventHandler {
+@Slf4j
+public class MonsterBeAttackedEventHandler {
 
     @Autowired
     private PlayerCache playerCache;
@@ -28,18 +30,17 @@ public class LevelEventHandler {
     private SenceService senceService;
 
     {
-        EventBus.registe(LevelEvent.class, this::levelUp);
-        log.info("角色升级事件注册成功");
+        EventBus.registe(MonsterBeAttackedEvent.class, this::monsterBeAttacked);
+        log.info("怪物被攻击事件注册成功");
     }
 
 
-    private  void levelUp(LevelEvent levelEvent) {
-        Optional.ofNullable(levelEvent.getPlayer()).ifPresent(player -> {
-            player.setLevel(levelEvent.getNewlevel());
+    private  void monsterBeAttacked(MonsterBeAttackedEvent attackedEvent) {
+        //怪物被攻击，开始计时仇恨有效
+        attackedEvent.getTargetMonster().setTarget(attackedEvent.getAttacter());
 
-            playerCache.getChannelByPlayerId(player.getId()).writeAndFlush(
-                    ProtoBufUtil.getBroadCastDefaultEntity("恭喜你升了一级，目前等级是" + player.getLevel()));
-        });
+
+        //仇恨有效期一过，设置怪物移动状态
     }
 
 

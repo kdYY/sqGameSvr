@@ -1320,13 +1320,23 @@ public final class SkillPt {
     long getTime();
 
     /**
+     * <code>uint64 player_id = 3;</code>
+     */
+    long getPlayerId();
+
+    /**
      * <pre>
      *获取全部写-1
      * </pre>
      *
-     * <code>int32 skillId = 3;</code>
+     * <code>int32 skillId = 4;</code>
      */
     int getSkillId();
+
+    /**
+     * <code>uint64 target_id = 5;</code>
+     */
+    long getTargetId();
   }
   /**
    * <pre>
@@ -1389,7 +1399,17 @@ public final class SkillPt {
             }
             case 24: {
 
+              playerId_ = input.readUInt64();
+              break;
+            }
+            case 32: {
+
               skillId_ = input.readInt32();
+              break;
+            }
+            case 40: {
+
+              targetId_ = input.readUInt64();
               break;
             }
             default: {
@@ -1450,17 +1470,35 @@ public final class SkillPt {
       return time_;
     }
 
-    public static final int SKILLID_FIELD_NUMBER = 3;
+    public static final int PLAYER_ID_FIELD_NUMBER = 3;
+    private long playerId_;
+    /**
+     * <code>uint64 player_id = 3;</code>
+     */
+    public long getPlayerId() {
+      return playerId_;
+    }
+
+    public static final int SKILLID_FIELD_NUMBER = 4;
     private int skillId_;
     /**
      * <pre>
      *获取全部写-1
      * </pre>
      *
-     * <code>int32 skillId = 3;</code>
+     * <code>int32 skillId = 4;</code>
      */
     public int getSkillId() {
       return skillId_;
+    }
+
+    public static final int TARGET_ID_FIELD_NUMBER = 5;
+    private long targetId_;
+    /**
+     * <code>uint64 target_id = 5;</code>
+     */
+    public long getTargetId() {
+      return targetId_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1483,8 +1521,14 @@ public final class SkillPt {
       if (time_ != 0L) {
         output.writeUInt64(2, time_);
       }
+      if (playerId_ != 0L) {
+        output.writeUInt64(3, playerId_);
+      }
       if (skillId_ != 0) {
-        output.writeInt32(3, skillId_);
+        output.writeInt32(4, skillId_);
+      }
+      if (targetId_ != 0L) {
+        output.writeUInt64(5, targetId_);
       }
       unknownFields.writeTo(output);
     }
@@ -1503,9 +1547,17 @@ public final class SkillPt {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(2, time_);
       }
+      if (playerId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, playerId_);
+      }
       if (skillId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, skillId_);
+          .computeInt32Size(4, skillId_);
+      }
+      if (targetId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(5, targetId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1526,8 +1578,12 @@ public final class SkillPt {
           != other.getMsgId()) return false;
       if (getTime()
           != other.getTime()) return false;
+      if (getPlayerId()
+          != other.getPlayerId()) return false;
       if (getSkillId()
           != other.getSkillId()) return false;
+      if (getTargetId()
+          != other.getTargetId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1545,8 +1601,14 @@ public final class SkillPt {
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTime());
+      hash = (37 * hash) + PLAYER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPlayerId());
       hash = (37 * hash) + SKILLID_FIELD_NUMBER;
       hash = (53 * hash) + getSkillId();
+      hash = (37 * hash) + TARGET_ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getTargetId());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1688,7 +1750,11 @@ public final class SkillPt {
 
         time_ = 0L;
 
+        playerId_ = 0L;
+
         skillId_ = 0;
+
+        targetId_ = 0L;
 
         return this;
       }
@@ -1718,7 +1784,9 @@ public final class SkillPt {
         SkillReqInfo result = new SkillReqInfo(this);
         result.msgId_ = msgId_;
         result.time_ = time_;
+        result.playerId_ = playerId_;
         result.skillId_ = skillId_;
+        result.targetId_ = targetId_;
         onBuilt();
         return result;
       }
@@ -1773,8 +1841,14 @@ public final class SkillPt {
         if (other.getTime() != 0L) {
           setTime(other.getTime());
         }
+        if (other.getPlayerId() != 0L) {
+          setPlayerId(other.getPlayerId());
+        }
         if (other.getSkillId() != 0) {
           setSkillId(other.getSkillId());
+        }
+        if (other.getTargetId() != 0L) {
+          setTargetId(other.getTargetId());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1881,13 +1955,39 @@ public final class SkillPt {
         return this;
       }
 
+      private long playerId_ ;
+      /**
+       * <code>uint64 player_id = 3;</code>
+       */
+      public long getPlayerId() {
+        return playerId_;
+      }
+      /**
+       * <code>uint64 player_id = 3;</code>
+       */
+      public Builder setPlayerId(long value) {
+        
+        playerId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 player_id = 3;</code>
+       */
+      public Builder clearPlayerId() {
+        
+        playerId_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private int skillId_ ;
       /**
        * <pre>
        *获取全部写-1
        * </pre>
        *
-       * <code>int32 skillId = 3;</code>
+       * <code>int32 skillId = 4;</code>
        */
       public int getSkillId() {
         return skillId_;
@@ -1897,7 +1997,7 @@ public final class SkillPt {
        *获取全部写-1
        * </pre>
        *
-       * <code>int32 skillId = 3;</code>
+       * <code>int32 skillId = 4;</code>
        */
       public Builder setSkillId(int value) {
         
@@ -1910,11 +2010,37 @@ public final class SkillPt {
        *获取全部写-1
        * </pre>
        *
-       * <code>int32 skillId = 3;</code>
+       * <code>int32 skillId = 4;</code>
        */
       public Builder clearSkillId() {
         
         skillId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long targetId_ ;
+      /**
+       * <code>uint64 target_id = 5;</code>
+       */
+      public long getTargetId() {
+        return targetId_;
+      }
+      /**
+       * <code>uint64 target_id = 5;</code>
+       */
+      public Builder setTargetId(long value) {
+        
+        targetId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 target_id = 5;</code>
+       */
+      public Builder clearTargetId() {
+        
+        targetId_ = 0L;
         onChanged();
         return this;
       }
@@ -3160,13 +3286,14 @@ public final class SkillPt {
       "ame\030\002 \001(\t\022\022\n\nskillRange\030\003 \001(\005\022\n\n\002cd\030\004 \001(" +
       "\004\022\016\n\006mpNeed\030\005 \001(\004\022\014\n\004hurt\030\006 \001(\004\022\014\n\004heal\030" +
       "\007 \001(\004\022\r\n\005grade\030\010 \001(\005\022\014\n\004buff\030\t \001(\005\022\020\n\010ca" +
-      "stTime\030\n \001(\004\022\023\n\013description\030\013 \001(\t\"=\n\014Ski" +
+      "stTime\030\n \001(\004\022\023\n\013description\030\013 \001(\t\"c\n\014Ski" +
       "llReqInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022" +
-      "\017\n\007skillId\030\003 \001(\005\"e\n\rSkillRespInfo\022\016\n\006msg" +
-      "_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022" +
-      "\017\n\007content\030\004 \001(\t\022\025\n\005skill\030\005 \003(\0132\006.SkillB" +
-      "\'\n\034org.sq.gameDemo.common.protoB\007SkillPt" +
-      "b\006proto3"
+      "\021\n\tplayer_id\030\003 \001(\004\022\017\n\007skillId\030\004 \001(\005\022\021\n\tt" +
+      "arget_id\030\005 \001(\004\"e\n\rSkillRespInfo\022\016\n\006msg_i" +
+      "d\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n" +
+      "\007content\030\004 \001(\t\022\025\n\005skill\030\005 \003(\0132\006.SkillB\'\n" +
+      "\034org.sq.gameDemo.common.protoB\007SkillPtb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3183,7 +3310,7 @@ public final class SkillPt {
     internal_static_SkillReqInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SkillReqInfo_descriptor,
-        new String[] { "MsgId", "Time", "SkillId", });
+        new String[] { "MsgId", "Time", "PlayerId", "SkillId", "TargetId", });
     internal_static_SkillRespInfo_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_SkillRespInfo_fieldAccessorTable = new

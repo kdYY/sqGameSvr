@@ -3,20 +3,16 @@ package org.sq.gameDemo.svr.common;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.svr.common.customException.customException;
+import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.user.dao.UserMapper;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -63,9 +59,10 @@ public class UserCache {
             channelList = new CopyOnWriteArrayList<>();
             senceChannelGroupMap.put(senceId, channelList);
         }
-        channelList.add(channel);
+
         //同时广播
         broadCastPlayerGroup(channelList, msgByteArray);
+        channelList.add(channel);
     }
 
     /**
@@ -77,7 +74,7 @@ public class UserCache {
     public static void moveChannelInGroup(Integer senceId, Channel channel, String msg) {
         List<Channel> channelList = senceChannelGroupMap.get(senceId);
         if(channelList == null) {
-            throw new customException.RemoveFailedException("场景id不存在");
+            throw new CustomException.RemoveFailedException("场景id不存在");
         }
         channelList.remove(channel);
         //同时广播
@@ -143,22 +140,25 @@ public class UserCache {
         return userMap.get(userId);
     }
 
-    public static void broadcastChannelGroupBysenceId(Integer senceId, String msg) {
+    public static void broadcastChannelGroupBysenceId(Integer senceId, String msg, Channel... ignore) {
         List<Channel> channelGroup = senceChannelGroupMap.get(senceId);
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
         builder.setContent(msg);
+        Optional.ofNullable(channelGroup).ifPresent(group -> broadCastPlayerGroup(group, builder.build().toByteArray(), ignore));
 
-        broadCastPlayerGroup(channelGroup,builder.build().toByteArray());
     }
 
 
 
-    public static void broadCastPlayerGroup(List<Channel> channelGroup, byte[] protoByte) {
+    public static void broadCastPlayerGroup(List<Channel> channelGroup, byte[] protoByte, Channel... ignore) {
         MsgEntity msgEntity = ProtoBufUtil.getBroadCastEntity(protoByte);
-        channelGroup.forEach(channel -> {
-            msgEntity.setChannel(channel);
-            channel.writeAndFlush(msgEntity);
-        });
+        //TODO 貌似有bug
+        channelGroup.stream()
+                .filter(ch -> ignore== null || ignore.length <= 0 || !Arrays.stream(ignore).allMatch(chan -> chan.equals(ch)))
+                .forEach(channel -> {
+                    msgEntity.setChannel(channel);
+                    channel.writeAndFlush(msgEntity);
+                });
     }
 
 }

@@ -10,7 +10,7 @@ import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.common.UserCache;
-import org.sq.gameDemo.svr.common.customException.customException;
+import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.characterEntity.model.EntityType;
@@ -91,17 +91,17 @@ public class EntityService {
             String lastSence = senceService.getSenceBySenceId(player.getSenceId()).getName();
             builder.setContent(lastSence);
         } else {
-            throw new customException.BindRoleInSenceException("login game server success, please bind your role，enter \"help\" to get help message");
+            throw new CustomException.BindRoleInSenceException("login game server success, please bind your role，enter \"help\" to get help message");
         }
     }
 
 
     //角色创建
-    public Player playerCreate(int typeId, Integer userId, Channel channel) throws customException.BindRoleInSenceException{
+    public Player playerCreate(int typeId, Integer userId, Channel channel) throws CustomException.BindRoleInSenceException{
         Player player = playerCache.getPlayerByChannel(channel);
         if(Objects.nonNull(player) && userId.equals(player.getUserId())) {
             //老用户
-            throw new customException.BindRoleInSenceException("角色只能绑定一次");
+            throw new CustomException.BindRoleInSenceException("角色只能绑定一次");
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setName(Constant.DefaultPlayerName + userId);
