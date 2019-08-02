@@ -16,6 +16,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * 用户缓存
+ */
 @Component
 public class UserCache {
 
@@ -62,6 +65,7 @@ public class UserCache {
 
         //同时广播
         broadCastPlayerGroup(channelList, msgByteArray);
+        //广播完再加入
         channelList.add(channel);
     }
 
@@ -117,12 +121,19 @@ public class UserCache {
         }
         return map.keySet().stream().filter(key -> {
             Object o = map.get(key);
+            if(Objects.isNull(o)) {
+                return false;
+            }
             return map.get(key).equals(value);
         }).findFirst();
 
     }
 
-
+    /**
+     * 将用户注册到用户缓存中
+     * @param userId
+     * @param user
+     */
     private static void registerUserInCache(int userId, User user) {
         userMap.put(userId, user);
     }
@@ -140,6 +151,12 @@ public class UserCache {
         return userMap.get(userId);
     }
 
+    /**
+     * 根据场景id进行全场景广播
+     * @param senceId
+     * @param msg
+     * @param ignore
+     */
     public static void broadcastChannelGroupBysenceId(Integer senceId, String msg, Channel... ignore) {
         List<Channel> channelGroup = senceChannelGroupMap.get(senceId);
         MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
@@ -149,10 +166,15 @@ public class UserCache {
     }
 
 
-
+    /**
+     * 根据一组channel进行通知
+     * @param channelGroup
+     * @param protoByte
+     * @param ignore
+     */
     public static void broadCastPlayerGroup(List<Channel> channelGroup, byte[] protoByte, Channel... ignore) {
         MsgEntity msgEntity = ProtoBufUtil.getBroadCastEntity(protoByte);
-        //TODO 貌似有bug
+
         channelGroup.stream()
                 .filter(ch -> ignore== null || ignore.length <= 0 || !Arrays.stream(ignore).allMatch(chan -> chan.equals(ch)))
                 .forEach(channel -> {

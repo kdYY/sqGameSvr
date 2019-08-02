@@ -152,9 +152,9 @@ public class UserService {
         //清除playerCache中的数据
         playerCache.removePlayerCache(channel);
         UserCache.removeChannle(channel, player.getUserId());
-        UserEntity userEntityByUserId = userEntityMapper.getUserEntityByUserId(player.getUserId());
-        userEntityByUserId.setSenceId(player.getSenceId());
-        userEntityMapper.updateByPrimaryKeySelective(userEntityByUserId);
+        UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
+        userEntity.setSenceId(player.getSenceId());
+        userEntityMapper.updateByPrimaryKeySelective(userEntity);
         log.info(player.getName() + "下线");
     }
 

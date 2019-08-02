@@ -38,7 +38,7 @@ public class SkillService {
 
 
     /**
-     * 场景单位之间相互砍
+     * 场景单位使用技能打另一个场景单位
      * @param attacter
      * @param targeter
      * @param skill
@@ -46,10 +46,15 @@ public class SkillService {
      */
     public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
 
-        if(targeter instanceof Npc && attacter instanceof UserEntity) {
-            Channel channel = playerCache.getChannelByPlayerId(attacter.getId());
-            channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("npc不能被砍..."));
+
+        if(targeter instanceof Npc) {
+            if(attacter instanceof UserEntity ) {
+                Channel channel = playerCache.getChannelByPlayerId(attacter.getId());
+                channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("npc不能被砍..."));
+                return false;
+            }
             return false;
+
         }
 
         String content = attacter.getName() + "(id=" + attacter.getId() + ")开始使用技能"
@@ -67,13 +72,13 @@ public class SkillService {
                     attacter.getName() + "开始释放技能，需要" + skill.getCastTime()/1000 + "秒");
         }
 
-
-        TimedTaskManager.schedule(skill.getCastTime() <= 0 ? 0: skill.getCastTime() ,
+        //单线程执行
+        TimedTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0: skill.getCastTime() ,
                 ()->{
                     senecMsg.getSingleThreadSchedule().execute(
                             () -> {
                                 UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), content);
-                                skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
+                                    skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
                             }
                     );
                 });

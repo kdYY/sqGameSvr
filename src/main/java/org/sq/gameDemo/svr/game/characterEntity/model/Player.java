@@ -1,15 +1,19 @@
 package org.sq.gameDemo.svr.game.characterEntity.model;
 
+import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.sq.gameDemo.svr.common.Constant;
+import org.sq.gameDemo.svr.common.TimedTaskManager;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.LevelEvent;
+import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 
-import java.nio.channels.Channel;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -55,4 +59,6 @@ public class Player extends UserEntity implements Character {
             this.setLevel(newLevel);
         }
     }
+
+
 }

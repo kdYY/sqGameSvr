@@ -49,7 +49,7 @@ public class SkillRangeService {
                         + "受到"
                         + skill.getHeal()
                         + "治疗，目前hp为"
-                        + attacter.getHp());
+                        + target.getHp());
 
     }
 
@@ -65,7 +65,7 @@ public class SkillRangeService {
                         + "受到"
                         + skill.getHeal()
                         + "治疗，目前hp为"
-                        + attacter.getHp());
+                        + target.getHp());
 
 
     }
@@ -82,7 +82,7 @@ public class SkillRangeService {
                         + "受到"
                         + skill.getHeal()
                         + "治疗，目前hp为"
-                        + attacter.getHp());
+                        + target.getHp());
 
     }
 
@@ -97,7 +97,7 @@ public class SkillRangeService {
                         + "攻击，受到"
                         + skill.getHurt()
                         + "伤害，目前hp为"
-                        + attacter.getHp());
+                        + target.getHp());
 
     }
 
@@ -112,7 +112,7 @@ public class SkillRangeService {
                         + "攻击，受到"
                         + skill.getHurt()
                         + "伤害，目前hp为"
-                        + attacter.getHp());
+                        + target.getHp());
 
     }
 

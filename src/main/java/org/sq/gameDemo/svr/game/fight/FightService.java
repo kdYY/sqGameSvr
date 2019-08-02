@@ -1,11 +1,15 @@
 package org.sq.gameDemo.svr.game.fight;
 
+import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.sq.gameDemo.svr.common.TimedTaskManager;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
+import org.sq.gameDemo.svr.game.characterEntity.model.Npc;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
+import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -13,6 +17,7 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -88,7 +93,6 @@ public class FightService {
      */
     private void skillAttackSingleMonster(Player player, Long monsterId, Skill skill) throws Exception {
         SenceConfigMsg senecMsg = senceService.getSenecMsgById(player.getSenceId());
-
         //找到怪物
         Monster targetMonster = senecMsg.getMonsterList()
                 .stream()
@@ -99,12 +103,16 @@ public class FightService {
 
         if(Objects.isNull(targetMonster)) {
             playerCache.getChannelByPlayerId(player.getId())
-                    .writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("目标怪物不存在，请检查怪物id"));
+                    .writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("目标怪物不存在,或者该目标是npc不可攻击体，请检查怪物id"));
         } else {
             player.setTarget(targetMonster);
             //如果使用技能成功
             if(skillService.characterUseSkillAttack(player, targetMonster, skill, senecMsg)) {
-                    monsterAIService.monsterBeAttacked(player, targetMonster, senecMsg, skill);
+                //包装成一个任务，扔进去单线程顺序消费
+                TimedTaskManager.singleThreadSchedule(skill.getCastTime(),
+                        () -> {
+                            monsterAIService.monsterBeAttacked(player, targetMonster, senecMsg, skill);
+                });
             }
 
         }

@@ -14,7 +14,5 @@ public class MonsterDeadEvent extends Event {
 
     private Character attacter;
     private  Monster targetMonster;
-    private  SenceConfigMsg senecMsg;
-    private  Skill skill;
 
 }

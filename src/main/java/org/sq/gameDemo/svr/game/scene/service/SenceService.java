@@ -3,6 +3,7 @@ package org.sq.gameDemo.svr.game.scene.service;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.channel.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class SenceService {
 
@@ -66,6 +68,7 @@ public class SenceService {
                         Monster monster = new Monster();
                         BeanUtils.copyProperties(senceEntity, monster);
                         monster.setId(ConcurrentSnowFlake.getInstance().nextID());
+                        monster.setEntityTypeId(senceEntity.getId());
                         monster.setSenceId(config.getSenceId());
                         monsterListinSence.add(monster);
                     }
@@ -142,7 +145,7 @@ public class SenceService {
             //广播通知
             //增加进channelGroup
             MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-            builder.setContent(player.getName() + "进来了!");
+            builder.setContent(player.getName() + "进入场景!");
             // TODO 将channel放在player，广播也放在player
             UserCache.addChannelInGroup(player.getSenceId(), channel, builder.build().toByteArray());
         });
@@ -159,17 +162,19 @@ public class SenceService {
      */
     public Player removePlayerAndGet(Integer usrId, Channel channel) throws CustomException.RemoveFailedException {
         if(!entityService.hasPlayer(channel)) {
-            System.out.println("player找不到,出现脏数据");
+            log.error("player找不到,出现脏数据");
+            return null;
         }
         Player player = entityService.getInitedPlayer(usrId, channel);
-        Optional.ofNullable(senceIdAndSenceMsgMap.getIfPresent(player.getSenceId())).ifPresent(senceConfigMsg->{
-            List<Player> playerList = senceConfigMsg.getPlayerList();
-            if(!playerList.remove(player)) {
-                throw new CustomException.RemoveFailedException("移动失败");
-            }
-            UserCache.moveChannelInGroup(player.getSenceId(), channel, player.getName() + "离开了!");
+        Optional.ofNullable(senceIdAndSenceMsgMap.getIfPresent(player.getSenceId()))
+                .ifPresent(senceConfigMsg->{
+                    List<Player> playerList = senceConfigMsg.getPlayerList();
+                    if(!playerList.remove(player)) {
+                        throw new CustomException.RemoveFailedException("移动失败");
+                    }
+                    UserCache.moveChannelInGroup(player.getSenceId(), channel, player.getName() + "离开场景!");
 
-        });
+                });
         return player;
     }
 
@@ -199,4 +204,17 @@ public class SenceService {
         return first.get();
     }
 
+
+    public void moveToSence(Player player, int newSenceId, Channel channel) {
+        if(newSenceId == player.getSenceId()) {
+            //不能移动到原来的场景
+            throw new CustomException.BindRoleInSenceException();
+        }
+        //从场景中移除并获取
+        removePlayerAndGet(player.getUserId(), channel);
+        //改变用户的所在地
+        player.setSenceId(newSenceId);
+        //进行重新绑定
+        addPlayerInSence(player, channel);
+    }
 }

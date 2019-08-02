@@ -147,18 +147,9 @@ public class EntityController {
                 throw new CustomException.RemoveFailedException("场景id不存在");
             }
 
-            Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
-
-            if(newSenceId == player.getSenceId()) {
-                //不能移动到原来的场景
-                throw new CustomException.BindRoleInSenceException();
-            }
-            //从场景中移除并获取
-            senceService.removePlayerAndGet(player.getUserId(), msgEntity.getChannel());
-            //改变用户的所在地
-            player.setSenceId(newSenceId);
-            //进行重新绑定
-            senceService.addPlayerInSence(player, msgEntity.getChannel());
+            Channel channel = msgEntity.getChannel();
+            Player player = playerCache.getPlayerByChannel(channel);
+            senceService.moveToSence(player, newSenceId, channel);
             //修改用户的状态并进行数据库用户场景id更新
             getUserSenceMsg(builder, newSenceId);
 
@@ -180,6 +171,7 @@ public class EntityController {
             return msgEntity;
         }
     }
+
 
     /**
      * 获取指定npc语录

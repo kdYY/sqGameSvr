@@ -4,11 +4,9 @@ package org.sq.gameDemo.svr.game.fight.monsterAI.state;
  * 怪物状态枚举
  */
 public enum CharacterState {
-
-    MOVE1(1, "怪物在区域内漫无目的移动..."),
-    ATTACK1(2, "攻击"),
-    DEADBYATTACT1(3, "被打死"),
-    IS_REFRESH1(4, "死亡，正在刷新")
+    LIVE(1, "存活"),
+    ATTACKING(2, "受到攻击"),
+    IS_REFRESH(3, "死亡，正在刷新")
     ;
     private Integer code;
     private String descr;

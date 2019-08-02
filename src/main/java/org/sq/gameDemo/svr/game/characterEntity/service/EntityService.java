@@ -7,15 +7,19 @@ import org.springframework.stereotype.Service;
 import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
+import org.sq.gameDemo.svr.common.TimedTaskManager;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
+import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.model.EntityType;
+import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
+import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -96,7 +100,9 @@ public class EntityService {
     }
 
 
-    //角色创建
+    /**
+     *     角色创建
+     */
     public Player playerCreate(int typeId, Integer userId, Channel channel) throws CustomException.BindRoleInSenceException{
         Player player = playerCache.getPlayerByChannel(channel);
         if(Objects.nonNull(player) && userId.equals(player.getUserId())) {
@@ -107,22 +113,13 @@ public class EntityService {
         userEntity.setName(Constant.DefaultPlayerName + userId);
         userEntity.setTypeId(typeId);
         userEntity.setUserId(userId);
-        userEntity.setSenceId(defaultSenceId);
+        userEntity.setSenceId(Constant.DEFAULT_SENCE_ID);
         //数据库角色类型数据增加
         addUserEntity(userEntity);
         //返回初始化完毕的玩家
         Player initedPlayer = getInitedPlayer(userId, channel);
         senceService.addPlayerInSence(initedPlayer, channel);
         return initedPlayer;
-    }
-
-
-    public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
-        for (EntityType entityType : entityTypeCache.getAllEntityTypes()) {
-            builder.addEntityType(
-                    (EntityTypeProto.EntityType) ProtoBufUtil.transformProtoReturnBean(EntityTypeProto.EntityType.newBuilder(), entityType)
-            );
-        }
     }
 
 
@@ -148,19 +145,32 @@ public class EntityService {
         return playerCached;
     }
 
+    /**
+     * 玩家是否在线
+     * @param channel
+     * @return
+     */
     public boolean hasPlayer(Channel channel) {
         return Objects.nonNull(playerCache.getPlayerByChannel(channel));
     }
 
+    /**
+     * 数据库插入用户数据
+     * @param entity
+     */
     public void addUserEntity(UserEntity entity) {
         userEntityMapper.insertSelective(entity);
     }
 
+    /**
+     * 初始化玩家数据
+     * @param player
+     */
     public void initPlayer(Player player) {
         //初始化playerId
         player.setId(ConcurrentSnowFlake.getInstance().nextID());
         //初始化状态
-        player.setState(1);
+        player.setState(CharacterState.LIVE.getCode());
         //初始化等级
         player.setLevel(player.getExp()/100);
         //加载指定角色属性
@@ -169,6 +179,10 @@ public class EntityService {
         computeAttack(player);
     }
 
+    /**
+     * 计算玩家战力
+     * @param player
+     */
     private void computeAttack(Player player) {
         Map<Integer, RoleAttribute> roleAttributeMap = player.getRoleAttributeMap();
         // 基础攻击力
@@ -220,5 +234,54 @@ public class EntityService {
         return String.valueOf(System.currentTimeMillis()) + String.valueOf(userId) + UUID.randomUUID().toString().replaceAll("-","");
     }
 
-    public static final int defaultSenceId = 1;
+    /**
+     * 将entityType转换为proto
+     * @param builder
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     */
+    public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+        for (EntityType entityType : entityTypeCache.getAllEntityTypes()) {
+            builder.addEntityType(
+                    (EntityTypeProto.EntityType) ProtoBufUtil.transformProtoReturnBean(EntityTypeProto.EntityType.newBuilder(), entityType)
+            );
+        }
+    }
+
+    /**
+     * 判断是否被攻击者杀死
+     * @return
+     */
+    public boolean playerIsDead(Player player, Monster attacker) {
+        synchronized (player) {
+            if(player.getHp() <= 0) {
+                if(Objects.nonNull(player) && player.getHp() <= 0) {
+                    player.setState(CharacterState.IS_REFRESH.getCode());
+                    player.setHp(0L);
+                    player.setMp(0L);
+                    if(attacker instanceof Monster) {
+                        ((Monster)attacker).setTarget(null);
+                        ((Monster)attacker).setState(CharacterState.LIVE.getCode());
+                    }
+
+                    Channel channel = playerCache.getChannelByPlayerId(player.getId());
+                    channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家死亡事件，你被杀死了, 2秒后回起源之地"));
+
+                    TimedTaskManager.schedule(
+                            2000, () -> {
+                                initPlayer(player);
+                                //添加到起源之地
+                                senceService.moveToSence(player, 1, playerCache.getChannelByPlayerId(player.getId()));
+                                channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家复活，恭喜你复活了"));
+                            }
+                    );
+                }
+                return true;
+            }
+            return false;
+        }
+
+    }
 }

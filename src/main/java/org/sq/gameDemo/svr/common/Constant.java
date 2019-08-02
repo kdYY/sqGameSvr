@@ -22,6 +22,11 @@ public interface Constant {
     public static String DefaultPlayerName = "玩家";
 
     /**
+     * 新玩家默认场景id
+     */
+    public static Integer DEFAULT_SENCE_ID = 1;
+
+    /**
      * 非角色单位码
      */
     public static Integer NPC = 1;
@@ -51,4 +56,5 @@ public interface Constant {
      * 等级除数
      */
     public static Integer LEVEL_DIVISOR = 100;
+
 }

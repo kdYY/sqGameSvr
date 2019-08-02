@@ -82,6 +82,11 @@ public final class MonsterPt {
      * <code>int32 attackSpeed = 11;</code>
      */
     int getAttackSpeed();
+
+    /**
+     * <code>uint64 entityTypeId = 12;</code>
+     */
+    long getEntityTypeId();
   }
   /**
    * <pre>
@@ -189,6 +194,11 @@ public final class MonsterPt {
             case 88: {
 
               attackSpeed_ = input.readInt32();
+              break;
+            }
+            case 96: {
+
+              entityTypeId_ = input.readUInt64();
               break;
             }
             default: {
@@ -372,6 +382,15 @@ public final class MonsterPt {
       return attackSpeed_;
     }
 
+    public static final int ENTITYTYPEID_FIELD_NUMBER = 12;
+    private long entityTypeId_;
+    /**
+     * <code>uint64 entityTypeId = 12;</code>
+     */
+    public long getEntityTypeId() {
+      return entityTypeId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -418,6 +437,9 @@ public final class MonsterPt {
       }
       if (attackSpeed_ != 0) {
         output.writeInt32(11, attackSpeed_);
+      }
+      if (entityTypeId_ != 0L) {
+        output.writeUInt64(12, entityTypeId_);
       }
       unknownFields.writeTo(output);
     }
@@ -470,6 +492,10 @@ public final class MonsterPt {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(11, attackSpeed_);
       }
+      if (entityTypeId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(12, entityTypeId_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -507,6 +533,8 @@ public final class MonsterPt {
           .equals(other.getNpcWord())) return false;
       if (getAttackSpeed()
           != other.getAttackSpeed()) return false;
+      if (getEntityTypeId()
+          != other.getEntityTypeId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -545,6 +573,9 @@ public final class MonsterPt {
       hash = (53 * hash) + getNpcWord().hashCode();
       hash = (37 * hash) + ATTACKSPEED_FIELD_NUMBER;
       hash = (53 * hash) + getAttackSpeed();
+      hash = (37 * hash) + ENTITYTYPEID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEntityTypeId());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -704,6 +735,8 @@ public final class MonsterPt {
 
         attackSpeed_ = 0;
 
+        entityTypeId_ = 0L;
+
         return this;
       }
 
@@ -741,6 +774,7 @@ public final class MonsterPt {
         result.refreshTime_ = refreshTime_;
         result.npcWord_ = npcWord_;
         result.attackSpeed_ = attackSpeed_;
+        result.entityTypeId_ = entityTypeId_;
         onBuilt();
         return result;
       }
@@ -823,6 +857,9 @@ public final class MonsterPt {
         }
         if (other.getAttackSpeed() != 0) {
           setAttackSpeed(other.getAttackSpeed());
+        }
+        if (other.getEntityTypeId() != 0L) {
+          setEntityTypeId(other.getEntityTypeId());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1221,6 +1258,32 @@ public final class MonsterPt {
       public Builder clearAttackSpeed() {
         
         attackSpeed_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long entityTypeId_ ;
+      /**
+       * <code>uint64 entityTypeId = 12;</code>
+       */
+      public long getEntityTypeId() {
+        return entityTypeId_;
+      }
+      /**
+       * <code>uint64 entityTypeId = 12;</code>
+       */
+      public Builder setEntityTypeId(long value) {
+        
+        entityTypeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 entityTypeId = 12;</code>
+       */
+      public Builder clearEntityTypeId() {
+        
+        entityTypeId_ = 0L;
         onChanged();
         return this;
       }
@@ -3607,19 +3670,19 @@ public final class MonsterPt {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\rMonster.proto\032\020EntityType.proto\"\266\001\n\007Mo" +
+      "\n\rMonster.proto\032\020EntityType.proto\"\314\001\n\007Mo" +
       "nster\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\017\n\007sence" +
       "Id\030\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\r\n\005state\030\005 \001(\005\022" +
       "\n\n\002hp\030\006 \001(\004\022\n\n\002mp\030\007 \001(\004\022\016\n\006attack\030\010 \001(\004\022" +
       "\023\n\013refreshTime\030\t \001(\004\022\017\n\007npcWord\030\n \001(\t\022\023\n" +
-      "\013attackSpeed\030\013 \001(\005\"X\n\013RequestInfo\022\016\n\006msg" +
-      "_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\016\n\006t" +
-      "ypeId\030\004 \001(\005\022\017\n\007senceId\030\005 \001(\005\"\203\001\n\014Respons" +
-      "eInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n" +
-      "\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\031\n\004type\030\005 \003" +
-      "(\0132\013.EntityType\022\031\n\007monster\030\006 \003(\0132\010.Monst" +
-      "erB)\n\034org.sq.gameDemo.common.protoB\tMons" +
-      "terPtb\006proto3"
+      "\013attackSpeed\030\013 \001(\005\022\024\n\014entityTypeId\030\014 \001(\004" +
+      "\"X\n\013RequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030" +
+      "\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\017\n\007sen" +
+      "ceId\030\005 \001(\005\"\203\001\n\014ResponseInfo\022\016\n\006msg_id\030\001 " +
+      "\001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007con" +
+      "tent\030\004 \001(\t\022\031\n\004type\030\005 \003(\0132\013.EntityType\022\031\n" +
+      "\007monster\030\006 \003(\0132\010.MonsterB)\n\034org.sq.gameD" +
+      "emo.common.protoB\tMonsterPtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3631,7 +3694,7 @@ public final class MonsterPt {
     internal_static_Monster_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Monster_descriptor,
-        new String[] { "Id", "Name", "SenceId", "TypeId", "State", "Hp", "Mp", "Attack", "RefreshTime", "NpcWord", "AttackSpeed", });
+        new String[] { "Id", "Name", "SenceId", "TypeId", "State", "Hp", "Mp", "Attack", "RefreshTime", "NpcWord", "AttackSpeed", "EntityTypeId", });
     internal_static_RequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_RequestInfo_fieldAccessorTable = new

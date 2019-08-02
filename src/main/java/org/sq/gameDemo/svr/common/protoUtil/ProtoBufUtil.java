@@ -176,9 +176,7 @@ public class ProtoBufUtil {
             String typeName = type[0].getName();
             try {
                 Method declaredMethod = getDeclaredMethod(goalBuilder.getClass(),methodName, type[0]);
-                if(declaredMethod != null) {
-                    return declaredMethod;
-                }
+                return declaredMethod;
             } catch (NoSuchMethodException e) {
                 List<Method> declaredMethods = getClassMethod(goalBuilder.getClass(), methodName);
                 for (Method declaredMethod : declaredMethods) {
@@ -187,8 +185,9 @@ public class ProtoBufUtil {
                         return declaredMethod;
                     }
                 }
+                e.printStackTrace();
+                throw  new NoSuchMethodException("没有此方法，请检查proto文件是否跟bean定义的字段一致");
             }
-            throw  new NoSuchMethodException("没有此方法，请检查proto文件是否跟bean定义的字段一致");
         } else {
             return  getDeclaredMethod(goalBuilder.getClass(),methodName, type);
         }
@@ -280,5 +279,9 @@ public class ProtoBufUtil {
     public static MsgEntity getBroadCastDefaultEntity(String broadCastContend) {
         byte[] protoByte = MessageProto.Msg.newBuilder().setContent(broadCastContend).build().toByteArray();
         return getBroadCastEntity(protoByte);
+    }
+
+    public static MsgEntity getDefaultEntity(String content) {
+        return null;
     }
 }

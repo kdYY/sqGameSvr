@@ -3,6 +3,7 @@ package org.sq.gameDemo.svr.eventManage;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.sq.gameDemo.svr.eventManage.handler.IEventHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -22,16 +23,16 @@ public class EventBus {
         return  eventBus;
     }
 
-    private static Map<Class<? extends Event>, List<EventHandler>> listenerMap = new ConcurrentHashMap<>();
+    private static Map<Class<? extends Event>, List<IEventHandler>> listenerMap = new ConcurrentHashMap<>();
 
     /**
      *  订阅事件
      * @param eventClass 事件的类对象类型
      * @param eventHandler 事件处理器
      */
-    public static <E extends Event> void registe(Class<? extends Event> eventClass, EventHandler<E> eventHandler) {
+    public static <E extends Event> void registe(Class<? extends Event> eventClass, IEventHandler<E> eventHandler) {
 
-        List<EventHandler> eventHandlerList = listenerMap.get(eventClass);
+        List<IEventHandler> eventHandlerList = listenerMap.get(eventClass);
         if (null == eventHandlerList) {
             eventHandlerList = new CopyOnWriteArrayList<>();
         }
@@ -54,9 +55,9 @@ public class EventBus {
      */
     public static <E extends Event> void publish(E event) {
         log.debug("事件{}被抛出 ，listenerMap {}",event.getClass(),listenerMap);
-        List<EventHandler> handlerList =  listenerMap.get(event.getClass());
+        List<IEventHandler> handlerList =  listenerMap.get(event.getClass());
         if (!Objects.isNull(handlerList)) {
-            for (EventHandler eventHandler: handlerList) {
+            for (IEventHandler eventHandler: handlerList) {
                 singleThreadSchedule.execute( () -> eventHandler.handle(event));
             }
         }
