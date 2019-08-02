@@ -271,7 +271,9 @@ public class EntityService {
 
                     TimedTaskManager.schedule(
                             2000, () -> {
+                                Long id = player.getId();
                                 initPlayer(player);
+                                player.setId(id);
                                 //添加到起源之地
                                 senceService.moveToSence(player, 1, playerCache.getChannelByPlayerId(player.getId()));
                                 channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家复活，恭喜你复活了"));

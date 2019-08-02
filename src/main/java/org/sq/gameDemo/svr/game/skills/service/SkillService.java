@@ -58,7 +58,7 @@ public class SkillService {
         }
 
         String content = attacter.getName() + "(id=" + attacter.getId() + ")开始使用技能"
-                + skill.getName() + "攻击" + targeter
+                + skill.getName() + "攻击" + targeter.getName()
                 + "(id=" + targeter.getId() + ")";
 
         log.debug(content);
@@ -77,8 +77,14 @@ public class SkillService {
                 ()->{
                     senecMsg.getSingleThreadSchedule().execute(
                             () -> {
-                                UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(), content);
+                                if(targeter.getHp() > 0) { //??
+                                    if(attacter instanceof Player) {
+                                        playerCache.getChannelByPlayerId(attacter.getId()).writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content));
+                                    } else {
+                                        playerCache.getChannelByPlayerId(targeter.getId()).writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content));
+                                    }
                                     skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
+                                }
                             }
                     );
                 });

@@ -44,7 +44,7 @@ public class MonsterStateManager {
             Optional.ofNullable(stateHandleMap.get(CharacterState.getStateByCode(monster.getState()))).ifPresent(
                     stateHandler -> {
                         try {
-//                            Thread.currentThread().sleep(1000);
+                           // Thread.currentThread().sleep(3000);
                             stateHandler.handle(monster);
                         } catch (Exception e) {
                             e.printStackTrace();
