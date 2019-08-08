@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.sq.gameDemo.svr.game.bag.dao.BagMapper" >
+
+    <resultMap id="BaseResultMap" type="org.sq.gameDemo.svr.game.bag.model.Bag" >
+        <id column="player_id" property="playerId" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="size" property="size" jdbcType="INTEGER" />
+        <result column="item_str" property="itemStr" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List" >
+        player_id, name, size, item_str
+    </sql>
+
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.bag.model.BagExample" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from bag
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select 
+        <include refid="Base_Column_List" />
+        from bag
+        where player_id = #{playerId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+        delete from bag
+        where player_id = #{playerId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByExample" parameterType="org.sq.gameDemo.svr.game.bag.model.BagExample" >
+        delete from bag
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+
+    <insert id="insert" parameterType="org.sq.gameDemo.svr.game.bag.model.Bag" >
+        insert into bag (player_id, name, size, 
+            item_str)
+        values (#{playerId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{size,jdbcType=INTEGER}, 
+            #{itemStr,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.bag.model.Bag" >
+        insert into bag
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="playerId != null" >
+                player_id,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="size != null" >
+                size,
+            </if>
+            <if test="itemStr != null" >
+                item_str,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="playerId != null" >
+                #{playerId,jdbcType=BIGINT},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null" >
+                #{size,jdbcType=INTEGER},
+            </if>
+            <if test="itemStr != null" >
+                #{itemStr,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByExample" parameterType="org.sq.gameDemo.svr.game.bag.model.BagExample" resultType="java.lang.Integer" >
+        select count(*) from bag
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByExampleSelective" parameterType="map" >
+        update bag
+        <set >
+            <if test="record.playerId != null" >
+                player_id = #{record.playerId,jdbcType=BIGINT},
+            </if>
+            <if test="record.name != null" >
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.size != null" >
+                size = #{record.size,jdbcType=INTEGER},
+            </if>
+            <if test="record.itemStr != null" >
+                item_str = #{record.itemStr,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByExample" parameterType="map" >
+        update bag
+        set player_id = #{record.playerId,jdbcType=BIGINT},
+            name = #{record.name,jdbcType=VARCHAR},
+            size = #{record.size,jdbcType=INTEGER},
+            item_str = #{record.itemStr,jdbcType=VARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="org.sq.gameDemo.svr.game.bag.model.Bag" >
+        update bag
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null" >
+                size = #{size,jdbcType=INTEGER},
+            </if>
+            <if test="itemStr != null" >
+                item_str = #{itemStr,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where player_id = #{playerId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="org.sq.gameDemo.svr.game.bag.model.Bag" >
+        update bag
+        set name = #{name,jdbcType=VARCHAR},
+            size = #{size,jdbcType=INTEGER},
+            item_str = #{itemStr,jdbcType=VARCHAR}
+        where player_id = #{playerId,jdbcType=BIGINT}
+    </update>
+</mapper>
