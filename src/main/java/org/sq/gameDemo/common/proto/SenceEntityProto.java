@@ -77,6 +77,11 @@ public final class SenceEntityProto {
      */
     com.google.protobuf.ByteString
         getNpcWordBytes();
+
+    /**
+     * <code>int32 level = 11;</code>
+     */
+    int getLevel();
   }
   /**
    * <pre>
@@ -179,6 +184,11 @@ public final class SenceEntityProto {
               String s = input.readStringRequireUtf8();
 
               npcWord_ = s;
+              break;
+            }
+            case 88: {
+
+              level_ = input.readInt32();
               break;
             }
             default: {
@@ -353,6 +363,15 @@ public final class SenceEntityProto {
       }
     }
 
+    public static final int LEVEL_FIELD_NUMBER = 11;
+    private int level_;
+    /**
+     * <code>int32 level = 11;</code>
+     */
+    public int getLevel() {
+      return level_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -396,6 +415,9 @@ public final class SenceEntityProto {
       }
       if (!getNpcWordBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 10, npcWord_);
+      }
+      if (level_ != 0) {
+        output.writeInt32(11, level_);
       }
       unknownFields.writeTo(output);
     }
@@ -444,6 +466,10 @@ public final class SenceEntityProto {
       if (!getNpcWordBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, npcWord_);
       }
+      if (level_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(11, level_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -479,6 +505,8 @@ public final class SenceEntityProto {
           != other.getRefreshTime()) return false;
       if (!getNpcWord()
           .equals(other.getNpcWord())) return false;
+      if (getLevel()
+          != other.getLevel()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -515,6 +543,8 @@ public final class SenceEntityProto {
           getRefreshTime());
       hash = (37 * hash) + NPCWORD_FIELD_NUMBER;
       hash = (53 * hash) + getNpcWord().hashCode();
+      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getLevel();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -672,6 +702,8 @@ public final class SenceEntityProto {
 
         npcWord_ = "";
 
+        level_ = 0;
+
         return this;
       }
 
@@ -708,6 +740,7 @@ public final class SenceEntityProto {
         result.attack_ = attack_;
         result.refreshTime_ = refreshTime_;
         result.npcWord_ = npcWord_;
+        result.level_ = level_;
         onBuilt();
         return result;
       }
@@ -787,6 +820,9 @@ public final class SenceEntityProto {
         if (!other.getNpcWord().isEmpty()) {
           npcWord_ = other.npcWord_;
           onChanged();
+        }
+        if (other.getLevel() != 0) {
+          setLevel(other.getLevel());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1159,6 +1195,32 @@ public final class SenceEntityProto {
   checkByteStringIsUtf8(value);
         
         npcWord_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int level_ ;
+      /**
+       * <code>int32 level = 11;</code>
+       */
+      public int getLevel() {
+        return level_;
+      }
+      /**
+       * <code>int32 level = 11;</code>
+       */
+      public Builder setLevel(int value) {
+        
+        level_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 level = 11;</code>
+       */
+      public Builder clearLevel() {
+        
+        level_ = 0;
         onChanged();
         return this;
       }
@@ -3545,19 +3607,19 @@ public final class SenceEntityProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\021SenceEntity.proto\032\020EntityType.proto\"\245\001" +
+      "\n\021SenceEntity.proto\032\020EntityType.proto\"\264\001" +
       "\n\013SenceEntity\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022" +
       "\017\n\007senceId\030\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\r\n\005stat" +
       "e\030\005 \001(\005\022\n\n\002hp\030\006 \001(\004\022\n\n\002mp\030\007 \001(\004\022\016\n\006attac" +
       "k\030\010 \001(\004\022\023\n\013refreshTime\030\t \001(\004\022\017\n\007npcWord\030" +
-      "\n \001(\t\"X\n\013RequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004" +
-      "time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\017" +
-      "\n\007senceId\030\005 \001(\005\"\213\001\n\014ResponseInfo\022\016\n\006msg_" +
-      "id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017" +
-      "\n\007content\030\004 \001(\t\022\031\n\004type\030\005 \003(\0132\013.EntityTy" +
-      "pe\022!\n\013SenceEntity\030\006 \003(\0132\014.SenceEntityB0\n" +
-      "\034org.sq.gameDemo.common.protoB\020SenceEnti" +
-      "tyProtob\006proto3"
+      "\n \001(\t\022\r\n\005level\030\013 \001(\005\"X\n\013RequestInfo\022\016\n\006m" +
+      "sg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\016\n" +
+      "\006typeId\030\004 \001(\005\022\017\n\007senceId\030\005 \001(\005\"\213\001\n\014Respo" +
+      "nseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022" +
+      "\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\031\n\004type\030\005" +
+      " \003(\0132\013.EntityType\022!\n\013SenceEntity\030\006 \003(\0132\014" +
+      ".SenceEntityB0\n\034org.sq.gameDemo.common.p" +
+      "rotoB\020SenceEntityProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3569,7 +3631,7 @@ public final class SenceEntityProto {
     internal_static_SenceEntity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SenceEntity_descriptor,
-        new String[] { "Id", "Name", "SenceId", "TypeId", "State", "Hp", "Mp", "Attack", "RefreshTime", "NpcWord", });
+        new String[] { "Id", "Name", "SenceId", "TypeId", "State", "Hp", "Mp", "Attack", "RefreshTime", "NpcWord", "Level", });
     internal_static_RequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_RequestInfo_fieldAccessorTable = new

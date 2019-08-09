@@ -1,6 +1,7 @@
 package org.sq.gameDemo.svr.game.drop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class DropPool {
 
     @Autowired

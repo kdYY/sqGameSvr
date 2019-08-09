@@ -86,6 +86,7 @@ public class EventHandlers {
      */
     private  void monsterDead(MonsterDeadEvent monsterDeadEvent) {
         //玩家 检查任务进度，掉落物品，触发幸运大爆 ....
+        //掉落物品
         dropPool.getDropItems(monsterDeadEvent.getAttacter(), monsterDeadEvent.getTargetMonster());
     }
 

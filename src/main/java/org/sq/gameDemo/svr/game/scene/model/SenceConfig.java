@@ -25,5 +25,6 @@ public class SenceConfig {
     public static class tmpConf {
         private int id;
         private int num;
+        private int level;
     }
 }

@@ -81,13 +81,13 @@ public class SenceService {
             SenceEntity senceEntity = senceEntityCache.get((long) tmpConf.getId());
             if(senceEntity.getTypeId().equals(Constant.Monster)) {
                 for (int i = 0; i < tmpConf.getNum(); i++) {
-                    Monster monster = getInitedMonster(config, senceEntity);
+                    Monster monster = getInitedMonster(senceEntity, config.getSenceId(), tmpConf.getLevel());
                     monsterListinSence.add(monster);
                 }
             }
             if(senceEntity.getTypeId().equals(Constant.NPC)) {
                 for (int i = 0; i < tmpConf.getNum(); i++) {
-                    Npc npc = getInitedNpc(config, senceEntity);
+                    Npc npc = getInitedNpc(senceEntity, config.getSenceId());
                     npclistinsence.add(npc);
                 }
             }
@@ -99,20 +99,20 @@ public class SenceService {
         return senceConfigMsg;
     }
 
-    private Npc getInitedNpc(SenceConfig config, SenceEntity senceEntity) {
+    private Npc getInitedNpc(SenceEntity senceEntity, Integer senceId) {
         Npc npc = new Npc();
         BeanUtils.copyProperties(senceEntity, npc);
         npc.setId(ConcurrentSnowFlake.getInstance().nextID());
-        npc.setSenceId(config.getSenceId());
+        npc.setSenceId(senceId);
         return npc;
     }
 
-    private Monster getInitedMonster(SenceConfig config, SenceEntity senceEntity) {
+    private Monster getInitedMonster(SenceEntity senceEntity, Integer senceId, Integer level) {
         Monster monster = new Monster();
         BeanUtils.copyProperties(senceEntity, monster);
         monster.setId(ConcurrentSnowFlake.getInstance().nextID());
         monster.setEntityTypeId(senceEntity.getId());
-        monster.setSenceId(config.getSenceId());
+        monster.setSenceId(senceId);
         ConcurrentMap<Integer, Skill> collect = Arrays.stream(monster.getSkillStr().trim().split(","))
                 .map(Integer::valueOf)
                 .filter(str -> skillService.getSkill(str) != null)
@@ -126,6 +126,7 @@ public class SenceService {
                         }
                         ));
         monster.setSkillInUsedMap(collect);
+        monster.setLevel(level);
         return monster;
     }
 

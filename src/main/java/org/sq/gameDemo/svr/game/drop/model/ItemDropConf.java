@@ -24,7 +24,7 @@ public class ItemDropConf {
 
 
     @Data
-    public class HolderDrop {
+    public static class HolderDrop {
         //触发掉落的拥有者最大最小等级 譬如 怪物等级
         Integer min;
         Integer max;

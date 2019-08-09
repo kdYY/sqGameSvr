@@ -89,25 +89,30 @@ public final class MonsterPt {
     long getEntityTypeId();
 
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>int32 level = 13;</code>
+     */
+    int getLevel();
+
+    /**
+     * <code>repeated .Buff buff = 14;</code>
      */
     java.util.List<BuffPt.Buff>
         getBuffList();
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     BuffPt.Buff getBuff(int index);
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     int getBuffCount();
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     java.util.List<? extends BuffPt.BuffOrBuilder>
         getBuffOrBuilderList();
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     BuffPt.BuffOrBuilder getBuffOrBuilder(
             int index);
@@ -227,7 +232,12 @@ public final class MonsterPt {
               entityTypeId_ = input.readUInt64();
               break;
             }
-            case 106: {
+            case 104: {
+
+              level_ = input.readInt32();
+              break;
+            }
+            case 114: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 buff_ = new java.util.ArrayList<BuffPt.Buff>();
                 mutable_bitField0_ |= 0x00000001;
@@ -429,35 +439,44 @@ public final class MonsterPt {
       return entityTypeId_;
     }
 
-    public static final int BUFF_FIELD_NUMBER = 13;
+    public static final int LEVEL_FIELD_NUMBER = 13;
+    private int level_;
+    /**
+     * <code>int32 level = 13;</code>
+     */
+    public int getLevel() {
+      return level_;
+    }
+
+    public static final int BUFF_FIELD_NUMBER = 14;
     private java.util.List<BuffPt.Buff> buff_;
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     public java.util.List<BuffPt.Buff> getBuffList() {
       return buff_;
     }
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     public java.util.List<? extends BuffPt.BuffOrBuilder>
         getBuffOrBuilderList() {
       return buff_;
     }
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     public int getBuffCount() {
       return buff_.size();
     }
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     public BuffPt.Buff getBuff(int index) {
       return buff_.get(index);
     }
     /**
-     * <code>repeated .Buff buff = 13;</code>
+     * <code>repeated .Buff buff = 14;</code>
      */
     public BuffPt.BuffOrBuilder getBuffOrBuilder(
         int index) {
@@ -514,8 +533,11 @@ public final class MonsterPt {
       if (entityTypeId_ != 0L) {
         output.writeUInt64(12, entityTypeId_);
       }
+      if (level_ != 0) {
+        output.writeInt32(13, level_);
+      }
       for (int i = 0; i < buff_.size(); i++) {
-        output.writeMessage(13, buff_.get(i));
+        output.writeMessage(14, buff_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -572,9 +594,13 @@ public final class MonsterPt {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(12, entityTypeId_);
       }
+      if (level_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(13, level_);
+      }
       for (int i = 0; i < buff_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, buff_.get(i));
+          .computeMessageSize(14, buff_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -615,6 +641,8 @@ public final class MonsterPt {
           != other.getAttackSpeed()) return false;
       if (getEntityTypeId()
           != other.getEntityTypeId()) return false;
+      if (getLevel()
+          != other.getLevel()) return false;
       if (!getBuffList()
           .equals(other.getBuffList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -658,6 +686,8 @@ public final class MonsterPt {
       hash = (37 * hash) + ENTITYTYPEID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getEntityTypeId());
+      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getLevel();
       if (getBuffCount() > 0) {
         hash = (37 * hash) + BUFF_FIELD_NUMBER;
         hash = (53 * hash) + getBuffList().hashCode();
@@ -824,6 +854,8 @@ public final class MonsterPt {
 
         entityTypeId_ = 0L;
 
+        level_ = 0;
+
         if (buffBuilder_ == null) {
           buff_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -869,6 +901,7 @@ public final class MonsterPt {
         result.npcWord_ = npcWord_;
         result.attackSpeed_ = attackSpeed_;
         result.entityTypeId_ = entityTypeId_;
+        result.level_ = level_;
         if (buffBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             buff_ = java.util.Collections.unmodifiableList(buff_);
@@ -963,6 +996,9 @@ public final class MonsterPt {
         }
         if (other.getEntityTypeId() != 0L) {
           setEntityTypeId(other.getEntityTypeId());
+        }
+        if (other.getLevel() != 0) {
+          setLevel(other.getLevel());
         }
         if (buffBuilder_ == null) {
           if (!other.buff_.isEmpty()) {
@@ -1418,6 +1454,32 @@ public final class MonsterPt {
         return this;
       }
 
+      private int level_ ;
+      /**
+       * <code>int32 level = 13;</code>
+       */
+      public int getLevel() {
+        return level_;
+      }
+      /**
+       * <code>int32 level = 13;</code>
+       */
+      public Builder setLevel(int value) {
+        
+        level_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 level = 13;</code>
+       */
+      public Builder clearLevel() {
+        
+        level_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<BuffPt.Buff> buff_ =
         java.util.Collections.emptyList();
       private void ensureBuffIsMutable() {
@@ -1431,7 +1493,7 @@ public final class MonsterPt {
           BuffPt.Buff, BuffPt.Buff.Builder, BuffPt.BuffOrBuilder> buffBuilder_;
 
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public java.util.List<BuffPt.Buff> getBuffList() {
         if (buffBuilder_ == null) {
@@ -1441,7 +1503,7 @@ public final class MonsterPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public int getBuffCount() {
         if (buffBuilder_ == null) {
@@ -1451,7 +1513,7 @@ public final class MonsterPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public BuffPt.Buff getBuff(int index) {
         if (buffBuilder_ == null) {
@@ -1461,7 +1523,7 @@ public final class MonsterPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder setBuff(
           int index, BuffPt.Buff value) {
@@ -1478,7 +1540,7 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder setBuff(
           int index, BuffPt.Buff.Builder builderForValue) {
@@ -1492,7 +1554,7 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder addBuff(BuffPt.Buff value) {
         if (buffBuilder_ == null) {
@@ -1508,7 +1570,7 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder addBuff(
           int index, BuffPt.Buff value) {
@@ -1525,7 +1587,7 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder addBuff(
           BuffPt.Buff.Builder builderForValue) {
@@ -1539,7 +1601,7 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder addBuff(
           int index, BuffPt.Buff.Builder builderForValue) {
@@ -1553,7 +1615,7 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder addAllBuff(
           Iterable<? extends BuffPt.Buff> values) {
@@ -1568,7 +1630,7 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder clearBuff() {
         if (buffBuilder_ == null) {
@@ -1581,7 +1643,7 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public Builder removeBuff(int index) {
         if (buffBuilder_ == null) {
@@ -1594,14 +1656,14 @@ public final class MonsterPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public BuffPt.Buff.Builder getBuffBuilder(
           int index) {
         return getBuffFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public BuffPt.BuffOrBuilder getBuffOrBuilder(
           int index) {
@@ -1611,7 +1673,7 @@ public final class MonsterPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public java.util.List<? extends BuffPt.BuffOrBuilder>
            getBuffOrBuilderList() {
@@ -1622,14 +1684,14 @@ public final class MonsterPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public BuffPt.Buff.Builder addBuffBuilder() {
         return getBuffFieldBuilder().addBuilder(
             BuffPt.Buff.getDefaultInstance());
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public BuffPt.Buff.Builder addBuffBuilder(
           int index) {
@@ -1637,7 +1699,7 @@ public final class MonsterPt {
             index, BuffPt.Buff.getDefaultInstance());
       }
       /**
-       * <code>repeated .Buff buff = 13;</code>
+       * <code>repeated .Buff buff = 14;</code>
        */
       public java.util.List<BuffPt.Buff.Builder>
            getBuffBuilderList() {
@@ -4041,19 +4103,20 @@ public final class MonsterPt {
   static {
     String[] descriptorData = {
       "\n\rMonster.proto\032\020EntityType.proto\032\nBuff." +
-      "proto\"\341\001\n\007Monster\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 " +
+      "proto\"\360\001\n\007Monster\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 " +
       "\001(\t\022\017\n\007senceId\030\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\r\n\005" +
       "state\030\005 \001(\005\022\n\n\002hp\030\006 \001(\004\022\n\n\002mp\030\007 \001(\004\022\016\n\006a" +
       "ttack\030\010 \001(\004\022\023\n\013refreshTime\030\t \001(\004\022\017\n\007npcW" +
       "ord\030\n \001(\t\022\023\n\013attackSpeed\030\013 \001(\005\022\024\n\014entity" +
-      "TypeId\030\014 \001(\004\022\023\n\004buff\030\r \003(\0132\005.Buff\"X\n\013Req" +
-      "uestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\n" +
-      "\n\002id\030\003 \001(\005\022\016\n\006typeId\030\004 \001(\005\022\017\n\007senceId\030\005 " +
-      "\001(\005\"\203\001\n\014ResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006" +
-      "result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 " +
-      "\001(\t\022\031\n\004type\030\005 \003(\0132\013.EntityType\022\031\n\007monste" +
-      "r\030\006 \003(\0132\010.MonsterB)\n\034org.sq.gameDemo.com" +
-      "mon.protoB\tMonsterPtb\006proto3"
+      "TypeId\030\014 \001(\004\022\r\n\005level\030\r \001(\005\022\023\n\004buff\030\016 \003(" +
+      "\0132\005.Buff\"X\n\013RequestInfo\022\016\n\006msg_id\030\001 \001(\004\022" +
+      "\014\n\004time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\016\n\006typeId\030\004 \001(" +
+      "\005\022\017\n\007senceId\030\005 \001(\005\"\203\001\n\014ResponseInfo\022\016\n\006m" +
+      "sg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(" +
+      "\004\022\017\n\007content\030\004 \001(\t\022\031\n\004type\030\005 \003(\0132\013.Entit" +
+      "yType\022\031\n\007monster\030\006 \003(\0132\010.MonsterB)\n\034org." +
+      "sq.gameDemo.common.protoB\tMonsterPtb\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4066,7 +4129,7 @@ public final class MonsterPt {
     internal_static_Monster_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Monster_descriptor,
-        new String[] { "Id", "Name", "SenceId", "TypeId", "State", "Hp", "Mp", "Attack", "RefreshTime", "NpcWord", "AttackSpeed", "EntityTypeId", "Buff", });
+        new String[] { "Id", "Name", "SenceId", "TypeId", "State", "Hp", "Mp", "Attack", "RefreshTime", "NpcWord", "AttackSpeed", "EntityTypeId", "Level", "Buff", });
     internal_static_RequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_RequestInfo_fieldAccessorTable = new
