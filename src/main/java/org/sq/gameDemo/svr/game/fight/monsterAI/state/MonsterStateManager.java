@@ -3,10 +3,12 @@ package org.sq.gameDemo.svr.game.fight.monsterAI.state;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
+import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class MonsterStateManager {
     @Autowired
     private MonsterAIService monsterAIService;
     @Autowired
-    private SkillCache skillCache;
+    private SenceService senceService;
 
 
     HashMap<CharacterState, MonsterStateHandle> stateHandleMap = new HashMap<>();
@@ -60,10 +62,15 @@ public class MonsterStateManager {
      * @param monster
      */
     private void refresh(Monster monster) {
-        if(monster.getDeadTime() + monster.getRefreshTime() >= System.currentTimeMillis()) {
+        long dieTime = monster.getDeadTime() + monster.getRefreshTime();
+        long now = System.currentTimeMillis();
+        if(dieTime <= now) {
             SenceEntity senceEntity = senceEntityCache.get(monster.getEntityTypeId());
             monster.setHp(senceEntity.getHp());
             monster.setState(senceEntity.getState());
+
+            UserCache.broadcastChannelGroupBysenceId(monster.getSenceId(), monster.getName() + "(id=" + monster.getId() +")已复活");
+
         }
     }
 

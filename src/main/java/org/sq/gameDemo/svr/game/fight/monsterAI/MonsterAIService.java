@@ -22,6 +22,7 @@ import org.sq.gameDemo.svr.game.skills.service.SkillService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Objects;
 
 @Component
@@ -47,36 +48,35 @@ public class MonsterAIService {
      */
     public void monsterBeAttacked(Character attacter, Monster targetMonster, SenceConfigMsg senecMsg, Skill skill) {
         //设置怪物归属者
-        if(targetMonster.getTarget() == null) {
+        if(targetMonster.getTarget() == null || targetMonster.getState().equals(CharacterState.LIVE)) {
             targetMonster.setTarget(attacter);
-        } else {
-            playerCache.getChannelByPlayerId(attacter.getId()).writeAndFlush(
-                    ProtoBufUtil.getBroadCastDefaultEntity(
-                            "你攻打的"
-                            + targetMonster.getName()
-                            + "归属于"
-                            + targetMonster.getTarget().getName()
-                    )
-            );
+            targetMonster.setState(CharacterState.ATTACKING.getCode());
+        } else if (targetMonster.getTarget() != null && targetMonster.getState().equals(CharacterState.ATTACKING.getCode())){
+            if(!targetMonster.getTarget().getId().equals(attacter.getId())) {
+                senceService.notifyPlayerByDefault(attacter,
+                        "你攻打的"
+                        + targetMonster.getName()
+                        + "归属于"
+                        + targetMonster.getTarget().getName());
+            }
         }
 
         //怪物被攻击事件
-        EventBus.publish(new MonsterBeAttackedEvent(attacter, targetMonster, senecMsg, skill));
-
+        //EventBus.publish(new MonsterBeAttackedEvent(attacter, targetMonster, senecMsg, skill));
 
         if(attacter instanceof Player && targetMonster.isDead()) {
+
             targetMonster.setDeadStatus();
+
             if(attacter instanceof Player) {
                 Player player = (Player) attacter;
                 player.addExp(Constant.MONSTER_EXP);
-                playerCache.getChannelByPlayerId(attacter.getId()).writeAndFlush(
-                        ProtoBufUtil.getBroadCastDefaultEntity(targetMonster.getName()
+                senceService.notifyPlayerByDefault(attacter, targetMonster.getName()
                                 + "(id=" + targetMonster.getId()
-                                + ")被你杀死了, 经验增加"
+                                + ")被你杀死了, 经验增加↑"
                                 + Constant.MONSTER_EXP
-                                + "↑,当前exp="
+                                + "↑, 当前exp="
                                 + player.getExp()
-                        )
                 );
             }
             // 抛出怪物被玩家打死的事件
@@ -95,6 +95,11 @@ public class MonsterAIService {
 
         //目标为空，不攻击
         if(Objects.isNull(target)) {
+            return;
+        }
+
+        //如果自己已经死了...
+        if(monster.getHp() <= 0) {
             return;
         }
 
@@ -124,6 +129,7 @@ public class MonsterAIService {
         }
 
 
+
         //攻击同场景内的角色
         if(target instanceof UserEntity && ((Player) target).getSenceId().equals(monster.getSenceId())) {
             //使用普攻
@@ -145,15 +151,15 @@ public class MonsterAIService {
     private void MonsterUseSkillAttack(Monster monster, Character target) throws Exception {
         synchronized (monster) {
             if(monster.getTarget() != null && monster.getTarget().getId().equals(target.getId())) {
-                Arrays.stream(monster.getSkillStr().split(","))
-                        .map(Integer::valueOf)
-                        .map(skId -> skillCache.get(skId))
+                monster.getSkillInUsedMap().values()
+                        .stream()
                         //过滤掉不能使用的技能编号
-                        .filter(skill -> skillService.skillCanUse(monster, skill, new ArrayList<>()))
+                        .filter(skill -> skillService.skillCanUse(monster, skill, null))
                         //随机找一个技能
                         .findAny()
                         .ifPresent(
                                 skillChecked -> {
+                                    senceService.notifyPlayerByDefault(monster, "选中技能:" + new Date().toString());
                                     //如果技能使用成功
                                     if(skillService.characterUseSkillAttack(
                                             monster,
@@ -166,9 +172,9 @@ public class MonsterAIService {
                                             return;
                                         }
                                         //如果目标是怪物
-                                        if(target instanceof Monster) {
-                                            monsterBeAttacked(monster, (Monster) target, senceService.getSenecMsgById(monster.getSenceId()), skillChecked);
-                                        }
+//                                        if(target instanceof Monster) {
+//                                            monsterBeAttacked(monster, (Monster) target, senceService.getSenecMsgById(monster.getSenceId()), skillChecked);
+//                                        }
                                     }
                                 }
                         );

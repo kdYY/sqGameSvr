@@ -1,8 +1,10 @@
 package org.sq.gameDemo.svr.game.skills.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.svr.game.characterEntity.service.BuffService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.model.SkillRange;
@@ -14,6 +16,9 @@ import java.util.Optional;
 
 @Service
 public class SkillRangeService {
+
+    @Autowired
+    private BuffService buffService;
 
     private Map<SkillRange, ISkillRange>  skillRangeMap = new HashMap<>();
 
@@ -41,6 +46,12 @@ public class SkillRangeService {
     private void skillSelf(Character attacter, Character target, SenceConfigMsg senecMsg, Skill skill) {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(attacter.getHp() + skill.getHeal());
+
+        if(skill.getBuff() != null && skill.getBuff() != 0) {
+            Optional.ofNullable(buffService.getBuff(skill.getBuff())).ifPresent(
+                buff -> buffService.buffAffecting(target, buff)
+            );
+        }
 
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
                 target.getName()
@@ -89,7 +100,12 @@ public class SkillRangeService {
     private void skillSingleEnemy(Character attacter, Character target, SenceConfigMsg senecMsg, Skill skill) {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(target.getHp() - skill.getHurt());
-
+        //启动爸爸
+        if(skill.getBuff() != null && skill.getBuff() != 0) {
+            Optional.ofNullable(buffService.getBuff(skill.getBuff())).ifPresent(
+                    buff -> buffService.buffAffecting(target, buff)
+            );
+        }
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
                 target.getName()
                         + "受到单体攻击技能:"

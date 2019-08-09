@@ -26,7 +26,7 @@ public final class BuffPt {
     /**
      * <code>string name = 2;</code>
      */
-    java.lang.String getName();
+    String getName();
     /**
      * <code>string name = 2;</code>
      */
@@ -59,10 +59,6 @@ public final class BuffPt {
     int getEffect();
 
     /**
-     * <pre>
-     *技能等级
-     * </pre>
-     *
      * <code>uint64 duration = 8;</code>
      */
     long getDuration();
@@ -74,7 +70,7 @@ public final class BuffPt {
   }
   /**
    * <pre>
-   *技能
+   *buff
    * </pre>
    *
    * Protobuf type {@code Buff}
@@ -92,14 +88,14 @@ public final class BuffPt {
       name_ = "";
     }
 
-    @java.lang.Override
+    @Override
     @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
+    protected Object newInstance(
         UnusedPrivateParameter unused) {
       return new Buff();
     }
 
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
       return this.unknownFields;
@@ -110,7 +106,7 @@ public final class BuffPt {
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
+        throw new NullPointerException();
       }
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -128,7 +124,7 @@ public final class BuffPt {
               break;
             }
             case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
+              String s = input.readStringRequireUtf8();
 
               name_ = s;
               break;
@@ -189,15 +185,15 @@ public final class BuffPt {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.sq.gameDemo.common.proto.BuffPt.internal_static_Buff_descriptor;
+      return BuffPt.internal_static_Buff_descriptor;
     }
 
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    @Override
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.sq.gameDemo.common.proto.BuffPt.internal_static_Buff_fieldAccessorTable
+      return BuffPt.internal_static_Buff_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.sq.gameDemo.common.proto.BuffPt.Buff.class, org.sq.gameDemo.common.proto.BuffPt.Buff.Builder.class);
+              Buff.class, Builder.class);
     }
 
     public static final int ID_FIELD_NUMBER = 1;
@@ -210,18 +206,18 @@ public final class BuffPt {
     }
 
     public static final int NAME_FIELD_NUMBER = 2;
-    private volatile java.lang.Object name_;
+    private volatile Object name_;
     /**
      * <code>string name = 2;</code>
      */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getName() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         name_ = s;
         return s;
       }
@@ -231,11 +227,11 @@ public final class BuffPt {
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
+      Object ref = name_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         name_ = b;
         return b;
       } else {
@@ -291,10 +287,6 @@ public final class BuffPt {
     public static final int DURATION_FIELD_NUMBER = 8;
     private long duration_;
     /**
-     * <pre>
-     *技能等级
-     * </pre>
-     *
      * <code>uint64 duration = 8;</code>
      */
     public long getDuration() {
@@ -311,7 +303,7 @@ public final class BuffPt {
     }
 
     private byte memoizedIsInitialized = -1;
-    @java.lang.Override
+    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -321,7 +313,7 @@ public final class BuffPt {
       return true;
     }
 
-    @java.lang.Override
+    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (id_ != 0) {
@@ -354,7 +346,7 @@ public final class BuffPt {
       unknownFields.writeTo(output);
     }
 
-    @java.lang.Override
+    @Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -400,15 +392,15 @@ public final class BuffPt {
       return size;
     }
 
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof org.sq.gameDemo.common.proto.BuffPt.Buff)) {
+      if (!(obj instanceof Buff)) {
         return super.equals(obj);
       }
-      org.sq.gameDemo.common.proto.BuffPt.Buff other = (org.sq.gameDemo.common.proto.BuffPt.Buff) obj;
+      Buff other = (Buff) obj;
 
       if (getId()
           != other.getId()) return false;
@@ -432,7 +424,7 @@ public final class BuffPt {
       return true;
     }
 
-    @java.lang.Override
+    @Override
     public int hashCode() {
       if (memoizedHashCode != 0) {
         return memoizedHashCode;
@@ -467,69 +459,69 @@ public final class BuffPt {
       return hash;
     }
 
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(
+    public static Buff parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(
+    public static Buff parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(
+    public static Buff parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(
+    public static Buff parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(byte[] data)
+    public static Buff parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(
+    public static Buff parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(java.io.InputStream input)
+    public static Buff parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(
+    public static Buff parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseDelimitedFrom(java.io.InputStream input)
+    public static Buff parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseDelimitedFrom(
+    public static Buff parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(
+    public static Buff parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff parseFrom(
+    public static Buff parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -537,29 +529,29 @@ public final class BuffPt {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    @java.lang.Override
+    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.sq.gameDemo.common.proto.BuffPt.Buff prototype) {
+    public static Builder newBuilder(Buff prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
-    @java.lang.Override
+    @Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
     }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
      * <pre>
-     *技能
+     *buff
      * </pre>
      *
      * Protobuf type {@code Buff}
@@ -567,18 +559,18 @@ public final class BuffPt {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:Buff)
-        org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder {
+        BuffOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_Buff_descriptor;
+        return BuffPt.internal_static_Buff_descriptor;
       }
 
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      @Override
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_Buff_fieldAccessorTable
+        return BuffPt.internal_static_Buff_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.sq.gameDemo.common.proto.BuffPt.Buff.class, org.sq.gameDemo.common.proto.BuffPt.Buff.Builder.class);
+                Buff.class, Builder.class);
       }
 
       // Construct using org.sq.gameDemo.common.proto.BuffPt.Buff.newBuilder()
@@ -587,7 +579,7 @@ public final class BuffPt {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -596,7 +588,7 @@ public final class BuffPt {
                 .alwaysUseFieldBuilders) {
         }
       }
-      @java.lang.Override
+      @Override
       public Builder clear() {
         super.clear();
         id_ = 0;
@@ -620,29 +612,29 @@ public final class BuffPt {
         return this;
       }
 
-      @java.lang.Override
+      @Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_Buff_descriptor;
+        return BuffPt.internal_static_Buff_descriptor;
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.Buff getDefaultInstanceForType() {
-        return org.sq.gameDemo.common.proto.BuffPt.Buff.getDefaultInstance();
+      @Override
+      public Buff getDefaultInstanceForType() {
+        return Buff.getDefaultInstance();
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.Buff build() {
-        org.sq.gameDemo.common.proto.BuffPt.Buff result = buildPartial();
+      @Override
+      public Buff build() {
+        Buff result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.Buff buildPartial() {
-        org.sq.gameDemo.common.proto.BuffPt.Buff result = new org.sq.gameDemo.common.proto.BuffPt.Buff(this);
+      @Override
+      public Buff buildPartial() {
+        Buff result = new Buff(this);
         result.id_ = id_;
         result.name_ = name_;
         result.type_ = type_;
@@ -656,50 +648,50 @@ public final class BuffPt {
         return result;
       }
 
-      @java.lang.Override
+      @Override
       public Builder clone() {
         return super.clone();
       }
-      @java.lang.Override
+      @Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+          Object value) {
         return super.setField(field, value);
       }
-      @java.lang.Override
+      @Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
-      @java.lang.Override
+      @Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
-      @java.lang.Override
+      @Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index, Object value) {
         return super.setRepeatedField(field, index, value);
       }
-      @java.lang.Override
+      @Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+          Object value) {
         return super.addRepeatedField(field, value);
       }
-      @java.lang.Override
+      @Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.sq.gameDemo.common.proto.BuffPt.Buff) {
-          return mergeFrom((org.sq.gameDemo.common.proto.BuffPt.Buff)other);
+        if (other instanceof Buff) {
+          return mergeFrom((Buff)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.sq.gameDemo.common.proto.BuffPt.Buff other) {
-        if (other == org.sq.gameDemo.common.proto.BuffPt.Buff.getDefaultInstance()) return this;
+      public Builder mergeFrom(Buff other) {
+        if (other == Buff.getDefaultInstance()) return this;
         if (other.getId() != 0) {
           setId(other.getId());
         }
@@ -733,21 +725,21 @@ public final class BuffPt {
         return this;
       }
 
-      @java.lang.Override
+      @Override
       public final boolean isInitialized() {
         return true;
       }
 
-      @java.lang.Override
+      @Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.sq.gameDemo.common.proto.BuffPt.Buff parsedMessage = null;
+        Buff parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.sq.gameDemo.common.proto.BuffPt.Buff) e.getUnfinishedMessage();
+          parsedMessage = (Buff) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -783,20 +775,20 @@ public final class BuffPt {
         return this;
       }
 
-      private java.lang.Object name_ = "";
+      private Object name_ = "";
       /**
        * <code>string name = 2;</code>
        */
-      public java.lang.String getName() {
-        java.lang.Object ref = name_;
-        if (!(ref instanceof java.lang.String)) {
+      public String getName() {
+        Object ref = name_;
+        if (!(ref instanceof String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
+          String s = bs.toStringUtf8();
           name_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -804,11 +796,11 @@ public final class BuffPt {
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
-        java.lang.Object ref = name_;
+        Object ref = name_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           name_ = b;
           return b;
         } else {
@@ -819,7 +811,7 @@ public final class BuffPt {
        * <code>string name = 2;</code>
        */
       public Builder setName(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -984,20 +976,12 @@ public final class BuffPt {
 
       private long duration_ ;
       /**
-       * <pre>
-       *技能等级
-       * </pre>
-       *
        * <code>uint64 duration = 8;</code>
        */
       public long getDuration() {
         return duration_;
       }
       /**
-       * <pre>
-       *技能等级
-       * </pre>
-       *
        * <code>uint64 duration = 8;</code>
        */
       public Builder setDuration(long value) {
@@ -1007,10 +991,6 @@ public final class BuffPt {
         return this;
       }
       /**
-       * <pre>
-       *技能等级
-       * </pre>
-       *
        * <code>uint64 duration = 8;</code>
        */
       public Builder clearDuration() {
@@ -1045,13 +1025,13 @@ public final class BuffPt {
         onChanged();
         return this;
       }
-      @java.lang.Override
+      @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
-      @java.lang.Override
+      @Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -1062,18 +1042,18 @@ public final class BuffPt {
     }
 
     // @@protoc_insertion_point(class_scope:Buff)
-    private static final org.sq.gameDemo.common.proto.BuffPt.Buff DEFAULT_INSTANCE;
+    private static final Buff DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new org.sq.gameDemo.common.proto.BuffPt.Buff();
+      DEFAULT_INSTANCE = new Buff();
     }
 
-    public static org.sq.gameDemo.common.proto.BuffPt.Buff getDefaultInstance() {
+    public static Buff getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
     private static final com.google.protobuf.Parser<Buff>
         PARSER = new com.google.protobuf.AbstractParser<Buff>() {
-      @java.lang.Override
+      @Override
       public Buff parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1086,13 +1066,13 @@ public final class BuffPt {
       return PARSER;
     }
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<Buff> getParserForType() {
       return PARSER;
     }
 
-    @java.lang.Override
-    public org.sq.gameDemo.common.proto.BuffPt.Buff getDefaultInstanceForType() {
+    @Override
+    public Buff getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1121,21 +1101,16 @@ public final class BuffPt {
     long getTime();
 
     /**
-     * <code>uint64 player_id = 3;</code>
-     */
-    long getPlayerId();
-
-    /**
      * <pre>
      *获取全部写-1
      * </pre>
      *
-     * <code>int32 skillId = 4;</code>
+     * <code>int32 buffId = 3;</code>
      */
-    int getSkillId();
+    int getBuffId();
 
     /**
-     * <code>uint64 target_id = 5;</code>
+     * <code>uint64 target_id = 4;</code>
      */
     long getTargetId();
   }
@@ -1158,14 +1133,14 @@ public final class BuffPt {
     private BuffReqInfo() {
     }
 
-    @java.lang.Override
+    @Override
     @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
+    protected Object newInstance(
         UnusedPrivateParameter unused) {
       return new BuffReqInfo();
     }
 
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
       return this.unknownFields;
@@ -1176,7 +1151,7 @@ public final class BuffPt {
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
+        throw new NullPointerException();
       }
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -1200,15 +1175,10 @@ public final class BuffPt {
             }
             case 24: {
 
-              playerId_ = input.readUInt64();
+              buffId_ = input.readInt32();
               break;
             }
             case 32: {
-
-              skillId_ = input.readInt32();
-              break;
-            }
-            case 40: {
 
               targetId_ = input.readUInt64();
               break;
@@ -1234,15 +1204,15 @@ public final class BuffPt {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffReqInfo_descriptor;
+      return BuffPt.internal_static_BuffReqInfo_descriptor;
     }
 
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    @Override
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffReqInfo_fieldAccessorTable
+      return BuffPt.internal_static_BuffReqInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo.class, org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo.Builder.class);
+              BuffReqInfo.class, Builder.class);
     }
 
     public static final int MSG_ID_FIELD_NUMBER = 1;
@@ -1271,39 +1241,30 @@ public final class BuffPt {
       return time_;
     }
 
-    public static final int PLAYER_ID_FIELD_NUMBER = 3;
-    private long playerId_;
-    /**
-     * <code>uint64 player_id = 3;</code>
-     */
-    public long getPlayerId() {
-      return playerId_;
-    }
-
-    public static final int SKILLID_FIELD_NUMBER = 4;
-    private int skillId_;
+    public static final int BUFFID_FIELD_NUMBER = 3;
+    private int buffId_;
     /**
      * <pre>
      *获取全部写-1
      * </pre>
      *
-     * <code>int32 skillId = 4;</code>
+     * <code>int32 buffId = 3;</code>
      */
-    public int getSkillId() {
-      return skillId_;
+    public int getBuffId() {
+      return buffId_;
     }
 
-    public static final int TARGET_ID_FIELD_NUMBER = 5;
+    public static final int TARGET_ID_FIELD_NUMBER = 4;
     private long targetId_;
     /**
-     * <code>uint64 target_id = 5;</code>
+     * <code>uint64 target_id = 4;</code>
      */
     public long getTargetId() {
       return targetId_;
     }
 
     private byte memoizedIsInitialized = -1;
-    @java.lang.Override
+    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -1313,7 +1274,7 @@ public final class BuffPt {
       return true;
     }
 
-    @java.lang.Override
+    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (msgId_ != 0L) {
@@ -1322,19 +1283,16 @@ public final class BuffPt {
       if (time_ != 0L) {
         output.writeUInt64(2, time_);
       }
-      if (playerId_ != 0L) {
-        output.writeUInt64(3, playerId_);
-      }
-      if (skillId_ != 0) {
-        output.writeInt32(4, skillId_);
+      if (buffId_ != 0) {
+        output.writeInt32(3, buffId_);
       }
       if (targetId_ != 0L) {
-        output.writeUInt64(5, targetId_);
+        output.writeUInt64(4, targetId_);
       }
       unknownFields.writeTo(output);
     }
 
-    @java.lang.Override
+    @Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -1348,48 +1306,42 @@ public final class BuffPt {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(2, time_);
       }
-      if (playerId_ != 0L) {
+      if (buffId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(3, playerId_);
-      }
-      if (skillId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, skillId_);
+          .computeInt32Size(3, buffId_);
       }
       if (targetId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(5, targetId_);
+          .computeUInt64Size(4, targetId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo)) {
+      if (!(obj instanceof BuffReqInfo)) {
         return super.equals(obj);
       }
-      org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo other = (org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo) obj;
+      BuffReqInfo other = (BuffReqInfo) obj;
 
       if (getMsgId()
           != other.getMsgId()) return false;
       if (getTime()
           != other.getTime()) return false;
-      if (getPlayerId()
-          != other.getPlayerId()) return false;
-      if (getSkillId()
-          != other.getSkillId()) return false;
+      if (getBuffId()
+          != other.getBuffId()) return false;
       if (getTargetId()
           != other.getTargetId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
 
-    @java.lang.Override
+    @Override
     public int hashCode() {
       if (memoizedHashCode != 0) {
         return memoizedHashCode;
@@ -1402,11 +1354,8 @@ public final class BuffPt {
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTime());
-      hash = (37 * hash) + PLAYER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getPlayerId());
-      hash = (37 * hash) + SKILLID_FIELD_NUMBER;
-      hash = (53 * hash) + getSkillId();
+      hash = (37 * hash) + BUFFID_FIELD_NUMBER;
+      hash = (53 * hash) + getBuffId();
       hash = (37 * hash) + TARGET_ID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTargetId());
@@ -1415,69 +1364,69 @@ public final class BuffPt {
       return hash;
     }
 
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(
+    public static BuffReqInfo parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(
+    public static BuffReqInfo parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(
+    public static BuffReqInfo parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(
+    public static BuffReqInfo parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(byte[] data)
+    public static BuffReqInfo parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(
+    public static BuffReqInfo parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(java.io.InputStream input)
+    public static BuffReqInfo parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(
+    public static BuffReqInfo parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseDelimitedFrom(java.io.InputStream input)
+    public static BuffReqInfo parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseDelimitedFrom(
+    public static BuffReqInfo parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(
+    public static BuffReqInfo parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parseFrom(
+    public static BuffReqInfo parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1485,23 +1434,23 @@ public final class BuffPt {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    @java.lang.Override
+    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo prototype) {
+    public static Builder newBuilder(BuffReqInfo prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
-    @java.lang.Override
+    @Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
     }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1515,18 +1464,18 @@ public final class BuffPt {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:BuffReqInfo)
-        org.sq.gameDemo.common.proto.BuffPt.BuffReqInfoOrBuilder {
+        BuffReqInfoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffReqInfo_descriptor;
+        return BuffPt.internal_static_BuffReqInfo_descriptor;
       }
 
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      @Override
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffReqInfo_fieldAccessorTable
+        return BuffPt.internal_static_BuffReqInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo.class, org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo.Builder.class);
+                BuffReqInfo.class, Builder.class);
       }
 
       // Construct using org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo.newBuilder()
@@ -1535,7 +1484,7 @@ public final class BuffPt {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1544,109 +1493,103 @@ public final class BuffPt {
                 .alwaysUseFieldBuilders) {
         }
       }
-      @java.lang.Override
+      @Override
       public Builder clear() {
         super.clear();
         msgId_ = 0L;
 
         time_ = 0L;
 
-        playerId_ = 0L;
-
-        skillId_ = 0;
+        buffId_ = 0;
 
         targetId_ = 0L;
 
         return this;
       }
 
-      @java.lang.Override
+      @Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffReqInfo_descriptor;
+        return BuffPt.internal_static_BuffReqInfo_descriptor;
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo getDefaultInstanceForType() {
-        return org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo.getDefaultInstance();
+      @Override
+      public BuffReqInfo getDefaultInstanceForType() {
+        return BuffReqInfo.getDefaultInstance();
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo build() {
-        org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo result = buildPartial();
+      @Override
+      public BuffReqInfo build() {
+        BuffReqInfo result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo buildPartial() {
-        org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo result = new org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo(this);
+      @Override
+      public BuffReqInfo buildPartial() {
+        BuffReqInfo result = new BuffReqInfo(this);
         result.msgId_ = msgId_;
         result.time_ = time_;
-        result.playerId_ = playerId_;
-        result.skillId_ = skillId_;
+        result.buffId_ = buffId_;
         result.targetId_ = targetId_;
         onBuilt();
         return result;
       }
 
-      @java.lang.Override
+      @Override
       public Builder clone() {
         return super.clone();
       }
-      @java.lang.Override
+      @Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+          Object value) {
         return super.setField(field, value);
       }
-      @java.lang.Override
+      @Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
-      @java.lang.Override
+      @Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
-      @java.lang.Override
+      @Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index, Object value) {
         return super.setRepeatedField(field, index, value);
       }
-      @java.lang.Override
+      @Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+          Object value) {
         return super.addRepeatedField(field, value);
       }
-      @java.lang.Override
+      @Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo) {
-          return mergeFrom((org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo)other);
+        if (other instanceof BuffReqInfo) {
+          return mergeFrom((BuffReqInfo)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo other) {
-        if (other == org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo.getDefaultInstance()) return this;
+      public Builder mergeFrom(BuffReqInfo other) {
+        if (other == BuffReqInfo.getDefaultInstance()) return this;
         if (other.getMsgId() != 0L) {
           setMsgId(other.getMsgId());
         }
         if (other.getTime() != 0L) {
           setTime(other.getTime());
         }
-        if (other.getPlayerId() != 0L) {
-          setPlayerId(other.getPlayerId());
-        }
-        if (other.getSkillId() != 0) {
-          setSkillId(other.getSkillId());
+        if (other.getBuffId() != 0) {
+          setBuffId(other.getBuffId());
         }
         if (other.getTargetId() != 0L) {
           setTargetId(other.getTargetId());
@@ -1656,21 +1599,21 @@ public final class BuffPt {
         return this;
       }
 
-      @java.lang.Override
+      @Override
       public final boolean isInitialized() {
         return true;
       }
 
-      @java.lang.Override
+      @Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo parsedMessage = null;
+        BuffReqInfo parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo) e.getUnfinishedMessage();
+          parsedMessage = (BuffReqInfo) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1756,53 +1699,27 @@ public final class BuffPt {
         return this;
       }
 
-      private long playerId_ ;
-      /**
-       * <code>uint64 player_id = 3;</code>
-       */
-      public long getPlayerId() {
-        return playerId_;
-      }
-      /**
-       * <code>uint64 player_id = 3;</code>
-       */
-      public Builder setPlayerId(long value) {
-        
-        playerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>uint64 player_id = 3;</code>
-       */
-      public Builder clearPlayerId() {
-        
-        playerId_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private int skillId_ ;
+      private int buffId_ ;
       /**
        * <pre>
        *获取全部写-1
        * </pre>
        *
-       * <code>int32 skillId = 4;</code>
+       * <code>int32 buffId = 3;</code>
        */
-      public int getSkillId() {
-        return skillId_;
+      public int getBuffId() {
+        return buffId_;
       }
       /**
        * <pre>
        *获取全部写-1
        * </pre>
        *
-       * <code>int32 skillId = 4;</code>
+       * <code>int32 buffId = 3;</code>
        */
-      public Builder setSkillId(int value) {
+      public Builder setBuffId(int value) {
         
-        skillId_ = value;
+        buffId_ = value;
         onChanged();
         return this;
       }
@@ -1811,24 +1728,24 @@ public final class BuffPt {
        *获取全部写-1
        * </pre>
        *
-       * <code>int32 skillId = 4;</code>
+       * <code>int32 buffId = 3;</code>
        */
-      public Builder clearSkillId() {
+      public Builder clearBuffId() {
         
-        skillId_ = 0;
+        buffId_ = 0;
         onChanged();
         return this;
       }
 
       private long targetId_ ;
       /**
-       * <code>uint64 target_id = 5;</code>
+       * <code>uint64 target_id = 4;</code>
        */
       public long getTargetId() {
         return targetId_;
       }
       /**
-       * <code>uint64 target_id = 5;</code>
+       * <code>uint64 target_id = 4;</code>
        */
       public Builder setTargetId(long value) {
         
@@ -1837,7 +1754,7 @@ public final class BuffPt {
         return this;
       }
       /**
-       * <code>uint64 target_id = 5;</code>
+       * <code>uint64 target_id = 4;</code>
        */
       public Builder clearTargetId() {
         
@@ -1845,13 +1762,13 @@ public final class BuffPt {
         onChanged();
         return this;
       }
-      @java.lang.Override
+      @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
-      @java.lang.Override
+      @Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -1862,18 +1779,18 @@ public final class BuffPt {
     }
 
     // @@protoc_insertion_point(class_scope:BuffReqInfo)
-    private static final org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo DEFAULT_INSTANCE;
+    private static final BuffReqInfo DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo();
+      DEFAULT_INSTANCE = new BuffReqInfo();
     }
 
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo getDefaultInstance() {
+    public static BuffReqInfo getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
     private static final com.google.protobuf.Parser<BuffReqInfo>
         PARSER = new com.google.protobuf.AbstractParser<BuffReqInfo>() {
-      @java.lang.Override
+      @Override
       public BuffReqInfo parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1886,13 +1803,13 @@ public final class BuffPt {
       return PARSER;
     }
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<BuffReqInfo> getParserForType() {
       return PARSER;
     }
 
-    @java.lang.Override
-    public org.sq.gameDemo.common.proto.BuffPt.BuffReqInfo getDefaultInstanceForType() {
+    @Override
+    public BuffReqInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1928,7 +1845,7 @@ public final class BuffPt {
     /**
      * <code>string content = 4;</code>
      */
-    java.lang.String getContent();
+    String getContent();
     /**
      * <code>string content = 4;</code>
      */
@@ -1938,12 +1855,12 @@ public final class BuffPt {
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
-    java.util.List<org.sq.gameDemo.common.proto.BuffPt.Buff> 
+    java.util.List<Buff>
         getBuffList();
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
-    org.sq.gameDemo.common.proto.BuffPt.Buff getBuff(int index);
+    Buff getBuff(int index);
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
@@ -1951,13 +1868,13 @@ public final class BuffPt {
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
-    java.util.List<? extends org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder> 
+    java.util.List<? extends BuffOrBuilder>
         getBuffOrBuilderList();
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
-    org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder getBuffOrBuilder(
-        int index);
+    BuffOrBuilder getBuffOrBuilder(
+            int index);
   }
   /**
    * <pre>
@@ -1980,14 +1897,14 @@ public final class BuffPt {
       buff_ = java.util.Collections.emptyList();
     }
 
-    @java.lang.Override
+    @Override
     @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
+    protected Object newInstance(
         UnusedPrivateParameter unused) {
       return new BuffRespInfo();
     }
 
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
       return this.unknownFields;
@@ -1998,7 +1915,7 @@ public final class BuffPt {
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
+        throw new NullPointerException();
       }
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
@@ -2027,18 +1944,18 @@ public final class BuffPt {
               break;
             }
             case 34: {
-              java.lang.String s = input.readStringRequireUtf8();
+              String s = input.readStringRequireUtf8();
 
               content_ = s;
               break;
             }
             case 42: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                buff_ = new java.util.ArrayList<org.sq.gameDemo.common.proto.BuffPt.Buff>();
+                buff_ = new java.util.ArrayList<Buff>();
                 mutable_bitField0_ |= 0x00000001;
               }
               buff_.add(
-                  input.readMessage(org.sq.gameDemo.common.proto.BuffPt.Buff.parser(), extensionRegistry));
+                  input.readMessage(Buff.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -2065,15 +1982,15 @@ public final class BuffPt {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffRespInfo_descriptor;
+      return BuffPt.internal_static_BuffRespInfo_descriptor;
     }
 
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    @Override
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffRespInfo_fieldAccessorTable
+      return BuffPt.internal_static_BuffRespInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo.class, org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo.Builder.class);
+              BuffRespInfo.class, Builder.class);
     }
 
     public static final int MSG_ID_FIELD_NUMBER = 1;
@@ -2112,18 +2029,18 @@ public final class BuffPt {
     }
 
     public static final int CONTENT_FIELD_NUMBER = 4;
-    private volatile java.lang.Object content_;
+    private volatile Object content_;
     /**
      * <code>string content = 4;</code>
      */
-    public java.lang.String getContent() {
-      java.lang.Object ref = content_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getContent() {
+      Object ref = content_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         content_ = s;
         return s;
       }
@@ -2133,11 +2050,11 @@ public final class BuffPt {
      */
     public com.google.protobuf.ByteString
         getContentBytes() {
-      java.lang.Object ref = content_;
-      if (ref instanceof java.lang.String) {
+      Object ref = content_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         content_ = b;
         return b;
       } else {
@@ -2146,17 +2063,17 @@ public final class BuffPt {
     }
 
     public static final int BUFF_FIELD_NUMBER = 5;
-    private java.util.List<org.sq.gameDemo.common.proto.BuffPt.Buff> buff_;
+    private java.util.List<Buff> buff_;
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
-    public java.util.List<org.sq.gameDemo.common.proto.BuffPt.Buff> getBuffList() {
+    public java.util.List<Buff> getBuffList() {
       return buff_;
     }
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
-    public java.util.List<? extends org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder> 
+    public java.util.List<? extends BuffOrBuilder>
         getBuffOrBuilderList() {
       return buff_;
     }
@@ -2169,19 +2086,19 @@ public final class BuffPt {
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
-    public org.sq.gameDemo.common.proto.BuffPt.Buff getBuff(int index) {
+    public Buff getBuff(int index) {
       return buff_.get(index);
     }
     /**
      * <code>repeated .Buff buff = 5;</code>
      */
-    public org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder getBuffOrBuilder(
+    public BuffOrBuilder getBuffOrBuilder(
         int index) {
       return buff_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
-    @java.lang.Override
+    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -2191,7 +2108,7 @@ public final class BuffPt {
       return true;
     }
 
-    @java.lang.Override
+    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (msgId_ != 0L) {
@@ -2212,7 +2129,7 @@ public final class BuffPt {
       unknownFields.writeTo(output);
     }
 
-    @java.lang.Override
+    @Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -2242,15 +2159,15 @@ public final class BuffPt {
       return size;
     }
 
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo)) {
+      if (!(obj instanceof BuffRespInfo)) {
         return super.equals(obj);
       }
-      org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo other = (org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo) obj;
+      BuffRespInfo other = (BuffRespInfo) obj;
 
       if (getMsgId()
           != other.getMsgId()) return false;
@@ -2266,7 +2183,7 @@ public final class BuffPt {
       return true;
     }
 
-    @java.lang.Override
+    @Override
     public int hashCode() {
       if (memoizedHashCode != 0) {
         return memoizedHashCode;
@@ -2292,69 +2209,69 @@ public final class BuffPt {
       return hash;
     }
 
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(
+    public static BuffRespInfo parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(
+    public static BuffRespInfo parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(
+    public static BuffRespInfo parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(
+    public static BuffRespInfo parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(byte[] data)
+    public static BuffRespInfo parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(
+    public static BuffRespInfo parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(java.io.InputStream input)
+    public static BuffRespInfo parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(
+    public static BuffRespInfo parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseDelimitedFrom(java.io.InputStream input)
+    public static BuffRespInfo parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseDelimitedFrom(
+    public static BuffRespInfo parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(
+    public static BuffRespInfo parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parseFrom(
+    public static BuffRespInfo parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2362,23 +2279,23 @@ public final class BuffPt {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    @java.lang.Override
+    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo prototype) {
+    public static Builder newBuilder(BuffRespInfo prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
-    @java.lang.Override
+    @Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
     }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2392,18 +2309,18 @@ public final class BuffPt {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:BuffRespInfo)
-        org.sq.gameDemo.common.proto.BuffPt.BuffRespInfoOrBuilder {
+        BuffRespInfoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffRespInfo_descriptor;
+        return BuffPt.internal_static_BuffRespInfo_descriptor;
       }
 
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      @Override
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffRespInfo_fieldAccessorTable
+        return BuffPt.internal_static_BuffRespInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo.class, org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo.Builder.class);
+                BuffRespInfo.class, Builder.class);
       }
 
       // Construct using org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo.newBuilder()
@@ -2412,7 +2329,7 @@ public final class BuffPt {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2422,7 +2339,7 @@ public final class BuffPt {
           getBuffFieldBuilder();
         }
       }
-      @java.lang.Override
+      @Override
       public Builder clear() {
         super.clear();
         msgId_ = 0L;
@@ -2442,29 +2359,29 @@ public final class BuffPt {
         return this;
       }
 
-      @java.lang.Override
+      @Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.sq.gameDemo.common.proto.BuffPt.internal_static_BuffRespInfo_descriptor;
+        return BuffPt.internal_static_BuffRespInfo_descriptor;
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo getDefaultInstanceForType() {
-        return org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo.getDefaultInstance();
+      @Override
+      public BuffRespInfo getDefaultInstanceForType() {
+        return BuffRespInfo.getDefaultInstance();
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo build() {
-        org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo result = buildPartial();
+      @Override
+      public BuffRespInfo build() {
+        BuffRespInfo result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      @java.lang.Override
-      public org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo buildPartial() {
-        org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo result = new org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo(this);
+      @Override
+      public BuffRespInfo buildPartial() {
+        BuffRespInfo result = new BuffRespInfo(this);
         int from_bitField0_ = bitField0_;
         result.msgId_ = msgId_;
         result.result_ = result_;
@@ -2483,50 +2400,50 @@ public final class BuffPt {
         return result;
       }
 
-      @java.lang.Override
+      @Override
       public Builder clone() {
         return super.clone();
       }
-      @java.lang.Override
+      @Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+          Object value) {
         return super.setField(field, value);
       }
-      @java.lang.Override
+      @Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
-      @java.lang.Override
+      @Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
-      @java.lang.Override
+      @Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index, Object value) {
         return super.setRepeatedField(field, index, value);
       }
-      @java.lang.Override
+      @Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+          Object value) {
         return super.addRepeatedField(field, value);
       }
-      @java.lang.Override
+      @Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo) {
-          return mergeFrom((org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo)other);
+        if (other instanceof BuffRespInfo) {
+          return mergeFrom((BuffRespInfo)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo other) {
-        if (other == org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo.getDefaultInstance()) return this;
+      public Builder mergeFrom(BuffRespInfo other) {
+        if (other == BuffRespInfo.getDefaultInstance()) return this;
         if (other.getMsgId() != 0L) {
           setMsgId(other.getMsgId());
         }
@@ -2571,21 +2488,21 @@ public final class BuffPt {
         return this;
       }
 
-      @java.lang.Override
+      @Override
       public final boolean isInitialized() {
         return true;
       }
 
-      @java.lang.Override
+      @Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo parsedMessage = null;
+        BuffRespInfo parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo) e.getUnfinishedMessage();
+          parsedMessage = (BuffRespInfo) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2698,20 +2615,20 @@ public final class BuffPt {
         return this;
       }
 
-      private java.lang.Object content_ = "";
+      private Object content_ = "";
       /**
        * <code>string content = 4;</code>
        */
-      public java.lang.String getContent() {
-        java.lang.Object ref = content_;
-        if (!(ref instanceof java.lang.String)) {
+      public String getContent() {
+        Object ref = content_;
+        if (!(ref instanceof String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
+          String s = bs.toStringUtf8();
           content_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -2719,11 +2636,11 @@ public final class BuffPt {
        */
       public com.google.protobuf.ByteString
           getContentBytes() {
-        java.lang.Object ref = content_;
+        Object ref = content_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           content_ = b;
           return b;
         } else {
@@ -2734,7 +2651,7 @@ public final class BuffPt {
        * <code>string content = 4;</code>
        */
       public Builder setContent(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -2767,22 +2684,22 @@ public final class BuffPt {
         return this;
       }
 
-      private java.util.List<org.sq.gameDemo.common.proto.BuffPt.Buff> buff_ =
+      private java.util.List<Buff> buff_ =
         java.util.Collections.emptyList();
       private void ensureBuffIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          buff_ = new java.util.ArrayList<org.sq.gameDemo.common.proto.BuffPt.Buff>(buff_);
+          buff_ = new java.util.ArrayList<Buff>(buff_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          org.sq.gameDemo.common.proto.BuffPt.Buff, org.sq.gameDemo.common.proto.BuffPt.Buff.Builder, org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder> buffBuilder_;
+          Buff, Buff.Builder, BuffOrBuilder> buffBuilder_;
 
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public java.util.List<org.sq.gameDemo.common.proto.BuffPt.Buff> getBuffList() {
+      public java.util.List<Buff> getBuffList() {
         if (buffBuilder_ == null) {
           return java.util.Collections.unmodifiableList(buff_);
         } else {
@@ -2802,7 +2719,7 @@ public final class BuffPt {
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.BuffPt.Buff getBuff(int index) {
+      public Buff getBuff(int index) {
         if (buffBuilder_ == null) {
           return buff_.get(index);
         } else {
@@ -2813,7 +2730,7 @@ public final class BuffPt {
        * <code>repeated .Buff buff = 5;</code>
        */
       public Builder setBuff(
-          int index, org.sq.gameDemo.common.proto.BuffPt.Buff value) {
+          int index, Buff value) {
         if (buffBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2830,7 +2747,7 @@ public final class BuffPt {
        * <code>repeated .Buff buff = 5;</code>
        */
       public Builder setBuff(
-          int index, org.sq.gameDemo.common.proto.BuffPt.Buff.Builder builderForValue) {
+          int index, Buff.Builder builderForValue) {
         if (buffBuilder_ == null) {
           ensureBuffIsMutable();
           buff_.set(index, builderForValue.build());
@@ -2843,7 +2760,7 @@ public final class BuffPt {
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public Builder addBuff(org.sq.gameDemo.common.proto.BuffPt.Buff value) {
+      public Builder addBuff(Buff value) {
         if (buffBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2860,7 +2777,7 @@ public final class BuffPt {
        * <code>repeated .Buff buff = 5;</code>
        */
       public Builder addBuff(
-          int index, org.sq.gameDemo.common.proto.BuffPt.Buff value) {
+          int index, Buff value) {
         if (buffBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2877,7 +2794,7 @@ public final class BuffPt {
        * <code>repeated .Buff buff = 5;</code>
        */
       public Builder addBuff(
-          org.sq.gameDemo.common.proto.BuffPt.Buff.Builder builderForValue) {
+          Buff.Builder builderForValue) {
         if (buffBuilder_ == null) {
           ensureBuffIsMutable();
           buff_.add(builderForValue.build());
@@ -2891,7 +2808,7 @@ public final class BuffPt {
        * <code>repeated .Buff buff = 5;</code>
        */
       public Builder addBuff(
-          int index, org.sq.gameDemo.common.proto.BuffPt.Buff.Builder builderForValue) {
+          int index, Buff.Builder builderForValue) {
         if (buffBuilder_ == null) {
           ensureBuffIsMutable();
           buff_.add(index, builderForValue.build());
@@ -2905,7 +2822,7 @@ public final class BuffPt {
        * <code>repeated .Buff buff = 5;</code>
        */
       public Builder addAllBuff(
-          java.lang.Iterable<? extends org.sq.gameDemo.common.proto.BuffPt.Buff> values) {
+          Iterable<? extends Buff> values) {
         if (buffBuilder_ == null) {
           ensureBuffIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -2945,14 +2862,14 @@ public final class BuffPt {
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.BuffPt.Buff.Builder getBuffBuilder(
+      public Buff.Builder getBuffBuilder(
           int index) {
         return getBuffFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder getBuffOrBuilder(
+      public BuffOrBuilder getBuffOrBuilder(
           int index) {
         if (buffBuilder_ == null) {
           return buff_.get(index);  } else {
@@ -2962,7 +2879,7 @@ public final class BuffPt {
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public java.util.List<? extends org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder> 
+      public java.util.List<? extends BuffOrBuilder>
            getBuffOrBuilderList() {
         if (buffBuilder_ != null) {
           return buffBuilder_.getMessageOrBuilderList();
@@ -2973,31 +2890,31 @@ public final class BuffPt {
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.BuffPt.Buff.Builder addBuffBuilder() {
+      public Buff.Builder addBuffBuilder() {
         return getBuffFieldBuilder().addBuilder(
-            org.sq.gameDemo.common.proto.BuffPt.Buff.getDefaultInstance());
+            Buff.getDefaultInstance());
       }
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public org.sq.gameDemo.common.proto.BuffPt.Buff.Builder addBuffBuilder(
+      public Buff.Builder addBuffBuilder(
           int index) {
         return getBuffFieldBuilder().addBuilder(
-            index, org.sq.gameDemo.common.proto.BuffPt.Buff.getDefaultInstance());
+            index, Buff.getDefaultInstance());
       }
       /**
        * <code>repeated .Buff buff = 5;</code>
        */
-      public java.util.List<org.sq.gameDemo.common.proto.BuffPt.Buff.Builder> 
+      public java.util.List<Buff.Builder>
            getBuffBuilderList() {
         return getBuffFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          org.sq.gameDemo.common.proto.BuffPt.Buff, org.sq.gameDemo.common.proto.BuffPt.Buff.Builder, org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder> 
+          Buff, Buff.Builder, BuffOrBuilder>
           getBuffFieldBuilder() {
         if (buffBuilder_ == null) {
           buffBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.sq.gameDemo.common.proto.BuffPt.Buff, org.sq.gameDemo.common.proto.BuffPt.Buff.Builder, org.sq.gameDemo.common.proto.BuffPt.BuffOrBuilder>(
+              Buff, Buff.Builder, BuffOrBuilder>(
                   buff_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
@@ -3006,13 +2923,13 @@ public final class BuffPt {
         }
         return buffBuilder_;
       }
-      @java.lang.Override
+      @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
-      @java.lang.Override
+      @Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -3023,18 +2940,18 @@ public final class BuffPt {
     }
 
     // @@protoc_insertion_point(class_scope:BuffRespInfo)
-    private static final org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo DEFAULT_INSTANCE;
+    private static final BuffRespInfo DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo();
+      DEFAULT_INSTANCE = new BuffRespInfo();
     }
 
-    public static org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo getDefaultInstance() {
+    public static BuffRespInfo getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
     private static final com.google.protobuf.Parser<BuffRespInfo>
         PARSER = new com.google.protobuf.AbstractParser<BuffRespInfo>() {
-      @java.lang.Override
+      @Override
       public BuffRespInfo parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -3047,13 +2964,13 @@ public final class BuffPt {
       return PARSER;
     }
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<BuffRespInfo> getParserForType() {
       return PARSER;
     }
 
-    @java.lang.Override
-    public org.sq.gameDemo.common.proto.BuffPt.BuffRespInfo getDefaultInstanceForType() {
+    @Override
+    public BuffRespInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3082,17 +2999,17 @@ public final class BuffPt {
   private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
-    java.lang.String[] descriptorData = {
+    String[] descriptorData = {
       "\n\nBuff.proto\"\207\001\n\004Buff\022\n\n\002id\030\001 \001(\005\022\014\n\004nam" +
       "e\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\n\n\002cd\030\004 \001(\004\022\n\n\002mp\030" +
       "\005 \001(\004\022\n\n\002hp\030\006 \001(\004\022\016\n\006effect\030\007 \001(\005\022\020\n\010dur" +
-      "ation\030\010 \001(\004\022\021\n\tstartTime\030\t \001(\004\"b\n\013BuffRe" +
-      "qInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\021\n\tp" +
-      "layer_id\030\003 \001(\004\022\017\n\007skillId\030\004 \001(\005\022\021\n\ttarge" +
-      "t_id\030\005 \001(\004\"b\n\014BuffRespInfo\022\016\n\006msg_id\030\001 \001" +
-      "(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007cont" +
-      "ent\030\004 \001(\t\022\023\n\004buff\030\005 \003(\0132\005.BuffB&\n\034org.sq" +
-      ".gameDemo.common.protoB\006BuffPtb\006proto3"
+      "ation\030\010 \001(\004\022\021\n\tstartTime\030\t \001(\004\"N\n\013BuffRe" +
+      "qInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006b" +
+      "uffId\030\003 \001(\005\022\021\n\ttarget_id\030\004 \001(\004\"b\n\014BuffRe" +
+      "spInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014" +
+      "\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\023\n\004buff\030\005 " +
+      "\003(\0132\005.BuffB&\n\034org.sq.gameDemo.common.pro" +
+      "toB\006BuffPtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3103,19 +3020,19 @@ public final class BuffPt {
     internal_static_Buff_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Buff_descriptor,
-        new java.lang.String[] { "Id", "Name", "Type", "Cd", "Mp", "Hp", "Effect", "Duration", "StartTime", });
+        new String[] { "Id", "Name", "Type", "Cd", "Mp", "Hp", "Effect", "Duration", "StartTime", });
     internal_static_BuffReqInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_BuffReqInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BuffReqInfo_descriptor,
-        new java.lang.String[] { "MsgId", "Time", "PlayerId", "SkillId", "TargetId", });
+        new String[] { "MsgId", "Time", "BuffId", "TargetId", });
     internal_static_BuffRespInfo_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_BuffRespInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BuffRespInfo_descriptor,
-        new java.lang.String[] { "MsgId", "Result", "Time", "Content", "Buff", });
+        new String[] { "MsgId", "Result", "Time", "Content", "Buff", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

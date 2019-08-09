@@ -68,7 +68,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-07-24
+     * @date 2019-08-06
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -540,6 +540,196 @@ public class UserEntityExample {
             addCriterion("exp not between", value1, value2, "exp");
             return (Criteria) this;
         }
+
+        public Criteria andEquipmentsIsNull() {
+            addCriterion("equipments is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsIsNotNull() {
+            addCriterion("equipments is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsEqualTo(String value) {
+            addCriterion("equipments =", value, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsNotEqualTo(String value) {
+            addCriterion("equipments <>", value, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsGreaterThan(String value) {
+            addCriterion("equipments >", value, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsGreaterThanOrEqualTo(String value) {
+            addCriterion("equipments >=", value, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsLessThan(String value) {
+            addCriterion("equipments <", value, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsLessThanOrEqualTo(String value) {
+            addCriterion("equipments <=", value, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsLike(String value) {
+            addCriterion("equipments like", value, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsNotLike(String value) {
+            addCriterion("equipments not like", value, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsIn(List<String> values) {
+            addCriterion("equipments in", values, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsNotIn(List<String> values) {
+            addCriterion("equipments not in", values, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsBetween(String value1, String value2) {
+            addCriterion("equipments between", value1, value2, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andEquipmentsNotBetween(String value1, String value2) {
+            addCriterion("equipments not between", value1, value2, "equipments");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyIsNull() {
+            addCriterion("money is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyIsNotNull() {
+            addCriterion("money is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyEqualTo(Integer value) {
+            addCriterion("money =", value, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyNotEqualTo(Integer value) {
+            addCriterion("money <>", value, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyGreaterThan(Integer value) {
+            addCriterion("money >", value, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyGreaterThanOrEqualTo(Integer value) {
+            addCriterion("money >=", value, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyLessThan(Integer value) {
+            addCriterion("money <", value, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyLessThanOrEqualTo(Integer value) {
+            addCriterion("money <=", value, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyIn(List<Integer> values) {
+            addCriterion("money in", values, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyNotIn(List<Integer> values) {
+            addCriterion("money not in", values, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyBetween(Integer value1, Integer value2) {
+            addCriterion("money between", value1, value2, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andMoneyNotBetween(Integer value1, Integer value2) {
+            addCriterion("money not between", value1, value2, "money");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdIsNull() {
+            addCriterion("guild_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdIsNotNull() {
+            addCriterion("guild_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdEqualTo(Integer value) {
+            addCriterion("guild_id =", value, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdNotEqualTo(Integer value) {
+            addCriterion("guild_id <>", value, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdGreaterThan(Integer value) {
+            addCriterion("guild_id >", value, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("guild_id >=", value, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdLessThan(Integer value) {
+            addCriterion("guild_id <", value, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdLessThanOrEqualTo(Integer value) {
+            addCriterion("guild_id <=", value, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdIn(List<Integer> values) {
+            addCriterion("guild_id in", values, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdNotIn(List<Integer> values) {
+            addCriterion("guild_id not in", values, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdBetween(Integer value1, Integer value2) {
+            addCriterion("guild_id between", value1, value2, "guildId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGuildIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("guild_id not between", value1, value2, "guildId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
@@ -554,7 +744,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-07-24
+     * @date 2019-08-06
      */
     public static class Criterion {
         private String condition;

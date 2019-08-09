@@ -44,7 +44,21 @@ public class UserEntity {
      */
     private Integer exp;
 
+    /**
+     * 装备
+     */
+    private String equipments;
 
+    /**
+     * 金币
+     */
+    private Integer money;
+
+
+    /**
+     * 公会id
+     */
+    private Integer guildId;
 
     // 当前使用技能的集合
     @ProtoField(Ignore = true)
@@ -53,7 +67,6 @@ public class UserEntity {
     // 当前攻击对象
     @ProtoField(Ignore = true)
     private Character target;
-
 
 
 }

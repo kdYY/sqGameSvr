@@ -867,9 +867,44 @@ public final class BagPt {
     long getPlayerId();
 
     /**
-     * <code>int32 itemId = 4;</code>
+     * <pre>
+     *使用装备或者物品
+     * </pre>
+     *
+     * <code>uint64 itemId = 4;</code>
      */
-    int getItemId();
+    long getItemId();
+
+    /**
+     * <pre>
+     *使用的数量
+     * </pre>
+     *
+     * <code>int32 count = 5;</code>
+     */
+    int getCount();
+
+    /**
+     * <code>int32 durable = 6;</code>
+     */
+    int getDurable();
+
+    /**
+     * <pre>
+     *装备的位置
+     * </pre>
+     *
+     * <code>.EquipPart part = 7;</code>
+     */
+    int getPartValue();
+    /**
+     * <pre>
+     *装备的位置
+     * </pre>
+     *
+     * <code>.EquipPart part = 7;</code>
+     */
+    ItemInfoPt.EquipPart getPart();
   }
   /**
    * <pre>
@@ -888,6 +923,7 @@ public final class BagPt {
       super(builder);
     }
     private BagReqInfo() {
+      part_ = 0;
     }
 
     @Override
@@ -937,7 +973,23 @@ public final class BagPt {
             }
             case 32: {
 
-              itemId_ = input.readInt32();
+              itemId_ = input.readUInt64();
+              break;
+            }
+            case 40: {
+
+              count_ = input.readInt32();
+              break;
+            }
+            case 48: {
+
+              durable_ = input.readInt32();
+              break;
+            }
+            case 56: {
+              int rawValue = input.readEnum();
+
+              part_ = rawValue;
               break;
             }
             default: {
@@ -1008,12 +1060,63 @@ public final class BagPt {
     }
 
     public static final int ITEMID_FIELD_NUMBER = 4;
-    private int itemId_;
+    private long itemId_;
     /**
-     * <code>int32 itemId = 4;</code>
+     * <pre>
+     *使用装备或者物品
+     * </pre>
+     *
+     * <code>uint64 itemId = 4;</code>
      */
-    public int getItemId() {
+    public long getItemId() {
       return itemId_;
+    }
+
+    public static final int COUNT_FIELD_NUMBER = 5;
+    private int count_;
+    /**
+     * <pre>
+     *使用的数量
+     * </pre>
+     *
+     * <code>int32 count = 5;</code>
+     */
+    public int getCount() {
+      return count_;
+    }
+
+    public static final int DURABLE_FIELD_NUMBER = 6;
+    private int durable_;
+    /**
+     * <code>int32 durable = 6;</code>
+     */
+    public int getDurable() {
+      return durable_;
+    }
+
+    public static final int PART_FIELD_NUMBER = 7;
+    private int part_;
+    /**
+     * <pre>
+     *装备的位置
+     * </pre>
+     *
+     * <code>.EquipPart part = 7;</code>
+     */
+    public int getPartValue() {
+      return part_;
+    }
+    /**
+     * <pre>
+     *装备的位置
+     * </pre>
+     *
+     * <code>.EquipPart part = 7;</code>
+     */
+    public ItemInfoPt.EquipPart getPart() {
+      @SuppressWarnings("deprecation")
+      ItemInfoPt.EquipPart result = ItemInfoPt.EquipPart.valueOf(part_);
+      return result == null ? ItemInfoPt.EquipPart.UNRECOGNIZED : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1039,8 +1142,17 @@ public final class BagPt {
       if (playerId_ != 0L) {
         output.writeUInt64(3, playerId_);
       }
-      if (itemId_ != 0) {
-        output.writeInt32(4, itemId_);
+      if (itemId_ != 0L) {
+        output.writeUInt64(4, itemId_);
+      }
+      if (count_ != 0) {
+        output.writeInt32(5, count_);
+      }
+      if (durable_ != 0) {
+        output.writeInt32(6, durable_);
+      }
+      if (part_ != ItemInfoPt.EquipPart.HEAD.getNumber()) {
+        output.writeEnum(7, part_);
       }
       unknownFields.writeTo(output);
     }
@@ -1063,9 +1175,21 @@ public final class BagPt {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(3, playerId_);
       }
-      if (itemId_ != 0) {
+      if (itemId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, itemId_);
+          .computeUInt64Size(4, itemId_);
+      }
+      if (count_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, count_);
+      }
+      if (durable_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, durable_);
+      }
+      if (part_ != ItemInfoPt.EquipPart.HEAD.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(7, part_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1090,6 +1214,11 @@ public final class BagPt {
           != other.getPlayerId()) return false;
       if (getItemId()
           != other.getItemId()) return false;
+      if (getCount()
+          != other.getCount()) return false;
+      if (getDurable()
+          != other.getDurable()) return false;
+      if (part_ != other.part_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1111,7 +1240,14 @@ public final class BagPt {
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getPlayerId());
       hash = (37 * hash) + ITEMID_FIELD_NUMBER;
-      hash = (53 * hash) + getItemId();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getItemId());
+      hash = (37 * hash) + COUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getCount();
+      hash = (37 * hash) + DURABLE_FIELD_NUMBER;
+      hash = (53 * hash) + getDurable();
+      hash = (37 * hash) + PART_FIELD_NUMBER;
+      hash = (53 * hash) + part_;
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1255,7 +1391,13 @@ public final class BagPt {
 
         playerId_ = 0L;
 
-        itemId_ = 0;
+        itemId_ = 0L;
+
+        count_ = 0;
+
+        durable_ = 0;
+
+        part_ = 0;
 
         return this;
       }
@@ -1287,6 +1429,9 @@ public final class BagPt {
         result.time_ = time_;
         result.playerId_ = playerId_;
         result.itemId_ = itemId_;
+        result.count_ = count_;
+        result.durable_ = durable_;
+        result.part_ = part_;
         onBuilt();
         return result;
       }
@@ -1344,8 +1489,17 @@ public final class BagPt {
         if (other.getPlayerId() != 0L) {
           setPlayerId(other.getPlayerId());
         }
-        if (other.getItemId() != 0) {
+        if (other.getItemId() != 0L) {
           setItemId(other.getItemId());
+        }
+        if (other.getCount() != 0) {
+          setCount(other.getCount());
+        }
+        if (other.getDurable() != 0) {
+          setDurable(other.getDurable());
+        }
+        if (other.part_ != 0) {
+          setPartValue(other.getPartValue());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1478,28 +1632,169 @@ public final class BagPt {
         return this;
       }
 
-      private int itemId_ ;
+      private long itemId_ ;
       /**
-       * <code>int32 itemId = 4;</code>
+       * <pre>
+       *使用装备或者物品
+       * </pre>
+       *
+       * <code>uint64 itemId = 4;</code>
        */
-      public int getItemId() {
+      public long getItemId() {
         return itemId_;
       }
       /**
-       * <code>int32 itemId = 4;</code>
+       * <pre>
+       *使用装备或者物品
+       * </pre>
+       *
+       * <code>uint64 itemId = 4;</code>
        */
-      public Builder setItemId(int value) {
+      public Builder setItemId(long value) {
         
         itemId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 itemId = 4;</code>
+       * <pre>
+       *使用装备或者物品
+       * </pre>
+       *
+       * <code>uint64 itemId = 4;</code>
        */
       public Builder clearItemId() {
         
-        itemId_ = 0;
+        itemId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int count_ ;
+      /**
+       * <pre>
+       *使用的数量
+       * </pre>
+       *
+       * <code>int32 count = 5;</code>
+       */
+      public int getCount() {
+        return count_;
+      }
+      /**
+       * <pre>
+       *使用的数量
+       * </pre>
+       *
+       * <code>int32 count = 5;</code>
+       */
+      public Builder setCount(int value) {
+        
+        count_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *使用的数量
+       * </pre>
+       *
+       * <code>int32 count = 5;</code>
+       */
+      public Builder clearCount() {
+        
+        count_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int durable_ ;
+      /**
+       * <code>int32 durable = 6;</code>
+       */
+      public int getDurable() {
+        return durable_;
+      }
+      /**
+       * <code>int32 durable = 6;</code>
+       */
+      public Builder setDurable(int value) {
+        
+        durable_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 durable = 6;</code>
+       */
+      public Builder clearDurable() {
+        
+        durable_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int part_ = 0;
+      /**
+       * <pre>
+       *装备的位置
+       * </pre>
+       *
+       * <code>.EquipPart part = 7;</code>
+       */
+      public int getPartValue() {
+        return part_;
+      }
+      /**
+       * <pre>
+       *装备的位置
+       * </pre>
+       *
+       * <code>.EquipPart part = 7;</code>
+       */
+      public Builder setPartValue(int value) {
+        part_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *装备的位置
+       * </pre>
+       *
+       * <code>.EquipPart part = 7;</code>
+       */
+      public ItemInfoPt.EquipPart getPart() {
+        @SuppressWarnings("deprecation")
+        ItemInfoPt.EquipPart result = ItemInfoPt.EquipPart.valueOf(part_);
+        return result == null ? ItemInfoPt.EquipPart.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       *装备的位置
+       * </pre>
+       *
+       * <code>.EquipPart part = 7;</code>
+       */
+      public Builder setPart(ItemInfoPt.EquipPart value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        part_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *装备的位置
+       * </pre>
+       *
+       * <code>.EquipPart part = 7;</code>
+       */
+      public Builder clearPart() {
+        
+        part_ = 0;
         onChanged();
         return this;
       }
@@ -2741,18 +3036,21 @@ public final class BagPt {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\tBag.proto\"D\n\003Bag\022\020\n\010playerId\030\001 \001(\004\022\014\n\004" +
-      "name\030\002 \001(\t\022\014\n\004size\030\003 \001(\005\022\017\n\007itemStr\030\004 \001(" +
-      "\t\"L\n\nBagReqInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030" +
-      "\002 \001(\004\022\020\n\010playerId\030\003 \001(\004\022\016\n\006itemId\030\004 \001(\005\"" +
-      "_\n\013BagRespInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result" +
-      "\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\021\n" +
-      "\003bag\030\005 \003(\0132\004.BagB%\n\034org.sq.gameDemo.comm" +
-      "on.protoB\005BagPtb\006proto3"
+      "\n\tBag.proto\032\016ItemInfo.proto\"D\n\003Bag\022\020\n\010pl" +
+      "ayerId\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\014\n\004size\030\003 \001(\005" +
+      "\022\017\n\007itemStr\030\004 \001(\t\"\206\001\n\nBagReqInfo\022\016\n\006msg_" +
+      "id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\020\n\010playerId\030\003 \001(\004" +
+      "\022\016\n\006itemId\030\004 \001(\004\022\r\n\005count\030\005 \001(\005\022\017\n\007durab" +
+      "le\030\006 \001(\005\022\030\n\004part\030\007 \001(\0162\n.EquipPart\"_\n\013Ba" +
+      "gRespInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(" +
+      "\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\021\n\003bag\030" +
+      "\005 \003(\0132\004.BagB%\n\034org.sq.gameDemo.common.pr" +
+      "otoB\005BagPtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          ItemInfoPt.getDescriptor(),
         });
     internal_static_Bag_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -2765,13 +3063,14 @@ public final class BagPt {
     internal_static_BagReqInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BagReqInfo_descriptor,
-        new String[] { "MsgId", "Time", "PlayerId", "ItemId", });
+        new String[] { "MsgId", "Time", "PlayerId", "ItemId", "Count", "Durable", "Part", });
     internal_static_BagRespInfo_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_BagRespInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BagRespInfo_descriptor,
         new String[] { "MsgId", "Result", "Time", "Content", "Bag", });
+    ItemInfoPt.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

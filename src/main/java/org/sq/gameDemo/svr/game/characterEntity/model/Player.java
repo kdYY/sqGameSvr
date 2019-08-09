@@ -1,20 +1,20 @@
 package org.sq.gameDemo.svr.game.characterEntity.model;
 
-import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.sq.gameDemo.common.proto.BuffPt;
 import org.sq.gameDemo.svr.common.Constant;
-import org.sq.gameDemo.svr.common.TimedTaskManager;
-import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.LevelEvent;
-import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
+import org.sq.gameDemo.svr.game.bag.model.Bag;
+import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -31,10 +31,41 @@ public class Player extends UserEntity implements Character {
     private Integer level;
 
     /**
-     * 根据配置进行计算
+     * 根据配置进行计算,同时hp mp等级变动影响
      */
     private Long hp;
     private Long mp;
+
+    private Long B_Hp;
+    private Long B_Mp;
+
+    /**
+     * 设置hp的波动范围
+     * @param hp
+     */
+    public synchronized void setHp(Long hp) {
+        if(hp > this.getB_Hp() * this.getLevel()) {
+            hp = this.getB_Hp() * this.getLevel();
+        }
+        if(hp < 0) {
+            hp = 0L;
+        }
+        this.hp = hp;
+    }
+
+    /**
+     * 设置mp的波动范围
+     * @param mp
+     */
+    public synchronized void setMp(Long mp) {
+        if(mp > this.getB_Mp() * this.getLevel()) {
+            mp = this.getB_Mp()* this.getLevel();
+        }
+        if(mp < 0) {
+            mp = 0L;
+        }
+        this.mp = mp;
+    }
 
     /**
      *  玩家战力,根据base技能属性进行计算
@@ -59,6 +90,24 @@ public class Player extends UserEntity implements Character {
             this.setLevel(newLevel);
         }
     }
+
+
+    /**
+     * 玩家身上的buff
+     */
+    @ProtoField(TargetClass = BuffPt.Buff.class, TargetName = "buff")
+    private List<Buff> bufferList = new CopyOnWriteArrayList<>();
+
+
+    // 装备<部位，>
+    @ProtoField(Ignore = true)
+    private Map<Integer, Item> equipmentBar = new ConcurrentHashMap<>();
+
+
+    // 背包栏 默认大小为16
+    @ProtoField(Ignore = true)
+    private Bag bag = new Bag("背包栏",16) ;
+
 
 
 }

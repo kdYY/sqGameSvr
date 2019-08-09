@@ -1,9 +1,9 @@
-package org.sq.gameDemo.svr.common;
+package org.sq.gameDemo.svr.common.poiUtil;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Row;
+import org.sq.gameDemo.svr.common.Ref;
 import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
-import org.sq.gameDemo.svr.game.skills.model.Skill;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -31,6 +31,10 @@ public class PoiUtil {
         //将class的Field的名称<name, setName()>记录到map中
         Map<String, Method> setMethodMap = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
+            ExcelFeild ignoreField = field.getDeclaredAnnotation(ExcelFeild.class);
+            if(ignoreField != null && ignoreField.Ignore()) {
+                continue;
+            }
             String name = field.getName();
             if(supportTypeList.contains(field.getType().getSimpleName())) {
                 try{

@@ -10,7 +10,6 @@ import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
 import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
-import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.CustomException;
@@ -35,8 +34,7 @@ public class EntityController {
 
     @Autowired
     private PlayerCache playerCache;
-    @Autowired
-    private EntityTypeCache entityTypeCache;
+
 
 
     /**
@@ -102,7 +100,7 @@ public class EntityController {
         //场景，场景中的角色信息
         GameScene sence = senceService.getSenceBySenceId(senceId);
         builder.setSence((SenceProto.Sence) ProtoBufUtil.transformProtoReturnBean(SenceProto.Sence.newBuilder(), sence));
-        senceService.transformEntityResponseProto(builder, sence.getId());
+        senceService.transformEntityRespPt(builder, sence.getId());
     }
 
     /**
@@ -213,7 +211,7 @@ public class EntityController {
                               @RespBuilderParam PlayerPt.PlayerRespInfo.Builder builder) throws Exception {
         try {
             Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
-            Optional.ofNullable(entityTypeCache.get(player.getTypeId())).ifPresent(
+            Optional.ofNullable(entityService.getType(player.getTypeId())).ifPresent(
                     entityType -> {
                         List<Skill> skillList = entityType.getSkillList();
                         if(skillList != null &&skillList.size() > 0) {

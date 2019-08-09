@@ -13,6 +13,7 @@ import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.CustomException;
+import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
@@ -50,6 +51,8 @@ public class UserService {
     private PlayerCache playerCache;
     @Autowired
     private UserEntityMapper userEntityMapper;
+    @Autowired
+    private BagService bagService;
 
 
 
@@ -155,6 +158,7 @@ public class UserService {
         UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
         userEntity.setSenceId(player.getSenceId());
         userEntityMapper.updateByPrimaryKeySelective(userEntity);
+        bagService.updateBagInDB(player);
         log.info(player.getName() + "下线");
     }
 

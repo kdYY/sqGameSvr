@@ -1,10 +1,14 @@
 package org.sq.gameDemo.svr.game.bag.dao;
 
-import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import org.sq.gameDemo.svr.game.bag.model.Bag;
 import org.sq.gameDemo.svr.game.bag.model.BagExample;
 
+import java.util.List;
+@Mapper
+@Repository
 public interface BagMapper {
     int countByExample(BagExample example);
 

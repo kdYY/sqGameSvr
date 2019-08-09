@@ -7,14 +7,15 @@ import org.springframework.stereotype.Service;
 import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
-import org.sq.gameDemo.svr.common.TimedTaskManager;
+import org.sq.gameDemo.svr.common.TimeTaskManager;
+import org.sq.gameDemo.svr.game.bag.service.BagService;
+import org.sq.gameDemo.svr.game.bag.service.EquitService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
-import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.model.EntityType;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
@@ -23,6 +24,8 @@ import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
+import org.sq.gameDemo.svr.game.skills.model.Skill;
+import org.sq.gameDemo.svr.game.skills.service.SkillService;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 
@@ -43,9 +46,16 @@ public class EntityService {
     private PlayerCache playerCache;
     @Autowired
     private EntityTypeCache entityTypeCache;
-
+    @Autowired
+    private SkillService skillService;
     @Autowired
     private RoleAttributeService attributeService;
+    @Autowired
+    private BuffService buffService;
+    @Autowired
+    private BagService bagService;
+    @Autowired
+    private EquitService equitService;
 
 
     /**
@@ -136,6 +146,7 @@ public class EntityService {
             UserEntity usrEntity = userEntityMapper.getUserEntityByUserId(userId);
             playerCached = new Player();
             BeanUtils.copyProperties(usrEntity,playerCached);
+
             //初始化玩家
             initPlayer(playerCached);
 
@@ -175,15 +186,24 @@ public class EntityService {
         player.setLevel(player.getExp()/100);
         //加载指定角色属性
         attributeService.bindRoleAttr(player);
+
+        bagService.bindBag(player);
+
+        equitService.bindEquip(player);
+
+        skillService.bindSkill(player);
         //计算最终的攻击力
         computeAttack(player);
+
+        buffService.buffAffecting(player, buffService.getBuff(105));
+        buffService.buffAffecting(player, buffService.getBuff(106));
     }
 
     /**
      * 计算玩家战力
      * @param player
      */
-    private void computeAttack(Player player) {
+    public void computeAttack(Player player) {
         Map<Integer, RoleAttribute> roleAttributeMap = player.getRoleAttributeMap();
         // 基础攻击力
         int basicAttack = Optional.ofNullable(roleAttributeMap.get(4).getValue()).orElse(30);
@@ -194,9 +214,8 @@ public class EntityService {
         /**
          * AP英雄的增益
          */
-        String typeName = "";
         EntityType type = EntityTypeCache.getAllEntityTypes().get(player.getTypeId());
-        if(Objects.nonNull(type) && Constant.AP.equals(typeName)) {
+        if(Objects.nonNull(type) && Constant.AP.equals(type.getTypeName())) {
             totalAttack +=  Math.round(
                     Optional.ofNullable(roleAttributeMap.get(5).getValue() * Constant.hpAttackIncreaseRate)
                             .orElse(100 * Constant.hpAttackIncreaseRate)
@@ -256,34 +275,42 @@ public class EntityService {
      */
     public boolean playerIsDead(Player player, Monster attacker) {
         synchronized (player) {
-            if(player.getHp() <= 0) {
-                if(Objects.nonNull(player) && player.getHp() <= 0) {
-                    player.setState(CharacterState.IS_REFRESH.getCode());
-                    player.setHp(0L);
-                    player.setMp(0L);
-                    if(attacker instanceof Monster) {
-                        ((Monster)attacker).setTarget(null);
-                        ((Monster)attacker).setState(CharacterState.LIVE.getCode());
-                    }
-
-                    Channel channel = playerCache.getChannelByPlayerId(player.getId());
-                    channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家死亡事件，你被杀死了, 2秒后回起源之地"));
-
-                    TimedTaskManager.schedule(
-                            2000, () -> {
-                                Long id = player.getId();
-                                initPlayer(player);
-                                player.setId(id);
-                                //添加到起源之地
-                                senceService.moveToSence(player, 1, playerCache.getChannelByPlayerId(player.getId()));
-                                channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家复活，恭喜你复活了"));
-                            }
-                    );
+            if(Objects.nonNull(player) && player.getHp() <= 0) {
+                player.setState(CharacterState.IS_REFRESH.getCode());
+                player.setHp(0L);
+                player.setMp(0L);
+                if(attacker != null && attacker instanceof Monster) {
+                    ((Monster)attacker).setTarget(null);
+                    ((Monster)attacker).setState(CharacterState.LIVE.getCode());
                 }
+
+                Channel channel = playerCache.getChannelByPlayerId(player.getId());
+                channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家死亡事件，你被杀死了, 2秒后回起源之地"));
+
+                TimeTaskManager.schedule(
+                        2000, () -> {
+                            Long id = player.getId();
+                            initPlayer(player);
+                            player.setId(id);
+                            //添加到起源之地
+                            senceService.moveToSence(player, 1, playerCache.getChannelByPlayerId(player.getId()));
+                            channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家复活，恭喜你复活了"));
+                        }
+                );
                 return true;
             }
+
             return false;
         }
 
+    }
+
+
+    public EntityType getType(Integer typeId) {
+        return entityTypeCache.get(typeId);
+    }
+
+    public Player getPlayer(Channel channel) {
+        return playerCache.getPlayerByChannel(channel);
     }
 }

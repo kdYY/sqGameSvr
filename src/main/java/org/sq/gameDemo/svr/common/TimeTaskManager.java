@@ -1,6 +1,8 @@
 package org.sq.gameDemo.svr.common;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.SingleThreadEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.eventManage.Event;
@@ -9,7 +11,7 @@ import java.util.concurrent.*;
 
 @Slf4j
 @Component
-public class TimedTaskManager {
+public class TimeTaskManager {
 
     private static ThreadFactory scheduledThreadPoolFactory = new ThreadFactoryBuilder()
             .setNameFormat("scheduledThreadPool-%d").setUncaughtExceptionHandler((t,e) -> e.printStackTrace()).build();
@@ -34,7 +36,7 @@ public class TimedTaskManager {
      * @param callback 任务
      * @return
      */
-    public static Future<Event> scheduleWithData(long delay, Callable<Event> callback) {
+    public static Future<Event> scheduleByCallable(long delay, Callable<Event> callback) {
         return ScheduledThreadPool.schedule(callback,delay, TimeUnit.MILLISECONDS);
     }
 
@@ -86,4 +88,16 @@ public class TimedTaskManager {
     }
 
 
+
+    class SingleThreadSceduleExecutor extends SingleThreadEventExecutor {
+
+        protected SingleThreadSceduleExecutor(EventExecutorGroup parent, Executor executor, boolean addTaskWakesUp) {
+            super(parent, executor, addTaskWakesUp);
+        }
+
+        @Override
+        protected void run() {
+
+        }
+    }
 }

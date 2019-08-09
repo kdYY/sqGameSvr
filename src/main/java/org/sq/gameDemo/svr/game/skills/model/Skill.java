@@ -50,7 +50,7 @@ public class Skill {
     private Integer grade;
 
     /**
-     * 技能释放时间
+     * 技能释放时间 抬手动作
      */
     private Long castTime;
 
@@ -59,12 +59,12 @@ public class Skill {
      */
     private Integer buff;
 
+    @ProtoField(Ignore = false)
+    private Long lastUseTime;
     /**
      * 技能描述
      */
     private String   description;
 
-    @ProtoField(Ignore = true)
-    private boolean inCD = false;
 }
 

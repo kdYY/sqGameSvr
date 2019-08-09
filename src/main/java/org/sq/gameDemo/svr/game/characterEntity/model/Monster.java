@@ -2,8 +2,13 @@ package org.sq.gameDemo.svr.game.characterEntity.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.sq.gameDemo.common.proto.BuffPt;
 import org.sq.gameDemo.common.proto.MonsterPt;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 野怪类
@@ -33,6 +38,7 @@ public class Monster extends SenceEntity implements Character {
      */
     //private Long hatredTime;
 
-
+    @ProtoField(TargetClass = BuffPt.Buff.class, TargetName = "buff")
+    private List<Buff> bufferList = new CopyOnWriteArrayList<>();
 
 }

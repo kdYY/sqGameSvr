@@ -1,12 +1,15 @@
 package org.sq.gameDemo.svr.game.characterEntity.model;
 
 import lombok.Data;
+import org.sq.gameDemo.common.proto.BuffPt;
+import org.sq.gameDemo.svr.common.poiUtil.ExcelFeild;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 场景非角色单位
@@ -38,9 +41,31 @@ public class SenceEntity{
     @ProtoField(Ignore = true)
     private long deadTime;
 
+    public void setHp(Long hp) {
+        synchronized (this.hp) {
+            if(hp <= 0) {
+                hp = 0L;
+            }
+            this.hp = hp;
+        }
 
-    //buff集合 可不可覆盖?
-    //掉落的东西
-    //待领任务或者奖励
+    }
 
+    public void setMp(Long mp) {
+        synchronized (this.mp) {
+            if(mp <= 0) {
+                mp = 0L;
+            }
+            this.mp = mp;
+        }
+
+    }
+
+
+    //buff
+    @ProtoField(TargetClass = BuffPt.Buff.class, TargetName = "buff")
+    private List<Buff> bufferList = new CopyOnWriteArrayList<>();
+
+    @ExcelFeild(Ignore = true)
+    private Integer level;
 }

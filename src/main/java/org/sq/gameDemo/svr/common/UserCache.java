@@ -7,6 +7,9 @@ import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
+import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.user.dao.UserMapper;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
@@ -182,5 +185,7 @@ public class UserCache {
                     channel.writeAndFlush(msgEntity);
                 });
     }
+
+
 
 }

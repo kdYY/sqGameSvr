@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.common;
 
 import sun.security.jca.GetInstance;
 
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ConcurrentSnowFlake {
 
     //初始时间戳 2018-08-28 00:00:00 my birthday~~~
-    private static final long INIT_TIME_STAMP = 1535385600000L;
+    private static final long INIT_TIME_STAMP = new Date(2018, 8, 28, 0, 0, 0 ).getTime();
 
     //机器ID所占位数
     private static final long WORK_ID_BITS = 5L;
@@ -149,7 +150,7 @@ public class ConcurrentSnowFlake {
     }
 
 
-    public static void main(String[] args) throws Exception{
+    public static void main1(String[] args) throws Exception{
         final ConcurrentSnowFlake main = new ConcurrentSnowFlake();
         ExecutorService exes = Executors.newCachedThreadPool();
         for (int i = 0;i < 10; i++){

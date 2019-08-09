@@ -12,6 +12,7 @@ import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.common.customException.CustomException;
+import org.sq.gameDemo.svr.common.poiUtil.PoiUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
@@ -21,8 +22,12 @@ import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
+import org.sq.gameDemo.svr.game.skills.model.Skill;
+import org.sq.gameDemo.svr.game.skills.service.SkillService;
+
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,6 +39,10 @@ public class SenceService {
     private EntityService entityService;
     @Autowired
     private SenceEntityCache senceEntityCache;
+    @Autowired
+    private PlayerCache playerCache;
+    @Autowired
+    private SkillService skillService;
 
 
     @Value("${excel.sence}")
@@ -57,40 +66,67 @@ public class SenceService {
         List<SenceConfig> senceConfList = PoiUtil.readExcel(sencedataFileName, 0, SenceConfig.class);
 
         senceConfList.forEach(config -> {
-            List<SenceConfig.tmpConf> tmpConfList = JsonUtil.reSerializableJson(config.getJsonStr(), SenceConfig.tmpConf.class);
-
-            ArrayList<Monster> monsterListinSence = new ArrayList<>();
-            ArrayList<Npc> npclistinsence = new ArrayList<>();
-            for (SenceConfig.tmpConf tmpConf : tmpConfList) {
-                SenceEntity senceEntity = senceEntityCache.get((long) tmpConf.getId());
-                if(senceEntity.getTypeId().equals(Constant.Monster)) {
-                    for (int i = 0; i < tmpConf.getNum(); i++) {
-                        Monster monster = new Monster();
-                        BeanUtils.copyProperties(senceEntity, monster);
-                        monster.setId(ConcurrentSnowFlake.getInstance().nextID());
-                        monster.setEntityTypeId(senceEntity.getId());
-                        monster.setSenceId(config.getSenceId());
-                        monsterListinSence.add(monster);
-                    }
-                }
-                if(senceEntity.getTypeId().equals(Constant.NPC)) {
-                    for (int i = 0; i < tmpConf.getNum(); i++) {
-                        Npc npc = new Npc();
-                        BeanUtils.copyProperties(senceEntity, npc);
-                        npc.setId(ConcurrentSnowFlake.getInstance().nextID());
-                        npc.setSenceId(config.getSenceId());
-                        npclistinsence.add(npc);
-                    }
-                }
-            }
-            SenceConfigMsg senceConfigMsg = new SenceConfigMsg();
-            senceConfigMsg.setSenceId(config.getSenceId());
-            senceConfigMsg.setMonsterList(monsterListinSence);
-            senceConfigMsg.setNpcList(npclistinsence);
-
+            SenceConfigMsg senceConfigMsg = getInitedSence(config);
             senceIdAndSenceMsgMap.put(config.getSenceId(), senceConfigMsg);
         });
 
+    }
+
+    private SenceConfigMsg getInitedSence(SenceConfig config) {
+        List<SenceConfig.tmpConf> tmpConfList = JsonUtil.reSerializableJson(config.getJsonStr(), SenceConfig.tmpConf.class);
+
+        ArrayList<Monster> monsterListinSence = new ArrayList<>();
+        ArrayList<Npc> npclistinsence = new ArrayList<>();
+        for (SenceConfig.tmpConf tmpConf : tmpConfList) {
+            SenceEntity senceEntity = senceEntityCache.get((long) tmpConf.getId());
+            if(senceEntity.getTypeId().equals(Constant.Monster)) {
+                for (int i = 0; i < tmpConf.getNum(); i++) {
+                    Monster monster = getInitedMonster(config, senceEntity);
+                    monsterListinSence.add(monster);
+                }
+            }
+            if(senceEntity.getTypeId().equals(Constant.NPC)) {
+                for (int i = 0; i < tmpConf.getNum(); i++) {
+                    Npc npc = getInitedNpc(config, senceEntity);
+                    npclistinsence.add(npc);
+                }
+            }
+        }
+        SenceConfigMsg senceConfigMsg = new SenceConfigMsg();
+        senceConfigMsg.setSenceId(config.getSenceId());
+        senceConfigMsg.setMonsterList(monsterListinSence);
+        senceConfigMsg.setNpcList(npclistinsence);
+        return senceConfigMsg;
+    }
+
+    private Npc getInitedNpc(SenceConfig config, SenceEntity senceEntity) {
+        Npc npc = new Npc();
+        BeanUtils.copyProperties(senceEntity, npc);
+        npc.setId(ConcurrentSnowFlake.getInstance().nextID());
+        npc.setSenceId(config.getSenceId());
+        return npc;
+    }
+
+    private Monster getInitedMonster(SenceConfig config, SenceEntity senceEntity) {
+        Monster monster = new Monster();
+        BeanUtils.copyProperties(senceEntity, monster);
+        monster.setId(ConcurrentSnowFlake.getInstance().nextID());
+        monster.setEntityTypeId(senceEntity.getId());
+        monster.setSenceId(config.getSenceId());
+        ConcurrentMap<Integer, Skill> collect = Arrays.stream(monster.getSkillStr().trim().split(","))
+                .map(Integer::valueOf)
+                .filter(str -> skillService.getSkill(str) != null)
+                .map(skillService::getSkill)
+                .collect(Collectors.toConcurrentMap(
+                        skill -> skill.getId(),
+                        skill -> {
+                            Skill monsterSkill = new Skill();
+                            BeanUtils.copyProperties(skill, monsterSkill);
+                            return monsterSkill;
+                        }
+                        ));
+        monster.setSkillInUsedMap(collect);
+        return monster;
     }
 
     /**
@@ -107,7 +143,7 @@ public class SenceService {
      * @param builder
      * @param senceId
      */
-    public void transformEntityResponseProto(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) throws Exception{
+    public void transformEntityRespPt(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) throws Exception{
         SenceConfigMsg findSence = null;
         if((findSence = getSenecMsgById(senceId)) == null) {
             throw new CustomException.NoSuchSenceException("没有此场景");
@@ -216,5 +252,16 @@ public class SenceService {
         player.setSenceId(newSenceId);
         //进行重新绑定
         addPlayerInSence(player, channel);
+    }
+
+
+    public void notifyPlayerByDefault(Character attacter, String content) {
+        if(attacter instanceof Player) {
+            playerCache.getChannelByPlayerId(attacter.getId()).writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content));
+        }
+        if(attacter instanceof Monster
+                && ((Monster)attacter).getTarget() instanceof Player) {
+            playerCache.getChannelByPlayerId(((Monster)attacter).getTarget().getId()).writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content));
+        }
     }
 }

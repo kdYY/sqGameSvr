@@ -6,35 +6,42 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.sq.gameDemo.svr.common.TimedTaskManager;
+import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
-import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
+import org.sq.gameDemo.svr.game.bag.service.EquitService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
+import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.model.SkillRange;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
 public class SkillService {
 
     @Autowired
-    private SkillCache skillCache;
+    private SenceService senceService;
     @Autowired
     private PlayerCache playerCache;
     @Autowired
-    private EntityTypeCache typeCache;
-
+    private EntityService entityService;
+    @Autowired
+    private MonsterAIService monsterAIService;
     @Autowired
     private SkillRangeService skillRangeService;
+    @Autowired
+    private EquitService equitService;
+    @Autowired
+    private SkillCache skillCache;
 
 
     /**
@@ -44,13 +51,11 @@ public class SkillService {
      * @param skill
      * @param senecMsg
      */
-    public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
-
+    public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg, Future future) {
 
         if(targeter instanceof Npc) {
             if(attacter instanceof UserEntity ) {
-                Channel channel = playerCache.getChannelByPlayerId(attacter.getId());
-                channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("npc不能被砍..."));
+                senceService.notifyPlayerByDefault(attacter, "npc不能被砍...");
                 return false;
             }
             return false;
@@ -64,7 +69,7 @@ public class SkillService {
         log.debug(content);
 
         //开启cd
-        makeSkillInCD(attacter, skill);
+        makeSkillCD(attacter, skill);
         //技能若是有释放时间，则延迟释放
 
         if(attacter instanceof UserEntity && skill.getCastTime() > 0) {
@@ -73,17 +78,25 @@ public class SkillService {
         }
 
         //单线程执行
-        TimedTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0: skill.getCastTime() ,
-                ()->{
+        future = TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
+                () -> {
                     senecMsg.getSingleThreadSchedule().execute(
                             () -> {
-                                if(targeter.getHp() > 0) { //??
-                                    if(attacter instanceof Player) {
-                                        playerCache.getChannelByPlayerId(attacter.getId()).writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content));
-                                    } else {
-                                        playerCache.getChannelByPlayerId(targeter.getId()).writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content));
-                                    }
+                                if (targeter.getHp() > 0) {
+                                    senceService.notifyPlayerByDefault(targeter, content);
                                     skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
+
+                                    if (attacter instanceof Player) {
+                                        ((Player) attacter).setTarget(targeter);
+                                        //随机损耗装备
+                                        ((Player) attacter).getEquipmentBar().values()
+                                                .stream()
+                                                .findAny()
+                                                .ifPresent(equit -> equit.setDurable(equit.getDurable() - (int) Math.random() * 5));
+                                    }
+                                    if (targeter instanceof Monster) {
+                                        monsterAIService.monsterBeAttacked(attacter, (Monster) targeter, senecMsg, skill);
+                                    }
                                 }
                             }
                     );
@@ -92,19 +105,20 @@ public class SkillService {
 
     }
 
-    /**
-     * 使用技能前使技能进入cd
-     * @param attacter
-     * @param skill
-     */
-    private void makeSkillInCD(Character attacter, Skill skill) {
-        Skill usedSkill = new Skill();
-        BeanUtils.copyProperties(skill, usedSkill, "description");
-        usedSkill.setGrade(skill.getGrade());
 
-        attacter.getSkillInUsedMap().put(skill.getId(), usedSkill);
-        // 定时解除cd状态
-        TimedTaskManager.schedule(skill.getCd(), () -> attacter.getSkillInUsedMap().remove(skill.getId()) );
+    public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
+        Future future = null;
+        return characterUseSkillAttack(attacter, targeter, skill, senecMsg, future);
+    }
+
+        /**
+         * 使用技能前使技能进入cd
+         * @param attacter
+         * @param skill
+         */
+    private void makeSkillCD(Character attacter, Skill skill) {
+        //设置技能使用时间
+        skill.setLastUseTime(System.currentTimeMillis());
     }
 
 
@@ -119,18 +133,17 @@ public class SkillService {
 
         if(Objects.isNull(skill)) {
             notice = "技能不存在，技能id有误";
-        } else if(skill.isInCD()) {
+        } else if(character.getSkillInUsedMap().get(skill.getId()).getLastUseTime() + skill.getCd() < System.currentTimeMillis()) {
             notice = "技能正在冷却";
         } else if(character instanceof Player) {
-            EntityType type = typeCache.get(((Player) character).getTypeId());
-            if(Objects.isNull(type.getSkillMap().get(skill.getId()))) {
+            if(Objects.isNull(character.getSkillInUsedMap().get(skill.getId()))) {
                 notice = "该角色对应的职业不具备此技能";
             }
             if(character.getMp() < skill.getMpNeed()) {
                 notice = "角色蓝量不够";
             }
         }
-        if(targetIdList.size() > 1 && !skill.getSkillRange().equals(SkillRange.Enemys)) {
+        if(targetIdList != null && targetIdList.size() > 1 && !skill.getSkillRange().equals(SkillRange.Enemys)) {
             notice = "该技能不能针对多个敌方";
         }
 
@@ -148,7 +161,20 @@ public class SkillService {
         return false;
     }
 
+    /**
+     * 绑定用户技能
+     * @param player
+     */
+    public void bindSkill(Player player) {
+        EntityType entityType = entityService.getType(player.getTypeId());
+        for (Skill skill : entityType.getSkillList()) {
+            Skill playerSkill = new Skill();
+            BeanUtils.copyProperties(skill, playerSkill);
+            player.getSkillInUsedMap().put(skill.getId(), playerSkill);
+        }
+    }
 
-
-
+    public Skill getSkill(Integer skillId) {
+        return skillCache.get(skillId);
+    }
 }
