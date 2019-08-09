@@ -133,7 +133,7 @@ public class SkillService {
 
         if(Objects.isNull(skill)) {
             notice = "技能不存在，技能id有误";
-        } else if(character.getSkillInUsedMap().get(skill.getId()).getLastUseTime() + skill.getCd() < System.currentTimeMillis()) {
+        } else if(character.getSkillInUsedMap().get(skill.getId()).getLastUseTime() + skill.getCd() > System.currentTimeMillis()) {
             notice = "技能正在冷却";
         } else if(character instanceof Player) {
             if(Objects.isNull(character.getSkillInUsedMap().get(skill.getId()))) {

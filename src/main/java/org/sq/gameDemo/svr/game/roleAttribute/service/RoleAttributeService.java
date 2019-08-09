@@ -109,7 +109,7 @@ public class RoleAttributeService {
             Optional.ofNullable(cachedRoleAttr).ifPresent(
                     attr -> {
                         player.setB_Hp(player.getB_Hp() + Long.valueOf(attr.getValue()));
-                        if(player.getHp() <= 0) {
+                        if(player.getHp() == null || player.getHp() <= 0) {
                             player.setHp(player.getB_Hp() * player.getLevel());
                         }
                     }
@@ -117,7 +117,7 @@ public class RoleAttributeService {
         } else if (cachedRoleAttr.getName().contains("MP")) {
             Optional.ofNullable(cachedRoleAttr).ifPresent( attr -> {
                 player.setB_Mp(player.getB_Mp() + Long.valueOf(attr.getValue()));
-                if(player.getMp() <= 0) {
+                if(player.getMp() == null || player.getMp() <= 0) {
                     player.setMp(player.getB_Mp() * player.getLevel());
                 }
             });

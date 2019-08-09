@@ -35,7 +35,7 @@ public class DropPool {
         int finalLevel = level;
         List<ItemDropConf> itemDropConfs = itemDropCache.getMap().values()
                                             .stream()
-                                            .filter(o -> o.getMinPickerLevel() < finalLevel && finalLevel > o.getMaxPickerLevel())
+                                            .filter(o -> o.getMinPickerLevel() <= finalLevel && finalLevel < o.getMaxPickerLevel())
                                             .collect(Collectors.toList());
         //找到每个物品下指定怪物等级的掉落配置
         for (ItemDropConf itemDrop : itemDropConfs) {

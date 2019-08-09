@@ -67,6 +67,11 @@ public final class BuffPt {
      * <code>uint64 startTime = 9;</code>
      */
     long getStartTime();
+
+    /**
+     * <code>uint64 intervalTime = 10;</code>
+     */
+    long getIntervalTime();
   }
   /**
    * <pre>
@@ -162,6 +167,11 @@ public final class BuffPt {
             case 72: {
 
               startTime_ = input.readUInt64();
+              break;
+            }
+            case 80: {
+
+              intervalTime_ = input.readUInt64();
               break;
             }
             default: {
@@ -302,6 +312,15 @@ public final class BuffPt {
       return startTime_;
     }
 
+    public static final int INTERVALTIME_FIELD_NUMBER = 10;
+    private long intervalTime_;
+    /**
+     * <code>uint64 intervalTime = 10;</code>
+     */
+    public long getIntervalTime() {
+      return intervalTime_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -342,6 +361,9 @@ public final class BuffPt {
       }
       if (startTime_ != 0L) {
         output.writeUInt64(9, startTime_);
+      }
+      if (intervalTime_ != 0L) {
+        output.writeUInt64(10, intervalTime_);
       }
       unknownFields.writeTo(output);
     }
@@ -387,6 +409,10 @@ public final class BuffPt {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(9, startTime_);
       }
+      if (intervalTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, intervalTime_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -420,6 +446,8 @@ public final class BuffPt {
           != other.getDuration()) return false;
       if (getStartTime()
           != other.getStartTime()) return false;
+      if (getIntervalTime()
+          != other.getIntervalTime()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -454,6 +482,9 @@ public final class BuffPt {
       hash = (37 * hash) + STARTTIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getStartTime());
+      hash = (37 * hash) + INTERVALTIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getIntervalTime());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -609,6 +640,8 @@ public final class BuffPt {
 
         startTime_ = 0L;
 
+        intervalTime_ = 0L;
+
         return this;
       }
 
@@ -644,6 +677,7 @@ public final class BuffPt {
         result.effect_ = effect_;
         result.duration_ = duration_;
         result.startTime_ = startTime_;
+        result.intervalTime_ = intervalTime_;
         onBuilt();
         return result;
       }
@@ -719,6 +753,9 @@ public final class BuffPt {
         }
         if (other.getStartTime() != 0L) {
           setStartTime(other.getStartTime());
+        }
+        if (other.getIntervalTime() != 0L) {
+          setIntervalTime(other.getIntervalTime());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1022,6 +1059,32 @@ public final class BuffPt {
       public Builder clearStartTime() {
         
         startTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long intervalTime_ ;
+      /**
+       * <code>uint64 intervalTime = 10;</code>
+       */
+      public long getIntervalTime() {
+        return intervalTime_;
+      }
+      /**
+       * <code>uint64 intervalTime = 10;</code>
+       */
+      public Builder setIntervalTime(long value) {
+        
+        intervalTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 intervalTime = 10;</code>
+       */
+      public Builder clearIntervalTime() {
+        
+        intervalTime_ = 0L;
         onChanged();
         return this;
       }
@@ -3000,16 +3063,16 @@ public final class BuffPt {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\nBuff.proto\"\207\001\n\004Buff\022\n\n\002id\030\001 \001(\005\022\014\n\004nam" +
+      "\n\nBuff.proto\"\235\001\n\004Buff\022\n\n\002id\030\001 \001(\005\022\014\n\004nam" +
       "e\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\n\n\002cd\030\004 \001(\004\022\n\n\002mp\030" +
       "\005 \001(\004\022\n\n\002hp\030\006 \001(\004\022\016\n\006effect\030\007 \001(\005\022\020\n\010dur" +
-      "ation\030\010 \001(\004\022\021\n\tstartTime\030\t \001(\004\"N\n\013BuffRe" +
-      "qInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006b" +
-      "uffId\030\003 \001(\005\022\021\n\ttarget_id\030\004 \001(\004\"b\n\014BuffRe" +
-      "spInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014" +
-      "\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\023\n\004buff\030\005 " +
-      "\003(\0132\005.BuffB&\n\034org.sq.gameDemo.common.pro" +
-      "toB\006BuffPtb\006proto3"
+      "ation\030\010 \001(\004\022\021\n\tstartTime\030\t \001(\004\022\024\n\014interv" +
+      "alTime\030\n \001(\004\"N\n\013BuffReqInfo\022\016\n\006msg_id\030\001 " +
+      "\001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006buffId\030\003 \001(\005\022\021\n\ttar" +
+      "get_id\030\004 \001(\004\"b\n\014BuffRespInfo\022\016\n\006msg_id\030\001" +
+      " \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007co" +
+      "ntent\030\004 \001(\t\022\023\n\004buff\030\005 \003(\0132\005.BuffB&\n\034org." +
+      "sq.gameDemo.common.protoB\006BuffPtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3020,7 +3083,7 @@ public final class BuffPt {
     internal_static_Buff_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Buff_descriptor,
-        new String[] { "Id", "Name", "Type", "Cd", "Mp", "Hp", "Effect", "Duration", "StartTime", });
+        new String[] { "Id", "Name", "Type", "Cd", "Mp", "Hp", "Effect", "Duration", "StartTime", "IntervalTime", });
     internal_static_BuffReqInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_BuffReqInfo_fieldAccessorTable = new

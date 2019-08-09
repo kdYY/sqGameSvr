@@ -41,24 +41,18 @@ public class SenceEntity{
     @ProtoField(Ignore = true)
     private long deadTime;
 
-    public void setHp(Long hp) {
-        synchronized (this.hp) {
+    public synchronized void setHp(Long hp) {
             if(hp <= 0) {
                 hp = 0L;
             }
             this.hp = hp;
-        }
-
     }
 
-    public void setMp(Long mp) {
-        synchronized (this.mp) {
+    public synchronized void setMp(Long mp) {
             if(mp <= 0) {
                 mp = 0L;
             }
             this.mp = mp;
-        }
-
     }
 
 

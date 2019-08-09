@@ -39,7 +39,7 @@ public class BuffService {
                         affecter.setHp(affecter.getHp() + buff.getHp());
                         affecter.setMp(affecter.getMp() + buff.getMp());
                         // 如果是玩家，进行通知
-                        if (affecter instanceof Player) {
+                        if (affecter instanceof Player && !buff.getId().equals(105) && !buff.getId().equals(106)) {
                             senceService.notifyPlayerByDefault(affecter,
                                     buff.getName() + "正作用在" + affecter.getName() + "身上");
                             // 检测玩家是否死亡

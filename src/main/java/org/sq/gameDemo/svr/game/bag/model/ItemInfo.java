@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.game.bag.model;
 
 import lombok.Data;
 import org.sq.gameDemo.common.proto.ItemInfoPt;
+import org.sq.gameDemo.svr.common.poiUtil.ExcelFeild;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 
@@ -19,7 +20,7 @@ public class ItemInfo {
 
     private Integer buff;
 
-
+    private Integer level;
     private Integer type;
 
     @ProtoField(TargetName = "part", Function = "transformPart", TargetClass = ItemInfoPt.ItemInfo.Builder.class)
@@ -39,7 +40,9 @@ public class ItemInfo {
 
     @ProtoField(Ignore = true)
     private Integer repairPrice;
+
     @ProtoField(Ignore = true)
+    @ExcelFeild(Ignore = true)
     private Map<Integer, RoleAttribute> itemRoleAttribute = new ConcurrentHashMap<>();
 
 

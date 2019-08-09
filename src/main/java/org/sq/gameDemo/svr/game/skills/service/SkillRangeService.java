@@ -47,11 +47,7 @@ public class SkillRangeService {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(attacter.getHp() + skill.getHeal());
 
-        if(skill.getBuff() != null && skill.getBuff() != 0) {
-            Optional.ofNullable(buffService.getBuff(skill.getBuff())).ifPresent(
-                buff -> buffService.buffAffecting(target, buff)
-            );
-        }
+
 
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
                 target.getName()
@@ -61,6 +57,12 @@ public class SkillRangeService {
                         + skill.getHeal()
                         + "治疗，目前hp为"
                         + target.getHp());
+        //TODO attacking有问题
+        if(skill.getBuff() != null && skill.getBuff() != 0) {
+            Optional.ofNullable(buffService.getBuff(skill.getBuff())).ifPresent(
+                    buff -> buffService.buffAffecting(target, buff)
+            );
+        }
 
     }
 
@@ -100,12 +102,7 @@ public class SkillRangeService {
     private void skillSingleEnemy(Character attacter, Character target, SenceConfigMsg senecMsg, Skill skill) {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(target.getHp() - skill.getHurt());
-        //启动爸爸
-        if(skill.getBuff() != null && skill.getBuff() != 0) {
-            Optional.ofNullable(buffService.getBuff(skill.getBuff())).ifPresent(
-                    buff -> buffService.buffAffecting(target, buff)
-            );
-        }
+
         UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
                 target.getName()
                         + "受到单体攻击技能:"
@@ -114,6 +111,12 @@ public class SkillRangeService {
                         + skill.getHurt()
                         + "伤害，目前hp为"
                         + target.getHp());
+        //启动爸爸
+        if(skill.getBuff() != null && skill.getBuff() != 0) {
+            Optional.ofNullable(buffService.getBuff(skill.getBuff())).ifPresent(
+                    buff -> buffService.buffAffecting(target, buff)
+            );
+        }
 
     }
 

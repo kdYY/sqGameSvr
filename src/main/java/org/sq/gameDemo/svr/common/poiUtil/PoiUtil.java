@@ -2,6 +2,8 @@ package org.sq.gameDemo.svr.common.poiUtil;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.sq.gameDemo.svr.common.Ref;
 import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
 
@@ -50,12 +52,17 @@ public class PoiUtil {
         }
 
         ArrayList excelData = new ArrayList<>();
-        HSSFWorkbook hssfWorkbook = null;
+        Workbook hssfWorkbook = null;
         try {
             File file = new File(fileName);
             InputStream resourceAsStream = PoiUtil.class.getClassLoader().getResourceAsStream(fileName);
-            hssfWorkbook = new HSSFWorkbook(resourceAsStream);
-            HSSFSheet sheet = hssfWorkbook.getSheetAt(sheetNum);
+            if (file.getName().endsWith(".xlsx")) {
+                hssfWorkbook = new XSSFWorkbook(resourceAsStream);
+            } else {
+                hssfWorkbook = new HSSFWorkbook(resourceAsStream);
+            }
+//            hssfWorkbook = new HSSFWorkbook(resourceAsStream);
+            HSSFSheet sheet = (HSSFSheet) hssfWorkbook.getSheetAt(sheetNum);
             int lastRowNum = sheet.getLastRowNum();
             //Ref为了将第一行标题取出来
             Ref<List> listRef = new Ref<>();
@@ -95,8 +102,8 @@ public class PoiUtil {
         HSSFRow row = sheet.getRow(rowNum);
 
         if(!checkRow(row, rowNum, setMethod)) {
-            System.out.println("err: 第" + (rowNum + 1) + "行數據有误");
-            throw new Exception("PoiUtil -> excel文件有誤");
+            System.out.println();
+            throw new Exception("PoiUtil -> excel文件有誤" + "\nerr: 第" + (rowNum + 1) + "行數據有误");
         }
 
         //此次读取是否为标题行读取
@@ -135,6 +142,9 @@ public class PoiUtil {
      */
     private static Object getValueFromCell(HSSFCell cell, Class expectClazz) {
         Object value = null;
+        if(cell == null) {
+            return value;
+        }
         String typeName = expectClazz.getSimpleName();
 
         switch (cell.getCellType()) {

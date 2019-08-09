@@ -44,7 +44,7 @@ public class ProtoBufUtil {
             Annotation[] declaredAnnotations = declaredField.getDeclaredAnnotations();
             String fieldName = declaredField.getName();
             String getMethodName = "get" + upperCaseFirstLetter(fieldName);
-            String setMethodName = "set" + upperCaseFirstLetter(fieldName);
+            String setMethodName = "set" + upperCaseFirstLetter(fieldName.replaceAll("_", ""));
 
 
             for (Annotation declaredAnnotation : declaredAnnotations) {
@@ -126,8 +126,13 @@ public class ProtoBufUtil {
             Field field = getMethodEntry.getKey();
             field.setAccessible(true);
             Method setMethod = goalBuilderSetMethodMap.get(field);
-            Object invoke = getMethod.invoke(sourceBean);
-            setMethod.invoke(goalBuilder, invoke);
+            Object getValue = getMethod.invoke(sourceBean);
+            if(getValue != null) {
+                setMethod.invoke(goalBuilder, getValue);
+            } else {
+                System.out.println(setMethod.getName() + "的参数来自" + getMethod.getName() + ", 参数内容为空, get的域为" + field.getName() + ";set的域来自" + goalBuilder.getClass().getName() );
+            }
+
         }
 
         for (Map.Entry<Field, Method> fieldMethodEntry : sourceBeanFunctionMap.entrySet()) {
@@ -175,7 +180,10 @@ public class ProtoBufUtil {
         } else if(type.length == 1) {
             String typeName = type[0].getName();
             try {
-                Method declaredMethod = getDeclaredMethod(goalBuilder.getClass(),methodName, type[0]);
+                if(methodName.equals("setB_Hp")) {
+                    System.out.println("1");
+                }
+                Method declaredMethod = getDeclaredMethod(goalBuilder.getClass(), methodName, type[0]);
                 return declaredMethod;
             } catch (NoSuchMethodException e) {
                 List<Method> declaredMethods = getClassMethod(goalBuilder.getClass(), methodName);
@@ -186,7 +194,7 @@ public class ProtoBufUtil {
                     }
                 }
                 e.printStackTrace();
-                throw  new NoSuchMethodException("没有此方法，请检查proto文件是否跟bean定义的字段一致");
+                throw  new NoSuchMethodException("在"+ goalBuilder.getClass().getName() +"中没有"+ methodName +"方法，请检查proto文件是否跟bean定义的字段一致");
             }
         } else {
             return  getDeclaredMethod(goalBuilder.getClass(),methodName, type);

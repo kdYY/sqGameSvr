@@ -15,6 +15,7 @@ import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 @Component
@@ -43,7 +44,6 @@ public class ItemInfoCache {
         List<ItemInfo> itemInfoList = PoiUtil.readExcel(fileName, 0, ItemInfo.class);
 
         for (ItemInfo itemInfo : itemInfoList) {
-            List<RoleAttribute> list = JsonUtil.reSerializableJson(itemInfo.getJsonStr(), RoleAttribute.class);
             put(itemInfo.getId(), itemInfo);
         }
         itemInfos = itemInfoCache.asMap().values().stream().collect(Collectors.toList());

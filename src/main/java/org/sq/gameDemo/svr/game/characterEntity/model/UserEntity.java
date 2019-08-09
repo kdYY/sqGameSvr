@@ -47,7 +47,7 @@ public class UserEntity {
     /**
      * 装备
      */
-    private String equipments;
+    private String equipments = "{}";
 
     /**
      * 金币

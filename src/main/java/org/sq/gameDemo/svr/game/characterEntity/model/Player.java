@@ -3,6 +3,7 @@ package org.sq.gameDemo.svr.game.characterEntity.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.sq.gameDemo.common.proto.BuffPt;
+import org.sq.gameDemo.common.proto.PlayerPt;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.eventManage.EventBus;
@@ -36,14 +37,15 @@ public class Player extends UserEntity implements Character {
     private Long hp;
     private Long mp;
 
-    private Long B_Hp;
-    private Long B_Mp;
+    private Long B_Hp = 0L;
+    private Long B_Mp = 0L;
 
     /**
      * 设置hp的波动范围
      * @param hp
      */
     public synchronized void setHp(Long hp) {
+
         if(hp > this.getB_Hp() * this.getLevel()) {
             hp = this.getB_Hp() * this.getLevel();
         }
