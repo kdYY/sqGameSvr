@@ -12,7 +12,7 @@ import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
-import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.drop.service.DropPool;
 import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -32,7 +32,7 @@ public class EventHandlers {
     @Autowired
     private PlayerCache playerCache;
     @Autowired
-    private EntityService entityService;
+    private DropPool dropPool;
     @Autowired
     private SenceService senceService;
     @Autowired
@@ -86,7 +86,7 @@ public class EventHandlers {
      */
     private  void monsterDead(MonsterDeadEvent monsterDeadEvent) {
         //玩家 检查任务进度，掉落物品，触发幸运大爆 ....
-
+        dropPool.getDropItems(monsterDeadEvent.getAttacter(), monsterDeadEvent.getTargetMonster());
     }
 
 }
