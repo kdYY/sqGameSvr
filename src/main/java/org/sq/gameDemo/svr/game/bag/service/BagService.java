@@ -102,7 +102,7 @@ public class BagService {
         if (Objects.isNull(itemInfo)) {
             return null;
         }
-        if(itemInfo.getType().equals(ItemType.EQUIT_ITEM)) {
+        if(itemInfo.getType().equals(ItemType.EQUIT_ITEM.getType())) {
             return new Item(ConcurrentSnowFlake.getInstance().nextID(), count, itemInfo, level);
         } else {
             return new Item(ConcurrentSnowFlake.getInstance().nextID(), count, itemInfo);
@@ -128,6 +128,10 @@ public class BagService {
                     player.setBag(playerBag);
                 }
         );
+        if(player.getBag().getPlayerId() == null) {
+            player.getBag().setPlayerId(player.getId());
+        }
+
     }
 
     /**
@@ -167,7 +171,7 @@ public class BagService {
             senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + "物品*" + item.getCount() + "已经放入背包");
         }
         //不可叠加的时候
-        else if(bag.getSize() < bag.getItemBar().size()) {
+        else if(bag.getSize() > bag.getItemBar().size()) {
             bag.getItemBar().put(item.getId(), item);
             senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + "物品*" + item.getCount() + "已经放入背包");
         }

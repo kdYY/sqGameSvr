@@ -114,7 +114,7 @@ public class Player extends UserEntity implements Character {
 
     // 背包栏 默认大小为16
     @ProtoField(Ignore = true)
-    private Bag bag = new Bag("背包栏",16) ;
+    private Bag bag = new Bag(this.getId(), "背包栏",100) ;
 
 
     public void setDeadStatus() {

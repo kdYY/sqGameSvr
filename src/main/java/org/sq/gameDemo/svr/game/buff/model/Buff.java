@@ -49,6 +49,7 @@ public class Buff {
     private Long intervalTime;
 
     //记录buff作用者
+    @ProtoField(Ignore = true)
     private Character character;
     /**
      * 记录buff的源头

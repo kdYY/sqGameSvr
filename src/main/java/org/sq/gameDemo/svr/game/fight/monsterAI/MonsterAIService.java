@@ -70,7 +70,7 @@ public class MonsterAIService {
 
             if(attacter instanceof Player) {
                 Player player = (Player) attacter;
-                player.addExp(Constant.MONSTER_EXP);
+                player.addExp(targetMonster.getLevel() * 10);
                 senceService.notifyPlayerByDefault(attacter, targetMonster.getName()
                                 + "(id=" + targetMonster.getId()
                                 + ")被你杀死了, 经验增加↑"

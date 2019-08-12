@@ -44,14 +44,17 @@ public class DropPool {
                                                                 && holderDrop.getMax() >= monster.getLevel()).findFirst();
             if(first.isPresent()) {
                 ItemDropConf.HolderDrop holderDrop = first.get();
-                //得到(1,maxCount)随机数量
-                int itemCount = getRamdonNumInRange(1, holderDrop.getMaxCount());
+                //得到(0,maxCount)随机数量
+                int itemCount = getRamdonNumInRange(0, holderDrop.getMaxCount());
+                if(itemCount == 0) {
+                    continue;
+                }
                 //得到(玩家level, 玩家level+5)随机等级
                 int itemLevel = getRamdonNumInRange(level, level+5);
                 //按照概率区间得到物品id
-                int itemInfoId = aimItem(itemDropConfs, holderDrop.getProb() / 100 );
+                int itemInfoId = aimItem(itemDropConfs,  holderDrop.getProb());
+                Optional.ofNullable(bagService.createItem(itemInfoId, itemCount, itemLevel)).ifPresent(item -> dropItem.add(item));
 
-                dropItem.add(bagService.createItem(itemInfoId, itemCount, itemLevel));
             }
         }
 
@@ -59,35 +62,39 @@ public class DropPool {
     }
 
     // 放大倍数
-    private static final int mulriple = 100000;
+    private static final int mulriple = 1000;
 
-    public int aimItem(List<ItemDropConf> itemDropConfs, Integer prob) {
+    public int aimItem(List<ItemDropConf> itemDropConfs, int prob) {
         int lastScope = 0;
         // 洗牌，打乱物品次序
         Collections.shuffle(itemDropConfs);
         Map<Integer, int[]> itemScopes = new HashMap<Integer, int[]>();
+        int[] luckRange = new int[itemDropConfs.size()];
+        int i = 0;
         for (ItemDropConf itemDropConf : itemDropConfs) {
             int itemInfoId = itemDropConf.getItemInfoId();
             // 划分区间
             int currentScope = lastScope + prob * mulriple;
             itemScopes.put(itemInfoId, new int[] { lastScope + 1, currentScope });
-
+            luckRange[i++] = currentScope;
             lastScope = currentScope;
         }
 
         // 获取1-100000之间的一个随机数
-        int luckyNumber = new Random().nextInt(mulriple);
+        int luckyNumber = 0;
+        for (int luck : luckRange) {
+            Random random = new Random();
+            luckyNumber += random.nextInt(luck);
+        }
+
         int luckyPrizeId = 0;
         // 查找随机数所在的区间
         if ((null != itemScopes) && !itemScopes.isEmpty()) {
-            Set<Map.Entry<Integer, int[]>> entrySets = itemScopes.entrySet();
-            for (Map.Entry<Integer, int[]> m : entrySets) {
-                int key = m.getKey();
-                if (luckyNumber >= m.getValue()[0] && luckyNumber <= m.getValue()[1]) {
-                    luckyPrizeId = key;
-                    break;
-                }
-            }
+
+            int finalLuckyNumber = luckyNumber / luckRange.length;
+            luckyPrizeId = itemScopes.entrySet().stream()
+                    .filter(entry -> finalLuckyNumber >= entry.getValue()[0] && finalLuckyNumber < entry.getValue()[1])
+                    .findFirst().map(Map.Entry::getKey).orElse(0);
         }
 
         return luckyPrizeId;
@@ -96,5 +103,11 @@ public class DropPool {
 
     public int getRamdonNumInRange(int min, int max) {
         return new Random().nextInt(max)%(max-min+1) + min;
+    }
+
+
+    public static void main(String[] args) {
+        float a = 8 / 10;
+        System.out.println(a);
     }
 }

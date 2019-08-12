@@ -8,15 +8,20 @@ import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.LevelEvent;
 import org.sq.gameDemo.svr.eventManage.event.MonsterBeAttackedEvent;
 import org.sq.gameDemo.svr.eventManage.event.MonsterDeadEvent;
+import org.sq.gameDemo.svr.game.bag.model.Item;
+import org.sq.gameDemo.svr.game.bag.model.ItemType;
+import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
+import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.drop.service.DropPool;
 import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,7 +41,7 @@ public class EventHandlers {
     @Autowired
     private SenceService senceService;
     @Autowired
-    private MonsterAIService monsterAIService;
+    private BagService bagService;
 
     {
         EventBus.registe(LevelEvent.class, this::levelUp);
@@ -53,10 +58,12 @@ public class EventHandlers {
      */
     private  void levelUp(LevelEvent levelEvent) {
         Optional.ofNullable(levelEvent.getPlayer()).ifPresent(player -> {
-            player.setLevel(levelEvent.getNewlevel());
+            Integer level = player.getLevel();
+            Integer newlevel = levelEvent.getNewlevel();
+            player.setLevel(newlevel);
 
             playerCache.getChannelByPlayerId(player.getId()).writeAndFlush(
-                    ProtoBufUtil.getBroadCastDefaultEntity("恭喜你升了一级，目前等级是" + player.getLevel()));
+                    ProtoBufUtil.getBroadCastDefaultEntity("恭喜你升了"+ (newlevel - level) + "级，目前等级是" + newlevel));
         });
     }
 
@@ -87,7 +94,18 @@ public class EventHandlers {
     private  void monsterDead(MonsterDeadEvent monsterDeadEvent) {
         //玩家 检查任务进度，掉落物品，触发幸运大爆 ....
         //掉落物品
-        dropPool.getDropItems(monsterDeadEvent.getAttacter(), monsterDeadEvent.getTargetMonster());
+        Character attacter = monsterDeadEvent.getAttacter();
+        if(attacter instanceof Player) {
+            List<Item> dropItems = dropPool
+                    .getDropItems(attacter, monsterDeadEvent.getTargetMonster());
+            dropItems.forEach(item -> {
+                senceService.notifyPlayerByDefault(attacter, "掉落" + item.getItemInfo().getName()
+                        + " * " + item.getCount());
+                bagService.addItemInBag((Player) attacter, item);
+            });
+        }
+
+
     }
 
 }

@@ -16,7 +16,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 场景非角色单位
  */
-@Slf4j
 @Data
 public class SenceEntity{
     private Long id;
@@ -49,7 +48,6 @@ public class SenceEntity{
                 hp = 0L;
             }
             this.hp = hp;
-        log.debug(this.getName() + "-> hp:" + hp);
     }
 
     public synchronized void setMp(Long mp) {

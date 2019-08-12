@@ -11,6 +11,7 @@ import java.util.Map;
 public class Bag {
 
 
+    private Long userEntityId;
     String name;
 
 
@@ -31,16 +32,18 @@ public class Bag {
     @ProtoField(Ignore = true)
     Map<Long, Item> itemBar = new LinkedHashMap<>();
 
-    public Bag() {
+    private Bag() {
     }
 
-    public Bag(String name, Integer size) {
+    public Bag(Long userEntityId, String name, Integer size) {
+        this.userEntityId = userEntityId;
         this.name = name;
         this.size = size;
     }
 
 
-    public Bag(Integer size) {
+    public Bag(Long playerId, Integer size) {
+        this.userEntityId = playerId;
         this.size = size;
     }
 }
