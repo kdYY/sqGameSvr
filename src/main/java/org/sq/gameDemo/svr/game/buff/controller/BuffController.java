@@ -1,4 +1,4 @@
-package org.sq.gameDemo.svr.game.characterEntity.controller;
+package org.sq.gameDemo.svr.game.buff.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,10 +8,9 @@ import org.sq.gameDemo.common.proto.BuffPt;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
 import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
-import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
-import org.sq.gameDemo.svr.game.characterEntity.model.Buff;
+import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
-import org.sq.gameDemo.svr.game.characterEntity.service.BuffService;
+import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
@@ -29,8 +28,7 @@ public class BuffController {
 
     @OrderMapping(OrderEnum.USE_BUFF)
     public void useBuff(MsgEntity msgEntity,
-                        @ReqParseParam BuffPt.BuffReqInfo requestInfo,
-                        @RespBuilderParam BuffPt.BuffRespInfo.Builder builder) {
+                        @ReqParseParam BuffPt.BuffReqInfo requestInfo) {
 
         Player player = entityService.getPlayer(msgEntity.getChannel());
         Buff buff = buffService.getBuff(requestInfo.getBuffId());

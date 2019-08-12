@@ -10,6 +10,7 @@ import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.bag.service.EquitService;
+import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.common.UserCache;
@@ -24,7 +25,6 @@ import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
-import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
@@ -276,9 +276,8 @@ public class EntityService {
     public boolean playerIsDead(Player player, Monster attacker) {
         synchronized (player) {
             if(Objects.nonNull(player) && player.getHp() <= 0) {
-                player.setState(CharacterState.IS_REFRESH.getCode());
-                player.setHp(0L);
-                player.setMp(0L);
+                player.setDeadStatus();
+
                 if(attacker != null && attacker instanceof Monster) {
                     ((Monster)attacker).setTarget(null);
                     ((Monster)attacker).setState(CharacterState.LIVE.getCode());
@@ -287,17 +286,24 @@ public class EntityService {
                 Channel channel = playerCache.getChannelByPlayerId(player.getId());
                 channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家死亡事件，你被杀死了, 2秒后回起源之地"));
 
-                TimeTaskManager.schedule(
-                        2000, () -> {
-                            Long id = player.getId();
-                            initPlayer(player);
-                            player.setId(id);
-                            //添加到起源之地
-                            senceService.moveToSence(player, 1, playerCache.getChannelByPlayerId(player.getId()));
-                            channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家复活，恭喜你复活了"));
-                        }
-                );
-                return true;
+                try {
+                    TimeTaskManager.threadPoolSchedule(
+                            2000, () -> {
+                                Long id = player.getId();
+                                initPlayer(player);
+                                player.setId(id);
+                                //添加到起源之地
+                                if(!player.getSenceId().equals(1)) {
+                                    senceService.moveToSence(player, 1, playerCache.getChannelByPlayerId(player.getId()));
+                                }
+                                channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家复活，恭喜你复活了"));
+                            }
+                    );
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
 
             return false;

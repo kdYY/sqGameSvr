@@ -1,8 +1,6 @@
 package org.sq.gameDemo.svr.common;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.netty.util.concurrent.EventExecutorGroup;
-import io.netty.util.concurrent.SingleThreadEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.eventManage.Event;
@@ -15,7 +13,7 @@ public class TimeTaskManager {
 
     private static ThreadFactory scheduledThreadPoolFactory = new ThreadFactoryBuilder()
             .setNameFormat("scheduledThreadPool-%d").setUncaughtExceptionHandler((t,e) -> e.printStackTrace()).build();
-    private static ScheduledExecutorService ScheduledThreadPool =
+    private static ScheduledExecutorService threadPool =
             Executors.newScheduledThreadPool( Runtime.getRuntime().availableProcessors()*2+1,scheduledThreadPoolFactory);
 
 
@@ -36,8 +34,8 @@ public class TimeTaskManager {
      * @param callback 任务
      * @return
      */
-    public static Future<Event> scheduleByCallable(long delay, Callable<Event> callback) {
-        return ScheduledThreadPool.schedule(callback,delay, TimeUnit.MILLISECONDS);
+    public static Future<Event> threadPoolSchedule(long delay, Callable<Event> callback) {
+        return threadPool.schedule(callback,delay, TimeUnit.MILLISECONDS);
     }
 
 
@@ -59,8 +57,8 @@ public class TimeTaskManager {
      * @param runnable 任务
      * @return
      */
-    public static Future schedule(long delay, Runnable runnable) {
-        return ScheduledThreadPool.schedule(runnable,delay, TimeUnit.MILLISECONDS);
+    public static Future threadPoolSchedule(long delay, Runnable runnable) throws Exception{
+        return threadPool.schedule(runnable,delay, TimeUnit.MILLISECONDS);
     }
 
 
@@ -71,8 +69,8 @@ public class TimeTaskManager {
      * @param runnable 任务
      * @return
      */
-    public static ScheduledFuture<?> scheduleAtFixedRate(long initDelay , long delay , Runnable runnable) {
-        return ScheduledThreadPool.scheduleAtFixedRate(runnable,initDelay,delay, TimeUnit.MILLISECONDS);
+    public static ScheduledFuture<?> scheduleAtFixedRate(long initDelay , long delay , Runnable runnable) throws Exception{
+        return threadPool.scheduleAtFixedRate(runnable,initDelay,delay, TimeUnit.MILLISECONDS);
     }
 
 
@@ -84,20 +82,7 @@ public class TimeTaskManager {
      *
      */
     public static ScheduledFuture<?> scheduleWithFixedDelay(long initDelay , long delay , Runnable runnable) {
-        return ScheduledThreadPool.scheduleWithFixedDelay(runnable,initDelay,delay, TimeUnit.MILLISECONDS);
+        return threadPool.scheduleWithFixedDelay(runnable,initDelay,delay, TimeUnit.MILLISECONDS);
     }
 
-
-
-    class SingleThreadSceduleExecutor extends SingleThreadEventExecutor {
-
-        protected SingleThreadSceduleExecutor(EventExecutorGroup parent, Executor executor, boolean addTaskWakesUp) {
-            super(parent, executor, addTaskWakesUp);
-        }
-
-        @Override
-        protected void run() {
-
-        }
-    }
 }

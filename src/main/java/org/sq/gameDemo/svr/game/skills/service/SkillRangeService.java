@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
-import org.sq.gameDemo.svr.game.characterEntity.service.BuffService;
+import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.model.SkillRange;
@@ -57,12 +57,6 @@ public class SkillRangeService {
                         + skill.getHeal()
                         + "治疗，目前hp为"
                         + target.getHp());
-        //TODO attacking有问题
-        if(skill.getBuff() != null && skill.getBuff() != 0) {
-            Optional.ofNullable(buffService.getBuff(skill.getBuff())).ifPresent(
-                    buff -> buffService.buffAffecting(target, buff)
-            );
-        }
 
     }
 
@@ -111,12 +105,6 @@ public class SkillRangeService {
                         + skill.getHurt()
                         + "伤害，目前hp为"
                         + target.getHp());
-        //启动爸爸
-        if(skill.getBuff() != null && skill.getBuff() != 0) {
-            Optional.ofNullable(buffService.getBuff(skill.getBuff())).ifPresent(
-                    buff -> buffService.buffAffecting(target, buff)
-            );
-        }
 
     }
 

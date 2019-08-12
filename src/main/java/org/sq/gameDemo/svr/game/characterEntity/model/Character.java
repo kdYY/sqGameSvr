@@ -1,10 +1,10 @@
 package org.sq.gameDemo.svr.game.characterEntity.model;
 
+import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 /**
  * 场景上的一个单位，规范角色的必有的属性方法

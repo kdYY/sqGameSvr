@@ -9,10 +9,10 @@ import org.springframework.util.StringUtils;
 import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
-import org.sq.gameDemo.svr.game.bag.service.EquitService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
@@ -22,6 +22,7 @@ import org.sq.gameDemo.svr.game.skills.model.SkillRange;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Future;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class SkillService {
     @Autowired
     private SkillRangeService skillRangeService;
     @Autowired
-    private EquitService equitService;
+    private BuffService buffService;
     @Autowired
     private SkillCache skillCache;
 
@@ -85,6 +86,12 @@ public class SkillService {
                                 if (targeter.getHp() > 0) {
                                     senceService.notifyPlayerByDefault(targeter, content);
                                     skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
+
+                                    if(skill.getBuff() != null && skill.getBuff() != 0) {
+                                        Optional.ofNullable(skill.getBuff()).ifPresent(
+                                                buff -> buffService.buffAffecting(targeter, buffService.getBuff(buff))
+                                        );
+                                    }
 
                                     if (attacter instanceof Player) {
                                         ((Player) attacter).setTarget(targeter);

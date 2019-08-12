@@ -46,8 +46,8 @@ public class DropPool {
                 ItemDropConf.HolderDrop holderDrop = first.get();
                 //得到(1,maxCount)随机数量
                 int itemCount = getRamdonNumInRange(1, holderDrop.getMaxCount());
-                //得到(玩家level - 5, 玩家level)随机等级
-                int itemLevel = getRamdonNumInRange(level - 5, level);
+                //得到(玩家level, 玩家level+5)随机等级
+                int itemLevel = getRamdonNumInRange(level, level+5);
                 //按照概率区间得到物品id
                 int itemInfoId = aimItem(itemDropConfs, holderDrop.getProb() / 100 );
 

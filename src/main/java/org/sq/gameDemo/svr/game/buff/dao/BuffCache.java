@@ -1,4 +1,4 @@
-package org.sq.gameDemo.svr.game.characterEntity.dao;
+package org.sq.gameDemo.svr.game.buff.dao;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.poiUtil.PoiUtil;
-import org.sq.gameDemo.svr.game.characterEntity.model.Buff;
+import org.sq.gameDemo.svr.game.buff.model.Buff;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

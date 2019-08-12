@@ -2,25 +2,29 @@ package org.sq.gameDemo.svr.game.characterEntity.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 import org.sq.gameDemo.common.proto.BuffPt;
-import org.sq.gameDemo.common.proto.PlayerPt;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.LevelEvent;
 import org.sq.gameDemo.svr.game.bag.model.Bag;
 import org.sq.gameDemo.svr.game.bag.model.Item;
+import org.sq.gameDemo.svr.game.buff.model.Buff;
+import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
 
 
 /**
  * 玩家类
  */
+@Slf4j
 @Data
 @EqualsAndHashCode(callSuper=true)
 public class Player extends UserEntity implements Character {
@@ -53,6 +57,8 @@ public class Player extends UserEntity implements Character {
             hp = 0L;
         }
         this.hp = hp;
+
+        log.debug(this.getName() + "-> hp:" + hp);
     }
 
     /**
@@ -111,5 +117,11 @@ public class Player extends UserEntity implements Character {
     private Bag bag = new Bag("背包栏",16) ;
 
 
-
+    public void setDeadStatus() {
+        this.setState(CharacterState.IS_REFRESH.getCode());
+        this.setHp(0L);
+        this.setMp(0L);
+        this.setB_Mp(0L);
+        this.setB_Hp(0L);
+    }
 }

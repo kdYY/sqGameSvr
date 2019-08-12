@@ -14,7 +14,7 @@ import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.model.ItemInfo;
 import org.sq.gameDemo.svr.game.bag.model.ItemType;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
-import org.sq.gameDemo.svr.game.characterEntity.service.BuffService;
+import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
