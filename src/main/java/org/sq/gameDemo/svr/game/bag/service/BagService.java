@@ -1,7 +1,6 @@
 package org.sq.gameDemo.svr.game.bag.service;
 
 import com.alibaba.fastjson.TypeReference;
-import com.google.common.base.Strings;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.sq.gameDemo.svr.game.bag.model.ItemInfo;
 import org.sq.gameDemo.svr.game.bag.model.ItemType;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
+import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -199,11 +199,11 @@ public class BagService {
         Map<Long, Item> itemMap = bag.getItemBar();
         if(!itemMap.isEmpty()) {
             Item item = itemMap.get(itemId);
-            String itemName = item.getItemInfo().getName();
             if(item == null) {
-                senceService.notifyPlayerByDefault(player, itemName + "物品不存在");
+                senceService.notifyPlayerByDefault(player, "物品不存在");
                 return false;
             }
+            String itemName = item.getItemInfo().getName();
 
             if(item.getCount() < count) {
                 senceService.notifyPlayerByDefault(player, "物品数量不足");

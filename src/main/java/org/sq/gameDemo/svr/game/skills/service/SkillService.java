@@ -52,7 +52,7 @@ public class SkillService {
      * @param skill
      * @param senecMsg
      */
-    public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg, Future future) {
+    public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
 
         if(targeter instanceof Npc) {
             if(attacter instanceof UserEntity ) {
@@ -63,9 +63,9 @@ public class SkillService {
 
         }
 
-        String content = attacter.getName() + "(id=" + attacter.getId() + ")开始使用技能"
-                + skill.getName() + "攻击" + targeter.getName()
-                + "(id=" + targeter.getId() + ")";
+        String content = attacter.getName() + "(id=" + attacter.getId() + ")开始使用"
+                + skill.getName() + " 作用于 " + targeter.getName()
+                + " (id=" + targeter.getId() + ")";
 
         log.debug(content);
 
@@ -79,12 +79,12 @@ public class SkillService {
         }
 
         //单线程执行
-        future = TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
+        TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
                 () -> {
                     senecMsg.getSingleThreadSchedule().execute(
                             () -> {
                                 if (targeter.getHp() > 0) {
-                                    senceService.notifyPlayerByDefault(targeter, content);
+                                    senceService.notifyPlayerByDefault(attacter, content);
                                     skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
 
                                     if(skill.getBuff() != null && skill.getBuff() != 0) {
@@ -112,11 +112,6 @@ public class SkillService {
 
     }
 
-
-    public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
-        Future future = null;
-        return characterUseSkillAttack(attacter, targeter, skill, senecMsg, future);
-    }
 
         /**
          * 使用技能前使技能进入cd

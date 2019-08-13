@@ -1,4 +1,4 @@
-package org.sq.gameDemo.svr.game.bag.service;
+package org.sq.gameDemo.svr.game.equip.service;
 
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.base.Strings;
@@ -9,7 +9,8 @@ import org.sq.gameDemo.common.proto.ItemPt;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
-import org.sq.gameDemo.svr.game.bag.model.EquitmentPart;
+import org.sq.gameDemo.svr.game.bag.service.BagService;
+import org.sq.gameDemo.svr.game.equip.model.EquitmentPart;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.model.ItemInfo;
 import org.sq.gameDemo.svr.game.bag.model.ItemType;

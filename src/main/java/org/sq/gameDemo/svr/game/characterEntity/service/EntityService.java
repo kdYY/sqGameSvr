@@ -9,7 +9,7 @@ import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
-import org.sq.gameDemo.svr.game.bag.service.EquitService;
+import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;

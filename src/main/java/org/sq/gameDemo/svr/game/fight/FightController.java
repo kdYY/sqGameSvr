@@ -26,4 +26,5 @@ public class FightController {
         fightService.skillAttackSingleMonster(player, skillReqInfo.getSkillId(), skillReqInfo.getTargetId());
     }
 
+
 }

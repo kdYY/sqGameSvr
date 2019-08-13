@@ -12,6 +12,7 @@ import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
 import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.bag.model.Bag;
+import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -50,13 +51,14 @@ public class BagController {
      * 玩家移除背包中的物品
      * @param msgEntity
      * @param requestInfo
-     * @param builder
      */
     @OrderMapping(OrderEnum.REMONVE_ITEM)
-    public void removeItem(MsgEntity msgEntity,
-                           @ReqParseParam BagPt.BagReqInfo requestInfo,
-                           @RespBuilderParam BagPt.BagRespInfo.Builder builder) {
+    public MsgEntity removeItem(MsgEntity msgEntity,
+                           @ReqParseParam ItemPt.ItemRequestInfo requestInfo) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
 
+        bagService.removeItem(player, requestInfo.getId(), requestInfo.getCount());
+        return msgEntity;
     }
 
 

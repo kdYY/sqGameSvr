@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.bag.model.Item;
-import org.sq.gameDemo.svr.game.bag.service.EquitService;
+import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
@@ -42,23 +43,41 @@ public class FightService {
      * @param skillId
      * @param targetIdList
      */
-    public void skillAttackManyMonster(Player player, Integer skillId, List<Long> targetIdList) {
+    public void skillAttackManyTarget(Player player, Integer skillId, List<Long> targetIdList) {
         Skill skill = checkSkillState(player, skillId, targetIdList);
 
         if(equitService.equipCanUse(player) && skill != null) {
-            targetIdList.forEach(monsterId -> {
-                //玩家攻打怪物
-                skillAttackSingleMonster(player, monsterId, skill);
+            targetIdList.forEach(targetId -> {
+                //找到目标
+                Character target = null;
+                //找到怪物
+                SenceConfigMsg senecMsg = senceService.getSenecMsgById(player.getSenceId());
+                target = senecMsg.getMonsterList()
+                        .stream()
+                        .filter(monster -> monster.getId().equals(targetId) && monster.getHp() > 0)
+                        .findFirst()
+                        .orElse(null);
+                if(target == null) {
+                    target = senecMsg.getPlayerList()
+                            .stream()
+                            .filter(pl -> pl.getId().equals(targetId) && pl.getHp() > 0)
+                            .findFirst()
+                            .orElse(null);
+                }
+                if(target == null) {
+                    senceService.notifyPlayerByDefault(player, "id为" + targetId + " 的攻击目标没找到");
+                } else {
+                    skillAttackSingleTarget(player, target, skill, senecMsg);
+                }
             });
         }
     }
 
 
-
     public void skillAttackSingleMonster(Player player, Integer skillId, Long targetId) {
         ArrayList<Long> targetIdList = new ArrayList<>();
         targetIdList.add(targetId);
-        skillAttackManyMonster(player, skillId, targetIdList);
+        skillAttackManyTarget(player, skillId, targetIdList);
     }
 
 
@@ -80,34 +99,29 @@ public class FightService {
     /**
      * 玩家使用技能打单体怪物
      * @param player
-     * @param monsterId
      * @param skill
      */
-    private void skillAttackSingleMonster(Player player, Long monsterId, Skill skill) {
-        SenceConfigMsg senecMsg = senceService.getSenecMsgById(player.getSenceId());
-        //找到怪物
-        Monster targetMonster = senecMsg.getMonsterList()
-                .stream()
-                .filter(monster -> monster.getId().equals(monsterId) && monster.getHp() > 0)
-                .findFirst()
-                .orElse(null);
+    private void skillAttackSingleTarget(Player player, Character target, Skill skill, SenceConfigMsg senecMsg) {
 
-
-        if(Objects.isNull(targetMonster)) {
+        if(Objects.isNull(target)) {
             playerCache.getChannelByPlayerId(player.getId())
                     .writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("目标id不存在,该目标是npc不可攻击体,或者该怪物已死亡，请检查怪物id"));
         } else {
             //如果使用技能成功
-            if(skillService.characterUseSkillAttack(player, targetMonster, skill, senecMsg)) {
+            if(skillService.characterUseSkillAttack(player, target, skill, senecMsg)) {
                 //武器损耗
-                for (Item item : player.getEquipmentBar().values()) {
-                    int durable = new Random().nextInt(Constant.EQUIP_COMSUM_DURABLE);
-                    item.setDurable(item.getDurable() - durable);
-                    senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + " 损耗 " + durable + "点");
-                }
+                equipDurable(player);
             }
 
         }
-
     }
+
+    private void equipDurable(Player attacter) {
+        for (Item item : attacter.getEquipmentBar().values()) {
+            int durable = new Random().nextInt(Constant.EQUIP_COMSUM_DURABLE);
+            item.setDurable(item.getDurable() - durable);
+            senceService.notifyPlayerByDefault(attacter, item.getItemInfo().getName() + " 损耗 " + durable + "点");
+        }
+    }
+
 }

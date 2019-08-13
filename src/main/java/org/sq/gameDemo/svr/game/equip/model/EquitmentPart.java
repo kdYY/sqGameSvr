@@ -1,4 +1,4 @@
-package org.sq.gameDemo.svr.game.bag.model;
+package org.sq.gameDemo.svr.game.equip.model;
 
 public enum EquitmentPart {
 
