@@ -1,17 +1,21 @@
 package org.sq.gameDemo.svr.game.bag.model;
 
 import lombok.Data;
+import org.sq.gameDemo.common.proto.ItemInfoPt;
+import org.sq.gameDemo.common.proto.ItemPt;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
+
+import java.lang.reflect.InvocationTargetException;
 
 @Data
 public class Item {
     private long id;
 
-    private Integer count;
+    private Integer count; // 武器不能叠加
 
-    /** 默认的背包格子是0 */
     private Integer locationIndex = 0;
 
-    private ItemInfo itemInfo;
 
     /**武器耐久度 默认是-1*/
     private Long durable = -1L;
@@ -23,6 +27,7 @@ public class Item {
         this.durable = durable;
     }
 
+
     private Integer level;
 
     private Item() {}
@@ -33,9 +38,7 @@ public class Item {
         this.count = count;
         this.itemInfo = itemInfo;
         //设置磨损度
-        if(itemInfo.getType().equals(ItemType.EQUIT_ITEM)) {
-            this.durable = itemInfo.getDurable();
-        }
+        this.durable = itemInfo.getDurable();
         this.level = level;
     }
 
@@ -46,4 +49,15 @@ public class Item {
         this.itemInfo = itemInfo;
     }
 
+    @ProtoField(TargetName = "itemInfo", Function = "addItemInfoPt", TargetClass = ItemPt.Item.Builder.class)
+    private ItemInfo itemInfo;
+
+    /**
+     * 做item中ItemInfo的注入
+     * @param builder
+     * @throws Exception
+     */
+    public void addItemInfoPt(ItemPt.Item.Builder builder) throws Exception {
+        builder.setItemInfo((ItemInfoPt.ItemInfo) ProtoBufUtil.transformProtoReturnBean(ItemInfoPt.ItemInfo.newBuilder(), this.getItemInfo()));
+    }
 }

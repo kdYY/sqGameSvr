@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Data
 public class UserEntity {
-    private Long id;
+    private Integer unId;
 
     /**
      * 玩家昵称
@@ -49,6 +49,7 @@ public class UserEntity {
      */
     private String equipments = "{}";
 
+    
     /**
      * 金币
      */

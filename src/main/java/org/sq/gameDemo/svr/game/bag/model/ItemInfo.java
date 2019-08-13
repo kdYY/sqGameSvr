@@ -20,6 +20,7 @@ public class ItemInfo {
 
     private Integer buff;
 
+    @ProtoField(Ignore = true)
     private Integer level;
     private Integer type;
 
@@ -44,6 +45,5 @@ public class ItemInfo {
     @ProtoField(Ignore = true)
     @ExcelFeild(Ignore = true)
     private Map<Integer, RoleAttribute> itemRoleAttribute = new ConcurrentHashMap<>();
-
 
 }

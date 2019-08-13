@@ -68,7 +68,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-06
+     * @date 2019-08-12
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -111,63 +111,63 @@ public class UserEntityExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andIdIsNull() {
-            addCriterion("id is null");
+        public Criteria andUnIdIsNull() {
+            addCriterion("un_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andIdIsNotNull() {
-            addCriterion("id is not null");
+        public Criteria andUnIdIsNotNull() {
+            addCriterion("un_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(Integer value) {
-            addCriterion("id =", value, "id");
+        public Criteria andUnIdEqualTo(Integer value) {
+            addCriterion("un_id =", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotEqualTo(Integer value) {
-            addCriterion("id <>", value, "id");
+        public Criteria andUnIdNotEqualTo(Integer value) {
+            addCriterion("un_id <>", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThan(Integer value) {
-            addCriterion("id >", value, "id");
+        public Criteria andUnIdGreaterThan(Integer value) {
+            addCriterion("un_id >", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("id >=", value, "id");
+        public Criteria andUnIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("un_id >=", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThan(Integer value) {
-            addCriterion("id <", value, "id");
+        public Criteria andUnIdLessThan(Integer value) {
+            addCriterion("un_id <", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThanOrEqualTo(Integer value) {
-            addCriterion("id <=", value, "id");
+        public Criteria andUnIdLessThanOrEqualTo(Integer value) {
+            addCriterion("un_id <=", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdIn(List<Integer> values) {
-            addCriterion("id in", values, "id");
+        public Criteria andUnIdIn(List<Integer> values) {
+            addCriterion("un_id in", values, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotIn(List<Integer> values) {
-            addCriterion("id not in", values, "id");
+        public Criteria andUnIdNotIn(List<Integer> values) {
+            addCriterion("un_id not in", values, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdBetween(Integer value1, Integer value2) {
-            addCriterion("id between", value1, value2, "id");
+        public Criteria andUnIdBetween(Integer value1, Integer value2) {
+            addCriterion("un_id between", value1, value2, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("id not between", value1, value2, "id");
+        public Criteria andUnIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("un_id not between", value1, value2, "unId");
             return (Criteria) this;
         }
 
@@ -744,7 +744,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-06
+     * @date 2019-08-12
      */
     public static class Criterion {
         private String condition;

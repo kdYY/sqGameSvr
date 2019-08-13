@@ -57,4 +57,11 @@ public interface Constant {
      */
     public static Integer LEVEL_DIVISOR = 100;
 
+    public static int SUCCESS = 200;
+
+    int EQUIP_COMSUM_DURABLE = 5;
+    /**
+     * 元宝代号
+     */
+    Integer YUAN_BAO = 1000;
 }

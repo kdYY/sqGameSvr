@@ -40,9 +40,9 @@ public class BuffService {
      */
     public void buffAffecting(Character affecter, Buff affectedBuff) {
         List<Buff> bufferList = affecter.getBufferList();
-        //如果存在净化buff，不进行作用
-        if( !affectedBuff.getId().equals(BuffState.PURIFY.getEffectState())
-                && bufferList.stream().filter(buff1 -> buff1.getId().equals(BuffState.PURIFY.getEffectState())).findAny().isPresent()) {
+        //如果存在净化buff，同时不是增益的buff, 不进行作用
+        if( bufferList.stream().filter(buff -> buff.getId().equals(BuffState.PURIFY.getEffectState())).findAny().isPresent()
+                && !BuffState.stateIsGain(affectedBuff.getId()) ) {
             return;
         }
 
@@ -50,7 +50,7 @@ public class BuffService {
         BeanUtils.copyProperties(affectedBuff, buff);
         //buff开始时间
         buff.setStartTime(System.currentTimeMillis());
-        bufferList.add(buff);
+
 
         //瞬间作用的buff 治疗等等
         if(buff.getDuration() == 0 && usingBuff(affecter, buff)) {
@@ -67,6 +67,7 @@ public class BuffService {
                     usingBuff(affecter, buff);
                 });
             }
+            affecter.getBufferList().add(buff);
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -88,7 +89,7 @@ public class BuffService {
                                 character.getBufferList().remove(buff);
                             }
                             // 如果是玩家，进行通知
-                            if (character instanceof Player) {
+                            if (character instanceof Player && character.getHp() > 0) {
                                 senceService.notifyPlayerByDefault(affecter, buff.getName()
                                         + "取消作用，在" + affecter.getName() + "身上");
 //                                // 检测玩家是否死亡
@@ -118,9 +119,13 @@ public class BuffService {
             }
             if(buff.getHp() != 0) {
                 affecter.setHp(affecter.getHp() + buff.getHp());
+                if(affecter instanceof Player)
+                    log.debug(affecter.getName() + " hp += " + buff.getHp());
             }
             if(buff.getMp() != 0) {
                 affecter.setMp(affecter.getMp() + buff.getMp());
+                if(affecter instanceof Player)
+                    log.debug(affecter.getName() + " mp += " + buff.getMp());
             }
             // 如果是玩家，进行通知
             if (affecter instanceof Player && !buff.getId().equals(105) && !buff.getId().equals(106)) {
@@ -132,6 +137,8 @@ public class BuffService {
                     removeAllBuff(affecter);
                 }
             }
+
+
             return true;
         }
         return false;

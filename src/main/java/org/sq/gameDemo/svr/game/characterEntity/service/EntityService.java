@@ -31,6 +31,7 @@ import org.sq.gameDemo.svr.game.user.service.UserService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class EntityService {
@@ -205,23 +206,24 @@ public class EntityService {
      */
     public void computeAttack(Player player) {
         Map<Integer, RoleAttribute> roleAttributeMap = player.getRoleAttributeMap();
-        // 基础攻击力
-        int basicAttack = Optional.ofNullable(roleAttributeMap.get(4).getValue()).orElse(30);
-        // 力量
-        int power  = Optional.ofNullable(roleAttributeMap.get(5).getValue()).orElse(100);
+        AtomicLong totalAttack = new AtomicLong();
+        AtomicLong finalTotalAttack = totalAttack;
+        roleAttributeMap.values().forEach(attr -> {
+            finalTotalAttack.addAndGet(Optional.ofNullable(attr.getValue()).orElse(30));
+        });
 
-        long totalAttack = Long.valueOf(basicAttack + power);
+        long finalAttack = finalTotalAttack.get() * player.getLevel();
         /**
          * AP英雄的增益
          */
         EntityType type = EntityTypeCache.getAllEntityTypes().get(player.getTypeId());
         if(Objects.nonNull(type) && Constant.AP.equals(type.getTypeName())) {
-            totalAttack +=  Math.round(
+            finalAttack +=  Math.round(
                     Optional.ofNullable(roleAttributeMap.get(5).getValue() * Constant.hpAttackIncreaseRate)
                             .orElse(100 * Constant.hpAttackIncreaseRate)
             );
         }
-        player.setAttack(totalAttack);
+        player.setAttack(finalAttack);
     }
 
 

@@ -14,7 +14,7 @@ public interface UserEntityMapper {
 
     int deleteByExample(UserEntityExample example);
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer unId);
 
     int insert(UserEntity record);
 
@@ -22,7 +22,7 @@ public interface UserEntityMapper {
 
     List<UserEntity> selectByExample(UserEntityExample example);
 
-    UserEntity selectByPrimaryKey(Integer id);
+    UserEntity selectByPrimaryKey(Integer unId);
 
     int updateByExampleSelective(@Param("record") UserEntity record, @Param("example") UserEntityExample example);
 

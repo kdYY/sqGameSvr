@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 @EqualsAndHashCode(callSuper=true)
 public class Player extends UserEntity implements Character {
 
-
+    private Long id;
     /**
      *  等级，根据经验计算得出
      */
@@ -95,7 +95,6 @@ public class Player extends UserEntity implements Character {
         // 如果等级发生变化，进行提示
         if (newLevel != this.getLevel()) {
             EventBus.publish(new LevelEvent(this, newLevel));
-            this.setLevel(newLevel);
         }
     }
 
@@ -114,7 +113,7 @@ public class Player extends UserEntity implements Character {
 
     // 背包栏 默认大小为16
     @ProtoField(Ignore = true)
-    private Bag bag = new Bag(this.getId(), "背包栏",100) ;
+    private Bag bag = new Bag(this.getUnId(), "背包栏",100) ;
 
 
     public void setDeadStatus() {

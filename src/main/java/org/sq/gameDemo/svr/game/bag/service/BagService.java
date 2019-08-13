@@ -1,6 +1,7 @@
 package org.sq.gameDemo.svr.game.bag.service;
 
 import com.alibaba.fastjson.TypeReference;
+import com.google.common.base.Strings;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class BagService {
     @Autowired
     private SenceService senceService;
 
+    @Autowired
+    private EquitService equitService;
+
     /**
      * 物品和拥有对应的属性进行绑定
      * @param itemInfo
@@ -73,24 +77,25 @@ public class BagService {
      * @param itemId
      * @return
      */
-    public boolean useItem(Player player, Long itemId) {
+    public boolean useItem(Player player, Long itemId, Integer count) {
         Bag bag = player.getBag();
         Item item = bag.getItemBar().get(itemId);
-        if(item == null) {
+        if(item == null  || item.getItemInfo().getBuff() == null) {
+            senceService.notifyPlayerByDefault(player, "该物品不属于非装备消耗型物品");
+            return false;
+        }
+        if(item.getCount() < count) {
+            senceService.notifyPlayerByDefault(player, "物品数量不足");
             return false;
         }
         ItemInfo itemInfo = itemInfoCache.get(item.getItemInfo().getId());
         senceService.notifyPlayerByDefault(player, "开始使用" + itemInfo.getName() );
 
-        Optional.ofNullable(buffService.getBuff(itemInfo.getBuff()))
-                .ifPresent(buff -> buffService.buffAffecting(player, buff));
-        //使用完如果不是堆叠的 移除
-        if(item.getItemInfo().getType().equals(ItemType.CAN_BE_STACKED) && item.getCount() > 1) {
-            item.setCount( item.getCount() - 1 );
-            return true;
-        } else {
-            return removeItem(player, item.getId());
+        for (int i = 0; i < count; i++) {
+            Optional.ofNullable(buffService.getBuff(itemInfo.getBuff()))
+                    .ifPresent(buff -> buffService.buffAffecting(player, buff));
         }
+        return removeItem(player, item.getId(), count);
     }
 
     /**
@@ -115,7 +120,7 @@ public class BagService {
      * @param player
      */
     public void bindBag(Player player) {
-        Optional.ofNullable(bagMapper.selectByPrimaryKey(player.getId())).ifPresent(
+        Optional.ofNullable(bagMapper.selectByPrimaryKey(player.getUnId())).ifPresent(
                 bag -> {
                     Bag playerBag = player.getBag();
                     if(bag.getItemStr().isEmpty()) {
@@ -125,11 +130,11 @@ public class BagService {
                                 bag.getItemStr(), new TypeReference<Map<Long, Item>>() {});
                         playerBag.setItemBar(itemMap);
                     }
-                    player.setBag(playerBag);
+                    //player.setBag(playerBag);
                 }
         );
-        if(player.getBag().getPlayerId() == null) {
-            player.getBag().setPlayerId(player.getId());
+        if(player.getBag().getUnId() == null) {
+            player.getBag().setUnId(player.getUnId());
         }
 
     }
@@ -139,7 +144,7 @@ public class BagService {
      * @param player
      */
     public void updateBagInDB(Player player) {
-        Bag bag = bagMapper.selectByPrimaryKey(player.getId());
+        Bag bag = bagMapper.selectByPrimaryKey(player.getUnId());
         if(bag == null) {
             bagMapper.insert(player.getBag());
         } else {
@@ -168,12 +173,12 @@ public class BagService {
         if(itemOptional.isPresent() && item.getItemInfo().getType().equals(ItemType.CAN_BE_STACKED.getType())) {
             Item itemFind = itemOptional.get();
             itemFind.setCount(itemFind.getCount() + item.getCount());
-            senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + "物品*" + item.getCount() + "已经放入背包");
+            senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + "物品 *" + item.getCount() + "已经放入背包");
         }
         //不可叠加的时候
-        else if(bag.getSize() > bag.getItemBar().size()) {
+        else if(bag.getSize() > bag.getItemBar().keySet().size()) {
             bag.getItemBar().put(item.getId(), item);
-            senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + "物品*" + item.getCount() + "已经放入背包");
+            senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + "物品 *" + item.getCount() + "已经放入背包");
         }
         //背包已经满了
         else {
@@ -189,22 +194,33 @@ public class BagService {
      * @param itemId
      * @return
      */
-    public boolean removeItem(Player player, Long itemId) {
+    public boolean removeItem(Player player, Long itemId, Integer count) {
         Bag bag = player.getBag();
         Map<Long, Item> itemMap = bag.getItemBar();
-        if(itemMap.isEmpty()) {
+        if(!itemMap.isEmpty()) {
             Item item = itemMap.get(itemId);
             String itemName = item.getItemInfo().getName();
             if(item == null) {
                 senceService.notifyPlayerByDefault(player, itemName + "物品不存在");
                 return false;
             }
-            if(!itemMap.remove(itemId, item)) {
-                senceService.notifyPlayerByDefault(player, itemName + "移除失败");
+
+            if(item.getCount() < count) {
+                senceService.notifyPlayerByDefault(player, "物品数量不足");
                 return false;
             }
 
-            senceService.notifyPlayerByDefault(player, itemName + "移除成功");
+            //非装备 同时数量够减
+            if(!equitService.isEquip(item) && item.getCount() > count) {
+                item.setCount(item.getCount() - count);
+            }else {
+                if(!itemMap.remove(itemId, item)) {
+                    senceService.notifyPlayerByDefault(player, itemName + "移除失败");
+                    return false;
+                }
+            }
+
+            senceService.notifyPlayerByDefault(player, itemName + " * " + count + "从背包中移除");
             return true;
         }
         return false;
@@ -239,10 +255,10 @@ public class BagService {
 
 
     @Data
-    private class ItemRoleAttri {
+    public static class ItemRoleAttri {
         Integer id;
         Integer value;
 
-        RoleAttribute roleAttribute;
+        //RoleAttribute roleAttribute;
     }
 }

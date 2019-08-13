@@ -68,7 +68,7 @@ public class BagExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-07
+     * @date 2019-08-12
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -111,63 +111,63 @@ public class BagExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andPlayerIdIsNull() {
-            addCriterion("player_id is null");
+        public Criteria andUnIdIsNull() {
+            addCriterion("un_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdIsNotNull() {
-            addCriterion("player_id is not null");
+        public Criteria andUnIdIsNotNull() {
+            addCriterion("un_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdEqualTo(Long value) {
-            addCriterion("player_id =", value, "playerId");
+        public Criteria andUnIdEqualTo(Integer value) {
+            addCriterion("un_id =", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdNotEqualTo(Long value) {
-            addCriterion("player_id <>", value, "playerId");
+        public Criteria andUnIdNotEqualTo(Integer value) {
+            addCriterion("un_id <>", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdGreaterThan(Long value) {
-            addCriterion("player_id >", value, "playerId");
+        public Criteria andUnIdGreaterThan(Integer value) {
+            addCriterion("un_id >", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("player_id >=", value, "playerId");
+        public Criteria andUnIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("un_id >=", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdLessThan(Long value) {
-            addCriterion("player_id <", value, "playerId");
+        public Criteria andUnIdLessThan(Integer value) {
+            addCriterion("un_id <", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdLessThanOrEqualTo(Long value) {
-            addCriterion("player_id <=", value, "playerId");
+        public Criteria andUnIdLessThanOrEqualTo(Integer value) {
+            addCriterion("un_id <=", value, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdIn(List<Long> values) {
-            addCriterion("player_id in", values, "playerId");
+        public Criteria andUnIdIn(List<Integer> values) {
+            addCriterion("un_id in", values, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdNotIn(List<Long> values) {
-            addCriterion("player_id not in", values, "playerId");
+        public Criteria andUnIdNotIn(List<Integer> values) {
+            addCriterion("un_id not in", values, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdBetween(Long value1, Long value2) {
-            addCriterion("player_id between", value1, value2, "playerId");
+        public Criteria andUnIdBetween(Integer value1, Integer value2) {
+            addCriterion("un_id between", value1, value2, "unId");
             return (Criteria) this;
         }
 
-        public Criteria andPlayerIdNotBetween(Long value1, Long value2) {
-            addCriterion("player_id not between", value1, value2, "playerId");
+        public Criteria andUnIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("un_id not between", value1, value2, "unId");
             return (Criteria) this;
         }
 
@@ -384,7 +384,7 @@ public class BagExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-07
+     * @date 2019-08-12
      */
     public static class Criterion {
         private String condition;

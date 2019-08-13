@@ -3,10 +3,12 @@ package org.sq.gameDemo.svr.game.roleAttribute.service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.svr.game.bag.dao.ItemInfoCache;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
+import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +20,9 @@ public class RoleAttributeService {
     @Autowired
     private RoleAttributeCache roleAttrCache;
     @Autowired
-    private EntityService entityService;
+    private ItemInfoCache itemInfoCache;
+    @Autowired
+    private SenceService senceService;
 
     /**
      * 物品增强玩家属性
@@ -29,7 +33,7 @@ public class RoleAttributeService {
         if(Objects.nonNull(equitment)) {
 
             Map<Integer, RoleAttribute> playerAttrMap = player.getRoleAttributeMap();
-            Map<Integer, RoleAttribute> itemAttrMap = equitment.getItemInfo().getItemRoleAttribute();
+            Map<Integer, RoleAttribute> itemAttrMap = itemInfoCache.get(equitment.getItemInfo().getId()).getItemRoleAttribute();
             Optional.ofNullable(itemAttrMap).ifPresent(map -> {
                 map.values().forEach(
                         attr -> {
@@ -41,13 +45,12 @@ public class RoleAttributeService {
                                     .map(playerAttrMap::get)
                                     .ifPresent(playerAttr -> {
                                         playerAttr.setValue(playerAttr.getValue() + attr.getValue());
+                                        senceService.notifyPlayerByDefault(player, attr.getName() + "提升↑" + attr.getValue());
                                     });
                         }
                 );
             });
             player.getEquipmentBar().put(equitment.getItemInfo().getPart(), equitment);
-
-            //设置装备耐久度
 
         }
 
@@ -63,7 +66,7 @@ public class RoleAttributeService {
     public void removeEquitAttrToPlayer(Player player, Item equitment) {
         Map<Integer, Item> equipmentBar = player.getEquipmentBar();
         if(equitment != null && equipmentBar.remove(equitment.getItemInfo().getPart(), equitment)) {
-            Optional.ofNullable(equitment.getItemInfo().getItemRoleAttribute()).ifPresent(
+            Optional.ofNullable(itemInfoCache.get(equitment.getItemInfo().getId()).getItemRoleAttribute()).ifPresent(
                     equitAttrMap -> {
                         equitAttrMap.values()
                                     .forEach(attr -> {
@@ -77,6 +80,7 @@ public class RoleAttributeService {
                                     });
                     }
             );
+            player.getEquipmentBar().remove(equitment.getItemInfo().getPart(), equitment);
         }
     }
 

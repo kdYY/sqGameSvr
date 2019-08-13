@@ -3,12 +3,12 @@ package org.sq.gameDemo.svr.game.bag.model;
 public enum EquitmentPart {
 
     /**
-     * 头:1
-     * 身体:2
-     * 手:3
-     * 手指:4
-     * 腰:5
-     * 脚:6
+     * 头:0
+     * 身体:1
+     * 手:2
+     * 手指:3
+     * 腰:4
+     * 脚:5
      * 背包:9
      */
     HEAD(0, "头部"),

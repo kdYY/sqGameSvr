@@ -113,7 +113,6 @@ public class DispatchRequest{
             Object bean = SpringUtil.getBean(orderBean.getBeanName());
 
             Method method = orderBean.getMethod();
-            boolean a = method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(MsgEntity.class);
             //没有参数
             if(method.getParameterCount() == 0) {
                 response = method.invoke(bean);
@@ -139,10 +138,6 @@ public class DispatchRequest{
                                         Optional.ofNullable( getParamInjectObj(paramType, paramAnno, msgEntity) )
                                                 .ifPresent(obj -> requiredParamList.add(obj));
                                     }
-//                                    Optional.ofNullable(paramAnno.getClass().getDeclaredAnnotation(ProtoParam.class))
-//                                            .ifPresent( o-> {
-//
-//                                            });
                             });
 
                         }

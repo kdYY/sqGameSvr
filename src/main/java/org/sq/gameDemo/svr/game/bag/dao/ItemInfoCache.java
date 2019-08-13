@@ -59,7 +59,7 @@ public class ItemInfoCache {
         if(itemInfo != null
                 && itemInfo.getJsonStr() != null
                 && !itemInfo.getJsonStr().isEmpty()
-                && !itemInfo.getItemRoleAttribute().isEmpty()) {
+                && itemInfo.getItemRoleAttribute().isEmpty()) {
             bagService.bindItemAttr(itemInfo);
         }
         return itemInfo;

@@ -23,7 +23,10 @@ public enum OrderEnum {
     USE_BUFF("usebuff", 117),
     REMONVE_ITEM("removeitem", 118),
     ADD_EQUIP("addequip", 119),
-    REMOVE_EQUIP("removeequip", 120), SHOW_EQUIP("showEquip", 121), REPAIR_EQUIP("repairequip", 122);
+    REMOVE_EQUIP("removeequip", 120),
+    SHOW_EQUIP("showEquip", 121),
+    REPAIR_EQUIP("repairequip", 122),
+    SHOW_BAG("showbag", 123);
 
     private String order;
     private short orderCode;

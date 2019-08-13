@@ -11,8 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.UserProto;
+import org.sq.gameDemo.svr.common.JsonUtil;
+import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.CustomException;
+import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.game.user.model.UserExample;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -155,10 +159,23 @@ public class UserService {
         //清除playerCache中的数据
         playerCache.removePlayerCache(channel);
         UserCache.removeChannle(channel, player.getUserId());
-        UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
-        userEntity.setSenceId(player.getSenceId());
-        userEntityMapper.updateByPrimaryKeySelective(userEntity);
-        bagService.updateBagInDB(player);
+        try {
+            TimeTaskManager.threadPoolSchedule(1000, () -> {
+                UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
+                userEntity.setExp(player.getExp());
+                userEntity.setSenceId(player.getSenceId());
+                Map<Integer, Item> equipmentBar = player.getEquipmentBar();
+                if(equipmentBar != null && equipmentBar.size() > 0) {
+                    userEntity.setEquipments(JsonUtil.serializableJson(equipmentBar));
+                }
+                userEntityMapper.updateByPrimaryKeySelective(userEntity);
+                bagService.updateBagInDB(player);
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         log.info(player.getName() + "下线");
     }
 

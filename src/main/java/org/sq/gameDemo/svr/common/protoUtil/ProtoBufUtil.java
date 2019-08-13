@@ -1,5 +1,6 @@
 package org.sq.gameDemo.svr.common.protoUtil;
 
+import lombok.extern.slf4j.Slf4j;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
@@ -10,6 +11,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class ProtoBufUtil {
     public static List<String> baseTypeList =
             Arrays.asList("int", "Integer", "float", "Float", "long", "Long", "double", "Double", "String");
@@ -128,9 +130,16 @@ public class ProtoBufUtil {
             Method setMethod = goalBuilderSetMethodMap.get(field);
             Object getValue = getMethod.invoke(sourceBean);
             if(getValue != null) {
-                setMethod.invoke(goalBuilder, getValue);
+                try {
+                    setMethod.invoke(goalBuilder, getValue);
+                } catch (java.lang.IllegalArgumentException e) {
+                    e.printStackTrace();
+                    System.out.println(getMethod.getName() + "中类型为" + getMethod.getReturnType().getName());
+                    System.out.println(setMethod.getName() + "中类型为" + setMethod.getParameterTypes()[0].getName());
+                    System.out.println("类型不一致");
+                }
             } else {
-                System.out.println(setMethod.getName() + "的参数来自" + getMethod.getName() + ", 参数内容为空, get的域为" + field.getName() + ";set的域来自" + goalBuilder.getClass().getName() );
+                log.debug(setMethod.getName() + "的参数来自" + field.getName() + ", 参数内容为空, get的域为" + field.getName() + ";set的域来自" + goalBuilder.getClass().getName() );
             }
 
         }
@@ -180,9 +189,6 @@ public class ProtoBufUtil {
         } else if(type.length == 1) {
             String typeName = type[0].getName();
             try {
-                if(methodName.equals("setB_Hp")) {
-                    System.out.println("1");
-                }
                 Method declaredMethod = getDeclaredMethod(goalBuilder.getClass(), methodName, type[0]);
                 return declaredMethod;
             } catch (NoSuchMethodException e) {

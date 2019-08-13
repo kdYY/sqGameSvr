@@ -53,7 +53,10 @@ public class DropPool {
                 int itemLevel = getRamdonNumInRange(level, level+5);
                 //按照概率区间得到物品id
                 int itemInfoId = aimItem(itemDropConfs,  holderDrop.getProb());
-                Optional.ofNullable(bagService.createItem(itemInfoId, itemCount, itemLevel)).ifPresent(item -> dropItem.add(item));
+                //如果该物品被命中
+                if(itemDrop.getItemInfoId().equals(itemInfoId)) {
+                    Optional.ofNullable(bagService.createItem(itemInfoId, itemCount, itemLevel)).ifPresent(item -> dropItem.add(item));
+                }
 
             }
         }

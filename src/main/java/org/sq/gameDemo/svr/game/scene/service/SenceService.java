@@ -257,12 +257,14 @@ public class SenceService {
 
 
     public void notifyPlayerByDefault(Character attacter, String content) {
+        Channel channel = null;
         if(attacter instanceof Player) {
-            playerCache.getChannelByPlayerId(attacter.getId()).writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content));
+            channel = playerCache.getChannelByPlayerId(attacter.getId());
         }
         if(attacter instanceof Monster
                 && ((Monster)attacter).getTarget() instanceof Player) {
-            playerCache.getChannelByPlayerId(((Monster)attacter).getTarget().getId()).writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content));
+            channel = playerCache.getChannelByPlayerId(((Monster)attacter).getTarget().getId());
         }
+        Optional.ofNullable(channel).ifPresent(ch -> ch.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content)));
     }
 }

@@ -25,7 +25,7 @@ public enum BuffState {
     SLOW_DOWN(3, false),
 
     /**
-     *  4 解除负面效果
+     *  4 解除负面效果 净化
      */
     PURIFY(4, true),
 
@@ -48,5 +48,14 @@ public enum BuffState {
 
     public Boolean getGain() {
         return isGain;
+    }
+
+    public static boolean stateIsGain(Integer effectState) {
+        for (BuffState buffState : BuffState.values()) {
+            if(buffState.getEffectState().equals(effectState)) {
+                return buffState.getGain();
+            }
+        }
+        return false;
     }
 }

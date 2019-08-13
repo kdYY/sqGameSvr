@@ -14,7 +14,7 @@ public interface BagMapper {
 
     int deleteByExample(BagExample example);
 
-    int deleteByPrimaryKey(Long playerId);
+    int deleteByPrimaryKey(Integer unId);
 
     int insert(Bag record);
 
@@ -22,7 +22,7 @@ public interface BagMapper {
 
     List<Bag> selectByExample(BagExample example);
 
-    Bag selectByPrimaryKey(Long playerId);
+    Bag selectByPrimaryKey(Integer unId);
 
     int updateByExampleSelective(@Param("record") Bag record, @Param("example") BagExample example);
 
