@@ -4,8 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.MonsterDeadEvent;
+import org.sq.gameDemo.svr.eventManage.event.PlayerDeadEvent;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
@@ -16,6 +20,7 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
 
+import java.lang.annotation.Target;
 import java.util.*;
 
 @Component
@@ -31,7 +36,7 @@ public class FightService {
     private PlayerCache playerCache;
 
     @Autowired
-    private SkillCache skillCache;
+    private EntityService entityService;
 
     @Autowired
     private EquitService equitService;
@@ -66,7 +71,13 @@ public class FightService {
                 }
                 if(target == null) {
                     senceService.notifyPlayerByDefault(player, "id为" + targetId + " 的攻击目标没找到");
-                } else {
+                    return;
+                }
+                if(target.getId().equals(player.getId())) {
+                    senceService.notifyPlayerByDefault(player, "自己不能攻击自己");
+                    return;
+                }
+                else {
                     skillAttackSingleTarget(player, target, skill, senecMsg);
                 }
             });
@@ -74,7 +85,7 @@ public class FightService {
     }
 
 
-    public void skillAttackSingleMonster(Player player, Integer skillId, Long targetId) {
+    public void skillAttackSingleTarget(Player player, Integer skillId, Long targetId) {
         ArrayList<Long> targetIdList = new ArrayList<>();
         targetIdList.add(targetId);
         skillAttackManyTarget(player, skillId, targetIdList);
@@ -97,7 +108,7 @@ public class FightService {
     }
 
     /**
-     * 玩家使用技能打单体怪物
+     * 玩家使用技能打单体目标
      * @param player
      * @param skill
      */
@@ -116,12 +127,30 @@ public class FightService {
         }
     }
 
+    /**
+     * 使用技能损耗装备
+     * @param attacter
+     */
     private void equipDurable(Player attacter) {
-        for (Item item : attacter.getEquipmentBar().values()) {
-            int durable = new Random().nextInt(Constant.EQUIP_COMSUM_DURABLE);
-            item.setDurable(item.getDurable() - durable);
-            senceService.notifyPlayerByDefault(attacter, item.getItemInfo().getName() + " 损耗 " + durable + "点");
-        }
+        int durable = new Random().nextInt(Constant.EQUIP_COMSUM_DURABLE);
+        //随机损耗装备
+        attacter.getEquipmentBar().values()
+                .stream()
+                .findAny()
+                .ifPresent(equit -> {
+                    equit.setDurable(equit.getDurable() - durable);
+                    senceService.notifyPlayerByDefault(attacter, equit.getItemInfo().getName() + " 损耗 " + durable + "点");
+                });
     }
 
+    public void playerBeAttacked(Character attacter, Player player) {
+        //设置怪物归属者
+        senceService.notifyPlayerByDefault(player, "你正在被 id:" + attacter.getId() + ", name:" + attacter.getName() + " 攻击！");
+
+        if(attacter instanceof Player && entityService.playerIsDead(player, attacter)) {
+            senceService.notifyPlayerByDefault(attacter, player.getName() + "(id=" + player.getId() + ")被你杀死了");
+            // 抛出玩家被其他玩家打死的事件
+            EventBus.publish(new PlayerDeadEvent(attacter, player));
+        }
+    }
 }

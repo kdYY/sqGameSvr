@@ -159,8 +159,9 @@ public class UserService {
         //清除playerCache中的数据
         playerCache.removePlayerCache(channel);
         UserCache.removeChannle(channel, player.getUserId());
+
         try {
-            TimeTaskManager.threadPoolSchedule(1000, () -> {
+            TimeTaskManager.threadPoolSchedule(10, () -> {
                 UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
                 userEntity.setExp(player.getExp());
                 userEntity.setSenceId(player.getSenceId());

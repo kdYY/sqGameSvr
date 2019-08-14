@@ -32,6 +32,7 @@ public class BuffController {
 
         Player player = entityService.getPlayer(msgEntity.getChannel());
         Buff buff = buffService.getBuff(requestInfo.getBuffId());
+        requestInfo.getTargetId();
         if(buff == null) {
             senceService.notifyPlayerByDefault(player, "没有此buff");
             return;

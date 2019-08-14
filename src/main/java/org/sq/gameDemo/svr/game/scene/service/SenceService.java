@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.copyScene.service.CopySceneService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
@@ -28,6 +30,7 @@ import org.sq.gameDemo.svr.game.skills.service.SkillService;
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -60,6 +63,8 @@ public class SenceService {
                     notification -> System.out.println(notification.getKey() + "场景信息被移除, 原因是" + notification.getCause())
             ).build();
 
+
+
     @PostConstruct
     private void initalSence() throws Exception {
         gameScenes = PoiUtil.readExcel(senceFileName, 0, GameScene.class);
@@ -72,21 +77,26 @@ public class SenceService {
 
     }
 
+
+    public Cache<Integer, SenceConfigMsg> getSenceIdAndSenceMsgMap() {
+        return senceIdAndSenceMsgMap;
+    }
+
     private SenceConfigMsg getInitedSence(SenceConfig config) {
-        List<SenceConfig.tmpConf> tmpConfList = JsonUtil.reSerializableJson(config.getJsonStr(), SenceConfig.tmpConf.class);
+        List<SenceConfig.tmpCommonConf> tmpCommonConfList = JsonUtil.reSerializableJson(config.getJsonStr(), SenceConfig.tmpCommonConf.class);
 
         ArrayList<Monster> monsterListinSence = new ArrayList<>();
         ArrayList<Npc> npclistinsence = new ArrayList<>();
-        for (SenceConfig.tmpConf tmpConf : tmpConfList) {
-            SenceEntity senceEntity = senceEntityCache.get((long) tmpConf.getId());
+        for (SenceConfig.tmpCommonConf tmpCommonConf : tmpCommonConfList) {
+            SenceEntity senceEntity = senceEntityCache.get((long) tmpCommonConf.getId());
             if(senceEntity.getTypeId().equals(Constant.Monster)) {
-                for (int i = 0; i < tmpConf.getNum(); i++) {
-                    Monster monster = getInitedMonster(senceEntity, config.getSenceId(), tmpConf.getLevel());
+                for (int i = 0; i < tmpCommonConf.getNum(); i++) {
+                    Monster monster = getInitedMonster(senceEntity, config.getSenceId(), tmpCommonConf.getLevel());
                     monsterListinSence.add(monster);
                 }
             }
             if(senceEntity.getTypeId().equals(Constant.NPC)) {
-                for (int i = 0; i < tmpConf.getNum(); i++) {
+                for (int i = 0; i < tmpCommonConf.getNum(); i++) {
                     Npc npc = getInitedNpc(senceEntity, config.getSenceId());
                     npclistinsence.add(npc);
                 }
@@ -107,7 +117,7 @@ public class SenceService {
         return npc;
     }
 
-    private Monster getInitedMonster(SenceEntity senceEntity, Integer senceId, Integer level) {
+    public Monster getInitedMonster(SenceEntity senceEntity, Integer senceId, Integer level) {
         Monster monster = new Monster();
         BeanUtils.copyProperties(senceEntity, monster);
         monster.setId(ConcurrentSnowFlake.getInstance().nextID());
@@ -122,6 +132,8 @@ public class SenceService {
                         skill -> {
                             Skill monsterSkill = new Skill();
                             BeanUtils.copyProperties(skill, monsterSkill);
+                            skill.setHurt(skill.getHurt() * level);
+                            skill.setMpNeed(0L);
                             return monsterSkill;
                         }
                         ));
@@ -175,7 +187,7 @@ public class SenceService {
         Optional.ofNullable(msg).ifPresent(senceConfigMsg -> {
             List<Player> playerList = senceConfigMsg.getPlayerList();
             if(Objects.isNull(playerList)) {
-                playerList = new ArrayList<>();
+                playerList = new CopyOnWriteArrayList<>();
                 senceConfigMsg.setPlayerList(playerList);
             }
             playerList.add(player);
@@ -203,31 +215,27 @@ public class SenceService {
             return null;
         }
         Player player = entityService.getInitedPlayer(usrId, channel);
-        Optional.ofNullable(senceIdAndSenceMsgMap.getIfPresent(player.getSenceId()))
-                .ifPresent(senceConfigMsg->{
-                    List<Player> playerList = senceConfigMsg.getPlayerList();
-                    if(!playerList.remove(player)) {
-                        throw new CustomException.RemoveFailedException("移动失败");
-                    }
-                    UserCache.moveChannelInGroup(player.getSenceId(), channel, player.getName() + "离开场景!");
+        //玩家在非副本场景 (不能判断senceId)
+//        if(player.getCopySceneId() == null || player.getCopySceneId().intValue() <= 0) {
+            SenceConfigMsg senceConfigMsg = senceIdAndSenceMsgMap.getIfPresent(player.getSenceId());
+            List<Player> playerList = senceConfigMsg.getPlayerList();
+            if(!playerList.remove(player)) {
+                throw new CustomException.RemoveFailedException("移动失败");
+            }
+            UserCache.moveChannelInGroup(player.getSenceId(), channel, player.getName() + "离开场景!");
+//        }
+        //玩家在副本场景
+//        else {
+//            copySceneService.removeFromCopyScene(player);
+//        }
 
-                });
         return player;
     }
-
-
 
     public Npc getNpcInSence(Integer senceId, Long npcId) {
         return getSingleByCondition(
                 senceIdAndSenceMsgMap.getIfPresent(senceId).getNpcList(),
                 o -> o.getId().equals(npcId));
-    }
-
-    public Character getMonsterBySenceIdAndId(Integer senceId, Long monsterId) {
-
-        return getSingleByCondition(
-                senceIdAndSenceMsgMap.getIfPresent(senceId).getMonsterList(),
-                o -> o.getId().equals(monsterId));
     }
 
     public static <T> T getSingleByCondition(List<T> list, Function<T,Boolean> function) {
@@ -243,7 +251,8 @@ public class SenceService {
 
 
     public void moveToSence(Player player, int newSenceId, Channel channel) {
-        if(newSenceId == player.getSenceId()) {
+        //场景id相同且不在副本中
+        if(newSenceId == player.getSenceId() ) {
             //不能移动到原来的场景
             throw new CustomException.BindRoleInSenceException();
         }

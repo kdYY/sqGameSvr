@@ -5,6 +5,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.TimeTaskManager;
+import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.game.buff.dao.BuffCache;
 import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.buff.model.BuffState;
@@ -57,6 +58,9 @@ public class BuffService {
             return;
         }
         Future future = null;
+        if(buff.getId().equals(1)) {
+            System.out.println("燃烧");
+        }
         try {
             if(buff.getIntervalTime() <= 0) {
                 future = TimeTaskManager.threadPoolSchedule(0, () -> {
@@ -83,15 +87,17 @@ public class BuffService {
                             Future buffFuture = buff.getFuture();
                             Character character = buff.getCharacter();
 
-                            if(buff != null && buffFuture != null && character != null) {
+                            if(buff != null && buffFuture != null && affecter != null) {
                                 //作用时间完毕，移除buff
                                 buffFuture.cancel(true);
-                                character.getBufferList().remove(buff);
+                                affecter.getBufferList().remove(buff);
                             }
-                            // 如果是玩家，进行通知
-                            if (character instanceof Player && character.getHp() > 0) {
-                                senceService.notifyPlayerByDefault(affecter, buff.getName()
-                                        + "取消作用，在" + affecter.getName() + "身上");
+                            // 进行通知
+                            if (character != null
+                                    && character instanceof Player
+                                    && !entityService.playerIsDead((Player) character, affecter)) {
+                                UserCache.broadcastChannelGroupBysenceId(((Player)affecter).getSenceId(), buff.getName()
+                                        + "在" + affecter.getName() + "身上取消作用" );
 //                                // 检测玩家是否死亡
 //                                if(entityService.playerIsDead((Player) affecter,null)) {
 //                                    removeAllBuff(affecter);
@@ -201,6 +207,9 @@ public class BuffService {
     }
 
     public Buff getBuff(Integer type) {
-        return buffCache.get(type);
+        Buff result = new Buff();
+        Buff buff = buffCache.get(type);
+        BeanUtils.copyProperties(buff, result);
+        return result;
     }
 }

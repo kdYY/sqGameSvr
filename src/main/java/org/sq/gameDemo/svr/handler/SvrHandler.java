@@ -39,6 +39,7 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
         ctx.close();
+        super.exceptionCaught(ctx, cause);
     }
 
     @Override

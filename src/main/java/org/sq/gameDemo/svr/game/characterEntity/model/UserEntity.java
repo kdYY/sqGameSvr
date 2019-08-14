@@ -51,7 +51,7 @@ public class UserEntity {
 
     
     /**
-     * 金币
+     * 元宝
      */
     private Integer money;
 
@@ -68,6 +68,5 @@ public class UserEntity {
     // 当前攻击对象
     @ProtoField(Ignore = true)
     private Character target;
-
 
 }

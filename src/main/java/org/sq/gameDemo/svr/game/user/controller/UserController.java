@@ -86,6 +86,10 @@ public class UserController {
             builder.setMsgId(requestUserInfo.getMsgId());
             builder.setTime(requestUserInfo.getTime());
             User loginUser = userService.loginUser(user);
+            if(loginUser == null) {
+                builder.setContent("该用户不存在");
+                return;
+            }
             entityService.playerLogin(channel, builder, loginUser);
         } catch (CustomException.BindRoleInSenceException e1) {
             builder.setResult(404);

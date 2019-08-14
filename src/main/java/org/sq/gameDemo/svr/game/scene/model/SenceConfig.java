@@ -22,9 +22,10 @@ public class SenceConfig {
     private String jsonStr;
 
     @Data
-    public static class tmpConf {
+    public static class tmpCommonConf {
         private int id;
         private int num;
         private int level;
     }
+
 }

@@ -9,6 +9,7 @@ import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
+import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
@@ -275,7 +276,7 @@ public class EntityService {
      * 判断是否被攻击者杀死
      * @return
      */
-    public boolean playerIsDead(Player player, Monster attacker) {
+    public boolean playerIsDead(Player player, Character attacker) {
         synchronized (player) {
             if(Objects.nonNull(player) && player.getHp() <= 0) {
                 player.setDeadStatus();
@@ -285,8 +286,7 @@ public class EntityService {
                     ((Monster)attacker).setState(CharacterState.LIVE.getCode());
                 }
 
-                Channel channel = playerCache.getChannelByPlayerId(player.getId());
-                channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家死亡事件，你被杀死了, 2秒后回起源之地"));
+                senceService.notifyPlayerByDefault(player, "你被 id: " + attacker.getId() + ", name:" + attacker.getName() + "杀死了, 2秒后回起源之地");
 
                 try {
                     TimeTaskManager.threadPoolSchedule(
@@ -298,7 +298,7 @@ public class EntityService {
                                 if(!player.getSenceId().equals(1)) {
                                     senceService.moveToSence(player, 1, playerCache.getChannelByPlayerId(player.getId()));
                                 }
-                                channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("玩家复活，恭喜你复活了"));
+                                senceService.notifyPlayerByDefault(player, "玩家复活，恭喜你复活了");
                             }
                     );
                     return true;

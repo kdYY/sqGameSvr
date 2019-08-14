@@ -18,6 +18,7 @@ import org.sq.gameDemo.svr.game.characterEntity.model.Npc;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.copyScene.service.CopySceneService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
@@ -34,6 +35,9 @@ public class EntityController {
 
     @Autowired
     private PlayerCache playerCache;
+
+    @Autowired
+    private CopySceneService copySceneService;
 
 
 
@@ -115,7 +119,15 @@ public class EntityController {
         try {
             Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
             //获取场景，场景中的角色信息
-            getUserSenceMsg(builder, player.getSenceId());
+
+            //副本场景信息
+//            if(player.getCopySceneId() != null) {
+//                copySceneService.transformSenceMsgRespPt(builder, player.getCopySceneId());
+//            }
+//            //场景信息
+//            else {
+                getUserSenceMsg(builder, player.getSenceId());
+//            }
             builder.setMsgId(requestInfo.getMsgId())
                     .setTime(requestInfo.getTime());
         } catch (Exception e) {

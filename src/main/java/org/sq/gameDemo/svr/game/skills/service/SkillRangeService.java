@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
+import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
+import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.model.SkillRange;
@@ -39,8 +41,9 @@ public class SkillRangeService {
      * @param senecMsg
      */
     public void routeSkill(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
+
         Optional.ofNullable(skillRangeMap.get(SkillRange.getSkillRangeByRangeId(skill.getSkillRange())))
-                .ifPresent(s -> s.skillEffect(attacter, targeter, senecMsg,skill));
+                .ifPresent(s -> s.skillEffect(attacter, targeter, senecMsg, skill));
     }
 
     private void skillSelf(Character attacter, Character target, SenceConfigMsg senecMsg, Skill skill) {

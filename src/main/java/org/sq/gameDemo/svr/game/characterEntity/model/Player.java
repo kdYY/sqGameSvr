@@ -24,7 +24,6 @@ import java.util.concurrent.Future;
 /**
  * 玩家类
  */
-@Slf4j
 @Data
 @EqualsAndHashCode(callSuper=true)
 public class Player extends UserEntity implements Character {
@@ -34,6 +33,7 @@ public class Player extends UserEntity implements Character {
      *  等级，根据经验计算得出
      */
     private Integer level;
+
 
     /**
      * 根据配置进行计算,同时hp mp等级变动影响
@@ -58,7 +58,6 @@ public class Player extends UserEntity implements Character {
         }
         this.hp = hp;
 
-        log.debug(this.getName() + "-> hp:" + hp);
     }
 
     /**

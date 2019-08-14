@@ -15,6 +15,9 @@ public class JsonUtil {
     public  static List  reSerializableJson(String jsonStr, Class clazz) {
         return JSONArray.parseArray(jsonStr, clazz);
     }
+    public static <T>  T  reJson(String jsonStr, Class<T> clazz) {
+        return JSONArray.parseObject(jsonStr, clazz);
+    }
 
     public static  <T> T  reSerializableJson(String jsonStr, TypeReference<T> type) {
         return JSONArray.parseObject(jsonStr, type);

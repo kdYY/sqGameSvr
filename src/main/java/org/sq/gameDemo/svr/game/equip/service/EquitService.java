@@ -44,13 +44,10 @@ public class EquitService {
     public void bindEquip(Player player) {
         if(!Strings.isNullOrEmpty(player.getEquipments())) {
             Map<Integer, Item> equipMap = JsonUtil.reSerializableJson(player.getEquipments(), new TypeReference<Map<Integer, Item>>() {});
-            Optional.ofNullable(equipMap).ifPresent(map -> {
-                    player.setEquipmentBar(map);
-                    map.values().stream().forEach(item -> roleAttriService.bindEquipmentAttrToPlayer(player, item));
-                    //计算战力
-                    //entityService.computeAttack(player);
-                }
-            );
+            if(equipMap != null && equipMap.size() != 0) {
+                player.setEquipmentBar(equipMap);
+                equipMap.values().stream().forEach(item -> roleAttriService.bindEquipmentAttrToPlayer(player, item));
+            }
         }
 
     }

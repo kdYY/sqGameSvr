@@ -9,11 +9,13 @@ import org.springframework.util.StringUtils;
 import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.fight.FightService;
 import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -23,7 +25,6 @@ import org.sq.gameDemo.svr.game.skills.model.SkillRange;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -43,7 +44,8 @@ public class SkillService {
     private BuffService buffService;
     @Autowired
     private SkillCache skillCache;
-
+    @Autowired
+    private FightService fightService;
 
     /**
      * 场景单位使用技能打另一个场景单位
@@ -72,16 +74,15 @@ public class SkillService {
         //开启cd
         makeSkillCD(attacter, skill);
         //技能若是有释放时间，则延迟释放
-
         if(attacter instanceof UserEntity && skill.getCastTime() > 0) {
             UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
                     attacter.getName() + "开始释放技能，需要" + skill.getCastTime()/1000 + "秒");
         }
 
-        //单线程执行
+        //单线程执行 保证任务顺序且不出现某些线程安全问题
         TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
                 () -> {
-                    senecMsg.getSingleThreadSchedule().execute(
+                    senecMsg.getCopyScence().execute(
                             () -> {
                                 if (targeter.getHp() > 0) {
                                     senceService.notifyPlayerByDefault(attacter, content);
@@ -89,20 +90,26 @@ public class SkillService {
 
                                     if(skill.getBuff() != null && skill.getBuff() != 0) {
                                         Optional.ofNullable(skill.getBuff()).ifPresent(
-                                                buff -> buffService.buffAffecting(targeter, buffService.getBuff(buff))
+                                                buffId -> {
+                                                    Buff buff = buffService.getBuff(buffId);
+                                                    buff.setCharacter(attacter);
+                                                    buffService.buffAffecting(targeter, buff);
+                                                }
                                         );
                                     }
 
+                                    //TODO 将装备中的被动buff进行作用
+
                                     if (attacter instanceof Player) {
                                         ((Player) attacter).setTarget(targeter);
-                                        //随机损耗装备
-                                        ((Player) attacter).getEquipmentBar().values()
-                                                .stream()
-                                                .findAny()
-                                                .ifPresent(equit -> equit.setDurable(equit.getDurable() - (int) Math.random() * 5));
                                     }
+
                                     if (targeter instanceof Monster) {
-                                        monsterAIService.monsterBeAttacked(attacter, (Monster) targeter, senecMsg, skill);
+                                        monsterAIService.monsterBeAttacked(attacter, (Monster) targeter);
+                                    }
+
+                                    if(targeter instanceof Player) {
+                                        fightService.playerBeAttacked(attacter, (Player) targeter);
                                     }
                                 }
                             }
@@ -172,6 +179,11 @@ public class SkillService {
         for (Skill skill : entityType.getSkillList()) {
             Skill playerSkill = new Skill();
             BeanUtils.copyProperties(skill, playerSkill);
+
+            skill.setHurt(skill.getHurt() * player.getLevel());
+            skill.setHeal(skill.getHeal() * player.getLevel());
+
+
             player.getSkillInUsedMap().put(skill.getId(), playerSkill);
         }
     }

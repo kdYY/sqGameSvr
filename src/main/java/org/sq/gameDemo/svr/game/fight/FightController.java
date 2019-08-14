@@ -19,11 +19,16 @@ public class FightController {
     @Autowired
     private PlayerCache playerCache;
 
+    /**
+     * 玩家使用技能攻打目标
+     * @param msgEntity
+     * @param skillReqInfo
+     */
     @OrderMapping(OrderEnum.SkillAttack)
-    public void kanguaiwu(MsgEntity msgEntity,
+    public void wanJiaShiYongJiNengGongDaGuaiWu(MsgEntity msgEntity,
                           @ReqParseParam SkillPt.SkillReqInfo skillReqInfo) {
         Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
-        fightService.skillAttackSingleMonster(player, skillReqInfo.getSkillId(), skillReqInfo.getTargetId());
+        fightService.skillAttackSingleTarget(player, skillReqInfo.getSkillId(), skillReqInfo.getTargetId());
     }
 
 

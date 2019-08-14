@@ -43,10 +43,8 @@ public class MonsterAIService {
      * 怪物被攻击
      * @param attacter
      * @param targetMonster
-     * @param senecMsg
-     * @param skill
      */
-    public void monsterBeAttacked(Character attacter, Monster targetMonster, SenceConfigMsg senecMsg, Skill skill) {
+    public void monsterBeAttacked(Character attacter, Monster targetMonster) {
         //设置怪物归属者
         if(targetMonster.getTarget() == null || targetMonster.getState().equals(CharacterState.LIVE)) {
             targetMonster.setTarget(attacter);
@@ -60,9 +58,6 @@ public class MonsterAIService {
                         + targetMonster.getTarget().getName());
             }
         }
-
-        //怪物被攻击事件
-        //EventBus.publish(new MonsterBeAttackedEvent(attacter, targetMonster, senecMsg, skill));
 
         if(attacter instanceof Player && targetMonster.isDead()) {
 
