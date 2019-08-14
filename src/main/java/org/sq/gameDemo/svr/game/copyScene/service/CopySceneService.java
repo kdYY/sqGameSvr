@@ -12,6 +12,8 @@ import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
 import org.sq.gameDemo.svr.game.copyScene.dao.CopySceneConfCache;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.copyScene.model.CopySceneConfig;
+import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
+import org.sq.gameDemo.svr.game.fight.monsterAI.state.MonsterStateHandle;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
@@ -179,7 +181,15 @@ public class CopySceneService {
             senceService.notifyPlayerByDefault(player, pl.getName() + "(id:" + pl.getId()
                     + ") 进入副本 (id:" + copyScene.getId() + ", name:" + copyScene.getName() + ")");
         });
-
+        //怪物攻击
+        if(copyScene.getLimit().equals(1)) {
+            copyScene.getBoss().setTarget(player);
+            copyScene.getBoss().setState(CharacterState.ATTACKING.getCode());
+            copyScene.getMonsterList().forEach(monster -> {
+                monster.setTarget(player);
+                monster.setState(CharacterState.ATTACKING.getCode());
+            });
+        }
     }
 
 }

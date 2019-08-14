@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
+import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.MonsterStateManager;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -47,6 +48,9 @@ public class SenceRefreshManager {
                 .forEach(senceId -> {
                     SenceConfigMsg senceCnfMsg = senceService.getSenecMsgById(senceId);
                     List<Monster> monsterList = senceCnfMsg.getMonsterList();
+                    if(senceCnfMsg instanceof CopyScene) {
+                        monsterStateManager.refreshMonsterState(((CopyScene)senceCnfMsg).getBoss());
+                    }
                     monsterList.forEach(monsterStateManager::refreshMonsterState);
                 });
 
