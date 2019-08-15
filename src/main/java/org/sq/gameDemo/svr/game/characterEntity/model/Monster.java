@@ -17,15 +17,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @EqualsAndHashCode(callSuper=true)
 public class Monster extends SenceEntity implements Character {
     Long entityTypeId;
+
     //野怪攻击速度
     private Integer attackSpeed = 1000;
 
-
+    /**
+     * 设置怪物死亡状态
+     */
     public void setDeadStatus() {
         if(isDead()) {
             this.setTarget(null);
-            this.setState(CharacterState.IS_REFRESH.getCode());
-            this.setDeadTime(System.currentTimeMillis());
+            if(this.getRefreshTime() <= 0) {
+                this.setState(CharacterState.COPY_DEAD.getCode());
+            } else {
+                this.setState(CharacterState.IS_REFRESH.getCode());
+                this.setDeadTime(System.currentTimeMillis());
+            }
         }
     }
 

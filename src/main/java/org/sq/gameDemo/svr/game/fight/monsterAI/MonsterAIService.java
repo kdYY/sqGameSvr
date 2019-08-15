@@ -3,6 +3,7 @@ package org.sq.gameDemo.svr.game.fight.monsterAI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.Constant;
+import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.MonsterBeAttackedEvent;
@@ -48,7 +49,6 @@ public class MonsterAIService {
         //设置怪物归属者
         if(targetMonster.getTarget() == null || targetMonster.getState().equals(CharacterState.LIVE)) {
             targetMonster.setTarget(attacter);
-            targetMonster.setState(CharacterState.ATTACKING.getCode());
         } else if (targetMonster.getTarget() != null && targetMonster.getState().equals(CharacterState.ATTACKING.getCode())){
             if(!targetMonster.getTarget().getId().equals(attacter.getId())) {
                 senceService.notifyPlayerByDefault(attacter,
@@ -60,9 +60,13 @@ public class MonsterAIService {
         }
 
         if(attacter instanceof Player && targetMonster.isDead()) {
+            //从场景移除
+            if(!senceService.removeMonster(targetMonster)) {
+                throw new CustomException.RemoveFailedException("怪物移除失败");
+
+            }
 
             targetMonster.setDeadStatus();
-
             if(attacter instanceof Player) {
                 Player player = (Player) attacter;
                 player.addExp(targetMonster.getLevel() * 10);
@@ -111,7 +115,7 @@ public class MonsterAIService {
             }
             //target死亡后不攻击
             if(entityService.playerIsDead(player,monster)) {
-                //交给事件去处理
+                //交给轮询器去处理
                 return;
             }
         }
@@ -154,7 +158,6 @@ public class MonsterAIService {
                         .findAny()
                         .ifPresent(
                                 skillChecked -> {
-                                    senceService.notifyPlayerByDefault(monster, "选中技能:" + new Date().toString());
                                     //如果技能使用成功
                                     if(skillService.characterUseSkillAttack(
                                             monster,

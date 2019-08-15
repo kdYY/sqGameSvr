@@ -6,7 +6,8 @@ package org.sq.gameDemo.svr.game.fight.monsterAI.state;
 public enum CharacterState {
     LIVE(1, "存活"),
     ATTACKING(2, "受到攻击"),
-    IS_REFRESH(3, "死亡，正在刷新")
+    IS_REFRESH(3, "死亡，正在刷新"),
+    COPY_DEAD(3, "副本怪物死亡状态")
     ;
     private Integer code;
     private String descr;

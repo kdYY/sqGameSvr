@@ -75,14 +75,14 @@ public class SkillService {
         makeSkillCD(attacter, skill);
         //技能若是有释放时间，则延迟释放
         if(attacter instanceof UserEntity && skill.getCastTime() > 0) {
-            UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
+            senceService.notifySenceByDefault(senecMsg.getSenceId(),
                     attacter.getName() + "开始释放技能，需要" + skill.getCastTime()/1000 + "秒");
         }
 
         //单线程执行 保证任务顺序且不出现某些线程安全问题
         TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
                 () -> {
-                    senecMsg.getCopyScence().execute(
+                    senecMsg.getSingleThreadSchedule().execute(
                             () -> {
                                 if (targeter.getHp() > 0) {
                                     senceService.notifyPlayerByDefault(attacter, content);

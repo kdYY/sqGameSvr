@@ -33,17 +33,10 @@ public class UserCache {
     public static Map<Channel,Integer> channelUserIdMap = new ConcurrentHashMap<>();
     //<UserId, User>
     public static Map<Integer, User> userMap = new ConcurrentHashMap<>();
-    //<SenceId, Channel>
-    public static Map<Integer, List<Channel>> senceChannelGroupMap = new ConcurrentHashMap<>();
 
-    public static void removeChannle(Channel channel, Integer userId) {
+    public static void removeUserIdChannel(Channel channel, Integer userId) {
         channelUserIdMap.remove(channel, userId);
     }
-
-    public static void removeChannle(Channel channel) {
-        channelUserIdMap.remove(channel);
-    }
-
 
     @PostConstruct
     public void init() {
@@ -53,40 +46,6 @@ public class UserCache {
         }
     }
 
-    /**
-     * 玩家进入场景
-     * @param senceId
-     * @param channel
-     * @param msgByteArray 要广播话语
-     */
-    public static void addChannelInGroup(Integer senceId, Channel channel, byte[] msgByteArray) {
-        List<Channel> channelList = senceChannelGroupMap.get(senceId);
-        if(channelList == null) {
-            channelList = new CopyOnWriteArrayList<>();
-            senceChannelGroupMap.put(senceId, channelList);
-        }
-
-        //同时广播
-        broadCastPlayerGroup(channelList, msgByteArray);
-        //广播完再加入
-        channelList.add(channel);
-    }
-
-    /**
-     * 玩家退出场景
-     * @param senceId
-     * @param channel
-     * @param msg
-     */
-    public static void moveChannelInGroup(Integer senceId, Channel channel, String msg) {
-        List<Channel> channelList = senceChannelGroupMap.get(senceId);
-        if(channelList == null) {
-            throw new CustomException.RemoveFailedException("场景id不存在");
-        }
-        channelList.remove(channel);
-        //同时广播
-        broadcastChannelGroupBysenceId(senceId, msg);
-    }
 
     private static void updateUserToken(int userId, String token) {
         updateKey(tokenUserMap, token, userId);
@@ -153,39 +112,4 @@ public class UserCache {
     public static User getUserById(int userId) {
         return userMap.get(userId);
     }
-
-    /**
-     * 根据场景id进行全场景广播
-     * @param senceId
-     * @param msg
-     * @param ignore
-     */
-    public static void broadcastChannelGroupBysenceId(Integer senceId, String msg, Channel... ignore) {
-        List<Channel> channelGroup = senceChannelGroupMap.get(senceId);
-        MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-        builder.setContent(msg);
-        Optional.ofNullable(channelGroup).ifPresent(group -> broadCastPlayerGroup(group, builder.build().toByteArray(), ignore));
-
-    }
-
-
-    /**
-     * 根据一组channel进行通知
-     * @param channelGroup
-     * @param protoByte
-     * @param ignore
-     */
-    public static void broadCastPlayerGroup(List<Channel> channelGroup, byte[] protoByte, Channel... ignore) {
-        MsgEntity msgEntity = ProtoBufUtil.getBroadCastEntity(protoByte);
-
-        channelGroup.stream()
-                .filter(ch -> ignore== null || ignore.length <= 0 || !Arrays.stream(ignore).allMatch(chan -> chan.equals(ch)))
-                .forEach(channel -> {
-                    msgEntity.setChannel(channel);
-                    channel.writeAndFlush(msgEntity);
-                });
-    }
-
-
-
 }

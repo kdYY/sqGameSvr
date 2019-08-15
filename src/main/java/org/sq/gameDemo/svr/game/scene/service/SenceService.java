@@ -20,6 +20,7 @@ import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.copyScene.service.CopySceneService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
@@ -78,7 +79,7 @@ public class SenceService {
     }
 
 
-    public Cache<Integer, SenceConfigMsg> getSenceIdAndSenceMsgMap() {
+    public Cache<Integer, SenceConfigMsg> getSenceCache() {
         return senceIdAndSenceMsgMap;
     }
 
@@ -161,7 +162,11 @@ public class SenceService {
         if((findSence = getSenecMsgById(senceId)) == null) {
             throw new CustomException.NoSuchSenceException("没有此场景");
         }
-        ProtoBufUtil.transformProtoReturnBuilder(builder, findSence);
+        if(findSence instanceof CopyScene) {
+            ProtoBufUtil.transformProtoReturnBean(builder, (CopyScene)findSence);
+        } else {
+            ProtoBufUtil.transformProtoReturnBuilder(builder, findSence);
+        }
     }
 
     /**
@@ -173,16 +178,13 @@ public class SenceService {
         return getSingleByCondition(gameScenes, gameScene -> gameScene.getId() == senceId);
     }
 
-    public List<Integer> getAllSenceId() {
-        return gameScenes.stream().map(GameScene::getId).collect(Collectors.toList());
-    }
 
 
 
     /**
      *     將玩家角色加入场景，并广播通知
      */
-    public void addPlayerInSence(Player player, Channel channel) throws CustomException.BindRoleInSenceException {
+    public void addPlayerInSence(Player player) throws CustomException.BindRoleInSenceException {
         SenceConfigMsg msg = senceIdAndSenceMsgMap.getIfPresent(player.getSenceId());
         Optional.ofNullable(msg).ifPresent(senceConfigMsg -> {
             List<Player> playerList = senceConfigMsg.getPlayerList();
@@ -192,11 +194,7 @@ public class SenceService {
             }
             playerList.add(player);
             //广播通知
-            //增加进channelGroup
-            MessageProto.Msg.Builder builder = MessageProto.Msg.newBuilder();
-            builder.setContent(player.getName() + "进入场景!");
-            // TODO 将channel放在player，广播也放在player
-            UserCache.addChannelInGroup(player.getSenceId(), channel, builder.build().toByteArray());
+            notifySenceByDefault(player.getSenceId(), player.getName() + "进入场景!");
         });
 
     }
@@ -205,16 +203,8 @@ public class SenceService {
 
     /**
      * /remove掉场景中的player，同时广播通知
-     * @param usrId
-     * @param channel
-     * @throws CustomException.RemoveFailedException
      */
-    public Player removePlayerAndGet(Integer usrId, Channel channel) throws CustomException.RemoveFailedException {
-        if(!entityService.hasPlayer(channel)) {
-            log.error("player找不到,出现脏数据");
-            return null;
-        }
-        Player player = entityService.getInitedPlayer(usrId, channel);
+    public Player removePlayerAndGet(Player player) throws CustomException.RemoveFailedException {
         //玩家在非副本场景 (不能判断senceId)
 //        if(player.getCopySceneId() == null || player.getCopySceneId().intValue() <= 0) {
             SenceConfigMsg senceConfigMsg = senceIdAndSenceMsgMap.getIfPresent(player.getSenceId());
@@ -222,7 +212,7 @@ public class SenceService {
             if(!playerList.remove(player)) {
                 throw new CustomException.RemoveFailedException("移动失败");
             }
-            UserCache.moveChannelInGroup(player.getSenceId(), channel, player.getName() + "离开场景!");
+            notifySenceByDefault(player.getSenceId(),player.getName() + "离开场景!");
 //        }
         //玩家在副本场景
 //        else {
@@ -249,19 +239,24 @@ public class SenceService {
         return first.get();
     }
 
-
-    public void moveToSence(Player player, int newSenceId, Channel channel) {
+    /**
+     * 从场景移除，加入新场景
+     * @param player
+     * @param newSenceId
+     * @throws Exception
+     */
+    public void moveToSence(Player player, int newSenceId) throws Exception{
         //场景id相同且不在副本中
         if(newSenceId == player.getSenceId() ) {
             //不能移动到原来的场景
             throw new CustomException.BindRoleInSenceException();
         }
         //从场景中移除并获取
-        removePlayerAndGet(player.getUserId(), channel);
+        removePlayerAndGet(player);
         //改变用户的所在地
         player.setSenceId(newSenceId);
         //进行重新绑定
-        addPlayerInSence(player, channel);
+        addPlayerInSence(player);
     }
 
 
@@ -275,5 +270,27 @@ public class SenceService {
             channel = playerCache.getChannelByPlayerId(((Monster)attacter).getTarget().getId());
         }
         Optional.ofNullable(channel).ifPresent(ch -> ch.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content)));
+    }
+
+    public void notifySenceByDefault(Integer senceId, String content) {
+        getSenecMsgById(senceId).getPlayerList().forEach(
+                player -> {
+                    Channel channel = playerCache.getChannelByPlayerId(player.getId());
+                    Optional.ofNullable(channel).ifPresent(ch -> ch.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content)));
+                }
+        );
+
+
+    }
+
+
+    public boolean removeMonster(Monster targetMonster) {
+
+        return getSenecMsgById(targetMonster.getSenceId()).getMonsterList().remove(targetMonster);
+
+    }
+
+    public boolean enterMonsterSence(Monster monster) {
+        return getSenecMsgById(monster.getSenceId()).getMonsterList().add(monster);
     }
 }

@@ -64,4 +64,7 @@ public interface Constant {
      * 元宝代号
      */
     Integer YUAN_BAO = 1000;
+    Integer RELIVE_SCENE = 1;
+    long RELIVE_TIME = 5000L;
+    Long COPY_RIGHT_NOTIFY_BEFORE_TIME = 10000L;
 }

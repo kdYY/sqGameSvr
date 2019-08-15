@@ -20,7 +20,6 @@ import java.util.concurrent.ThreadFactory;
  */
 @Data
 public class  SenceConfigMsg {
-    @ProtoField(Ignore = true)
     private int senceId;
 
     @ProtoField(TargetClass = EntityTypeProto.EntityType.class, TargetName = "entityType")

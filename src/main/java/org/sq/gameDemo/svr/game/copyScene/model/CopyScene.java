@@ -24,6 +24,7 @@ public class CopyScene extends SenceConfigMsg {
     private Integer id;
 
     //<playerId , beforeSceneId>
+    @ProtoField(Ignore = true)
     private Map<Long, Integer> beforeSenceIdMap = new ConcurrentHashMap<>();
     //boss
     @ProtoField(TargetName = "boss", Function = "buildBoss", TargetClass = SenceMsgProto.SenceMsgResponseInfo.Builder.class)
@@ -45,16 +46,10 @@ public class CopyScene extends SenceConfigMsg {
 
     //是否正在被回收
     @ProtoField(Ignore = true)
-    private volatile boolean isGarbage;
+    private volatile boolean isGarbage = false;
     //副本限时
     private Long maxTime;
 
-    @ProtoField(Ignore = true)
-    private static ThreadFactory sceneThreadFactory = new ThreadFactoryBuilder()
-            .setNameFormat("scene-loop-%d").setUncaughtExceptionHandler((t,e) -> e.printStackTrace()).build();
-    /** 通过一个场景一个线程处理器的方法保证每个场景的指令循序 */
-    @ProtoField(Ignore = true)
-    ScheduledExecutorService copyScenceSingleThread = Executors.newSingleThreadScheduledExecutor(sceneThreadFactory);
 
     public void inGarbage() {
 
@@ -71,7 +66,6 @@ public class CopyScene extends SenceConfigMsg {
             this.getBeforeSenceIdMap().clear();
             this.setBeforeSenceIdMap(null);
         }
-        this.copyScenceSingleThread.shutdown();
         this.boss = null;
 
     }

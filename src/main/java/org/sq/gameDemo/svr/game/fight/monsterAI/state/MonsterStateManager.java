@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.UserCache;
+import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
@@ -62,16 +63,22 @@ public class MonsterStateManager {
      * @param monster
      */
     private void refresh(Monster monster) {
-        long dieTime = monster.getDeadTime() + monster.getRefreshTime();
-        long now = System.currentTimeMillis();
-        if(dieTime <= now) {
-            SenceEntity senceEntity = senceEntityCache.get(monster.getEntityTypeId());
-            monster.setHp(senceEntity.getHp());
-            monster.setState(senceEntity.getState());
 
-            UserCache.broadcastChannelGroupBysenceId(monster.getSenceId(), monster.getName() + "(id=" + monster.getId() +")已复活");
-
+        if(monster.getRefreshTime() > 0) {
+            long dieTime = monster.getDeadTime() + monster.getRefreshTime();
+            long now = System.currentTimeMillis();
+            if(dieTime <= now) {
+                SenceEntity senceEntity = senceEntityCache.get(monster.getEntityTypeId());
+                monster.setHp(senceEntity.getHp());
+                monster.setState(senceEntity.getState());
+                senceService.notifySenceByDefault(monster.getSenceId(), monster.getName() + "(id=" + monster.getId() +")已复活");
+                //加入场景
+                if(!senceService.enterMonsterSence(monster)) {
+                    log.debug("怪物进入场景失败");
+                }
+            }
         }
+
     }
 
     /**

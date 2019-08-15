@@ -8,6 +8,7 @@ import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
+import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.model.SkillRange;
 
@@ -20,7 +21,7 @@ import java.util.Optional;
 public class SkillRangeService {
 
     @Autowired
-    private BuffService buffService;
+    private SenceService senceService;
 
     private Map<SkillRange, ISkillRange>  skillRangeMap = new HashMap<>();
 
@@ -52,7 +53,7 @@ public class SkillRangeService {
 
 
 
-        UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
+        senceService.notifySenceByDefault(senecMsg.getSenceId(),
                 target.getName()
                         + "受到单体治疗技能:"
                         + skill.getName()
@@ -68,7 +69,7 @@ public class SkillRangeService {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(attacter.getHp() + skill.getHeal());
 
-        UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
+        senceService.notifySenceByDefault(senecMsg.getSenceId(),
                 target.getName()
                         + "受到两方治疗技能:"
                         + skill.getName()
@@ -85,7 +86,7 @@ public class SkillRangeService {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(attacter.getHp() + skill.getHeal());
 
-        UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
+        senceService.notifySenceByDefault(senecMsg.getSenceId(),
                 target.getName()
                         + "受到群体治疗技能:"
                         + skill.getName()
@@ -100,7 +101,7 @@ public class SkillRangeService {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(target.getHp() - skill.getHurt());
 
-        UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
+        senceService.notifySenceByDefault(senecMsg.getSenceId(),
                 target.getName()
                         + "受到单体攻击技能:"
                         + skill.getName()
@@ -115,7 +116,7 @@ public class SkillRangeService {
         attacter.setMp(attacter.getMp() - skill.getMpNeed());
         target.setHp(target.getHp() - skill.getHurt());
 
-        UserCache.broadcastChannelGroupBysenceId(senecMsg.getSenceId(),
+        senceService.notifySenceByDefault(senecMsg.getSenceId(),
                 target.getName()
                         + "受到群体攻击技能:"
                         + skill.getName()

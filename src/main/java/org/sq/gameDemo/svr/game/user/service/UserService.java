@@ -22,6 +22,8 @@ import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
+import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.user.dao.UserMapper;
 import org.sq.gameDemo.svr.game.user.model.User;
@@ -154,17 +156,25 @@ public class UserService {
     }
 
     public void userOffLine(Channel channel) {
-        Integer userId = UserCache.getUserIdByChannel(channel);
-        Player player = senceService.removePlayerAndGet(userId, channel);
+        Player player = playerCache.getPlayerByChannel(channel);
+        if(player == null) {
+            return;
+        }
+        senceService.removePlayerAndGet(player);
         //清除playerCache中的数据
         playerCache.removePlayerCache(channel);
-        UserCache.removeChannle(channel, player.getUserId());
-
+        UserCache.removeUserIdChannel(channel, player.getUserId());
         try {
             TimeTaskManager.threadPoolSchedule(10, () -> {
                 UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
                 userEntity.setExp(player.getExp());
-                userEntity.setSenceId(player.getSenceId());
+                SenceConfigMsg senecMsgById = senceService.getSenecMsgById(player.getSenceId());
+                if(senecMsgById instanceof CopyScene) {
+                    Integer senceId  = ((CopyScene) senecMsgById).getBeforeSenceIdMap().get(player.getId());
+                    userEntity.setSenceId(senceId);
+                } else {
+                    userEntity.setSenceId(player.getSenceId());
+                }
                 Map<Integer, Item> equipmentBar = player.getEquipmentBar();
                 if(equipmentBar != null && equipmentBar.size() > 0) {
                     userEntity.setEquipments(JsonUtil.serializableJson(equipmentBar));
@@ -178,19 +188,6 @@ public class UserService {
 
 
         log.info(player.getName() + "下线");
-    }
-
-    public User getUserById(Integer userId) {
-        User user = null;
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andIdEqualTo(userId);
-
-        List<User> userList = userMapper.selectByExample(userExample);
-        if(userList != null && userList.size() >= 1) {
-            return userList.get(0);
-        } else {
-            return null;
-        }
     }
 
     public User loginUser(UserProto.User user){

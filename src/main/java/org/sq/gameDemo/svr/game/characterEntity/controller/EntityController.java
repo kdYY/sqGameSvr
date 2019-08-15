@@ -103,7 +103,9 @@ public class EntityController {
     private void getUserSenceMsg(SenceMsgProto.SenceMsgResponseInfo.Builder builder, int senceId) throws Exception {
         //场景，场景中的角色信息
         GameScene sence = senceService.getSenceBySenceId(senceId);
-        builder.setSence((SenceProto.Sence) ProtoBufUtil.transformProtoReturnBean(SenceProto.Sence.newBuilder(), sence));
+        if(sence != null) {
+            builder.setSence((SenceProto.Sence) ProtoBufUtil.transformProtoReturnBean(SenceProto.Sence.newBuilder(), sence));
+        }
         senceService.transformEntityRespPt(builder, sence.getId());
     }
 
@@ -119,15 +121,7 @@ public class EntityController {
         try {
             Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
             //获取场景，场景中的角色信息
-
-            //副本场景信息
-//            if(player.getCopySceneId() != null) {
-//                copySceneService.transformSenceMsgRespPt(builder, player.getCopySceneId());
-//            }
-//            //场景信息
-//            else {
-                getUserSenceMsg(builder, player.getSenceId());
-//            }
+            getUserSenceMsg(builder, player.getSenceId());
             builder.setMsgId(requestInfo.getMsgId())
                     .setTime(requestInfo.getTime());
         } catch (Exception e) {
@@ -159,7 +153,7 @@ public class EntityController {
 
             Channel channel = msgEntity.getChannel();
             Player player = playerCache.getPlayerByChannel(channel);
-            senceService.moveToSence(player, newSenceId, channel);
+            senceService.moveToSence(player, newSenceId);
             //修改用户的状态并进行数据库用户场景id更新
             getUserSenceMsg(builder, newSenceId);
 
@@ -223,20 +217,14 @@ public class EntityController {
                               @RespBuilderParam PlayerPt.PlayerRespInfo.Builder builder) throws Exception {
         try {
             Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
-            Optional.ofNullable(entityService.getType(player.getTypeId())).ifPresent(
-                    entityType -> {
-                        List<Skill> skillList = entityType.getSkillList();
-                        if(skillList != null &&skillList.size() > 0) {
-                            skillList.forEach(skill -> {
-                                try {
-                                    builder.addSkill((SkillPt.Skill) ProtoBufUtil.transformProtoReturnBean(SkillPt.Skill.newBuilder(), skill));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            });
-
-                        }
-                    }
+            Optional.ofNullable(player.getSkillInUsedMap().values()).ifPresent(
+                    skillList -> skillList.forEach(skill -> {
+                            try {
+                                builder.addSkill((SkillPt.Skill) ProtoBufUtil.transformProtoReturnBean(SkillPt.Skill.newBuilder(), skill));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        })
             );
 
         } catch (Exception e) {

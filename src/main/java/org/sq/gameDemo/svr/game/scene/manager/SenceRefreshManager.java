@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.MonsterStateManager;
-import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import javax.annotation.PostConstruct;
@@ -40,19 +39,19 @@ public class SenceRefreshManager {
         singleThreadSchedule.scheduleWithFixedDelay(this::refreshMonsterState, 1000, 60, TimeUnit.MILLISECONDS);
     }
 
-
+    /**
+     * 刷新非副本场景
+     */
     private void refreshMonsterState() {
-        List<Integer> senceIds = senceService.getAllSenceId();
-
-        senceIds.stream()
-                .forEach(senceId -> {
-                    SenceConfigMsg senceCnfMsg = senceService.getSenecMsgById(senceId);
+        senceService.getSenceCache().asMap().values().stream().filter(msg -> !(msg instanceof CopyScene) ).forEach(
+                senceCnfMsg -> {
                     List<Monster> monsterList = senceCnfMsg.getMonsterList();
                     if(senceCnfMsg instanceof CopyScene) {
                         monsterStateManager.refreshMonsterState(((CopyScene)senceCnfMsg).getBoss());
                     }
                     monsterList.forEach(monsterStateManager::refreshMonsterState);
-                });
+                }
+        );
 
     }
 }

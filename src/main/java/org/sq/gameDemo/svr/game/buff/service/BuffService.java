@@ -96,7 +96,7 @@ public class BuffService {
                             if (character != null
                                     && character instanceof Player
                                     && !entityService.playerIsDead((Player) character, affecter)) {
-                                UserCache.broadcastChannelGroupBysenceId(((Player)affecter).getSenceId(), buff.getName()
+                                senceService.notifySenceByDefault(((Player)affecter).getSenceId(), buff.getName()
                                         + "在" + affecter.getName() + "身上取消作用" );
 //                                // 检测玩家是否死亡
 //                                if(entityService.playerIsDead((Player) affecter,null)) {

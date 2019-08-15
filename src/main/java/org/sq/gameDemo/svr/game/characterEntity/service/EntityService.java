@@ -10,6 +10,7 @@ import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
@@ -102,7 +103,7 @@ public class EntityService {
             Player player = getInitedPlayer(userId, channel);
 
             //将角色增加进场景
-            senceService.addPlayerInSence(player, channel);
+            senceService.addPlayerInSence(player);
 
             String lastSence = senceService.getSenceBySenceId(player.getSenceId()).getName();
             builder.setContent(lastSence);
@@ -130,7 +131,7 @@ public class EntityService {
         addUserEntity(userEntity);
         //返回初始化完毕的玩家
         Player initedPlayer = getInitedPlayer(userId, channel);
-        senceService.addPlayerInSence(initedPlayer, channel);
+        senceService.addPlayerInSence(initedPlayer);
         return initedPlayer;
     }
 
@@ -283,29 +284,35 @@ public class EntityService {
 
                 if(attacker != null && attacker instanceof Monster) {
                     ((Monster)attacker).setTarget(null);
-                    ((Monster)attacker).setState(CharacterState.LIVE.getCode());
                 }
+                if(! (senceService.getSenecMsgById(player.getSenceId()) instanceof CopyScene)) {
+                    senceService.notifyPlayerByDefault(player, "你被 id: " + attacker.getId() +
+                            ", name:" + attacker.getName() + "杀死了, "+ Constant.RELIVE_TIME + "秒后回起源之地");
 
-                senceService.notifyPlayerByDefault(player, "你被 id: " + attacker.getId() + ", name:" + attacker.getName() + "杀死了, 2秒后回起源之地");
-
-                try {
-                    TimeTaskManager.threadPoolSchedule(
-                            2000, () -> {
-                                Long id = player.getId();
-                                initPlayer(player);
-                                player.setId(id);
-                                //添加到起源之地
-                                if(!player.getSenceId().equals(1)) {
-                                    senceService.moveToSence(player, 1, playerCache.getChannelByPlayerId(player.getId()));
+                    try {
+                        TimeTaskManager.threadPoolSchedule(
+                                Constant.RELIVE_TIME, () -> {
+                                    Long id = player.getId();
+                                    initPlayer(player);
+                                    player.setId(id);
+                                    //添加到起源之地
+                                    if(!player.getSenceId().equals(Constant.RELIVE_SCENE)) {
+                                        try {
+                                            senceService.moveToSence(player, 1);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    senceService.notifyPlayerByDefault(player, "玩家复活，恭喜你复活了");
                                 }
-                                senceService.notifyPlayerByDefault(player, "玩家复活，恭喜你复活了");
-                            }
-                    );
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
+                        );
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false;
+                    }
                 }
+                return true;
+
             }
 
             return false;
