@@ -149,7 +149,8 @@ public class EntityService {
             UserEntity usrEntity = userEntityMapper.getUserEntityByUserId(userId);
             playerCached = new Player();
             BeanUtils.copyProperties(usrEntity,playerCached);
-
+            //初始化playerId
+            playerCached.setId(ConcurrentSnowFlake.getInstance().nextID());
             //初始化玩家
             initPlayer(playerCached);
 
@@ -181,8 +182,7 @@ public class EntityService {
      * @param player
      */
     public void initPlayer(Player player) {
-        //初始化playerId
-        player.setId(ConcurrentSnowFlake.getInstance().nextID());
+
         //初始化状态
         player.setState(CharacterState.LIVE.getCode());
         //初始化等级
@@ -198,8 +198,8 @@ public class EntityService {
         //计算最终的攻击力
         computeAttack(player);
 
-        buffService.buffAffecting(player, buffService.getBuff(105));
-        buffService.buffAffecting(player, buffService.getBuff(106));
+        //buffService.buffAffecting(player, buffService.getBuff(105));
+        //buffService.buffAffecting(player, buffService.getBuff(106));
     }
 
     /**
@@ -282,34 +282,37 @@ public class EntityService {
             if(Objects.nonNull(player) && player.getHp() <= 0) {
                 player.setDeadStatus();
 
+
+                if(senceService.getSenecMsgById(player.getSenceId()) instanceof CopyScene) {
+                    senceService.notifyPlayerByDefault(player, "你被 id: " + attacker.getId() +
+                            ", name:" + attacker.getName() + "杀死了");
+                    return true;
+                }
                 if(attacker != null && attacker instanceof Monster) {
                     ((Monster)attacker).setTarget(null);
                 }
-                if(! (senceService.getSenecMsgById(player.getSenceId()) instanceof CopyScene)) {
-                    senceService.notifyPlayerByDefault(player, "你被 id: " + attacker.getId() +
-                            ", name:" + attacker.getName() + "杀死了, "+ Constant.RELIVE_TIME + "秒后回起源之地");
+                //这里应该做成第一个被杀，通知
 
-                    try {
-                        TimeTaskManager.threadPoolSchedule(
-                                Constant.RELIVE_TIME, () -> {
-                                    Long id = player.getId();
-                                    initPlayer(player);
-                                    player.setId(id);
-                                    //添加到起源之地
-                                    if(!player.getSenceId().equals(Constant.RELIVE_SCENE)) {
-                                        try {
-                                            senceService.moveToSence(player, 1);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                senceService.notifyPlayerByDefault(player, "你被 id: " + attacker.getId() +
+                        ", name:" + attacker.getName() + "杀死了, "+ Constant.RELIVE_TIME + "秒后回主城");
+
+                try {
+                    TimeTaskManager.threadPoolSchedule(
+                            Constant.RELIVE_TIME, () -> {
+                                relivePlayer(player);
+                                //添加到起源之地
+                                if(!player.getSenceId().equals(Constant.RELIVE_SCENE)) {
+                                    try {
+                                        senceService.moveToSence(player, 1);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                    senceService.notifyPlayerByDefault(player, "玩家复活，恭喜你复活了");
                                 }
-                        );
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                    }
+                                senceService.notifyPlayerByDefault(player, "玩家复活，恭喜你复活了");
+                            }
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 return true;
 
@@ -327,5 +330,16 @@ public class EntityService {
 
     public Player getPlayer(Channel channel) {
         return playerCache.getPlayerByChannel(channel);
+    }
+
+    //复活玩家
+    public void relivePlayer(Player player) {
+        if(player.getB_Hp() > 0 && player.getB_Mp() > 0) {
+            player.setHp(player.getB_Hp());
+            player.setMp(player.getB_Mp());
+        } else {
+            senceService.notifyPlayerByDefault(player, "复活失败");
+        }
+
     }
 }

@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Data;
 import org.sq.gameDemo.common.proto.MonsterPt;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
@@ -11,6 +12,8 @@ import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 副本场景类
@@ -51,6 +54,11 @@ public class CopyScene extends SenceConfigMsg {
     private Long maxTime;
 
 
+    @ProtoField(Ignore = true)
+    private AtomicLong garbageThreshold = new AtomicLong(Constant.COPY_GARBAGE_THRESHOLD / Constant.COPY_CHECK_RATE_TIME);
+
+    @ProtoField(Ignore = true)
+    private Future future;
     public void inGarbage() {
 
         this.setGarbage(true);
@@ -68,5 +76,9 @@ public class CopyScene extends SenceConfigMsg {
         }
         this.boss = null;
 
+    }
+
+    public void resetGarbageThreshold() {
+        garbageThreshold.set(Constant.COPY_GARBAGE_THRESHOLD / Constant.COPY_CHECK_RATE_TIME);
     }
 }

@@ -67,4 +67,7 @@ public interface Constant {
     Integer RELIVE_SCENE = 1;
     long RELIVE_TIME = 5000L;
     Long COPY_RIGHT_NOTIFY_BEFORE_TIME = 10000L;
+
+    long COPY_GARBAGE_THRESHOLD = 10000L;
+    long COPY_CHECK_RATE_TIME = 60L;
 }

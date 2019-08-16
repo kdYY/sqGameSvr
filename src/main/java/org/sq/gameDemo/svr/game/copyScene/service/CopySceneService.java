@@ -4,11 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.*;
+import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
+import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.copyScene.dao.CopySceneConfCache;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.copyScene.model.CopySceneConfig;
@@ -26,6 +28,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,7 +46,7 @@ public class CopySceneService {
     private SenceEntityCache senceEntityCache;
 
     @Autowired
-    private PlayerCache playerCache;
+    private EntityService entityService;
 
     @Autowired
     private MonsterAIService monsterAIService;
@@ -94,12 +97,13 @@ public class CopySceneService {
         Future future = null;
         try {
             future = checkCopyScene(copyScene);
+            copyScene.setFuture(future);
         } catch (Exception e) {
             e.printStackTrace();
             //graceful close
             if(future != null && copyScene != null) {
                 destroyInstance(copyScene, future);
-                log.debug("副本任务进行中，出现异常，进行关闭");
+                log.info("副本任务进行中，出现异常，进行关闭");
             }
         }
 
@@ -117,38 +121,73 @@ public class CopySceneService {
             if(copyScene == null || copyScene.isGarbage()) {
                 return;
             }
+            //副本没人 到达一定时间 自动关闭
+            if(copyScene.getPlayerList().size() == 0) {
+                if(copyScene.getGarbageThreshold().decrementAndGet() <= 0) {
+                    destroyInstance(copyScene, copyScene.getFuture());
+                }
+                return;
+            } else {
+                copyScene.resetGarbageThreshold();
+            }
             if(copyScene.getBoss() == null && copyScene.getMonsterList().size() == 0) {
                 copyScene.getPlayerList().forEach(
                         player -> {
                             senceService.notifyPlayerByDefault(player, "恭喜挑战副本成功，正在返回原来场景..");
-                            exitCopyScene(player);
+                            exitCopyScene(player, copyScene);
                         }
                 );
+                destroyInstance(copyScene, copyScene.getFuture());
             } else {
                 copyScene.getMonsterList().stream().filter(monster -> monster.getState().equals(CharacterState.LIVE)).forEach(
                         monster -> copyScene.getPlayerList().stream().findAny().ifPresent(player -> monster.setTarget(player))
                 );
 
                 //刷新攻击
-                monsterAIService.monsterAttacking(copyScene.getBoss());
-               copyScene.getMonsterList()
+                copyMonsterAttacking(copyScene, copyScene.getBoss());
+                List<Monster> collect = copyScene.getMonsterList()
                         .stream()
                         .filter(monster -> monster.getState().equals(CharacterState.ATTACKING.getCode()))
-                        .forEach(monster -> monsterAIService.monsterAttacking(monster));
+                        .collect(Collectors.toList());
+                for (Monster monster : collect) {
+                    copyMonsterAttacking(copyScene, monster);
+                }
+//                //如果有玩家死完，死亡玩家退出副本
+//                copyScene.getPlayerList().stream().filter(player -> player.getHp() <= 0).forEach(
+//                        player -> {
+//
+//                        }
+//                );
             }
-        }, 2000,60, TimeUnit.MILLISECONDS);
+        }, 2000,Constant.COPY_CHECK_RATE_TIME, TimeUnit.MILLISECONDS);
 
         // 提前通知
         TimeTaskManager.threadPoolSchedule(copyScene.getMaxTime() - Constant.COPY_RIGHT_NOTIFY_BEFORE_TIME,
-                () -> notifyCopyScene(copyScene, "副本(id:"+ copyScene.getSenceId() + ", name:" + copyScene.getName()
+                () ->
+                        notifyCopyScene(copyScene, "副本(id:"+ copyScene.getSenceId() + ", name:" + copyScene.getName()
                         +") 将于十秒后关闭，赶紧打掉boss --- 充钱买礼包打得更快！")
         );
 
         // 挑战时间到
         TimeTaskManager.threadPoolSchedule(copyScene.getMaxTime(), () -> {
+            notifyCopyScene(copyScene, "副本 name:" + copyScene.getName()
+                    +") 挑戰失敗! ! !充钱买礼包打得更快！");
             destroyInstance(copyScene, future);
         });
         return future;
+    }
+
+    private void copyMonsterAttacking(CopyScene copyScene, Monster monster) {
+        try {
+            monsterAIService.monsterAttacking(monster);
+        } catch (CustomException.PlayerAlreadyDeadException e) {
+            Player player = (Player) monster.getTarget();
+            senceService.notifyPlayerByDefault(player, " 副本 name:" + copyScene.getName()
+                    +") 挑戰失敗! ! !充钱买礼包打得更快！");
+            //复活
+            entityService.relivePlayer(player);
+            exitCopyScene(player, copyScene);
+        }
     }
 
     private void notifyCopyScene(CopyScene copyScene, String content) {
@@ -158,8 +197,7 @@ public class CopySceneService {
         });
     }
 
-    public void exitCopyScene(Player player) {
-        CopyScene copyScene = (CopyScene) senceService.getSenecMsgById(player.getSenceId());
+    public void exitCopyScene(Player player, CopyScene copyScene) {
         try {
             senceService.moveToSence(player,
                     copyScene.getBeforeSenceIdMap().get(player.getId()));
@@ -170,20 +208,24 @@ public class CopySceneService {
 
     //销毁副本
     private void destroyInstance(CopyScene copyScene, Future future) {
+        log.info("副本场景销毁(senceId=" + copyScene.getSenceId() + ", name=" + copyScene.getName());
+        Future finalFuture = future;
         Optional.ofNullable(copyScene).ifPresent(
                 scene -> {
                     //将玩家移动到原来场景
                     CopyScene finalScene = scene;
+                    scene.getPlayerList().forEach(player -> exitCopyScene(player, finalScene));
                     //清缓存
-                    senceService.getSenceCache().invalidate(scene);
-                    scene.getPlayerList().forEach(player -> exitCopyScene(player));
-                    future.cancel(false);
+                    senceService.getSenceCache().invalidate(scene.getSenceId());
                     scene.inGarbage();
                     scene.getSingleThreadSchedule().shutdown();
                     scene = null;
+                    if(finalFuture != null) {
+                        finalFuture.cancel(true);
+                    }
                 }
         );
-
+        future = null;
     }
 
 

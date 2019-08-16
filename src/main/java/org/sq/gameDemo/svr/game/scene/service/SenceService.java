@@ -133,8 +133,8 @@ public class SenceService {
                         skill -> {
                             Skill monsterSkill = new Skill();
                             BeanUtils.copyProperties(skill, monsterSkill);
-                            skill.setHurt(skill.getHurt() * level);
-                            skill.setMpNeed(0L);
+                            monsterSkill.setHurt(skill.getHurt() * level);
+                            monsterSkill.setMpNeed(0L);
                             return monsterSkill;
                         }
                         ));
@@ -285,12 +285,18 @@ public class SenceService {
 
 
     public boolean removeMonster(Monster targetMonster) {
-
-        return getSenecMsgById(targetMonster.getSenceId()).getMonsterList().remove(targetMonster);
+        SenceConfigMsg sence = getSenecMsgById(targetMonster.getSenceId());
+        if(sence instanceof CopyScene && ((CopyScene) sence).getBoss().getId().equals(targetMonster.getId())) {
+            ((CopyScene) sence).setBoss(null);
+            return true;
+        } else {
+            return getSenecMsgById(targetMonster.getSenceId()).getMonsterList().remove(targetMonster);
+        }
 
     }
 
     public boolean enterMonsterSence(Monster monster) {
+
         return getSenecMsgById(monster.getSenceId()).getMonsterList().add(monster);
     }
 }

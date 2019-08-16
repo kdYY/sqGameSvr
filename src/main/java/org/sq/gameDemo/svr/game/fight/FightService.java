@@ -10,6 +10,7 @@ import org.sq.gameDemo.svr.eventManage.event.PlayerDeadEvent;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
@@ -62,6 +63,9 @@ public class FightService {
                         .filter(monster -> monster.getId().equals(targetId) && monster.getHp() > 0)
                         .findFirst()
                         .orElse(null);
+                if(target == null && senecMsg instanceof CopyScene && ((CopyScene) senecMsg).getBoss().getId().equals(targetId)) {
+                    target = ((CopyScene) senecMsg).getBoss();
+                }
                 if(target == null) {
                     target = senecMsg.getPlayerList()
                             .stream()

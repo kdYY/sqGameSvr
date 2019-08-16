@@ -119,7 +119,7 @@ public class Player extends UserEntity implements Character {
         this.setState(CharacterState.IS_REFRESH.getCode());
         this.setHp(0L);
         this.setMp(0L);
-        this.setB_Mp(0L);
-        this.setB_Hp(0L);
+//        this.setB_Mp(0L);
+//        this.setB_Hp(0L);
     }
 }

@@ -88,7 +88,11 @@ public class MonsterStateManager {
     private void attack(Monster monster)  {
         synchronized (monster.getState()) {
             if(monster.getState().equals(CharacterState.ATTACKING.getCode())) {
-                monsterAIService.monsterAttacking(monster);
+                try {
+                    monsterAIService.monsterAttacking(monster);
+                } catch (CustomException.PlayerAlreadyDeadException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

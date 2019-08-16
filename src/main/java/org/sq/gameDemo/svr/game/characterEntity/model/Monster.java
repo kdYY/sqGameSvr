@@ -27,7 +27,7 @@ public class Monster extends SenceEntity implements Character {
     public void setDeadStatus() {
         if(isDead()) {
             this.setTarget(null);
-            if(this.getRefreshTime() <= 0) {
+            if(this.getRefreshTime() < 0) {
                 this.setState(CharacterState.COPY_DEAD.getCode());
             } else {
                 this.setState(CharacterState.IS_REFRESH.getCode());

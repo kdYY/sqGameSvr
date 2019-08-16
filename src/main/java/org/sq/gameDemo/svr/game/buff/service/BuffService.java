@@ -40,6 +40,15 @@ public class BuffService {
      * @param affectedBuff
      */
     public void buffAffecting(Character affecter, Buff affectedBuff) {
+        if(affecter.getHp() <= 0 || affectedBuff == null) {
+            log.info(affecter.getName() + "血量小于0， buff" + affectedBuff.toString() + "不进行作用");
+            if(affecter instanceof Player && affecter.getHp() <= 0) {
+                log.info(affecter.getName() + " hp:" + affectedBuff.getHp());
+                return;
+            }
+            return;
+        }
+
         List<Buff> bufferList = affecter.getBufferList();
         //如果存在净化buff，同时不是增益的buff, 不进行作用
         if( bufferList.stream().filter(buff -> buff.getId().equals(BuffState.PURIFY.getEffectState())).findAny().isPresent()
@@ -58,9 +67,6 @@ public class BuffService {
             return;
         }
         Future future = null;
-        if(buff.getId().equals(1)) {
-            System.out.println("燃烧");
-        }
         try {
             if(buff.getIntervalTime() <= 0) {
                 future = TimeTaskManager.threadPoolSchedule(0, () -> {
@@ -98,10 +104,6 @@ public class BuffService {
                                     && !entityService.playerIsDead((Player) character, affecter)) {
                                 senceService.notifySenceByDefault(((Player)affecter).getSenceId(), buff.getName()
                                         + "在" + affecter.getName() + "身上取消作用" );
-//                                // 检测玩家是否死亡
-//                                if(entityService.playerIsDead((Player) affecter,null)) {
-//                                    removeAllBuff(affecter);
-//                                }
                             }
                         }
                 );

@@ -34,12 +34,14 @@ public interface Character {
     void setSkillInUsedMap(Map<Integer, Skill> skillMap);
 
 
-    /** 活物的当前buffer */
+    /** 角色的当前buff*/
     List<Buff> getBufferList();
     void setBufferList(List<Buff> bufferList);
 
 
 
-    //之后还有buff之类的
+    //角色的场景id
+    Integer getSenceId();
+    void setSenceId(Integer senceId);
 
 }

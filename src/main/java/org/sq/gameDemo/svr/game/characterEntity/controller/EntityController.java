@@ -106,7 +106,7 @@ public class EntityController {
         if(sence != null) {
             builder.setSence((SenceProto.Sence) ProtoBufUtil.transformProtoReturnBean(SenceProto.Sence.newBuilder(), sence));
         }
-        senceService.transformEntityRespPt(builder, sence.getId());
+        senceService.transformEntityRespPt(builder, senceId);
     }
 
     /**

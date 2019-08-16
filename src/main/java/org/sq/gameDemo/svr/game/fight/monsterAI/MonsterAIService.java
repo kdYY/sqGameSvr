@@ -14,6 +14,7 @@ import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -21,10 +22,7 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Component
 public class MonsterAIService {
@@ -45,7 +43,7 @@ public class MonsterAIService {
      * @param attacter
      * @param targetMonster
      */
-    public void monsterBeAttacked(Character attacter, Monster targetMonster) {
+    public void monsterBeAttacked(Character attacter, Monster targetMonster) throws CustomException.RemoveFailedException{
         //设置怪物归属者
         if(targetMonster.getTarget() == null || targetMonster.getState().equals(CharacterState.LIVE)) {
             targetMonster.setTarget(attacter);
@@ -61,10 +59,11 @@ public class MonsterAIService {
 
         if(attacter instanceof Player && targetMonster.isDead()) {
             //从场景移除
-            if(!senceService.removeMonster(targetMonster)) {
-                throw new CustomException.RemoveFailedException("怪物移除失败");
 
+            if(!senceService.removeMonster(targetMonster)) {
+                    throw new CustomException.RemoveFailedException("怪物移除失败");
             }
+
 
             targetMonster.setDeadStatus();
             if(attacter instanceof Player) {
@@ -88,7 +87,7 @@ public class MonsterAIService {
      * 怪物攻击目标
      * @param monster
      */
-    public void monsterAttacking(Monster monster) {
+    public void monsterAttacking(Monster monster) throws CustomException.PlayerAlreadyDeadException {
 
         Character target = monster.getTarget();
 
@@ -102,6 +101,13 @@ public class MonsterAIService {
             return;
         }
 
+
+        if( !((Player) target).getSenceId().equals(monster.getSenceId())) {
+            monster.setTarget(null);
+            return;
+        }
+
+
         Player player = null;
         //如果目标是玩家
         if(target instanceof Player) {
@@ -110,34 +116,27 @@ public class MonsterAIService {
 
             if(!player.getSenceId().equals(monster.getSenceId())) {
                 monster.setTarget(null);
-                monster.setState(CharacterState.LIVE.getCode());
                 return;
             }
             //target死亡后不攻击
             if(entityService.playerIsDead(player,monster)) {
                 //交给轮询器去处理
-                return;
+                throw new CustomException.PlayerAlreadyDeadException("玩家已经死完");
             }
         }
 
         //目标死亡，不攻击
         if (target.getHp() <=0 || target.getState() == -1) {
             monster.setTarget(null);
-            monster.setState(CharacterState.LIVE.getCode());
             return;
         }
 
 
 
         //攻击同场景内的角色
-        if(target instanceof UserEntity && ((Player) target).getSenceId().equals(monster.getSenceId())) {
-            //使用普攻
-            try {
-                MonsterUseSkillAttack(monster, target);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+        if(target instanceof UserEntity) {
+            //使用技能
+            MonsterUseSkillAttack(monster, target);
         }
     }
 
@@ -147,35 +146,34 @@ public class MonsterAIService {
      * @param target
      * @throws Exception
      */
-    private void MonsterUseSkillAttack(Monster monster, Character target) throws Exception {
+    private void MonsterUseSkillAttack(Monster monster, Character target) throws CustomException.PlayerAlreadyDeadException {
         synchronized (monster) {
             if(monster.getTarget() != null && monster.getTarget().getId().equals(target.getId())) {
-                monster.getSkillInUsedMap().values()
+                Optional<Skill> any = monster.getSkillInUsedMap().values()
                         .stream()
                         //过滤掉不能使用的技能编号
                         .filter(skill -> skillService.skillCanUse(monster, skill, null))
                         //随机找一个技能
-                        .findAny()
-                        .ifPresent(
-                                skillChecked -> {
-                                    //如果技能使用成功
-                                    if(skillService.characterUseSkillAttack(
-                                            monster,
-                                            monster.getTarget(),
-                                            skillChecked,
-                                            senceService.getSenecMsgById(monster.getSenceId()))
-                                            ) {
-                                        //如果玩家被打死
-                                        if(target instanceof Player && entityService.playerIsDead((Player) target, monster)) {
-                                            return;
-                                        }
-                                        //如果目标是怪物
+                        .findAny();
+                if(any.isPresent()) {
+                    Skill skillChecked = any.get();
+                    //如果技能使用成功
+                    if(skillService.characterUseSkillAttack(
+                            monster,
+                            monster.getTarget(),
+                            skillChecked,
+                            senceService.getSenecMsgById(monster.getSenceId()))
+                            ) {
+                        //如果玩家被打死
+                        if(target instanceof Player && entityService.playerIsDead((Player) target, monster)) {
+                            throw new CustomException.PlayerAlreadyDeadException("玩家被怪物打死");
+                        }
+                        //如果目标是怪物
 //                                        if(target instanceof Monster) {
 //                                            monsterBeAttacked(monster, (Monster) target, senceService.getSenecMsgById(monster.getSenceId()), skillChecked);
 //                                        }
-                                    }
-                                }
-                        );
+                    }
+                }
             }
         }
 

@@ -84,7 +84,8 @@ public class SkillService {
                 () -> {
                     senecMsg.getSingleThreadSchedule().execute(
                             () -> {
-                                if (targeter.getHp() > 0) {
+                                //被怪物杀死后，瞬间复活，然后回到其他场景，此时上次的攻击开始作用，发现hp>0 继续把你砍死， 所以应该判断是否在同一场景
+                                if (targeter.getHp() > 0 && targeter.getSenceId().equals(attacter.getSenceId())) {
                                     senceService.notifyPlayerByDefault(attacter, content);
                                     skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
 
@@ -103,7 +104,6 @@ public class SkillService {
                                     if (attacter instanceof Player) {
                                         ((Player) attacter).setTarget(targeter);
                                     }
-
                                     if (targeter instanceof Monster) {
                                         monsterAIService.monsterBeAttacked(attacter, (Monster) targeter);
                                     }

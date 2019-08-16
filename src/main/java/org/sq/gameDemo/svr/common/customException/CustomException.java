@@ -30,4 +30,14 @@ public class CustomException {
             super(message);
         }
     }
+    public static class PlayerAlreadyDeadException extends Throwable   {
+        public PlayerAlreadyDeadException() {
+            super();
+        }
+
+        public PlayerAlreadyDeadException(String message) {
+            super(message);
+        }
+    }
+
 }
