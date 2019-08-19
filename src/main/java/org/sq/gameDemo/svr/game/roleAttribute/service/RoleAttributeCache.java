@@ -20,7 +20,7 @@ public class RoleAttributeCache {
     public static Cache<Integer,RoleAttribute> roleAttributeCache = CacheBuilder.newBuilder()
             .recordStats()
             .removalListener(
-                    cacheObj -> log.debug(cacheObj.getKey() + "角色属性被移除, 原因是" + cacheObj.getCause())
+                    cacheObj -> log.info(cacheObj.getKey() + "角色属性被移除, 原因是" + cacheObj.getCause())
             ).build();
 
 

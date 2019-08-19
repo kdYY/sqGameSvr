@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
 
 /**
  * 场景非角色单位
@@ -79,4 +80,9 @@ public class SenceEntity{
 
     @ExcelFeild(Ignore = true)
     private Integer level;
+
+
+    //延迟释放的技能
+    @ProtoField(Ignore = true)
+    private Map<Skill, Future> skillInEffectingMap = new ConcurrentHashMap<>();
 }

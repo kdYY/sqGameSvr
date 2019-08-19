@@ -1,5 +1,6 @@
 package org.sq.gameDemo.svr.game.fight.monsterAI;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.Constant;
@@ -15,15 +16,18 @@ import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
+import org.sq.gameDemo.svr.game.copyScene.service.CopySceneService;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
+import sun.rmi.runtime.Log;
 
 import java.util.*;
 
+@Slf4j
 @Component
 public class MonsterAIService {
 
@@ -32,7 +36,7 @@ public class MonsterAIService {
     @Autowired
     private PlayerCache playerCache;
     @Autowired
-    private SkillCache skillCache;
+    private CopySceneService copySceneService;
     @Autowired
     private SkillService skillService;
     @Autowired
@@ -44,30 +48,30 @@ public class MonsterAIService {
      * @param targetMonster
      */
     public void monsterBeAttacked(Character attacter, Monster targetMonster) throws CustomException.RemoveFailedException{
-        //设置怪物归属者
-        if(targetMonster.getTarget() == null || targetMonster.getState().equals(CharacterState.LIVE)) {
-            targetMonster.setTarget(attacter);
-        } else if (targetMonster.getTarget() != null && targetMonster.getState().equals(CharacterState.ATTACKING.getCode())){
-            if(!targetMonster.getTarget().getId().equals(attacter.getId())) {
-                senceService.notifyPlayerByDefault(attacter,
-                        "你攻打的"
-                        + targetMonster.getName()
-                        + "归属于"
-                        + targetMonster.getTarget().getName());
-            }
+
+        if(targetMonster.getState().equals(CharacterState.IS_REFRESH.getCode())
+                || targetMonster.getState().equals(CharacterState.COPY_DEAD.getCode())) {
+            log.info("MonsterBeAttacked的时候， 怪物死亡");
+            return;
         }
+        Character target = targetMonster.getTarget();
+
+        //设置怪物归属者
+        monsterSetTarget(attacter, targetMonster);
 
         if(attacter instanceof Player && targetMonster.isDead()) {
-            //从场景移除
-
-            if(!senceService.removeMonster(targetMonster)) {
-                    throw new CustomException.RemoveFailedException("怪物移除失败");
+            //是副本，同时死亡 从副本场景移除
+            SenceConfigMsg sence = senceService.getSenecMsgById(targetMonster.getSenceId());
+            if(sence instanceof CopyScene) {
+                copySceneMonsterDead(targetMonster);
+                return;
             }
 
-
             targetMonster.setDeadStatus();
-            if(attacter instanceof Player) {
-                Player player = (Player) attacter;
+
+            if(target instanceof Player) {
+
+                Player player = (Player) target;
                 player.addExp(targetMonster.getLevel() * 10);
                 senceService.notifyPlayerByDefault(attacter, targetMonster.getName()
                                 + "(id=" + targetMonster.getId()
@@ -76,10 +80,46 @@ public class MonsterAIService {
                                 + "↑, 当前exp="
                                 + player.getExp()
                 );
+            } else {
+                //宠物主人
+
+
             }
             // 抛出怪物被玩家打死的事件
-            EventBus.publish(new MonsterDeadEvent(attacter, targetMonster));
+            EventBus.publish(new MonsterDeadEvent(target, targetMonster));
         }
+    }
+
+    private void copySceneMonsterDead(Monster targetMonster) {
+        if(!senceService.removeMonster(targetMonster)) {
+            throw new CustomException.RemoveFailedException("怪物移除失败");
+        } else {
+            senceService.notifySenceByDefault(targetMonster.getSenceId(), targetMonster.getName() + "已死亡");
+        }
+
+        targetMonster.setDeadStatus();
+    }
+
+    /**
+     * 怪物选中目标
+     * @param attacter
+     * @param targetMonster
+     */
+    private void monsterSetTarget(Character attacter, Monster targetMonster) {
+        Character target = targetMonster.getTarget();
+
+        if(target == null || targetMonster.getState().equals(CharacterState.LIVE.getCode())) {
+            targetMonster.setTarget(attacter);
+        } else {
+            if(!target.getId().equals(attacter.getId())) {
+                senceService.notifyPlayerByDefault(attacter,
+                        "你攻打的"
+                                + targetMonster.getName()
+                                + "归属于"
+                                + target.getName());
+            }
+        }
+
     }
 
 

@@ -46,6 +46,9 @@ public class Buff {
      */
     private Long startTime;
 
+    /**
+     * 作用时间间隔
+     */
     private Long intervalTime;
 
     //记录buff作用者

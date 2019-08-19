@@ -6,6 +6,7 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
 /**
  *场景角色单位
@@ -68,5 +69,9 @@ public class UserEntity {
     // 当前攻击对象
     @ProtoField(Ignore = true)
     private Character target;
+
+    //延迟释放的技能
+    @ProtoField(Ignore = true)
+    private Map<Skill, Future> skillInEffectingMap = new ConcurrentHashMap<>();
 
 }

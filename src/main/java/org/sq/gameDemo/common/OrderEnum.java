@@ -26,7 +26,11 @@ public enum OrderEnum {
     REMOVE_EQUIP("removeequip", 120),
     SHOW_EQUIP("showEquip", 121),
     REPAIR_EQUIP("repairequip", 122),
-    SHOW_BAG("showbag", 123), SHOW_COPY_SENCE("showcopy", 124), ENTER_COPY("entercopy",125 );
+    SHOW_BAG("showbag", 123),
+    SHOW_COPY_SENCE("showcopy", 124),
+    ENTER_COPY("entercopy",125 ),
+    CHAT("chat", 126),
+    TALK_TO_WORD("talktoword", 127);
 
     private String order;
     private short orderCode;

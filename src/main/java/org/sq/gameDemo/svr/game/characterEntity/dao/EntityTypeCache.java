@@ -23,7 +23,7 @@ public class EntityTypeCache {
     public static Cache<Integer,EntityType> entityTypeCache = CacheBuilder.newBuilder()
             .recordStats()
             .removalListener(
-                    cacheObj -> log.debug(cacheObj.getKey() + "基础角色被移除, 原因是" + cacheObj.getCause())
+                    cacheObj -> log.info(cacheObj.getKey() + "基础角色被移除, 原因是" + cacheObj.getCause())
             ).build();
 
 

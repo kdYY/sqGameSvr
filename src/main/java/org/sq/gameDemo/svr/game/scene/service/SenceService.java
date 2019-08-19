@@ -1,5 +1,6 @@
 package org.sq.gameDemo.svr.game.scene.service;
 
+import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.channel.Channel;
@@ -133,7 +134,7 @@ public class SenceService {
                         skill -> {
                             Skill monsterSkill = new Skill();
                             BeanUtils.copyProperties(skill, monsterSkill);
-                            monsterSkill.setHurt(skill.getHurt() * level);
+                            monsterSkill.setHurt(skill.getHurt() * level / 10);
                             monsterSkill.setMpNeed(0L);
                             return monsterSkill;
                         }
@@ -295,8 +296,16 @@ public class SenceService {
 
     }
 
-    public boolean enterMonsterSence(Monster monster) {
-
-        return getSenecMsgById(monster.getSenceId()).getMonsterList().add(monster);
+    public void notifyAllSence(Player player, String word) {
+        if(Strings.isNullOrEmpty(word)) {
+            notifyPlayerByDefault(player, "不能发送空消息");
+        }
+        senceIdAndSenceMsgMap.asMap().values().forEach(
+                senceConfigMsg -> {
+                    senceConfigMsg.getPlayerList().forEach( p -> {
+                        notifyPlayerByDefault(p, "id:" + player.getId() + ", name:" + player.getName() + "发起世界喊话: " + word);
+                    });
+                }
+        );
     }
 }

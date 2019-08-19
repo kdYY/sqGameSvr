@@ -7,6 +7,7 @@ import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
+import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 
@@ -25,6 +26,10 @@ public class CopyScene extends SenceConfigMsg {
 
     //副本场景id
     private Integer id;
+
+    //<玩家id, 玩家所占伤害>
+    @ProtoField(Ignore = true)
+    private Map<Long, Long> bossDamagePercentage = new ConcurrentHashMap<>();
 
     //<playerId , beforeSceneId>
     @ProtoField(Ignore = true)
@@ -78,7 +83,22 @@ public class CopyScene extends SenceConfigMsg {
 
     }
 
+    //重设回收状态
     public void resetGarbageThreshold() {
         garbageThreshold.set(Constant.COPY_GARBAGE_THRESHOLD / Constant.COPY_CHECK_RATE_TIME);
     }
+
+    public synchronized void updateDamage(Character attacter, Long damage) {
+        Long beforeDamage = this.getBossDamagePercentage().get(attacter.getId());
+        if(beforeDamage != null) {
+            beforeDamage = beforeDamage + damage;
+        } else {
+            this.getBossDamagePercentage().put(attacter.getId(), damage);
+        }
+
+    }
+
+    //
+
+
 }

@@ -10,11 +10,13 @@ import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.buff.model.Buff;
+import org.sq.gameDemo.svr.game.buff.model.BuffState;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.fight.FightService;
 import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
@@ -25,6 +27,7 @@ import org.sq.gameDemo.svr.game.skills.model.SkillRange;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -69,7 +72,7 @@ public class SkillService {
                 + skill.getName() + " 作用于 " + targeter.getName()
                 + " (id=" + targeter.getId() + ")";
 
-        log.debug(content);
+        log.info(content);
 
         //开启cd
         makeSkillCD(attacter, skill);
@@ -79,48 +82,65 @@ public class SkillService {
                     attacter.getName() + "开始释放技能，需要" + skill.getCastTime()/1000 + "秒");
         }
 
-        //单线程执行 保证任务顺序且不出现某些线程安全问题
-        TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
-                () -> {
-                    senecMsg.getSingleThreadSchedule().execute(
-                            () -> {
-                                //被怪物杀死后，瞬间复活，然后回到其他场景，此时上次的攻击开始作用，发现hp>0 继续把你砍死， 所以应该判断是否在同一场景
-                                if (targeter.getHp() > 0 && targeter.getSenceId().equals(attacter.getSenceId())) {
-                                    senceService.notifyPlayerByDefault(attacter, content);
-                                    skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
-
-                                    if(skill.getBuff() != null && skill.getBuff() != 0) {
-                                        Optional.ofNullable(skill.getBuff()).ifPresent(
-                                                buffId -> {
-                                                    Buff buff = buffService.getBuff(buffId);
-                                                    buff.setCharacter(attacter);
-                                                    buffService.buffAffecting(targeter, buff);
-                                                }
-                                        );
-                                    }
-
-                                    //TODO 将装备中的被动buff进行作用
-
-                                    if (attacter instanceof Player) {
-                                        ((Player) attacter).setTarget(targeter);
-                                    }
-                                    if (targeter instanceof Monster) {
-                                        monsterAIService.monsterBeAttacked(attacter, (Monster) targeter);
-                                    }
-
-                                    if(targeter instanceof Player) {
-                                        fightService.playerBeAttacked(attacter, (Player) targeter);
-                                    }
+        if(skill.getCastTime() <= 0) {
+            skillEffect(attacter, targeter, skill, senecMsg, content);
+        } else {
+            //单线程执行 保证任务顺序且不出现某些线程安全问题
+            Future future = TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
+                    () -> {
+                        senecMsg.getSingleThreadSchedule().execute(
+                                () -> {
+                                    //被怪物杀死后，瞬间复活，然后回到其他场景，此时上次的攻击开始作用，发现hp>0 继续把你砍死， 所以应该判断是否在同一场景
+                                    attacter.getSkillInEffectingMap().remove(skill);
+                                    skillEffect(attacter, targeter, skill, senecMsg, content);
                                 }
-                            }
-                    );
-                });
+                        );
+                    });
+            attacter.getSkillInEffectingMap().put(skill, future);
+        }
         return true;
 
     }
 
+    private void skillEffect(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg, String content) {
+        if (targeter.getHp() > 0 && targeter.getSenceId().equals(attacter.getSenceId())) {
+            senceService.notifyPlayerByDefault(attacter, content);
 
-        /**
+            skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
+
+            //记录伤害
+            if(senecMsg instanceof CopyScene) {
+                Long damage = skill.getHurt();
+                ((CopyScene) senecMsg).updateDamage(attacter, damage);
+            }
+
+            if (skill.getBuff() != null && skill.getBuff() != 0) {
+                Optional.ofNullable(skill.getBuff()).ifPresent(
+                        buffId -> {
+                            Buff buff = buffService.getBuff(buffId);
+                            buff.setCharacter(attacter);
+                            buffService.buffAffecting(targeter, buff);
+                        }
+                );
+            }
+
+            //TODO 将装备中的被动buff进行作用
+
+//            if (attacter instanceof Player) {
+//                ((Player) attacter).setTarget(targeter);
+//            }
+            if (targeter instanceof Monster) {
+                monsterAIService.monsterBeAttacked(attacter, (Monster) targeter);
+            }
+
+            if (targeter instanceof Player) {
+                fightService.playerBeAttacked(attacter, (Player) targeter);
+            }
+        }
+    }
+
+
+    /**
          * 使用技能前使技能进入cd
          * @param attacter
          * @param skill
@@ -156,6 +176,13 @@ public class SkillService {
             notice = "该技能不能针对多个敌方";
         }
 
+        if(character.getSkillInEffectingMap().get(skill) != null) {
+            notice = "技能正在延迟释放中";
+        }
+
+        if(character.getBufferList().stream().filter(buff -> buff.getId().equals(BuffState.DAZE.getEffectState())).findFirst().isPresent()) {
+            notice = "眩晕状态，无法使用技能";
+        }
 
         if(StringUtils.isEmpty(notice)) {
             return true;

@@ -7,9 +7,7 @@ import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
-import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
-import org.sq.gameDemo.svr.game.characterEntity.model.Player;
-import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
+import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.copyScene.dao.CopySceneConfCache;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
@@ -69,7 +67,8 @@ public class CopySceneService {
         SenceConfig.tmpCommonConf bossConf = JsonUtil.reJson(config.getBoss(), SenceConfig.tmpCommonConf.class);
         Monster bossMonster = senceService.getInitedMonster(senceEntityCache.get((long) bossConf.getId()), senceId, bossConf.getLevel());
 
-        List<SenceConfig.tmpCommonConf> tmpCommonConfList = JsonUtil.reSerializableJson(config.getMonsters(), SenceConfig.tmpCommonConf.class);
+        List<SenceConfig.tmpCommonConf> tmpCommonConfList = JsonUtil.reSerializableJson(config.getMonsters(), SenceConfig.tmpCommonConf
+                .class);
 
         List<Monster> monsterList = new CopyOnWriteArrayList();
         for (SenceConfig.tmpCommonConf tmpCommonConf : tmpCommonConfList) {
@@ -131,15 +130,10 @@ public class CopySceneService {
                 copyScene.resetGarbageThreshold();
             }
             if(copyScene.getBoss() == null && copyScene.getMonsterList().size() == 0) {
-                copyScene.getPlayerList().forEach(
-                        player -> {
-                            senceService.notifyPlayerByDefault(player, "恭喜挑战副本成功，正在返回原来场景..");
-                            exitCopyScene(player, copyScene);
-                        }
-                );
-                destroyInstance(copyScene, copyScene.getFuture());
+                copySceneChallegeSuccess(copyScene);
+
             } else {
-                copyScene.getMonsterList().stream().filter(monster -> monster.getState().equals(CharacterState.LIVE)).forEach(
+                copyScene.getMonsterList().stream().filter(monster -> monster.getState().equals(CharacterState.LIVE.getCode())).forEach(
                         monster -> copyScene.getPlayerList().stream().findAny().ifPresent(player -> monster.setTarget(player))
                 );
 
@@ -175,6 +169,21 @@ public class CopySceneService {
             destroyInstance(copyScene, future);
         });
         return future;
+    }
+
+    /**
+     * 挑战成功后的处理 经验按boss伤害平分
+     * @param copyScene
+     */
+    private void copySceneChallegeSuccess(CopyScene copyScene) {
+        copyScene.getPlayerList().forEach(
+                player -> {
+                    senceService.notifyPlayerByDefault(player, "恭喜挑战副本成功，正在返回原来场景..");
+                    exitCopyScene(player, copyScene);
+                }
+        );
+        destroyInstance(copyScene, copyScene.getFuture());
+
     }
 
     private void copyMonsterAttacking(CopyScene copyScene, Monster monster) {
@@ -260,16 +269,27 @@ public class CopySceneService {
                     + (copyScene.getMaxTime() - (System.currentTimeMillis()  - copyScene.getStartTime())) + "), "
                     + "还可以进入的玩家个数 count:" + (copyScene.getLimit() - copyScene.getPlayerList().size()));
         });
+        Monster boss = copyScene.getBoss();
         //怪物攻击
         if(copyScene.getLimit().equals(1)) {
-            copyScene.getBoss().setTarget(player);
+            boss.setTarget(player);
             copyScene.getMonsterList().forEach(monster -> {
                 monster.setTarget(player);
             });
         } else {
             //第一个进入场景的吸引boss仇恨
-            if(copyScene.getBoss().getTarget() != null) {
-                copyScene.getBoss().setTarget(player);
+            if(boss.getTarget() == null) {
+                boss.setTarget(player);
+            } else {
+                //判断怪物的目标是不是战士类型
+                if(boss.getTarget() instanceof Player
+                        && ((Player) boss.getTarget()).getTypeId().equals(JobType.WARRIOR.getType())) {
+                    copyScene.getPlayerList().stream()
+                           .filter(player1 -> player1.getTypeId().equals(JobType.WARRIOR.getType()))
+                           .findFirst()
+                           .ifPresent(wairrior -> boss.setTarget(wairrior));
+
+                }
             }
 
             copyScene.getMonsterList().stream().filter(monster -> monster.getTarget() != null).findAny().ifPresent(

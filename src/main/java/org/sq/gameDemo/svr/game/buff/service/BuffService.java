@@ -73,7 +73,7 @@ public class BuffService {
                     usingBuff(affecter, buff);
                 });
             } else {
-                future = TimeTaskManager.scheduleAtFixedRate(0, buff.getIntervalTime() <= 0 ? 1000 : buff.getIntervalTime(), () -> {
+                future = TimeTaskManager.scheduleAtFixedRate(0, buff.getIntervalTime(), () -> {
                     usingBuff(affecter, buff);
                 });
             }
@@ -120,21 +120,31 @@ public class BuffService {
      * @return
      */
     private boolean usingBuff(Character affecter, Buff buff) {
+        boolean flag = false;
         if(affecter.getHp() >= 0) {
             //净化buff作用
             if(buff.getId().equals(BuffState.PURIFY.getEffectState())) {
-                return removeBadBuff(affecter);
+                flag = removeBadBuff(affecter);
             }
-            if(buff.getHp() != 0) {
-                affecter.setHp(affecter.getHp() + buff.getHp());
-                if(affecter instanceof Player)
-                    log.debug(affecter.getName() + " hp += " + buff.getHp());
+            //嘲讽buff作用 打断正在释放的技能
+            else if(buff.getId().equals(BuffState.DAZE.getEffectState())) {
+                flag = interruptedEffectingSkill(affecter);
             }
-            if(buff.getMp() != 0) {
-                affecter.setMp(affecter.getMp() + buff.getMp());
-                if(affecter instanceof Player)
-                    log.debug(affecter.getName() + " mp += " + buff.getMp());
+            //普通buff
+            else {
+                if(buff.getHp() != 0) {
+                    affecter.setHp(affecter.getHp() + buff.getHp());
+                    if(affecter instanceof Player)
+                        log.info(affecter.getName() + " hp += " + buff.getHp());
+                }
+                if(buff.getMp() != 0) {
+                    affecter.setMp(affecter.getMp() + buff.getMp());
+                    if(affecter instanceof Player)
+                        log.info(affecter.getName() + " mp += " + buff.getMp());
+                }
+                flag = true;
             }
+
             // 如果是玩家，进行通知
             if (affecter instanceof Player && !buff.getId().equals(105) && !buff.getId().equals(106)) {
                 senceService.notifyPlayerByDefault(affecter,
@@ -145,11 +155,16 @@ public class BuffService {
                     removeAllBuff(affecter);
                 }
             }
-
-
-            return true;
+            
         }
-        return false;
+        return flag;
+    }
+
+    //打断正在释放的技能
+    private synchronized boolean interruptedEffectingSkill(Character affecter) {
+        affecter.getSkillInEffectingMap().values().forEach(future -> future.cancel(true));
+        affecter.getSkillInEffectingMap().clear();
+        return true;
     }
 
     /**

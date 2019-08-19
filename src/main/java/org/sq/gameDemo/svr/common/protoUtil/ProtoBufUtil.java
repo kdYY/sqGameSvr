@@ -139,7 +139,7 @@ public class ProtoBufUtil {
                     System.out.println("类型不一致");
                 }
             } else {
-                log.debug(setMethod.getName() + "的参数来自" + field.getName() + ", 参数内容为空, get的域为" + field.getName() + ";set的域来自" + goalBuilder.getClass().getName() );
+                log.info(setMethod.getName() + "的参数来自" + field.getName() + ", 参数内容为空, get的域为" + field.getName() + ";set的域来自" + goalBuilder.getClass().getName() );
             }
 
         }

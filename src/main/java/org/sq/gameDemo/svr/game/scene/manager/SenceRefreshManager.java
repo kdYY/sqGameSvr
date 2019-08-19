@@ -46,9 +46,6 @@ public class SenceRefreshManager {
         senceService.getSenceCache().asMap().values().stream().filter(msg -> !(msg instanceof CopyScene) ).forEach(
                 senceCnfMsg -> {
                     List<Monster> monsterList = senceCnfMsg.getMonsterList();
-                    if(senceCnfMsg instanceof CopyScene) {
-                        monsterStateManager.refreshMonsterState(((CopyScene)senceCnfMsg).getBoss());
-                    }
                     monsterList.forEach(monsterStateManager::refreshMonsterState);
                 }
         );

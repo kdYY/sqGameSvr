@@ -31,7 +31,7 @@ public class ItemInfoCache {
     public static Cache<Integer,ItemInfo> itemInfoCache = CacheBuilder.newBuilder()
             .recordStats()
             .removalListener(
-                    cacheObj -> log.debug(cacheObj.getKey() + "物品被移除, 原因是" + cacheObj.getCause())
+                    cacheObj -> log.info(cacheObj.getKey() + "物品被移除, 原因是" + cacheObj.getCause())
             ).build();
 
 

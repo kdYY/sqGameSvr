@@ -70,12 +70,9 @@ public class MonsterStateManager {
             if(dieTime <= now) {
                 SenceEntity senceEntity = senceEntityCache.get(monster.getEntityTypeId());
                 monster.setHp(senceEntity.getHp());
-                monster.setState(senceEntity.getState());
+                monster.setState(CharacterState.LIVE.getCode());
                 senceService.notifySenceByDefault(monster.getSenceId(), monster.getName() + "(id=" + monster.getId() +")已复活");
-                //加入场景
-                if(!senceService.enterMonsterSence(monster)) {
-                    log.debug("怪物进入场景失败");
-                }
+
             }
         }
 
