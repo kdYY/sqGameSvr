@@ -70,4 +70,6 @@ public interface Constant {
 
     long COPY_GARBAGE_THRESHOLD = 10000L;
     long COPY_CHECK_RATE_TIME = 60L;
+    String SYSTEM_MANAGER = "系统";
+    Integer SYSTEM_UNID = -1;
 }

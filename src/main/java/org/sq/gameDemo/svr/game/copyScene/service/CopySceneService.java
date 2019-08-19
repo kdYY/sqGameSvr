@@ -172,7 +172,7 @@ public class CopySceneService {
     }
 
     /**
-     * 挑战成功后的处理 经验按boss伤害平分
+     * 挑战成功后的处理 经验按对场景怪物造成的伤害进行平分
      * @param copyScene
      */
     private void copySceneChallegeSuccess(CopyScene copyScene) {
@@ -183,6 +183,7 @@ public class CopySceneService {
                 }
         );
         destroyInstance(copyScene, copyScene.getFuture());
+        //TODO 发送邮件奖励
 
     }
 

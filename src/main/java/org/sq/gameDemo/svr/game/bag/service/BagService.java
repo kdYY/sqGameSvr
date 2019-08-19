@@ -253,6 +253,14 @@ public class BagService {
         senceService.notifyPlayerByDefault(player, "背包整理完毕");
     }
 
+    public boolean hasItem(Player player, Long itemId, Integer count) {
+        Item itemInBag = player.getBag().getItemBar().get(itemId);
+        if(itemInBag != null && itemInBag.getCount() >= count) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Data
     public static class ItemRoleAttri {

@@ -9,6 +9,7 @@ import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
+import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.equip.service.EquitService;
@@ -19,10 +20,6 @@ import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
-import org.sq.gameDemo.svr.game.characterEntity.model.EntityType;
-import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
-import org.sq.gameDemo.svr.game.characterEntity.model.Player;
-import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
@@ -156,6 +153,7 @@ public class EntityService {
 
             playerCache.putChannelPlayer(channel, playerCached);
             playerCache.savePlayerChannel(playerCached.getId(), channel);
+            playerCache.putUnIdPlayer(usrEntity.getUnId(), playerCached);
         }
         return playerCached;
     }
@@ -323,15 +321,23 @@ public class EntityService {
 
     }
 
-
+    //获取角色类型
     public EntityType getType(Integer typeId) {
         return entityTypeCache.get(typeId);
     }
 
+    //找到玩家
     public Player getPlayer(Channel channel) {
         return playerCache.getPlayerByChannel(channel);
     }
+    //找到玩家
+    public Player getPlayer(Long playerId) {
+        return playerCache.getPlayerByChannel(playerCache.getChannelByPlayerId(playerId));
+    }
 
+    public Player getPlayer(Integer unId) {
+        return playerCache.getPlayerByUnId(unId);
+    }
     //复活玩家
     public void relivePlayer(Player player) {
         if(player.getB_Hp() > 0 && player.getB_Mp() > 0) {
@@ -341,5 +347,20 @@ public class EntityService {
             senceService.notifyPlayerByDefault(player, "复活失败");
         }
 
+    }
+
+    public boolean hasUserEntity(Integer unId) {
+        return userEntityMapper.selectByPrimaryKey(unId) != null;
+    }
+
+    public Integer getUnIdByName(String name) {
+        UserEntityExample entityExample = new UserEntityExample();
+        entityExample.createCriteria().andNameEqualTo(name);
+        List<UserEntity> userEntities = userEntityMapper.selectByExample(entityExample);
+        if(userEntities != null && userEntities.size() == 1) {
+            return userEntities.get(0).getUnId();
+        } else {
+            return null;
+        }
     }
 }

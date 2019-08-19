@@ -155,7 +155,7 @@ public class BuffService {
                     removeAllBuff(affecter);
                 }
             }
-            
+
         }
         return flag;
     }

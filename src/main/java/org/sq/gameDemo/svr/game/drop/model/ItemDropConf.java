@@ -35,7 +35,5 @@ public class ItemDropConf {
         //最大掉落概率
         Integer prob;
 
-        //如果物品是装备的话，最高物品等级
-//        Integer level;
     }
 }

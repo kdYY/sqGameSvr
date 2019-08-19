@@ -40,4 +40,9 @@ public class CustomException {
         }
     }
 
+    public static class SystemSendMailErrException extends Throwable {
+        public SystemSendMailErrException(String message) {
+            super(message);
+        }
+    }
 }

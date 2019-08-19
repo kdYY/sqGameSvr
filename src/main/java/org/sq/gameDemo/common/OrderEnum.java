@@ -30,7 +30,7 @@ public enum OrderEnum {
     SHOW_COPY_SENCE("showcopy", 124),
     ENTER_COPY("entercopy",125 ),
     CHAT("chat", 126),
-    TALK_TO_WORD("talktoword", 127);
+    TALK_TO_WORD("talktoword", 127), SEND_MAIL("sendMail", 128);
 
     private String order;
     private short orderCode;

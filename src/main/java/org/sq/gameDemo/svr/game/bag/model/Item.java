@@ -30,7 +30,7 @@ public class Item {
 
     private Integer level;
 
-    private Item() {}
+    public Item() {}
 
     //装备
     public Item(Long id, Integer count, ItemInfo itemInfo, Integer level) {

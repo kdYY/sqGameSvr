@@ -37,7 +37,7 @@ public class PlayerCache  {
             .build();
 
     public  static Cache<Long, Channel> IdChannelCache = CacheBuilder.newBuilder().build();
-
+    public  static Cache<Integer, Player> unIdPlayerCache = CacheBuilder.newBuilder().build();
     /**
      *  键为channel
      */
@@ -55,6 +55,13 @@ public class PlayerCache  {
         channelPlayerCache.put(channel,player);
     }
 
+    /**
+     *  值为player
+     */
+    public void putUnIdPlayer(Integer unId, Player player) {
+        unIdPlayerCache.put(unId,player);
+    }
+
 
     /**
      *  通过 channel清除玩家信息
@@ -62,8 +69,13 @@ public class PlayerCache  {
     public void removePlayerCache(Channel channel) {
         Optional.ofNullable(getPlayerByChannel(channel)).ifPresent(player -> {
             removePlayerChannel(player.getId());
+            removeUnIdPlayerCache(player.getUnId());
             channelPlayerCache.invalidate(channel);
         });
+    }
+
+    private void removeUnIdPlayerCache(Integer unId) {
+        unIdPlayerCache.invalidate(unId);
     }
 
 
@@ -83,6 +95,9 @@ public class PlayerCache  {
         return IdChannelCache.getIfPresent(playerId);
     }
 
+    public Player getPlayerByUnId(Integer unId) {
+        return unIdPlayerCache.getIfPresent(unId);
+    }
 
     public  void removePlayerChannel(Long playerId) {
         IdChannelCache.invalidate(playerId);
