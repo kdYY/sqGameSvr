@@ -12,13 +12,16 @@ import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
 import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.mail.model.Mail;
 import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,11 @@ public class MailController {
     @Autowired
     private SenceService senceService;
 
+    /**
+     * 发送邮件
+     * @param msgEntity
+     * @param requestInfo
+     */
     @OrderMapping(OrderEnum.SEND_MAIL)
     public void sendMail(MsgEntity msgEntity,
                                     @ReqParseParam MailPt.MailRequestInfo requestInfo) {
@@ -69,7 +77,7 @@ public class MailController {
                 itemSendList.add(itemSend);
             }
 
-            mailService.sendMailWithItem(player, recevierName, title, content, itemSendList);
+            mailService.sendMail(player, recevierName, title, content, itemSendList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,6 +85,59 @@ public class MailController {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * 展示邮件列表
+     * @param msgEntity
+     * @param builder
+     * @return
+     */
+    @OrderMapping(OrderEnum.SHOW_ALL_MAIL)
+    public MsgEntity showMailList(MsgEntity msgEntity,
+                             @RespBuilderParam MailPt.MailResponseInfo.Builder builder) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        List<Mail> mailList = mailService.getMailList(player);
+        mailList.forEach(mail -> {
+            try {
+                builder.addMail((MailPt.Mail) ProtoBufUtil.transformProtoReturnBean(MailPt.Mail.newBuilder(), mail));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
+    }
+
+    /**
+     * 获取邮件内容
+     */
+    @OrderMapping(OrderEnum.GET_MAIL)
+    public MsgEntity getMail(MsgEntity msgEntity,
+                        @ReqParseParam MailPt.MailRequestInfo requestInfo,
+                        @RespBuilderParam MailPt.MailResponseInfo.Builder builder) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        Mail mail = mailService.getMail(player, requestInfo.getMail().getId());
+        try {
+            builder.addMail((MailPt.Mail) ProtoBufUtil.transformProtoReturnBean(MailPt.Mail.newBuilder(), mail));
+            mail.setIsRead(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setResult(Constant.SVR_ERR);
+        }
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
+    }
+
+
+
+    /**
+     * 一键收取邮件
+     */
+    @OrderMapping(OrderEnum.RECEIVE_ALL_MAIL)
+    public void receieveAllMail(MsgEntity msgEntity) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        mailService.getAllMailItem(player);
     }
 
 }

@@ -39,6 +39,7 @@ public class ItemInfo {
 
     private String jsonStr;
 
+
     @ProtoField(Ignore = true)
     private Integer repairPrice;
 

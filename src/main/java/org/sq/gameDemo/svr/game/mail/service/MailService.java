@@ -36,7 +36,7 @@ public class MailService {
     /**
      * 发送带道具附件的邮件
      */
-    public void sendMailWithItem(Player sender, String recevierName, String title, String content, List<Item>
+    public void sendMail(Player sender, String recevierName, String title, String content, List<Item>
             rewardItems) throws CustomException.SystemSendMailErrException {
         Integer recevierUnId = entityService.getUnIdByName(recevierName);
         if(recevierUnId == null ) {
@@ -47,8 +47,12 @@ public class MailService {
             }
             return;
         }
-
-        Mail mail = createMail(sender, recevierUnId, title, content, rewardItems);
+        Mail mail = null;
+        if(rewardItems == null) {
+            mail = createMail(sender, recevierUnId, title, content, new ArrayList<>());
+        } else {
+           mail = createMail(sender, recevierUnId, title, content, rewardItems);
+        }
         if(mail == null) {
             return;
         }
@@ -68,14 +72,6 @@ public class MailService {
             senceService.notifyPlayerByDefault(sender, "发送失败，系统错误");
         }
 
-    }
-
-    /**
-     * 发送不带道具的邮件
-     */
-    public void sendMailWithoutItem(Player sender, String recevierName, String title, String content) throws CustomException
-            .SystemSendMailErrException {
-        sendMailWithItem(sender, recevierName, title, content, new ArrayList<>());
     }
 
     /**
@@ -111,6 +107,7 @@ public class MailService {
     public Mail getMail(Player player, Integer mailId) {
         Mail mail = mailMapper.selectByPrimaryKey(mailId);
         if(mail != null) {
+
             return mail;
         } else {
             senceService.notifyPlayerByDefault(player, "该邮件不存在了");
@@ -120,13 +117,14 @@ public class MailService {
 
 
     /**
-     * 一键收取邮件
+     * 一键收取邮件 放入背包
      */
     public void getAllMailItem(Player player) {
         List<Mail> mailList = getMailList(player);
         if(mailList != null) {
             mailList.forEach(mail -> {
                 mail.getRewardItems().forEach(item -> bagService.addItemInBag(player, item));
+                mail.setIsRead(true);
             });
         }
     }
