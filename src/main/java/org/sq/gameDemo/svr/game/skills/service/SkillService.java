@@ -62,7 +62,7 @@ public class SkillService {
             senceService.notifySenceByDefault(senecMsg.getSenceId(),
                     attacter.getName() + "开始释放技能，需要" + skill.getCastTime()/1000 + "秒");
         }
-
+        System.out.println();
         if(skill.getCastTime() <= 0) {
             senceService.notifyPlayerByDefault(attacter, content);
             skillEffect(attacter, targeter, skill, senecMsg);
