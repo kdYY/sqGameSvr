@@ -7,7 +7,8 @@ public enum JobType {
     MAGE(2, "法师"),
 
     ADC(3, "射手"),
-    KNIGHT(4, "龙骑士")
+    KNIGHT(4, "龙骑士"),
+    SUMMONER(5, "召唤师")
     ;
 
     private Integer id;

@@ -36,8 +36,6 @@ public class SkillService {
     @Autowired
     private SenceService senceService;
     @Autowired
-    private PlayerCache playerCache;
-    @Autowired
     private EntityService entityService;
     @Autowired
     private MonsterAIService monsterAIService;
@@ -52,28 +50,11 @@ public class SkillService {
 
     /**
      * 场景单位使用技能打另一个场景单位
-     * @param attacter
-     * @param targeter
-     * @param skill
-     * @param senecMsg
      */
     public boolean characterUseSkillAttack(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
-
-        if(targeter instanceof Npc) {
-            if(attacter instanceof UserEntity ) {
-                senceService.notifyPlayerByDefault(attacter, "npc不能被砍...");
-                return false;
-            }
-            return false;
-
-        }
-
         String content = attacter.getName() + "(id=" + attacter.getId() + ")开始使用"
                 + skill.getName() + " 作用于 " + targeter.getName()
                 + " (id=" + targeter.getId() + ")";
-
-        log.info(content);
-
         //开启cd
         makeSkillCD(attacter, skill);
         //技能若是有释放时间，则延迟释放
@@ -83,7 +64,8 @@ public class SkillService {
         }
 
         if(skill.getCastTime() <= 0) {
-            skillEffect(attacter, targeter, skill, senecMsg, content);
+            senceService.notifyPlayerByDefault(attacter, content);
+            skillEffect(attacter, targeter, skill, senecMsg);
         } else {
             //单线程执行 保证任务顺序且不出现某些线程安全问题
             Future future = TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
@@ -92,7 +74,8 @@ public class SkillService {
                                 () -> {
                                     //被怪物杀死后，瞬间复活，然后回到其他场景，此时上次的攻击开始作用，发现hp>0 继续把你砍死， 所以应该判断是否在同一场景
                                     attacter.getSkillInEffectingMap().remove(skill);
-                                    skillEffect(attacter, targeter, skill, senecMsg, content);
+                                    senceService.notifyPlayerByDefault(attacter, content);
+                                    skillEffect(attacter, targeter, skill, senecMsg);
                                 }
                         );
                     });
@@ -102,9 +85,64 @@ public class SkillService {
 
     }
 
-    private void skillEffect(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg, String content) {
-        if (targeter.getHp() > 0 && targeter.getSenceId().equals(attacter.getSenceId())) {
+    /**
+     * 对多个目标实施技能
+     */
+    public boolean characterUseSkillAttackManyTarget(Character attacter, List<Character> targeterList, Skill skill, SenceConfigMsg
+            senecMsg) {
+        //通知
+        String content = attackNotify(attacter, targeterList, skill);
+        //开启cd
+        makeSkillCD(attacter, skill);
+        //技能若是有释放时间，则延迟释放
+        if(attacter instanceof UserEntity && skill.getCastTime() > 0) {
+            senceService.notifySenceByDefault(senecMsg.getSenceId(),
+                    attacter.getName() + "开始释放技能，需要" + skill.getCastTime()/1000 + "秒");
+        }
+
+        if(skill.getCastTime() <= 0) {
             senceService.notifyPlayerByDefault(attacter, content);
+            targeterList.forEach(targeter -> skillEffect(attacter, targeter, skill, senecMsg));
+        } else {
+            //单线程执行 保证任务顺序且不出现某些线程安全问题
+            Future future = TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
+                    () -> {
+                        senecMsg.getSingleThreadSchedule().execute(
+                                () -> {
+                                    //被怪物杀死后，瞬间复活，然后回到其他场景，此时上次的攻击开始作用，发现hp>0 继续把你砍死， 所以应该判断是否在同一场景
+                                    attacter.getSkillInEffectingMap().remove(skill);
+                                    senceService.notifyPlayerByDefault(attacter, content);
+                                    targeterList.forEach(targeter -> skillEffect(attacter, targeter, skill, senecMsg));
+                                }
+                        );
+                    });
+            attacter.getSkillInEffectingMap().put(skill, future);
+        }
+        return true;
+
+    }
+
+    /**
+     * 攻击通知内容
+     */
+    private String attackNotify(Character attacter, List<Character> targeterList, Skill skill) {
+        String word = attacter.getName() + "(id=" + attacter.getId() + ")开始使用"
+                + skill.getName() + " 作用于 ";
+        StringBuffer contentStr = new StringBuffer(word);
+        targeterList.forEach(targeter -> {
+            contentStr.append(targeter.getName());
+            contentStr.append(" (id=");
+            contentStr.append(targeter.getId());
+            contentStr.append(")");
+        });
+        return contentStr.toString();
+    }
+
+    /**
+     * 技能作用效果
+     */
+    private void skillEffect(Character attacter, Character targeter, Skill skill, SenceConfigMsg senecMsg) {
+        if (targeter.getHp() > 0 && targeter.getSenceId().equals(attacter.getSenceId())) {
 
             skillRangeService.routeSkill(attacter, targeter, skill, senecMsg);
 
@@ -124,11 +162,6 @@ public class SkillService {
                 );
             }
 
-            //TODO 将装备中的被动buff进行作用
-
-//            if (attacter instanceof Player) {
-//                ((Player) attacter).setTarget(targeter);
-//            }
             if (targeter instanceof Monster) {
                 monsterAIService.monsterBeAttacked(attacter, (Monster) targeter);
             }
@@ -141,9 +174,7 @@ public class SkillService {
 
 
     /**
-         * 使用技能前使技能进入cd
-         * @param attacter
-         * @param skill
+         * 使技能进入cd
          */
     private void makeSkillCD(Character attacter, Skill skill) {
         //设置技能使用时间
@@ -153,9 +184,6 @@ public class SkillService {
 
     /**
      * 判断技能是否能使用
-     * @param character
-     * @param skill
-     * @return
      */
     public boolean skillCanUse(Character character, Skill skill, List<Long> targetIdList) {
         String notice = "";
@@ -189,9 +217,7 @@ public class SkillService {
         }
 
         if(character instanceof Player) {
-            Channel channel = playerCache.getChannelByPlayerId(character.getId());
-            //进行通知
-            channel.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(notice));
+            senceService.notifyPlayerByDefault(character, notice);
         }
 
         return false;

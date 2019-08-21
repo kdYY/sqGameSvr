@@ -28,7 +28,7 @@ public class FightController {
     public void wanJiaShiYongJiNengGongDaGuaiWu(MsgEntity msgEntity,
                           @ReqParseParam SkillPt.SkillReqInfo skillReqInfo) {
         Player player = playerCache.getPlayerByChannel(msgEntity.getChannel());
-        fightService.skillAttackSingleTarget(player, skillReqInfo.getSkillId(), skillReqInfo.getTargetId());
+        fightService.skillAttack(player, skillReqInfo.getSkillId(), skillReqInfo.getTargetIdList());
     }
 
 

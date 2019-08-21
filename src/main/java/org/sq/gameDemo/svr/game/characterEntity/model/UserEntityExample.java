@@ -68,7 +68,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-12
+     * @date 2019-08-20
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -730,6 +730,126 @@ public class UserEntityExample {
             addCriterion("guild_id not between", value1, value2, "guildId");
             return (Criteria) this;
         }
+
+        public Criteria andBabyLevelIsNull() {
+            addCriterion("baby_level is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelIsNotNull() {
+            addCriterion("baby_level is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelEqualTo(Integer value) {
+            addCriterion("baby_level =", value, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelNotEqualTo(Integer value) {
+            addCriterion("baby_level <>", value, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelGreaterThan(Integer value) {
+            addCriterion("baby_level >", value, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelGreaterThanOrEqualTo(Integer value) {
+            addCriterion("baby_level >=", value, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelLessThan(Integer value) {
+            addCriterion("baby_level <", value, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelLessThanOrEqualTo(Integer value) {
+            addCriterion("baby_level <=", value, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelIn(List<Integer> values) {
+            addCriterion("baby_level in", values, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelNotIn(List<Integer> values) {
+            addCriterion("baby_level not in", values, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelBetween(Integer value1, Integer value2) {
+            addCriterion("baby_level between", value1, value2, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyLevelNotBetween(Integer value1, Integer value2) {
+            addCriterion("baby_level not between", value1, value2, "babyLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeIsNull() {
+            addCriterion("baby_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeIsNotNull() {
+            addCriterion("baby_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeEqualTo(Integer value) {
+            addCriterion("baby_type =", value, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeNotEqualTo(Integer value) {
+            addCriterion("baby_type <>", value, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeGreaterThan(Integer value) {
+            addCriterion("baby_type >", value, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("baby_type >=", value, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeLessThan(Integer value) {
+            addCriterion("baby_type <", value, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("baby_type <=", value, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeIn(List<Integer> values) {
+            addCriterion("baby_type in", values, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeNotIn(List<Integer> values) {
+            addCriterion("baby_type not in", values, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeBetween(Integer value1, Integer value2) {
+            addCriterion("baby_type between", value1, value2, "babyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBabyTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("baby_type not between", value1, value2, "babyType");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
@@ -744,7 +864,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-12
+     * @date 2019-08-20
      */
     public static class Criterion {
         private String condition;

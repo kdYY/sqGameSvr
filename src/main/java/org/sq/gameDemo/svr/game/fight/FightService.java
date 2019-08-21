@@ -20,9 +20,11 @@ import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
+import sun.rmi.runtime.Log;
 
 import java.lang.annotation.Target;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 public class FightService {
@@ -43,56 +45,118 @@ public class FightService {
     private EquitService equitService;
 
 
+
+
+    public void skillAttack(Player player, Integer skillId, List<Long> targets) {
+        if(targets.size() == 1) {
+            skillAttackSingleTarget(player, skillId, targets.get(0));
+        } else {
+            skillAttackManyTarget(player, skillId, targets);
+        }
+    }
+
     /**
      * 玩家使用技能打群怪,
      * @param player
      * @param skillId
-     * @param targetIdList
      */
-    public void skillAttackManyTarget(Player player, Integer skillId, List<Long> targetIdList) {
-        Skill skill = checkSkillState(player, skillId, targetIdList);
+    private void skillAttackSingleTarget(Player player, Integer skillId, Long targetId) {
+        ArrayList<Long> longs = new ArrayList<>();
+        longs.add(targetId);
+        Skill skill = checkSkillState(player, skillId, longs);
+        Character target =  null;
+        SenceConfigMsg senecMsg = senceService.getSenecMsgById(player.getSenceId());
 
-        if(equitService.equipCanUse(player) && skill != null) {
-            targetIdList.forEach(targetId -> {
-                //找到目标
-                Character target = null;
-                //找到怪物
-                SenceConfigMsg senecMsg = senceService.getSenecMsgById(player.getSenceId());
-                target = senecMsg.getMonsterList()
-                        .stream()
-                        .filter(monster -> monster.getId().equals(targetId) && monster.getHp() > 0)
-                        .findFirst()
-                        .orElse(null);
-                if(target == null && senecMsg instanceof CopyScene && ((CopyScene) senecMsg).getBoss().getId().equals(targetId)) {
-                    target = ((CopyScene) senecMsg).getBoss();
+        if(equitService.equipCanUse(player)
+                && skill != null
+                && (target = findTarget(player, targetId, senecMsg)) != null) {
+
+            //如果使用技能成功
+            if(skillService.characterUseSkillAttack(player, target, skill, senecMsg)) {
+                //宝宝跟随攻击
+                if(player.getBaby() != null) {
+                    player.getBaby().setTarget(target);
                 }
-                if(target == null) {
-                    target = senecMsg.getPlayerList()
-                            .stream()
-                            .filter(pl -> pl.getId().equals(targetId) && pl.getHp() > 0)
-                            .findFirst()
-                            .orElse(null);
-                }
-                if(target == null) {
-                    senceService.notifyPlayerByDefault(player, "id为" + targetId + " 的攻击目标没找到");
-                    return;
-                }
-                if(target.getId().equals(player.getId())) {
-                    senceService.notifyPlayerByDefault(player, "自己不能攻击自己");
-                    return;
-                }
-                else {
-                    skillAttackSingleTarget(player, target, skill, senecMsg);
-                }
-            });
+                //武器损耗
+                equipDurable(player);
+            }
+
         }
     }
 
 
-    public void skillAttackSingleTarget(Player player, Integer skillId, Long targetId) {
-        ArrayList<Long> targetIdList = new ArrayList<>();
-        targetIdList.add(targetId);
-        skillAttackManyTarget(player, skillId, targetIdList);
+    /**
+     * 寻怪机制
+     */
+    private Character findTarget(Player player, Long targetId, SenceConfigMsg senecMsg) {
+        //找到目标
+        Character target = null;
+        //找到怪物
+
+        target = senecMsg.getMonsterList()
+                .stream()
+                .filter(monster -> monster.getId().equals(targetId) && monster.getHp() > 0)
+                .findFirst()
+                .orElse(null);
+        //可能是副本
+        if(target == null && senecMsg instanceof CopyScene && ((CopyScene) senecMsg).getBoss().getId().equals(targetId)) {
+            target = ((CopyScene) senecMsg).getBoss();
+        }
+        //目标是玩家
+        if(target == null) {
+            target = senecMsg.getPlayerList()
+                    .stream()
+                    .filter(pl -> pl.getId().equals(targetId) && pl.getHp() > 0)
+                    .findFirst()
+                    .orElse(null);
+        }
+        //不是玩家也不是怪物
+        if(target == null) {
+            senceService.notifyPlayerByDefault(player, "id为" + targetId + " 的攻击目标没找到");
+            return null;
+        }
+        if(!target.getSenceId().equals(player.getSenceId())) {
+            senceService.notifyPlayerByDefault(player, "id为" + targetId + " 的攻击目标跟玩家不同场景");
+            return null;
+        }
+        //玩家是自己
+        if(target.getId().equals(player.getId())) {
+            senceService.notifyPlayerByDefault(player, "自己不能攻击自己");
+            return null;
+        }
+        return target;
+    }
+
+    /**
+     * 玩家使用技能打群怪,
+     * @param player
+     * @param skillId
+     */
+    public void skillAttackManyTarget(Player player, Integer skillId, List<Long> targetList) {
+        Skill skill = checkSkillState(player, skillId, targetList);
+
+        if(equitService.equipCanUse(player) && skill != null) {
+            SenceConfigMsg senecMsg = senceService.getSenecMsgById(player.getSenceId());
+
+            List<Character> targets = new CopyOnWriteArrayList<>();
+            for (Long targetId : targetList) {
+                //找到目标
+                Character target = findTarget(player, targetId, senecMsg);
+                if(target == null ) {
+                    return;
+                }
+                targets.add(target);
+            }
+
+            if(skillService.characterUseSkillAttackManyTarget(player, targets, skill, senecMsg)) {
+                //宝宝跟随攻击 宝宝不为空 同时宝宝如果
+                if(player.getBaby() != null && !targets.contains(player.getBaby().getTarget())) {
+                    player.getBaby().setTarget(targets.stream().findAny().get());
+                }
+                //武器损耗
+                equipDurable(player);
+            }
+        }
     }
 
 
@@ -111,25 +175,6 @@ public class FightService {
         return  skill;
     }
 
-    /**
-     * 玩家使用技能打单体目标
-     * @param player
-     * @param skill
-     */
-    private void skillAttackSingleTarget(Player player, Character target, Skill skill, SenceConfigMsg senecMsg) {
-
-        if(Objects.isNull(target)) {
-            playerCache.getChannelByPlayerId(player.getId())
-                    .writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity("目标id不存在,该目标是npc不可攻击体,或者该怪物已死亡，请检查怪物id"));
-        } else {
-            //如果使用技能成功
-            if(skillService.characterUseSkillAttack(player, target, skill, senecMsg)) {
-                //武器损耗
-                equipDurable(player);
-            }
-
-        }
-    }
 
     /**
      * 使用技能损耗装备
@@ -155,6 +200,8 @@ public class FightService {
             senceService.notifyPlayerByDefault(attacter, player.getName() + "(id=" + player.getId() + ")被你杀死了");
             // 抛出玩家被其他玩家打死的事件
             EventBus.publish(new PlayerDeadEvent(attacter, player));
+        } else {
+
         }
     }
 }

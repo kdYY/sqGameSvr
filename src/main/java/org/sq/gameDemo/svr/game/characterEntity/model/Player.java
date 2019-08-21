@@ -83,7 +83,7 @@ public class Player extends UserEntity implements Character {
     private Map<Integer,RoleAttribute> roleAttributeMap = new ConcurrentHashMap<>();
 
     /**
-     *  经验增加, 影响等级 需要加锁，场景线程在读取经验， 同时事件总线线程可能在增加经验
+     * 经验增加, 影响等级 需要加锁，场景线程在读取经验， 同时事件总线线程可能在增加经验
      * @param exp 经验
      */
     public synchronized void addExp(Integer exp) {
@@ -122,4 +122,10 @@ public class Player extends UserEntity implements Character {
 //        this.setB_Mp(0L);
 //        this.setB_Hp(0L);
     }
+
+
+    //baby
+    @ProtoField(Ignore = true)
+    private Baby baby;
+
 }

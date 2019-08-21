@@ -51,12 +51,13 @@ public class EntityService {
     @Autowired
     private RoleAttributeService attributeService;
     @Autowired
-    private BuffService buffService;
+    private BabyService babyService;
     @Autowired
     private BagService bagService;
     @Autowired
     private EquitService equitService;
-
+    @Autowired
+    private BuffService buffService;
 
     /**
      * 用户登录
@@ -193,11 +194,15 @@ public class EntityService {
         equitService.bindEquip(player);
 
         skillService.bindSkill(player);
+
+        if(player.getTypeId().equals(JobType.SUMMONER.getType())) {
+            babyService.bindBaby(player);
+        }
         //计算最终的攻击力
         computeAttack(player);
 
-        //buffService.buffAffecting(player, buffService.getBuff(105));
-        //buffService.buffAffecting(player, buffService.getBuff(106));
+        buffService.buffAffecting(player, buffService.getBuff(105));
+        buffService.buffAffecting(player, buffService.getBuff(106));
     }
 
     /**

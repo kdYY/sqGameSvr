@@ -87,8 +87,8 @@ public class SenceService {
     private SenceConfigMsg getInitedSence(SenceConfig config) {
         List<SenceConfig.tmpCommonConf> tmpCommonConfList = JsonUtil.reSerializableJson(config.getJsonStr(), SenceConfig.tmpCommonConf.class);
 
-        ArrayList<Monster> monsterListinSence = new ArrayList<>();
-        ArrayList<Npc> npclistinsence = new ArrayList<>();
+        List<Monster> monsterListinSence = new CopyOnWriteArrayList<>();
+        List<Npc> npclistinsence = new CopyOnWriteArrayList<>();
         for (SenceConfig.tmpCommonConf tmpCommonConf : tmpCommonConfList) {
             SenceEntity senceEntity = senceEntityCache.get((long) tmpCommonConf.getId());
             if(senceEntity.getTypeId().equals(Constant.Monster)) {
@@ -194,6 +194,12 @@ public class SenceService {
                 senceConfigMsg.setPlayerList(playerList);
             }
             playerList.add(player);
+            if(player.getBaby() != null) {
+                List<Monster> monsterList = senceConfigMsg.getMonsterList();
+                monsterList.add(player.getBaby());
+                player.getBaby().setSenceId(player.getSenceId());
+            }
+
             //广播通知
             notifySenceByDefault(player.getSenceId(), player.getName() + "进入场景!");
         });
@@ -206,20 +212,15 @@ public class SenceService {
      * /remove掉场景中的player，同时广播通知
      */
     public Player removePlayerAndGet(Player player) throws CustomException.RemoveFailedException {
-        //玩家在非副本场景 (不能判断senceId)
-//        if(player.getCopySceneId() == null || player.getCopySceneId().intValue() <= 0) {
-            SenceConfigMsg senceConfigMsg = senceIdAndSenceMsgMap.getIfPresent(player.getSenceId());
-            List<Player> playerList = senceConfigMsg.getPlayerList();
-            if(!playerList.remove(player)) {
-                throw new CustomException.RemoveFailedException("移动失败");
-            }
-            notifySenceByDefault(player.getSenceId(),player.getName() + "离开场景!");
-//        }
-        //玩家在副本场景
-//        else {
-//            copySceneService.removeFromCopyScene(player);
-//        }
-
+        SenceConfigMsg senceConfigMsg = senceIdAndSenceMsgMap.getIfPresent(player.getSenceId());
+        List<Player> playerList = senceConfigMsg.getPlayerList();
+        if(!playerList.remove(player)) {
+            throw new CustomException.RemoveFailedException("移动失败");
+        }
+        if(player.getBaby() != null) {
+            senceConfigMsg.getMonsterList().remove(player.getBaby());
+        }
+        notifySenceByDefault(player.getSenceId(),player.getName() + "离开场景!");
         return player;
     }
 

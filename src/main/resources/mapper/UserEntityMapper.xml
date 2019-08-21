@@ -10,9 +10,11 @@
         <result column="type_id" property="typeId" jdbcType="TINYINT" />
         <result column="sence_id" property="senceId" jdbcType="TINYINT" />
         <result column="exp" property="exp" jdbcType="INTEGER" />
-        <result column="equipments" property="equipments" jdbcType="VARCHAR" />
+        <result column="equipments" property="equipments" jdbcType="LONGVARCHAR" />
         <result column="money" property="money" jdbcType="INTEGER" />
         <result column="guild_id" property="guildId" jdbcType="INTEGER" />
+        <result column="baby_level" property="babyLevel" jdbcType="INTEGER" />
+        <result column="baby_type" property="babyType" jdbcType="INTEGER" />
     </resultMap>
 
     <sql id="Example_Where_Clause" >
@@ -76,7 +78,8 @@
     </sql>
 
     <sql id="Base_Column_List" >
-        un_id, user_id, name, state, type_id, sence_id, exp, equipments, money, guild_id
+        un_id, user_id, name, state, type_id, sence_id, exp, equipments, money, guild_id,
+        baby_level, baby_type
     </sql>
 
     <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntityExample" >
@@ -117,11 +120,13 @@
         insert into user_entity (un_id, user_id, name,
             state, type_id, sence_id,
             exp, equipments, money,
-            guild_id)
+            guild_id, baby_level, baby_type
+            )
         values (#{unId,jdbcType=INTEGER}, #{userId,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
             #{state,jdbcType=TINYINT}, #{typeId,jdbcType=TINYINT}, #{senceId,jdbcType=TINYINT},
-            #{exp,jdbcType=INTEGER}, #{equipments,jdbcType=VARCHAR}, #{money,jdbcType=INTEGER},
-            #{guildId,jdbcType=INTEGER})
+            #{exp,jdbcType=INTEGER}, #{equipments,jdbcType=LONGVARCHAR}, #{money,jdbcType=INTEGER},
+            #{guildId,jdbcType=INTEGER}, #{babyLevel,jdbcType=INTEGER}, #{babyType,jdbcType=INTEGER}
+            )
     </insert>
 
     <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
@@ -157,6 +162,12 @@
             <if test="guildId != null" >
                 guild_id,
             </if>
+            <if test="babyLevel != null" >
+                baby_level,
+            </if>
+            <if test="babyType != null" >
+                baby_type,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="unId != null" >
@@ -181,13 +192,19 @@
                 #{exp,jdbcType=INTEGER},
             </if>
             <if test="equipments != null" >
-                #{equipments,jdbcType=VARCHAR},
+                #{equipments,jdbcType=LONGVARCHAR},
             </if>
             <if test="money != null" >
                 #{money,jdbcType=INTEGER},
             </if>
             <if test="guildId != null" >
                 #{guildId,jdbcType=INTEGER},
+            </if>
+            <if test="babyLevel != null" >
+                #{babyLevel,jdbcType=INTEGER},
+            </if>
+            <if test="babyType != null" >
+                #{babyType,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -224,13 +241,19 @@
                 exp = #{record.exp,jdbcType=INTEGER},
             </if>
             <if test="record.equipments != null" >
-                equipments = #{record.equipments,jdbcType=VARCHAR},
+                equipments = #{record.equipments,jdbcType=LONGVARCHAR},
             </if>
             <if test="record.money != null" >
                 money = #{record.money,jdbcType=INTEGER},
             </if>
             <if test="record.guildId != null" >
                 guild_id = #{record.guildId,jdbcType=INTEGER},
+            </if>
+            <if test="record.babyLevel != null" >
+                baby_level = #{record.babyLevel,jdbcType=INTEGER},
+            </if>
+            <if test="record.babyType != null" >
+                baby_type = #{record.babyType,jdbcType=INTEGER},
             </if>
         </set>
         <if test="_parameter != null" >
@@ -247,9 +270,11 @@
         type_id = #{record.typeId,jdbcType=TINYINT},
         sence_id = #{record.senceId,jdbcType=TINYINT},
         exp = #{record.exp,jdbcType=INTEGER},
-        equipments = #{record.equipments,jdbcType=VARCHAR},
+        equipments = #{record.equipments,jdbcType=LONGVARCHAR},
         money = #{record.money,jdbcType=INTEGER},
-        guild_id = #{record.guildId,jdbcType=INTEGER}
+        guild_id = #{record.guildId,jdbcType=INTEGER},
+        baby_level = #{record.babyLevel,jdbcType=INTEGER},
+        baby_type = #{record.babyType,jdbcType=INTEGER}
         <if test="_parameter != null" >
             <include refid="Update_By_Example_Where_Clause" />
         </if>
@@ -277,13 +302,19 @@
                 exp = #{exp,jdbcType=INTEGER},
             </if>
             <if test="equipments != null" >
-                equipments = #{equipments,jdbcType=VARCHAR},
+                equipments = #{equipments,jdbcType=LONGVARCHAR},
             </if>
             <if test="money != null" >
                 money = #{money,jdbcType=INTEGER},
             </if>
             <if test="guildId != null" >
                 guild_id = #{guildId,jdbcType=INTEGER},
+            </if>
+            <if test="babyLevel != null" >
+                baby_level = #{babyLevel,jdbcType=INTEGER},
+            </if>
+            <if test="babyType != null" >
+                baby_type = #{babyType,jdbcType=INTEGER},
             </if>
         </set>
         where un_id = #{unId,jdbcType=INTEGER}
@@ -297,11 +328,14 @@
             type_id = #{typeId,jdbcType=TINYINT},
             sence_id = #{senceId,jdbcType=TINYINT},
             exp = #{exp,jdbcType=INTEGER},
-            equipments = #{equipments,jdbcType=VARCHAR},
+            equipments = #{equipments,jdbcType=LONGVARCHAR},
             money = #{money,jdbcType=INTEGER},
-            guild_id = #{guildId,jdbcType=INTEGER}
+            guild_id = #{guildId,jdbcType=INTEGER},
+            baby_level = #{babyLevel,jdbcType=INTEGER},
+            baby_type = #{babyType,jdbcType=INTEGER}
         where un_id = #{unId,jdbcType=INTEGER}
     </update>
+
 
     <select id="getUserEntityByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select

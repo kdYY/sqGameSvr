@@ -1334,9 +1334,17 @@ public final class SkillPt {
     int getSkillId();
 
     /**
-     * <code>uint64 target_id = 5;</code>
+     * <code>repeated uint64 target_id = 5;</code>
      */
-    long getTargetId();
+    java.util.List<Long> getTargetIdList();
+    /**
+     * <code>repeated uint64 target_id = 5;</code>
+     */
+    int getTargetIdCount();
+    /**
+     * <code>repeated uint64 target_id = 5;</code>
+     */
+    long getTargetId(int index);
   }
   /**
    * <pre>
@@ -1355,6 +1363,7 @@ public final class SkillPt {
       super(builder);
     }
     private SkillReqInfo() {
+      targetId_ = emptyLongList();
     }
 
     @Override
@@ -1377,6 +1386,7 @@ public final class SkillPt {
       if (extensionRegistry == null) {
         throw new NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -1408,8 +1418,24 @@ public final class SkillPt {
               break;
             }
             case 40: {
-
-              targetId_ = input.readUInt64();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                targetId_ = newLongList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              targetId_.addLong(input.readUInt64());
+              break;
+            }
+            case 42: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                targetId_ = newLongList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                targetId_.addLong(input.readUInt64());
+              }
+              input.popLimit(limit);
               break;
             }
             default: {
@@ -1427,6 +1453,9 @@ public final class SkillPt {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          targetId_.makeImmutable(); // C
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -1493,13 +1522,27 @@ public final class SkillPt {
     }
 
     public static final int TARGET_ID_FIELD_NUMBER = 5;
-    private long targetId_;
+    private com.google.protobuf.Internal.LongList targetId_;
     /**
-     * <code>uint64 target_id = 5;</code>
+     * <code>repeated uint64 target_id = 5;</code>
      */
-    public long getTargetId() {
+    public java.util.List<Long>
+        getTargetIdList() {
       return targetId_;
     }
+    /**
+     * <code>repeated uint64 target_id = 5;</code>
+     */
+    public int getTargetIdCount() {
+      return targetId_.size();
+    }
+    /**
+     * <code>repeated uint64 target_id = 5;</code>
+     */
+    public long getTargetId(int index) {
+      return targetId_.getLong(index);
+    }
+    private int targetIdMemoizedSerializedSize = -1;
 
     private byte memoizedIsInitialized = -1;
     @Override
@@ -1515,6 +1558,7 @@ public final class SkillPt {
     @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (msgId_ != 0L) {
         output.writeUInt64(1, msgId_);
       }
@@ -1527,8 +1571,12 @@ public final class SkillPt {
       if (skillId_ != 0) {
         output.writeInt32(4, skillId_);
       }
-      if (targetId_ != 0L) {
-        output.writeUInt64(5, targetId_);
+      if (getTargetIdList().size() > 0) {
+        output.writeUInt32NoTag(42);
+        output.writeUInt32NoTag(targetIdMemoizedSerializedSize);
+      }
+      for (int i = 0; i < targetId_.size(); i++) {
+        output.writeUInt64NoTag(targetId_.getLong(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1555,9 +1603,19 @@ public final class SkillPt {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, skillId_);
       }
-      if (targetId_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(5, targetId_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < targetId_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeUInt64SizeNoTag(targetId_.getLong(i));
+        }
+        size += dataSize;
+        if (!getTargetIdList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        targetIdMemoizedSerializedSize = dataSize;
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1582,8 +1640,8 @@ public final class SkillPt {
           != other.getPlayerId()) return false;
       if (getSkillId()
           != other.getSkillId()) return false;
-      if (getTargetId()
-          != other.getTargetId()) return false;
+      if (!getTargetIdList()
+          .equals(other.getTargetIdList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1606,9 +1664,10 @@ public final class SkillPt {
           getPlayerId());
       hash = (37 * hash) + SKILLID_FIELD_NUMBER;
       hash = (53 * hash) + getSkillId();
-      hash = (37 * hash) + TARGET_ID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getTargetId());
+      if (getTargetIdCount() > 0) {
+        hash = (37 * hash) + TARGET_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getTargetIdList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1754,8 +1813,8 @@ public final class SkillPt {
 
         skillId_ = 0;
 
-        targetId_ = 0L;
-
+        targetId_ = emptyLongList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -1782,10 +1841,15 @@ public final class SkillPt {
       @Override
       public SkillReqInfo buildPartial() {
         SkillReqInfo result = new SkillReqInfo(this);
+        int from_bitField0_ = bitField0_;
         result.msgId_ = msgId_;
         result.time_ = time_;
         result.playerId_ = playerId_;
         result.skillId_ = skillId_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          targetId_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
         result.targetId_ = targetId_;
         onBuilt();
         return result;
@@ -1847,8 +1911,15 @@ public final class SkillPt {
         if (other.getSkillId() != 0) {
           setSkillId(other.getSkillId());
         }
-        if (other.getTargetId() != 0L) {
-          setTargetId(other.getTargetId());
+        if (!other.targetId_.isEmpty()) {
+          if (targetId_.isEmpty()) {
+            targetId_ = other.targetId_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureTargetIdIsMutable();
+            targetId_.addAll(other.targetId_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1878,6 +1949,7 @@ public final class SkillPt {
         }
         return this;
       }
+      private int bitField0_;
 
       private long msgId_ ;
       /**
@@ -2019,28 +2091,69 @@ public final class SkillPt {
         return this;
       }
 
-      private long targetId_ ;
-      /**
-       * <code>uint64 target_id = 5;</code>
-       */
-      public long getTargetId() {
-        return targetId_;
+      private com.google.protobuf.Internal.LongList targetId_ = emptyLongList();
+      private void ensureTargetIdIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          targetId_ = mutableCopy(targetId_);
+          bitField0_ |= 0x00000001;
+         }
       }
       /**
-       * <code>uint64 target_id = 5;</code>
+       * <code>repeated uint64 target_id = 5;</code>
        */
-      public Builder setTargetId(long value) {
-        
-        targetId_ = value;
+      public java.util.List<Long>
+          getTargetIdList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(targetId_) : targetId_;
+      }
+      /**
+       * <code>repeated uint64 target_id = 5;</code>
+       */
+      public int getTargetIdCount() {
+        return targetId_.size();
+      }
+      /**
+       * <code>repeated uint64 target_id = 5;</code>
+       */
+      public long getTargetId(int index) {
+        return targetId_.getLong(index);
+      }
+      /**
+       * <code>repeated uint64 target_id = 5;</code>
+       */
+      public Builder setTargetId(
+          int index, long value) {
+        ensureTargetIdIsMutable();
+        targetId_.setLong(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>uint64 target_id = 5;</code>
+       * <code>repeated uint64 target_id = 5;</code>
+       */
+      public Builder addTargetId(long value) {
+        ensureTargetIdIsMutable();
+        targetId_.addLong(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated uint64 target_id = 5;</code>
+       */
+      public Builder addAllTargetId(
+          Iterable<? extends Long> values) {
+        ensureTargetIdIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, targetId_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated uint64 target_id = 5;</code>
        */
       public Builder clearTargetId() {
-        
-        targetId_ = 0L;
+        targetId_ = emptyLongList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
@@ -3289,7 +3402,7 @@ public final class SkillPt {
       "stTime\030\n \001(\004\022\023\n\013description\030\013 \001(\t\"c\n\014Ski" +
       "llReqInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022" +
       "\021\n\tplayer_id\030\003 \001(\004\022\017\n\007skillId\030\004 \001(\005\022\021\n\tt" +
-      "arget_id\030\005 \001(\004\"e\n\rSkillRespInfo\022\016\n\006msg_i" +
+      "arget_id\030\005 \003(\004\"e\n\rSkillRespInfo\022\016\n\006msg_i" +
       "d\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n" +
       "\007content\030\004 \001(\t\022\025\n\005skill\030\005 \003(\0132\006.SkillB\'\n" +
       "\034org.sq.gameDemo.common.protoB\007SkillPtb\006" +

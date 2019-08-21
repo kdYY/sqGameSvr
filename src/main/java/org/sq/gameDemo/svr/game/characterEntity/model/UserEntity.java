@@ -62,6 +62,16 @@ public class UserEntity {
      */
     private Integer guildId;
 
+    /**
+     * 宝宝等级 0代表没有宝宝
+     */
+    private Integer babyLevel = 0;
+
+    /**
+     * 宝宝类型
+     * */
+    private Integer babyType = 0;
+
     // 当前使用技能的集合
     @ProtoField(Ignore = true)
     private Map<Integer, Skill> skillInUsedMap = new ConcurrentHashMap<>();

@@ -10,10 +10,8 @@ import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.MonsterBeAttackedEvent;
 import org.sq.gameDemo.svr.eventManage.event.MonsterDeadEvent;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
+import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
-import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
-import org.sq.gameDemo.svr.game.characterEntity.model.Player;
-import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.copyScene.service.CopySceneService;
@@ -59,7 +57,8 @@ public class MonsterAIService {
         //设置怪物归属者
         monsterSetTarget(attacter, targetMonster);
 
-        if(attacter instanceof Player && targetMonster.isDead()) {
+        if(targetMonster.isDead()) {
+
             //是副本，同时死亡 从副本场景移除
             SenceConfigMsg sence = senceService.getSenecMsgById(targetMonster.getSenceId());
             if(sence instanceof CopyScene) {
@@ -69,24 +68,35 @@ public class MonsterAIService {
 
             targetMonster.setDeadStatus();
 
+            Player player = null;
             if(target instanceof Player) {
+                player = (Player) target;
+            }
+            //宠物主人
+            if(attacter instanceof Baby) {
+                player = ((Baby) attacter).getMaster();
+            }
 
-                Player player = (Player) target;
+            if(player != null) {
                 player.addExp(targetMonster.getLevel() * 10);
                 senceService.notifyPlayerByDefault(attacter, targetMonster.getName()
-                                + "(id=" + targetMonster.getId()
-                                + ")被你杀死了, 经验增加↑"
-                                + targetMonster.getLevel() * 10
-                                + "↑, 当前exp="
-                                + player.getExp()
+                        + "(id=" + targetMonster.getId()
+                        + ")被你杀死了, 经验增加↑"
+                        + targetMonster.getLevel() * 10
+                        + "↑, 当前exp="
+                        + player.getExp()
                 );
-            } else {
-                //宠物主人
-
-
+                // 抛出怪物被玩家打死的事件
+                EventBus.publish(new MonsterDeadEvent(target, targetMonster));
+                return;
             }
-            // 抛出怪物被玩家打死的事件
-            EventBus.publish(new MonsterDeadEvent(target, targetMonster));
+            //怪物把宝宝打死
+            if(target instanceof Baby && attacter instanceof Monster) {
+                senceService.notifyPlayerByDefault(((Baby) target).getMaster(), "你的宝宝被打死了~~~");
+                ((Monster) attacter).setTarget(((Baby) target).getMaster());
+            }
+            log.info("怪物不是被玩家，也不是被宠物打死的");
+
         }
     }
 
@@ -108,9 +118,19 @@ public class MonsterAIService {
     private void monsterSetTarget(Character attacter, Monster targetMonster) {
         Character target = targetMonster.getTarget();
 
+        if(targetMonster instanceof Baby && target == null) {
+            targetMonster.setTarget(attacter);
+            return;
+        }
         if(target == null || targetMonster.getState().equals(CharacterState.LIVE.getCode())) {
             targetMonster.setTarget(attacter);
-        } else {
+        }
+        //如果目标是宝宝，同时下一个攻击者不是宝宝的主人
+        else if(target instanceof Baby && ((Baby) target).getMaster() != attacter) {
+            targetMonster.setTarget(attacter);
+        }
+        //怪物已经有玩家目标了
+        else {
             if(!target.getId().equals(attacter.getId())) {
                 senceService.notifyPlayerByDefault(attacter,
                         "你攻打的"
@@ -135,49 +155,46 @@ public class MonsterAIService {
         if(Objects.isNull(target)) {
             return;
         }
-
         //如果自己已经死了...
         if(monster.getHp() <= 0) {
             return;
         }
-
 
         if( !((Player) target).getSenceId().equals(monster.getSenceId())) {
             monster.setTarget(null);
             return;
         }
 
-
         Player player = null;
         //如果目标是玩家
         if(target instanceof Player) {
             player = (Player) target;
-            //不同场景下不攻击
 
+            //不同场景下不攻击
             if(!player.getSenceId().equals(monster.getSenceId())) {
                 monster.setTarget(null);
                 return;
             }
+
             //target死亡后不攻击
             if(entityService.playerIsDead(player,monster)) {
-                //交给轮询器去处理
+                //  交给轮询器去处理
                 throw new CustomException.PlayerAlreadyDeadException("玩家已经死完");
             }
-        }
 
+            //有宝宝的，让宝宝承受伤害
+            if(((Player) target).getBaby() != null) {
+                monster.setTarget(((Player) target).getBaby());
+            }
+        }
         //目标死亡，不攻击
-        if (target.getHp() <=0 || target.getState() == -1) {
+        if (target.getHp() <=0) {
             monster.setTarget(null);
             return;
         }
 
-
-
-        //攻击同场景内的角色
-        if(target instanceof UserEntity) {
-            //使用技能
-            MonsterUseSkillAttack(monster, target);
-        }
+        //使用技能
+        MonsterUseSkillAttack(monster, target);
     }
 
     /**
@@ -208,10 +225,10 @@ public class MonsterAIService {
                         if(target instanceof Player && entityService.playerIsDead((Player) target, monster)) {
                             throw new CustomException.PlayerAlreadyDeadException("玩家被怪物打死");
                         }
-                        //如果目标是怪物
-//                                        if(target instanceof Monster) {
-//                                            monsterBeAttacked(monster, (Monster) target, senceService.getSenecMsgById(monster.getSenceId()), skillChecked);
-//                                        }
+                        //如果目标是宝宝
+                        if(target instanceof Baby) {
+                            monsterBeAttacked(monster, (Monster) target);
+                        }
                     }
                 }
             }
