@@ -190,7 +190,7 @@ public class EntityController {
         try {
             long npcId = requestInfo.getId();
             Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
-            Player player = entityService.getInitedPlayer(userId, msgEntity.getChannel());
+            Player player = entityService.getPlayer(msgEntity.getChannel());
             Npc npc = senceService.getNpcInSence(player.getSenceId(), npcId);
             if(npc == null) {
                 builder.setContent("无此npc, npc编号出错");

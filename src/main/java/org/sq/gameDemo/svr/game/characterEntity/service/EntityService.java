@@ -21,6 +21,7 @@ import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
+import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -58,6 +59,8 @@ public class EntityService {
     private EquitService equitService;
     @Autowired
     private BuffService buffService;
+    @Autowired
+    private MailService mailService;
 
     /**
      * 用户登录
@@ -135,27 +138,25 @@ public class EntityService {
 
 
     /**
-     * 获取缓存中的player，若无，初始化player
+     * 初始化player
      * @param userId
      * @param channel
      * @return
      */
     public Player getInitedPlayer(int userId, Channel channel) {
         //先从缓存中获取，如果没有，再从数据库查询，然后更新缓存
-        Player playerCached = playerCache.getPlayerByChannel(channel);
-        if(Objects.isNull(playerCached)) {
-            UserEntity usrEntity = userEntityMapper.getUserEntityByUserId(userId);
-            playerCached = new Player();
-            BeanUtils.copyProperties(usrEntity,playerCached);
-            //初始化playerId
-            playerCached.setId(ConcurrentSnowFlake.getInstance().nextID());
-            //初始化玩家
-            initPlayer(playerCached);
+        UserEntity usrEntity = userEntityMapper.getUserEntityByUserId(userId);
+        Player playerCached = new Player();
+        BeanUtils.copyProperties(usrEntity,playerCached);
+        //初始化playerId
+        playerCached.setId(ConcurrentSnowFlake.getInstance().nextID());
+        //初始化玩家
+        initPlayer(playerCached);
 
-            playerCache.putChannelPlayer(channel, playerCached);
-            playerCache.savePlayerChannel(playerCached.getId(), channel);
-            playerCache.putUnIdPlayer(usrEntity.getUnId(), playerCached);
-        }
+        playerCache.putChannelPlayer(channel, playerCached);
+        playerCache.savePlayerChannel(playerCached.getId(), channel);
+        playerCache.putUnIdPlayer(usrEntity.getUnId(), playerCached);
+
         return playerCached;
     }
 
@@ -203,6 +204,9 @@ public class EntityService {
 
         buffService.buffAffecting(player, buffService.getBuff(105));
         buffService.buffAffecting(player, buffService.getBuff(106));
+
+        //加载邮建资源
+        mailService.loadMail(player);
     }
 
     /**

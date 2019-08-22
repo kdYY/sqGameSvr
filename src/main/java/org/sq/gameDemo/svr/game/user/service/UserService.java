@@ -23,6 +23,7 @@ import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
+import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.user.dao.UserMapper;
@@ -59,6 +60,8 @@ public class UserService {
     private UserEntityMapper userEntityMapper;
     @Autowired
     private BagService bagService;
+    @Autowired
+    private MailService mailService;
 
 
 
@@ -164,6 +167,7 @@ public class UserService {
         //清除playerCache中的数据
         playerCache.removePlayerCache(channel);
         UserCache.removeUserIdChannel(channel, player.getUserId());
+        mailService.clearCache(player);
         try {
             TimeTaskManager.threadPoolSchedule(10, () -> {
                 UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());

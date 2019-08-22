@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 
 import javax.annotation.PostConstruct;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,15 +27,14 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class MailItemCache {
+public class SystemMailConfCache {
     @Value("${excel.mail}")
     private String fileName;
 
     @Autowired
     private BagService bagService;
 
-    private static Cache<Integer, Mail> mailItemCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(Duration.ofMinutes(10))
+    private static Cache<Integer, MailConf> mailItemCache = CacheBuilder.newBuilder()
             .removalListener(
                     notification -> System.out.println(notification.getKey() + "邮件被移除, 原因是" + notification.getCause())
             ).build();
@@ -44,23 +45,30 @@ public class MailItemCache {
         List<MailConf> mailConfs = PoiUtil.readExcel(fileName, 0, MailConf.class);
 
         for (MailConf mailConf : mailConfs) {
-            Mail mail = new Mail();
-            BeanUtils.copyProperties(mailConf, mail);
             List<MailConf.MailItemConf> list = JsonUtil.reSerializableJson(mailConf.getItemsStr(), MailConf.MailItemConf.class);
-            list.forEach(itemConf -> {
-                mail.getRewardItems().add(bagService.createItem(itemConf.getId(), itemConf.getNum(), itemConf.getLevel()));
-            });
-            mailItemCache.put(mail.getId(), mail);
+            if(list != null) {
+                mailConf.setItemConfList(list);
+            } else {
+                mailConf.setItemConfList(new ArrayList<>());
+            }
+            mailItemCache.put(mailConf.getId(), mailConf);
         }
         log.info("奖励邮件表加载完毕");
 
     }
 
     public Mail get(Integer id) {
-        return mailItemCache.getIfPresent(id);
+        MailConf mailConf = mailItemCache.getIfPresent(id);
+        if(mailConf != null) {
+            Mail mail = new Mail();
+            BeanUtils.copyProperties(mailConf, mail);
+            List<MailConf.MailItemConf> list = mailConf.getItemConfList();
+            list.forEach(itemConf -> {
+                mail.getRewardItems().add(bagService.createItem(itemConf.getId(), itemConf.getNum(), itemConf.getLevel()));
+            });
+            return mail;
+        }
+        return null;
     }
 
-    public void put(Integer id, Mail value) {
-        mailItemCache.put(id,value);
-    }
 }

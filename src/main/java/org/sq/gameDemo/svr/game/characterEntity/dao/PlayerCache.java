@@ -9,8 +9,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,6 +40,16 @@ public class PlayerCache  {
 
     public  static Cache<Long, Channel> IdChannelCache = CacheBuilder.newBuilder().build();
     public  static Cache<Integer, Player> unIdPlayerCache = CacheBuilder.newBuilder().build();
+
+    @PostConstruct
+    public void init() {
+        Player system = new Player();
+        system.setId(Constant.SYSTEM_ID);
+        system.setUnId(Constant.SYSTEM_UNID);
+        system.setName(Constant.SYSTEM_MANAGER);
+        unIdPlayerCache.put(Constant.SYSTEM_UNID, system);
+    }
+
     /**
      *  键为channel
      */

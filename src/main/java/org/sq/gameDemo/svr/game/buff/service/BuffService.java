@@ -134,12 +134,12 @@ public class BuffService {
             else {
                 if(buff.getHp() != 0) {
                     affecter.setHp(affecter.getHp() + buff.getHp());
-                    if(affecter instanceof Player)
+                    if(affecter instanceof Player && !buff.getId().equals(106))
                         log.info(affecter.getName() + " hp += " + buff.getHp());
                 }
                 if(buff.getMp() != 0) {
                     affecter.setMp(affecter.getMp() + buff.getMp());
-                    if(affecter instanceof Player)
+                    if(affecter instanceof Player && !buff.getId().equals(105))
                         log.info(affecter.getName() + " mp += " + buff.getMp());
                 }
                 flag = true;

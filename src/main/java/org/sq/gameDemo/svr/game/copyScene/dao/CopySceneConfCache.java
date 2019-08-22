@@ -11,6 +11,7 @@ import org.sq.gameDemo.svr.game.copyScene.model.CopySceneConfig;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -44,6 +45,10 @@ public class CopySceneConfCache {
 
     public void put(Integer id, CopySceneConfig value) {
         copySceneConf.put(id,value);
+    }
+
+    public Map asMap() {
+        return copySceneConf.asMap();
     }
 
 }

@@ -68,8 +68,9 @@ public interface Constant {
     long RELIVE_TIME = 5000L;
     Long COPY_RIGHT_NOTIFY_BEFORE_TIME = 10000L;
 
-    long COPY_GARBAGE_THRESHOLD = 10000L;
+    long COPY_GARBAGE_THRESHOLD = 1000000L;
     long COPY_CHECK_RATE_TIME = 60L;
     String SYSTEM_MANAGER = "系统";
     Integer SYSTEM_UNID = -1;
+    Long SYSTEM_ID = 1L;
 }

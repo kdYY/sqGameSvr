@@ -76,8 +76,10 @@ public class MailController {
                 bagService.removeItem(player, itemInBag.getId(), item.getCount());
                 itemSendList.add(itemSend);
             }
-
-            mailService.sendMail(player, recevierName, title, content, itemSendList);
+            Mail mail = mailService.createMail(player, recevierName, title, content, itemSendList);
+            if(!mailService.sendMail(player, mail)) {
+                mailService.returnItems(mail);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,10 +119,14 @@ public class MailController {
                         @ReqParseParam MailPt.MailRequestInfo requestInfo,
                         @RespBuilderParam MailPt.MailResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
-        Mail mail = mailService.getMail(player, requestInfo.getMail().getId());
+        Mail mail = mailService.getMail(player, requestInfo.getId());
         try {
-            builder.addMail((MailPt.Mail) ProtoBufUtil.transformProtoReturnBean(MailPt.Mail.newBuilder(), mail));
-            mail.setIsRead(true);
+            if(mail != null) {
+                builder.addMail((MailPt.Mail) ProtoBufUtil.transformProtoReturnBean(MailPt.Mail.newBuilder(), mail));
+                builder.setResult(Constant.SUCCESS);
+            } else {
+                builder.setResult(404);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             builder.setResult(Constant.SVR_ERR);
@@ -140,4 +146,13 @@ public class MailController {
         mailService.getAllMailItem(player);
     }
 
+    /**
+     * 收取邮件
+     */
+    @OrderMapping(OrderEnum.RECEIVE_MAIL)
+    public void receieveMail(MsgEntity msgEntity,
+                             @ReqParseParam MailPt.MailRequestInfo requestInfo) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        mailService.getMail(player, requestInfo.getId());
+    }
 }

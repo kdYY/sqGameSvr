@@ -65,10 +65,21 @@ public class BagController {
     /**
      * 展示背包
      */
-    @OrderMapping(OrderEnum.SHOW_BAG)
-    public MsgEntity showBag(MsgEntity msgEntity,
+    @OrderMapping(OrderEnum.TIDY_BAG)
+    public MsgEntity tidyBag(MsgEntity msgEntity,
                            @ReqParseParam BagPt.BagReqInfo requestInfo,
                            @RespBuilderParam BagPt.BagRespInfo.Builder builder) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        bagService.tidyBag(player);
+        showBag(msgEntity, requestInfo, builder);
+        return msgEntity;
+    }
+
+
+    @OrderMapping(OrderEnum.SHOW_BAG)
+    public MsgEntity showBag(MsgEntity msgEntity,
+                             @ReqParseParam BagPt.BagReqInfo requestInfo,
+                             @RespBuilderParam BagPt.BagRespInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         Bag bag = player.getBag();
         try {
@@ -87,6 +98,5 @@ public class BagController {
         }
         return msgEntity;
     }
-
 
 }

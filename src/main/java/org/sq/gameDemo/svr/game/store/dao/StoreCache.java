@@ -29,7 +29,6 @@ public class StoreCache {
     private ItemInfoCache itemInfoCache;
 
     private static Cache<Integer, Store> storeCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(Duration.ofMinutes(10))
             .removalListener(
                     notification -> System.out.println(notification.getKey() + "邮件被移除, 原因是" + notification.getCause())
             ).build();
@@ -52,6 +51,7 @@ public class StoreCache {
             Arrays.stream(store.getGoods().split(",")).forEach(infoId -> {
                 ItemInfo itemInfo = itemInfoCache.get(Integer.valueOf(infoId.trim()));
                 store.getGoodsMap().put(itemInfo.getId(), itemInfo);
+                store.getItemInfoList().add(itemInfo);
             });
         }
         return store;

@@ -11,6 +11,8 @@
         <result column="title" property="title" jdbcType="VARCHAR" />
         <result column="content" property="content" jdbcType="VARCHAR" />
         <result column="items_str" property="itemsStr" jdbcType="LONGVARCHAR" />
+        <result column="is_read" property="isRead" jdbcType="BIT" />
+        <result column="sender_name" property="senderName" jdbcType="VARCHAR" />
     </resultMap>
 
     <sql id="Example_Where_Clause" >
@@ -74,7 +76,8 @@
     </sql>
 
     <sql id="Base_Column_List" >
-        id, sender_un_id, recevier_un_id, time, keep_time, title, content, items_str
+        id, sender_un_id, recevier_un_id, time, keep_time, title, content, items_str, is_read,
+        sender_name
     </sql>
 
     <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.mail.model.MailExample" >
@@ -114,10 +117,12 @@
     <insert id="insert" parameterType="org.sq.gameDemo.svr.game.mail.model.Mail" useGeneratedKeys="true" keyProperty="id">
         insert into mail (id, sender_un_id, recevier_un_id,
             time, keep_time, title,
-            content, items_str)
+            content, items_str, is_read,
+            sender_name)
         values (#{id,jdbcType=INTEGER}, #{senderUnId,jdbcType=INTEGER}, #{recevierUnId,jdbcType=INTEGER},
             #{time,jdbcType=BIGINT}, #{keepTime,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR},
-            #{content,jdbcType=VARCHAR}, #{itemsStr,jdbcType=LONGVARCHAR})
+            #{content,jdbcType=VARCHAR}, #{itemsStr,jdbcType=LONGVARCHAR}, #{isRead,jdbcType=BIT},
+            #{senderName,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.mail.model.Mail" useGeneratedKeys="true" keyProperty="id">
@@ -147,6 +152,12 @@
             <if test="itemsStr != null" >
                 items_str,
             </if>
+            <if test="isRead != null" >
+                is_read,
+            </if>
+            <if test="senderName != null" >
+                sender_name,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -172,6 +183,12 @@
             </if>
             <if test="itemsStr != null" >
                 #{itemsStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="isRead != null" >
+                #{isRead,jdbcType=BIT},
+            </if>
+            <if test="senderName != null" >
+                #{senderName,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -210,6 +227,12 @@
             <if test="record.itemsStr != null" >
                 items_str = #{record.itemsStr,jdbcType=LONGVARCHAR},
             </if>
+            <if test="record.isRead != null" >
+                is_read = #{record.isRead,jdbcType=BIT},
+            </if>
+            <if test="record.senderName != null" >
+                sender_name = #{record.senderName,jdbcType=VARCHAR},
+            </if>
         </set>
         <if test="_parameter != null" >
             <include refid="Update_By_Example_Where_Clause" />
@@ -225,7 +248,9 @@
         keep_time = #{record.keepTime,jdbcType=BIGINT},
         title = #{record.title,jdbcType=VARCHAR},
         content = #{record.content,jdbcType=VARCHAR},
-        items_str = #{record.itemsStr,jdbcType=LONGVARCHAR}
+        items_str = #{record.itemsStr,jdbcType=LONGVARCHAR},
+        is_read = #{record.isRead,jdbcType=BIT},
+        sender_name = #{record.senderName,jdbcType=VARCHAR}
         <if test="_parameter != null" >
             <include refid="Update_By_Example_Where_Clause" />
         </if>
@@ -255,6 +280,12 @@
             <if test="itemsStr != null" >
                 items_str = #{itemsStr,jdbcType=LONGVARCHAR},
             </if>
+            <if test="isRead != null" >
+                is_read = #{isRead,jdbcType=BIT},
+            </if>
+            <if test="senderName != null" >
+                sender_name = #{senderName,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -267,7 +298,9 @@
             keep_time = #{keepTime,jdbcType=BIGINT},
             title = #{title,jdbcType=VARCHAR},
             content = #{content,jdbcType=VARCHAR},
-            items_str = #{itemsStr,jdbcType=LONGVARCHAR}
+            items_str = #{itemsStr,jdbcType=LONGVARCHAR},
+            is_read = #{isRead,jdbcType=BIT},
+            sender_name = #{senderName,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 </mapper>

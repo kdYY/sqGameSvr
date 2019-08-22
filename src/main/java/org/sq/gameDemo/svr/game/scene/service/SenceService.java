@@ -265,6 +265,9 @@ public class SenceService {
     public void notifyPlayerByDefault(Character attacter, String content) {
         Channel channel = null;
         if(attacter instanceof Player) {
+            if(attacter.getName().equals(Constant.SYSTEM_MANAGER)) {
+                return;
+            }
             channel = playerCache.getChannelByPlayerId(attacter.getId());
         }
         if(attacter instanceof Monster

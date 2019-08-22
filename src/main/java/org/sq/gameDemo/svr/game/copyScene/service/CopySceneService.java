@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.common.customException.CustomException;
-import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -18,7 +17,7 @@ import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -326,10 +325,16 @@ public class CopySceneService {
      * @param copySceneId
      * @param player
      */
-    public void enterExistCopyScene(Integer copySceneId, Player player) throws Exception {
+    public CopyScene enterExistCopyScene(Integer copySceneId, Player player) throws Exception {
         CopyScene copyScene = findCopyScene(copySceneId);
         //将场景保存到缓存
-        enterCopyScene(copyScene, player);
+        if(copyScene != null) {
+            enterCopyScene(copyScene, player);
+            return copyScene;
+        } else {
+            senceService.notifyPlayerByDefault(player, "副本任务不存在");
+            return null;
+        }
     }
 
     /**
@@ -345,4 +350,20 @@ public class CopySceneService {
         return null ;
     }
 
+    /**
+     * 找到所有的副本模板
+     * @return
+     */
+    public Collection<CopySceneConfig> getAllCopySceneModel() {
+        return copySceneConfCache.asMap().values();
+    }
+
+
+    /**
+     * 找到所有的存在的副本场景
+     * @return
+     */
+    public List<SenceConfigMsg> getAllExistCopyScene() {
+        return senceService.getSenceCache().asMap().values().stream().filter(sence -> sence instanceof CopyScene).collect(Collectors.toList());
+    }
 }

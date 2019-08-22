@@ -27,7 +27,4 @@ public class Store {
     @ProtoField(TargetClass = ItemInfoPt.ItemInfo.class, TargetName = "itemInfo")
     private List<ItemInfo> itemInfoList = new CopyOnWriteArrayList<>();
 
-
-
-
 }

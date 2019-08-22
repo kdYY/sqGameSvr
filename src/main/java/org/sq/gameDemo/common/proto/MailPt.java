@@ -1636,9 +1636,9 @@ public final class MailPt {
      *获取全部写-1
      * </pre>
      *
-     * <code>uint64 id = 3;</code>
+     * <code>int32 id = 3;</code>
      */
-    long getId();
+    int getId();
 
     /**
      * <code>.Mail mail = 4;</code>
@@ -1740,7 +1740,7 @@ public final class MailPt {
             }
             case 24: {
 
-              id_ = input.readUInt64();
+              id_ = input.readInt32();
               break;
             }
             case 34: {
@@ -1827,15 +1827,15 @@ public final class MailPt {
     }
 
     public static final int ID_FIELD_NUMBER = 3;
-    private long id_;
+    private int id_;
     /**
      * <pre>
      *获取全部写-1
      * </pre>
      *
-     * <code>uint64 id = 3;</code>
+     * <code>int32 id = 3;</code>
      */
-    public long getId() {
+    public int getId() {
       return id_;
     }
 
@@ -1915,8 +1915,8 @@ public final class MailPt {
       if (time_ != 0L) {
         output.writeUInt64(2, time_);
       }
-      if (id_ != 0L) {
-        output.writeUInt64(3, id_);
+      if (id_ != 0) {
+        output.writeInt32(3, id_);
       }
       if (mail_ != null) {
         output.writeMessage(4, getMail());
@@ -1941,9 +1941,9 @@ public final class MailPt {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(2, time_);
       }
-      if (id_ != 0L) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(3, id_);
+          .computeInt32Size(3, id_);
       }
       if (mail_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -1999,8 +1999,7 @@ public final class MailPt {
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTime());
       hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getId());
+      hash = (53 * hash) + getId();
       if (hasMail()) {
         hash = (37 * hash) + MAIL_FIELD_NUMBER;
         hash = (53 * hash) + getMail().hashCode();
@@ -2151,7 +2150,7 @@ public final class MailPt {
 
         time_ = 0L;
 
-        id_ = 0L;
+        id_ = 0;
 
         if (mailBuilder_ == null) {
           mail_ = null;
@@ -2263,7 +2262,7 @@ public final class MailPt {
         if (other.getTime() != 0L) {
           setTime(other.getTime());
         }
-        if (other.getId() != 0L) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
         if (other.hasMail()) {
@@ -2401,15 +2400,15 @@ public final class MailPt {
         return this;
       }
 
-      private long id_ ;
+      private int id_ ;
       /**
        * <pre>
        *获取全部写-1
        * </pre>
        *
-       * <code>uint64 id = 3;</code>
+       * <code>int32 id = 3;</code>
        */
-      public long getId() {
+      public int getId() {
         return id_;
       }
       /**
@@ -2417,9 +2416,9 @@ public final class MailPt {
        *获取全部写-1
        * </pre>
        *
-       * <code>uint64 id = 3;</code>
+       * <code>int32 id = 3;</code>
        */
-      public Builder setId(long value) {
+      public Builder setId(int value) {
         
         id_ = value;
         onChanged();
@@ -2430,11 +2429,11 @@ public final class MailPt {
        *获取全部写-1
        * </pre>
        *
-       * <code>uint64 id = 3;</code>
+       * <code>int32 id = 3;</code>
        */
       public Builder clearId() {
         
-        id_ = 0L;
+        id_ = 0;
         onChanged();
         return this;
       }
@@ -4039,7 +4038,7 @@ public final class MailPt {
       "\r\n\005title\030\006 \001(\t\022\017\n\007content\030\007 \001(\t\022\016\n\006isRea" +
       "d\030\010 \001(\010\022\023\n\004item\030\t \003(\0132\005.Item\"e\n\017MailRequ" +
       "estInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\n\n" +
-      "\002id\030\003 \001(\004\022\023\n\004mail\030\004 \001(\0132\005.Mail\022\023\n\004item\030\005" +
+      "\002id\030\003 \001(\005\022\023\n\004mail\030\004 \001(\0132\005.Mail\022\023\n\004item\030\005" +
       " \003(\0132\005.Item\"f\n\020MailResponseInfo\022\016\n\006msg_i" +
       "d\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n" +
       "\007content\030\004 \001(\t\022\023\n\004mail\030\005 \003(\0132\005.MailB&\n\034o" +

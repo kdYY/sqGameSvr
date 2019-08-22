@@ -68,7 +68,7 @@ public class MailExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-19
+     * @date 2019-08-22
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -620,6 +620,136 @@ public class MailExample {
             addCriterion("items_str not between", value1, value2, "itemsStr");
             return (Criteria) this;
         }
+
+        public Criteria andIsReadIsNull() {
+            addCriterion("is_read is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadIsNotNull() {
+            addCriterion("is_read is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadEqualTo(Boolean value) {
+            addCriterion("is_read =", value, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadNotEqualTo(Boolean value) {
+            addCriterion("is_read <>", value, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadGreaterThan(Boolean value) {
+            addCriterion("is_read >", value, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("is_read >=", value, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadLessThan(Boolean value) {
+            addCriterion("is_read <", value, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadLessThanOrEqualTo(Boolean value) {
+            addCriterion("is_read <=", value, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadIn(List<Boolean> values) {
+            addCriterion("is_read in", values, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadNotIn(List<Boolean> values) {
+            addCriterion("is_read not in", values, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_read between", value1, value2, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsReadNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_read not between", value1, value2, "isRead");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameIsNull() {
+            addCriterion("sender_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameIsNotNull() {
+            addCriterion("sender_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameEqualTo(String value) {
+            addCriterion("sender_name =", value, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameNotEqualTo(String value) {
+            addCriterion("sender_name <>", value, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameGreaterThan(String value) {
+            addCriterion("sender_name >", value, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameGreaterThanOrEqualTo(String value) {
+            addCriterion("sender_name >=", value, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameLessThan(String value) {
+            addCriterion("sender_name <", value, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameLessThanOrEqualTo(String value) {
+            addCriterion("sender_name <=", value, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameLike(String value) {
+            addCriterion("sender_name like", value, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameNotLike(String value) {
+            addCriterion("sender_name not like", value, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameIn(List<String> values) {
+            addCriterion("sender_name in", values, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameNotIn(List<String> values) {
+            addCriterion("sender_name not in", values, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameBetween(String value1, String value2) {
+            addCriterion("sender_name between", value1, value2, "senderName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSenderNameNotBetween(String value1, String value2) {
+            addCriterion("sender_name not between", value1, value2, "senderName");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
@@ -634,7 +764,7 @@ public class MailExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-19
+     * @date 2019-08-22
      */
     public static class Criterion {
         private String condition;
