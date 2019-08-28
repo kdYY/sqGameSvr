@@ -78,4 +78,8 @@ public class TradeService {
         return  tradeMapper.selectByExample(tradeExample);
 
     }
+
+    public List<Trade> selectDealHistory(Integer unId) {
+        return  tradeMapper.selectDealHistory(unId);
+    }
 }

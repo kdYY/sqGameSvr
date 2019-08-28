@@ -15,6 +15,7 @@ import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.transaction.model.DealTrade;
+import org.sq.gameDemo.svr.game.transaction.model.Trade;
 import org.sq.gameDemo.svr.game.transaction.service.DealTradeService;
 
 import java.util.List;
@@ -68,17 +69,20 @@ public class DealTradeController {
     public MsgEntity getDealTrade(MsgEntity msgEntity,
                                @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
-        try {
-            List<DealTrade> trades = dealTradeService.getTrace(player);
-            for (DealTrade trade : trades) {
-                builder.addTrade((TradePt.Trade) ProtoBufUtil.transformProtoReturnBean(TradePt.Trade.newBuilder(), trade));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<DealTrade> trades = dealTradeService.getTrace();
+        transformTrade(trades,builder);
         return msgEntity;
     }
 
+    private void transformTrade(List<DealTrade> trades, TradePt.TradeResponseInfo.Builder builder) {
+        for (DealTrade trade : trades) {
+            try {
+            builder.addTrade((TradePt.Trade) ProtoBufUtil.transformProtoReturnBean(TradePt.Trade.newBuilder(), trade));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     /**
      * 查看交易栏上可购买的物品
      * @param msgEntity
@@ -88,14 +92,28 @@ public class DealTradeController {
     public MsgEntity getDealTradeCanBuy(MsgEntity msgEntity,
                                   @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
-        try {
-            List<DealTrade> trades = dealTradeService.getTraceCanBuy(player);
-            for (DealTrade trade : trades) {
-                builder.addTrade((TradePt.Trade) ProtoBufUtil.transformProtoReturnBean(TradePt.Trade.newBuilder(), trade));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<DealTrade> trades = dealTradeService.getTraceCanBuy(player);
+        transformTrade(trades,builder);
         return msgEntity;
+    }
+
+    /**
+     * 查看参与交易的交易栏记录
+     * @param msgEntity
+     * @param builder
+     */
+    @OrderMapping(OrderEnum.GET_DEAL_HISTORY)
+    public MsgEntity getAttentedDealTrade(MsgEntity msgEntity,
+                                        @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        List<Trade> traceHistory = dealTradeService.getTraceHistory(player);
+        for (Trade trade : traceHistory) {
+            try {
+                builder.addTrade((TradePt.Trade) ProtoBufUtil.transformProtoReturnBean(TradePt.Trade.newBuilder(), trade));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

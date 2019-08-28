@@ -28,10 +28,6 @@ public class OnlineTradeController {
     private OnlineTradeService onlineTradeService;
     @Autowired
     private EntityService entityService;
-    @Autowired
-    private BagService bagService;
-    @Autowired
-    private SenceService senceService;
 
     /**
      * 发起在线交易
@@ -73,6 +69,26 @@ public class OnlineTradeController {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         try {
             List<OnlineTrade> trades = onlineTradeService.getTrace(player);
+            for (OnlineTrade trade : trades) {
+                builder.addTrade((TradePt.Trade) ProtoBufUtil.transformProtoReturnBean(TradePt.Trade.newBuilder(), trade));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return msgEntity;
+    }
+
+    /**
+     * 获取自己发起的所有在线交易
+     * @param msgEntity
+     * @param builder
+     */
+    @OrderMapping(OrderEnum.GET_ONLINE_TRADE_CAN_RECEIVE)
+    public MsgEntity getAcceptOnlineTrade(MsgEntity msgEntity,
+                                    @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        try {
+            List<OnlineTrade> trades = onlineTradeService.getTraceCanAccept(player);
             for (OnlineTrade trade : trades) {
                 builder.addTrade((TradePt.Trade) ProtoBufUtil.transformProtoReturnBean(TradePt.Trade.newBuilder(), trade));
             }

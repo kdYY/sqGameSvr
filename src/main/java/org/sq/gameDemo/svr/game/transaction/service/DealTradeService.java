@@ -15,6 +15,7 @@ import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.transaction.manager.TransactionCache;
 import org.sq.gameDemo.svr.game.transaction.model.DealTrade;
+import org.sq.gameDemo.svr.game.transaction.model.Trade;
 import org.sq.gameDemo.svr.game.transaction.model.TradeModel;
 
 import java.util.*;
@@ -229,7 +230,8 @@ public class DealTradeService {
         tradeService.updateTrace(trade);
     }
 
-    public List<DealTrade> getTrace(Player player) {
+    //获取交易栏信息
+    public List<DealTrade> getTrace() {
         return transactionCache.dealAsMap().values().stream().collect(Collectors.toList());
     }
 
@@ -243,6 +245,12 @@ public class DealTradeService {
                     .filter(trade -> !trade.getOwnerUnId().equals(player.getUnId()) && tradeService.getMaxPriceInTrade(trade) <= item.getCount())
                     .collect(Collectors.toList());
         }
+
+    }
+
+    //
+    public List<Trade> getTraceHistory(Player player) {
+        return tradeService.selectDealHistory(player.getUnId());
 
     }
 }

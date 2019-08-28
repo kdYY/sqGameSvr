@@ -3,6 +3,7 @@ package org.sq.gameDemo.svr.game.transaction.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+import org.sq.gameDemo.svr.game.transaction.model.DealTrade;
 import org.sq.gameDemo.svr.game.transaction.model.Trade;
 import org.sq.gameDemo.svr.game.transaction.model.TradeExample;
 
@@ -31,4 +32,6 @@ public interface TradeMapper {
     int updateByPrimaryKeySelective(Trade record);
 
     int updateByPrimaryKey(Trade record);
+
+    List<Trade> selectDealHistory(Integer unId);
 }

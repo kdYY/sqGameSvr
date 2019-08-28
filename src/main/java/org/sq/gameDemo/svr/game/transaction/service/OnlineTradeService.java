@@ -200,10 +200,17 @@ public class OnlineTradeService {
     }
 
 
-    //查看交易
+    //查看玩家发起交易
     public List<OnlineTrade> getTrace(Player player) {
         return transactionCache.onlineAsMap().values().stream()
                 .filter(trade -> trade.getOwnerUnId().equals(player.getUnId()))
+                .collect(Collectors.toList());
+    }
+
+    //查看玩家可接收的
+    public List<OnlineTrade> getTraceCanAccept(Player player) {
+        return transactionCache.onlineAsMap().values().stream()
+                .filter(trade -> trade.getAcceptUnId().equals(player.getUnId()))
                 .collect(Collectors.toList());
     }
 
