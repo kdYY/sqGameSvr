@@ -115,11 +115,11 @@
     </delete>
 
     <insert id="insert" parameterType="org.sq.gameDemo.svr.game.mail.model.Mail" useGeneratedKeys="true" keyProperty="id">
-        insert into mail (id, sender_un_id, recevier_un_id,
+        insert into mail ( sender_un_id, recevier_un_id,
             time, keep_time, title,
             content, items_str, is_read,
             sender_name)
-        values (#{id,jdbcType=INTEGER}, #{senderUnId,jdbcType=INTEGER}, #{recevierUnId,jdbcType=INTEGER},
+        values ( #{senderUnId,jdbcType=INTEGER}, #{recevierUnId,jdbcType=INTEGER},
             #{time,jdbcType=BIGINT}, #{keepTime,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR},
             #{content,jdbcType=VARCHAR}, #{itemsStr,jdbcType=LONGVARCHAR}, #{isRead,jdbcType=BIT},
             #{senderName,jdbcType=VARCHAR})

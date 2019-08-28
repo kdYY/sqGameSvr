@@ -11,6 +11,7 @@ import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
 import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
 import org.sq.gameDemo.svr.game.bag.model.Item;
+import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -28,6 +29,8 @@ public class EquipController {
     private EntityService entityService;
     @Autowired
     private SenceService senceService;
+    @Autowired
+    private BagService bagService;
 
     /**
      * 穿戴背包中的装备
@@ -103,17 +106,22 @@ public class EquipController {
                             @ReqParseParam ItemPt.ItemRequestInfo requestInfo) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         Optional<Item> find;
+        Item equipFind = null;
         find = player.getEquipmentBar().values().stream().filter(equip -> equip.getId() == requestInfo.getId()).findFirst();
         if(!find.isPresent()) {
-            find = player.getBag().getItemBar().values().stream().filter(equip -> equip.getId() == requestInfo.getId()).findFirst();
-            if(!find.isPresent()) {
-                senceService.notifyPlayerByDefault(player, "装备不存在");
+            equipFind = bagService.findItem(player, requestInfo.getId(), 1);
+            if(equipFind == null) {
+                return;
+            }
+            if(!equitService.isEquip(equipFind)) {
+                senceService.notifyPlayerByDefault(player, "该id不属于装备");
                 return;
             }
         } else {
-            int repairValue = requestInfo.getRepairValue();
-            equitService.repairEquip(player, find.get(), repairValue <= 0 ?  (find.get().getItemInfo().getDurable()) : repairValue);
+            equipFind = find.get();
         }
+        int repairValue = requestInfo.getRepairValue();
+        equitService.repairEquip(player, equipFind, repairValue <= 0 ?  (equipFind.getItemInfo().getDurable()) : repairValue);
     }
 
 

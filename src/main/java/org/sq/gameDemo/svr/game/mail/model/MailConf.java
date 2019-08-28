@@ -19,7 +19,7 @@ public class MailConf {
     private String content;
 
     //物品json字符串
-    private String itemsStr = "{}";
+    private String itemsStr = "[]";
 
     List<MailItemConf> itemConfList;
     @Data

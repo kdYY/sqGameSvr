@@ -39,7 +39,11 @@ public enum OrderEnum {
     BUY_SHOP_ITEM("buyshopItem", 133),
     TIDY_BAG("tidybag", 134),
     SHOW_EXIST_COPY_SENCE("showCopySenceExist", 135),
-    ENTER_COPY("entercopy", 136), RECEIVE_MAIL("receiveMail", 137);
+    ENTER_COPY("entercopy", 136),
+    RECEIVE_MAIL("receiveMail", 137),
+    SHOW_ITEMINFO("showItemInfo", 138),
+    START_ONLINE_TRADE("startonlineTrade", 139),
+    ACCEPT_ONLINE_TRADE("acceptonlinetrade", 140);
 
     private String order;
     private short orderCode;

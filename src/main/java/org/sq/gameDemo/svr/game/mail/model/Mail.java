@@ -2,9 +2,11 @@ package org.sq.gameDemo.svr.game.mail.model;
 
 import com.google.common.base.Strings;
 import lombok.Data;
+import org.sq.gameDemo.common.proto.EntityTypeProto;
 import org.sq.gameDemo.common.proto.ItemPt;
 import org.sq.gameDemo.common.proto.MailPt;
 import org.sq.gameDemo.common.proto.NpcPt;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.poiUtil.ExcelFeild;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
@@ -31,8 +33,8 @@ public class Mail {
     //发送时间
     private Long time;
 
-    //保留时长
-    private Long keepTime = 3 * 60 * 1000L;
+    //保留时长 3 day
+    private Long keepTime = 3 * 24 * 60 * 60 * 1000L;
 
     //标题
     private String title;
@@ -43,7 +45,7 @@ public class Mail {
     //物品json字符串
 
     @ProtoField(Ignore = true)
-    private String itemsStr = "{}";
+    private String itemsStr;
 
     public String getItemsStr() {
         if(rewardItems != null && rewardItems.size() != 0 && Strings.isNullOrEmpty(itemsStr)) {
@@ -59,7 +61,7 @@ public class Mail {
 
 
     public List<Item> getRewardItems() {
-        if(this.rewardItems == null && !Strings.isNullOrEmpty(this.itemsStr)) {
+        if((this.rewardItems == null || this.rewardItems.size() == 0) && !Strings.isNullOrEmpty(this.itemsStr)) {
             List<Item> list = JsonUtil.reSerializableJson(this.itemsStr, Item.class);
             this.rewardItems = list;
         }
@@ -67,9 +69,13 @@ public class Mail {
     }
 
     //是否已读
-    @ProtoField(Ignore = true)
+    @ProtoField(TargetName = "isRead", Function = "makeRead", TargetClass = MailPt.Mail.Builder.class)
     private Boolean isRead = false;
 
+
+    public void makeRead(MailPt.Mail.Builder builder) {
+        builder.setIsRead(this.isRead);
+    }
     public Mail() {
     }
 
@@ -81,5 +87,8 @@ public class Mail {
         this.title = title;
         this.content = content;
         this.rewardItems = rewardItems;
+        if(rewardItems != null && rewardItems.size() != 0 && Strings.isNullOrEmpty(itemsStr)) {
+            this.itemsStr = JsonUtil.serializableJson(rewardItems);
+        }
     }
 }

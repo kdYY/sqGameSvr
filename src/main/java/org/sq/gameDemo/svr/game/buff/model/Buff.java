@@ -1,15 +1,10 @@
 package org.sq.gameDemo.svr.game.buff.model;
 
 import lombok.Data;
-import org.sq.gameDemo.svr.common.TimeTaskManager;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
-import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 
-import java.util.Date;
 import java.util.concurrent.Future;
-
-import static org.apache.catalina.security.SecurityUtil.remove;
 
 /**
  * Buff类

@@ -58,25 +58,22 @@ public class StoreService {
         int needMoney = itemInfo.getPrice() * count;
         senceService.notifyPlayerByDefault(player, "该商店货物(id="+ itemInfo.getId() +", name= "+ itemInfo.getName() +" ) * " + count + "需要 元宝 * " +
                 needMoney);
-        Optional<Item> money = player.getBag().getItemBar().values().stream()
-                .filter(item -> item.getItemInfo().getId().equals(Constant.YUAN_BAO)).findFirst();
-        if(money.isPresent() && money.get().getCount() >= needMoney) {
-            Item item = bagService.createItem(itemInfo.getId(), count, itemInfo.getLevel());
-            storeBuyMail(player, item);
-            bagService.removeItem(player, money.get().getId(), needMoney);
-        } else {
-            senceService.notifyPlayerByDefault(player, "元宝不足");
+        Item money = bagService.findItem(player, Constant.YUAN_BAO, needMoney);
+        if(money == null) {
             return;
         }
-
+        Item item = bagService.createItem(itemInfo.getId(), count, itemInfo.getLevel());
+        storeBuyMail(player, item);
+        bagService.removeItem(player, money.getId(), needMoney);
     }
 
     public void storeBuyMail(Player player, Item item) throws CustomException.SystemSendMailErrException {
         ArrayList<Item> items = new ArrayList<>();
         items.add(item);
         Player system = entityService.getPlayer(Constant.SYSTEM_UNID);
-        Mail mail = mailService.createMail(system, player.getName(), "商店购买物品", "这是你在商店购买的物品", items);
-        mailService.sendMail(system, mail);
+        mailService.sendMail(system, player.getUnId(), "商店购买物品", "这是你在商店购买的物品", items);
+//        Mail mail = mailService.createMail(system, player.getUnId(), "商店购买物品", "这是你在商店购买的物品", items);
+//        mailService.sendMail(system, mail);
     }
 
 }

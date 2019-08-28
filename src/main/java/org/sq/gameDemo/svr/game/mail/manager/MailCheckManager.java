@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.game.mail.dao.MailCache;
 import org.sq.gameDemo.svr.game.mail.model.Mail;
 import org.sq.gameDemo.svr.game.mail.service.MailService;
@@ -33,8 +34,8 @@ public class MailCheckManager {
 
     @PostConstruct
     private void init() {
-        log.info("开始轮询场景实体状态");
-        singleThreadSchedule.scheduleWithFixedDelay(this::refreshMail, 50, 50, TimeUnit.SECONDS);
+        log.info("开始轮询邮件状态");
+        singleThreadSchedule.scheduleWithFixedDelay(this::refreshMail, 1000, 1000, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -45,6 +46,7 @@ public class MailCheckManager {
 
         mailMap.values()
                 .stream()
+                .filter(mail -> !mail.getSenderUnId().equals(Constant.SYSTEM_UNID))
                 .filter(mail -> mail.getTime() + mail.getKeepTime() <= System.currentTimeMillis())
                 .forEach(mail -> {
                     mailService.returnItems(mail);

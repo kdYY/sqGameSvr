@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.UserProto;
 import org.sq.gameDemo.svr.common.JsonUtil;
-import org.sq.gameDemo.svr.common.TimeTaskManager;
+import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.game.bag.model.Item;
@@ -89,7 +89,9 @@ public class UserService {
 
 
     public void updateTokenByUserId(Integer userId, String token) {
-        userMapper.updateTokenByUserId(userId, token);
+        ThreadManager.dbTaskPool.execute(() -> {
+            userMapper.updateTokenByUserId(userId, token);
+        });
     }
 
     /**
@@ -139,6 +141,7 @@ public class UserService {
             if(user == null) {
                 builder.setResult(404);
                 builder.setToken("");
+                builder.setContent("reconnect fail, please relogin, enter \"help\" to get Help");
             } else {
                 try {
                     entityService.playerLogin(channel, builder, user);
@@ -158,6 +161,10 @@ public class UserService {
 
     }
 
+    /**
+     * 玩家下线
+     * @param channel
+     */
     public void userOffLine(Channel channel) {
         Player player = playerCache.getPlayerByChannel(channel);
         if(player == null) {
@@ -168,12 +175,13 @@ public class UserService {
         playerCache.removePlayerCache(channel);
         UserCache.removeUserIdChannel(channel, player.getUserId());
         mailService.clearCache(player);
+
         try {
-            TimeTaskManager.threadPoolSchedule(10, () -> {
+            ThreadManager.dbTaskPool.execute( () -> {
                 UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
                 userEntity.setExp(player.getExp());
                 SenceConfigMsg senecMsgById = senceService.getSenecMsgById(player.getSenceId());
-                if(senecMsgById instanceof CopyScene) {
+                if (senecMsgById instanceof CopyScene) {
                     Integer senceId  = ((CopyScene) senecMsgById).getBeforeSenceIdMap().get(player.getId());
                     userEntity.setSenceId(senceId);
                 } else {
@@ -188,9 +196,8 @@ public class UserService {
             });
         } catch (Exception e) {
             e.printStackTrace();
+            log.info("用户下线持久化出现异常");
         }
-
-
         log.info(player.getName() + "下线");
     }
 

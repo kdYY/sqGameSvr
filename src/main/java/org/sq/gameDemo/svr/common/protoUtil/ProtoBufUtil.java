@@ -14,12 +14,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProtoBufUtil {
     public static List<String> baseTypeList =
-            Arrays.asList("int", "Integer", "float", "Float", "long", "Long", "double", "Double", "String");
+            Arrays.asList("int", "Integer", "float", "Float", "long", "Long", "double", "Double", "String", "Boolean", "boolean");
 
     public static  <T,K> Object transformProtoReturnBean(T goalBuilder, K sourceBean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
-        transformProtoReturnBuilder(goalBuilder, sourceBean);
-        Method build = goalBuilder.getClass().getDeclaredMethod("build");
-        return build.invoke(goalBuilder);
+        try{
+            transformProtoReturnBuilder(goalBuilder, sourceBean);
+            Method build = goalBuilder.getClass().getDeclaredMethod("build");
+            return build.invoke(goalBuilder);
+        }catch (Exception e) {
+            return null;
+        }
+
     }
     //
     public static <T,K> T transformProtoReturnBuilder(T goalBuilder, K sourceBean) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
@@ -134,12 +139,12 @@ public class ProtoBufUtil {
                     setMethod.invoke(goalBuilder, getValue);
                 } catch (java.lang.IllegalArgumentException e) {
                     e.printStackTrace();
-                    System.out.println(getMethod.getName() + "中类型为" + getMethod.getReturnType().getName());
-                    System.out.println(setMethod.getName() + "中类型为" + setMethod.getParameterTypes()[0].getName());
-                    System.out.println("类型不一致");
+                    log.info(getMethod.getName() + "中类型为" + getMethod.getReturnType().getName());
+                    log.info(setMethod.getName() + "中类型为" + setMethod.getParameterTypes()[0].getName());
+                    log.info("类型不一致");
                 }
             } else {
-                log.info(setMethod.getName() + "的参数来自" + field.getName() + ", 参数内容为空, get的域为" + field.getName() + ";set的域来自" + goalBuilder.getClass().getName() );
+//                log.info(setMethod.getName() + "的参数来自" + field.getName() + ", 参数内容为空, get的域为" + field.getName() + ";set的域来自" + goalBuilder.getClass().getName() );
             }
 
         }

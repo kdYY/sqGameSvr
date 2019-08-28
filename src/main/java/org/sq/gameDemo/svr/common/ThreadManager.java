@@ -9,16 +9,23 @@ import java.util.concurrent.*;
 
 @Slf4j
 @Component
-public class TimeTaskManager {
+public class ThreadManager {
 
+    /**
+     * 执行游戏过程中用到的任务
+     */
     private static ThreadFactory scheduledThreadPoolFactory = new ThreadFactoryBuilder()
             .setNameFormat("scheduledThreadPool-%d").setUncaughtExceptionHandler((t,e) -> e.printStackTrace()).build();
     private static ScheduledExecutorService threadPool =
             Executors.newScheduledThreadPool( Runtime.getRuntime().availableProcessors()*2+1,scheduledThreadPoolFactory);
 
+    private static ThreadFactory factory = new ThreadFactoryBuilder()
+            .setNameFormat("dbTaskPool-%d").setUncaughtExceptionHandler((t,e) -> e.printStackTrace()).build();
+    public static ExecutorService dbTaskPool = new ThreadPoolExecutor(4,8,
+            1000, TimeUnit.SECONDS,new LinkedBlockingQueue<>(100), factory );
 
     /**
-     *  单线程循环执行器
+     *  执行数据持久化的任务 update 和 insert
      */
     private static ThreadFactory singleThreadFactory = new ThreadFactoryBuilder()
             .setNameFormat("singleThread-%d").setUncaughtExceptionHandler((t,e) -> e.printStackTrace()).build();

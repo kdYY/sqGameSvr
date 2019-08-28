@@ -1,17 +1,13 @@
 package org.sq.gameDemo.svr.game.skills.service;
 
-import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.sq.gameDemo.svr.common.TimeTaskManager;
-import org.sq.gameDemo.svr.common.UserCache;
-import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.buff.model.BuffState;
-import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
@@ -68,7 +64,7 @@ public class SkillService {
             skillEffect(attacter, targeter, skill, senecMsg);
         } else {
             //单线程执行 保证任务顺序且不出现某些线程安全问题
-            Future future = TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
+            Future future = ThreadManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
                     () -> {
                         senecMsg.getSingleThreadSchedule().execute(
                                 () -> {
@@ -105,7 +101,7 @@ public class SkillService {
             targeterList.forEach(targeter -> skillEffect(attacter, targeter, skill, senecMsg));
         } else {
             //单线程执行 保证任务顺序且不出现某些线程安全问题
-            Future future = TimeTaskManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
+            Future future = ThreadManager.singleThreadSchedule(skill.getCastTime() <= 0 ? 0 : skill.getCastTime(),
                     () -> {
                         senecMsg.getSingleThreadSchedule().execute(
                                 () -> {

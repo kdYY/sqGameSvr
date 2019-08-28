@@ -226,7 +226,7 @@ public class EntityController {
                             }
                         })
             );
-
+            builder.addPlayer(ProtoBufUtil.transformProtoReturnBuilder(PlayerPt.Player.newBuilder(), player));
         } catch (Exception e) {
             e.printStackTrace();
             builder.setResult(Constant.SVR_ERR);//服务端异常

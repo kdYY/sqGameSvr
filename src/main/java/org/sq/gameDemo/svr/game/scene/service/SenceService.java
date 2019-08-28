@@ -307,7 +307,7 @@ public class SenceService {
         senceIdAndSenceMsgMap.asMap().values().forEach(
                 senceConfigMsg -> {
                     senceConfigMsg.getPlayerList().forEach( p -> {
-                        notifyPlayerByDefault(p, "id:" + player.getId() + ", name:" + player.getName() + "发起世界喊话: " + word);
+                        notifyPlayerByDefault(p, word);
                     });
                 }
         );

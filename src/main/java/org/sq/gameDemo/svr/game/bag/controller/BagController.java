@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.BagPt;
+import org.sq.gameDemo.common.proto.ItemInfoPt;
 import org.sq.gameDemo.common.proto.ItemPt;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.OrderMapping;
@@ -13,12 +14,14 @@ import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.bag.model.Bag;
 import org.sq.gameDemo.svr.game.bag.model.Item;
+import org.sq.gameDemo.svr.game.bag.model.ItemInfo;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 @Controller
 public class BagController {
@@ -29,6 +32,24 @@ public class BagController {
     private EntityService entityService;
     @Autowired
     private SenceService senceService;
+
+    /**
+     * 玩家使用背包中的物品
+     */
+    @OrderMapping(OrderEnum.SHOW_ITEMINFO)
+    public MsgEntity showAllItemInfo(MsgEntity msgEntity,
+                                @RespBuilderParam ItemInfoPt.ItemInfoResponseInfo.Builder builder) {
+        List<ItemInfo> itemInfos = bagService.showAllItemInfo();
+        for (ItemInfo itemInfo : itemInfos) {
+            try {
+                builder.addItemInfo(ProtoBufUtil.transformProtoReturnBuilder(ItemInfoPt.ItemInfo.newBuilder(), itemInfo));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
+    }
 
     /**
      * 玩家使用背包中的物品

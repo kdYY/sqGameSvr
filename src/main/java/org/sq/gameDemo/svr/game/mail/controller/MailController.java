@@ -23,6 +23,7 @@ import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -55,31 +56,13 @@ public class MailController {
             List<ItemPt.Item> itemIdList = requestInfo.getItemList();
 
             for (ItemPt.Item item : itemIdList) {
-                Item itemInBag = player.getBag().getItemBar().get(item.getId());
+                Item itemInBag = bagService.findItem(player, item.getId(), item.getCount());
                 if(itemInBag == null) {
-                    senceService.notifyPlayerByDefault(player, "发送失败，id=" + itemInBag.getId()  +" 的物品不存在");
                     return;
-                } else {
-                    if(itemInBag.getCount() < item.getCount()) {
-                        senceService.notifyPlayerByDefault(player, "发送失败，id=" + itemInBag.getId()  +" 的物品数量不足");
-                        return;
-                    }
                 }
             }
 
-            for (ItemPt.Item item : itemIdList) {
-                Item itemInBag = player.getBag().getItemBar().get(item.getId());
-                Item itemSend = new Item();
-                BeanUtils.copyProperties(itemInBag, itemSend);
-                itemSend.setCount(item.getCount());
-
-                bagService.removeItem(player, itemInBag.getId(), item.getCount());
-                itemSendList.add(itemSend);
-            }
-            Mail mail = mailService.createMail(player, recevierName, title, content, itemSendList);
-            if(!mailService.sendMail(player, mail)) {
-                mailService.returnItems(mail);
-            }
+            mailService.playerSendMail(player, title, content, recevierName, itemSendList, itemIdList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,6 +71,8 @@ public class MailController {
         }
 
     }
+
+
 
     /**
      * 展示邮件列表
@@ -101,11 +86,7 @@ public class MailController {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         List<Mail> mailList = mailService.getMailList(player);
         mailList.forEach(mail -> {
-            try {
-                builder.addMail((MailPt.Mail) ProtoBufUtil.transformProtoReturnBean(MailPt.Mail.newBuilder(), mail));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            transformMail(msgEntity, builder, mail);
         });
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
@@ -120,17 +101,7 @@ public class MailController {
                         @RespBuilderParam MailPt.MailResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         Mail mail = mailService.getMail(player, requestInfo.getId());
-        try {
-            if(mail != null) {
-                builder.addMail((MailPt.Mail) ProtoBufUtil.transformProtoReturnBean(MailPt.Mail.newBuilder(), mail));
-                builder.setResult(Constant.SUCCESS);
-            } else {
-                builder.setResult(404);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            builder.setResult(Constant.SVR_ERR);
-        }
+        transformMail(msgEntity, builder, mail);
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
@@ -153,6 +124,33 @@ public class MailController {
     public void receieveMail(MsgEntity msgEntity,
                              @ReqParseParam MailPt.MailRequestInfo requestInfo) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
-        mailService.getMail(player, requestInfo.getId());
+        Mail mail = mailService.getMailInCache(requestInfo.getId());
+        if(mail != null) {
+            mailService.getMailItem(player, mail);
+        }else {
+            senceService.notifyPlayerByDefault(player, "id="+ mail.getId() + " 的邮件不存在");
+        }
     }
+
+    /**
+     * 转换proto
+     * @param msgEntity
+     * @param builder
+     * @param mail
+     */
+    private void transformMail(MsgEntity msgEntity, @RespBuilderParam MailPt.MailResponseInfo.Builder builder, Mail mail) {
+        try {
+            if(mail != null) {
+                builder.addMail((MailPt.Mail) ProtoBufUtil.transformProtoReturnBean(MailPt.Mail.newBuilder(), mail));
+                builder.setResult(Constant.SUCCESS);
+            } else {
+                builder.setResult(404);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setResult(Constant.SVR_ERR);
+        }
+    }
+
+
 }

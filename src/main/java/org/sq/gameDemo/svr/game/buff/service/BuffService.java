@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.sq.gameDemo.svr.common.TimeTaskManager;
-import org.sq.gameDemo.svr.common.UserCache;
+import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.game.buff.dao.BuffCache;
 import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.buff.model.BuffState;
@@ -14,11 +13,8 @@ import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
-import javax.sound.midi.Track;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -69,11 +65,11 @@ public class BuffService {
         Future future = null;
         try {
             if(buff.getIntervalTime() <= 0) {
-                future = TimeTaskManager.threadPoolSchedule(0, () -> {
+                future = ThreadManager.threadPoolSchedule(0, () -> {
                     usingBuff(affecter, buff);
                 });
             } else {
-                future = TimeTaskManager.scheduleAtFixedRate(0, buff.getIntervalTime(), () -> {
+                future = ThreadManager.scheduleAtFixedRate(0, buff.getIntervalTime(), () -> {
                     usingBuff(affecter, buff);
                 });
             }
@@ -88,7 +84,7 @@ public class BuffService {
             buff.setFuture(future);
 
             try {
-                TimeTaskManager.threadPoolSchedule(buff.getDuration(),
+                ThreadManager.threadPoolSchedule(buff.getDuration(),
                         () -> {
                             Future buffFuture = buff.getFuture();
                             Character character = buff.getCharacter();

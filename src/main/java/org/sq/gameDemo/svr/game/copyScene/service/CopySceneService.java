@@ -155,14 +155,14 @@ public class CopySceneService {
         }, 2000,Constant.COPY_CHECK_RATE_TIME, TimeUnit.MILLISECONDS);
 
         // 提前通知
-        TimeTaskManager.threadPoolSchedule(copyScene.getMaxTime() - Constant.COPY_RIGHT_NOTIFY_BEFORE_TIME,
+        ThreadManager.threadPoolSchedule(copyScene.getMaxTime() - Constant.COPY_RIGHT_NOTIFY_BEFORE_TIME,
                 () ->
                         notifyCopyScene(copyScene, "副本(id:"+ copyScene.getSenceId() + ", name:" + copyScene.getName()
                         +") 将于十秒后关闭，赶紧打掉boss --- 充钱买礼包打得更快！")
         );
 
         // 挑战时间到
-        TimeTaskManager.threadPoolSchedule(copyScene.getMaxTime(), () -> {
+        ThreadManager.threadPoolSchedule(copyScene.getMaxTime(), () -> {
             notifyCopyScene(copyScene, "副本 name:" + copyScene.getName()
                     +") 挑戰失敗! ! !充钱买礼包打得更快！");
             destroyInstance(copyScene, future);

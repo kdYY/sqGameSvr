@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
-import org.sq.gameDemo.svr.common.TimeTaskManager;
+import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
@@ -26,6 +26,7 @@ import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
+import org.sq.gameDemo.svr.game.transaction.service.OnlineTradeService;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
 
@@ -61,6 +62,8 @@ public class EntityService {
     private BuffService buffService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private OnlineTradeService onlineTradeService;
 
     /**
      * 用户登录
@@ -99,7 +102,7 @@ public class EntityService {
         builder.setToken(token);
 
         //如果已经绑定角色的用户，获取上次保存的玩家角色，返回上次所在场景地
-        if(hasUserEntity(userId)) {
+        if(hasBindRole(userId)) {
             //初始化好玩家并加入场景
             Player player = getInitedPlayer(userId, channel);
 
@@ -157,6 +160,8 @@ public class EntityService {
         playerCache.savePlayerChannel(playerCached.getId(), channel);
         playerCache.putUnIdPlayer(usrEntity.getUnId(), playerCached);
 
+        mailService.loadMail(playerCached);
+        onlineTradeService.loadTrace(playerCached);
         return playerCached;
     }
 
@@ -205,8 +210,7 @@ public class EntityService {
         buffService.buffAffecting(player, buffService.getBuff(105));
         buffService.buffAffecting(player, buffService.getBuff(106));
 
-        //加载邮建资源
-        mailService.loadMail(player);
+
     }
 
     /**
@@ -255,7 +259,7 @@ public class EntityService {
     }
 
     //注册同时已经bind了的
-    public boolean hasUserEntity(int userId) {
+    public boolean hasBindRole(int userId) {
         return Objects.nonNull(userEntityMapper.getUserEntityByUserId(userId));
     }
 
@@ -304,7 +308,7 @@ public class EntityService {
                         ", name:" + attacker.getName() + "杀死了, "+ Constant.RELIVE_TIME + "秒后回主城");
 
                 try {
-                    TimeTaskManager.threadPoolSchedule(
+                    ThreadManager.threadPoolSchedule(
                             Constant.RELIVE_TIME, () -> {
                                 relivePlayer(player);
                                 //添加到起源之地
@@ -335,6 +339,11 @@ public class EntityService {
         return entityTypeCache.get(typeId);
     }
 
+    //获取系统管理员
+    public Player getSystemPlayer() {
+        return playerCache.getPlayerByUnId(Constant.SYSTEM_UNID);
+    }
+
     //找到玩家
     public Player getPlayer(Channel channel) {
         return playerCache.getPlayerByChannel(channel);
@@ -343,7 +352,7 @@ public class EntityService {
     public Player getPlayer(Long playerId) {
         return playerCache.getPlayerByChannel(playerCache.getChannelByPlayerId(playerId));
     }
-
+    //找到玩家
     public Player getPlayer(Integer unId) {
         return playerCache.getPlayerByUnId(unId);
     }

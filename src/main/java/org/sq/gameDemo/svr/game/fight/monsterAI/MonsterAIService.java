@@ -52,10 +52,10 @@ public class MonsterAIService {
             log.info("MonsterBeAttacked的时候， 怪物死亡");
             return;
         }
-        Character target = targetMonster.getTarget();
 
         //设置怪物归属者
         monsterSetTarget(attacter, targetMonster);
+        Character target = targetMonster.getTarget();
 
         if(targetMonster.isDead()) {
 

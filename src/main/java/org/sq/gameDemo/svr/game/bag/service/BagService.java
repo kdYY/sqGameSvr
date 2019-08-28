@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.JsonUtil;
+import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.game.bag.dao.BagMapper;
 import org.sq.gameDemo.svr.game.bag.dao.ItemInfoCache;
 import org.sq.gameDemo.svr.game.bag.model.Bag;
@@ -63,11 +64,20 @@ public class BagService {
     }
 
     /**
+     * 获取所有物品展示
+     * @return
+     */
+    public List<ItemInfo> showAllItemInfo() {
+        return itemInfoCache.itemInfoMap().values().stream().collect(Collectors.toList());
+    }
+
+
+    /**
      * 获取物品信息
      * @param id
      * @return
      */
-    public ItemInfo getItemInfo(Integer id) {
+    private ItemInfo getItemInfo(Integer id) {
         return itemInfoCache.get(id);
     }
 
@@ -145,11 +155,14 @@ public class BagService {
      */
     public void updateBagInDB(Player player) {
         Bag bag = bagMapper.selectByPrimaryKey(player.getUnId());
-        if(bag == null) {
-            bagMapper.insert(player.getBag());
-        } else {
-            bagMapper.updateByPrimaryKey(player.getBag());
-        }
+        ThreadManager.dbTaskPool.execute(() -> {
+            if(bag == null) {
+                bagMapper.insert(player.getBag());
+            } else {
+                bagMapper.updateByPrimaryKey(player.getBag());
+            }
+        });
+
     }
 
 
@@ -185,6 +198,7 @@ public class BagService {
             senceService.notifyPlayerByDefault(player, "背包已满，请整理背包");
             return false;
         }
+        updateBagInDB(player);
         return true;
     }
 
@@ -198,17 +212,8 @@ public class BagService {
         Bag bag = player.getBag();
         Map<Long, Item> itemMap = bag.getItemBar();
         if(!itemMap.isEmpty()) {
-            Item item = itemMap.get(itemId);
-            if(item == null) {
-                senceService.notifyPlayerByDefault(player, "物品不存在");
-                return false;
-            }
+            Item item = findItem(player, itemId, count);
             String itemName = item.getItemInfo().getName();
-
-            if(item.getCount() < count) {
-                senceService.notifyPlayerByDefault(player, "物品数量不足");
-                return false;
-            }
 
             //非装备 同时数量够减
             if(!equitService.isEquip(item) && item.getCount() > count) {
@@ -221,6 +226,7 @@ public class BagService {
             }
 
             senceService.notifyPlayerByDefault(player, itemName + " * " + count + "从背包中移除");
+            updateBagInDB(player);
             return true;
         }
         return false;
@@ -249,17 +255,57 @@ public class BagService {
 
             bag.setItemBar(itemMap);
         }
-
+        updateBagInDB(player);
         senceService.notifyPlayerByDefault(player, "背包整理完毕");
+
     }
 
-    public boolean hasItem(Player player, Long itemId, Integer count) {
-        Item itemInBag = player.getBag().getItemBar().get(itemId);
-        if(itemInBag != null && itemInBag.getCount() >= count) {
-            return true;
+    /*寻找背包中物品*/
+    public Item findItem(Player player, Long itemId, Integer count) {
+        Bag bag = player.getBag();
+        Map<Long, Item> itemMap = bag.getItemBar();
+        Item itemInBag = null;
+        if(!itemMap.isEmpty()) {
+            itemInBag = itemMap.get(itemId);
+            if(itemInBag == null) {
+                senceService.notifyPlayerByDefault(player, "id=" + itemId + "物品不存在");
+                return null;
+            }
+
+            if(itemInBag.getCount() < count) {
+                senceService.notifyPlayerByDefault(player, "id=" + itemId + "物品数量不足");
+                return null;
+            }
+        } else {
+            senceService.notifyPlayerByDefault(player, "背包为空");
         }
-        return false;
+        return itemInBag;
     }
+
+    /*寻找背包中物品*/
+    public Item findItem(Player player, Integer iteminfoId, Integer count) {
+        Bag bag = player.getBag();
+        Map<Long, Item> itemMap = bag.getItemBar();
+
+        Item itemInBag = null;
+        if(!itemMap.isEmpty()) {
+            Optional<Item> find = player.getBag().getItemBar().values().stream().filter(item -> item.getItemInfo().getId().equals(iteminfoId)).findFirst();
+            if(!find.isPresent()) {
+                senceService.notifyPlayerByDefault(player, "iteminfoId=" + iteminfoId + "物品不存在");
+                return null;
+            }
+            itemInBag = find.get();
+            if(itemInBag.getCount() < count) {
+                senceService.notifyPlayerByDefault(player, "iteminfoId=" + iteminfoId + "物品数量不足");
+                return null;
+            }
+        } else {
+            senceService.notifyPlayerByDefault(player, "背包为空");
+        }
+        return itemInBag;
+
+    }
+
 
 
     @Data

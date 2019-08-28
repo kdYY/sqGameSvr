@@ -7,6 +7,7 @@ import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Data
 public class Item {
@@ -51,6 +52,7 @@ public class Item {
 
     @ProtoField(TargetName = "itemInfo", Function = "addItemInfoPt", TargetClass = ItemPt.Item.Builder.class)
     private ItemInfo itemInfo;
+
 
     /**
      * 做item中ItemInfo的注入

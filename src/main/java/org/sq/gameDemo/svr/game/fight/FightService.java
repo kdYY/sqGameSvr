@@ -56,7 +56,7 @@ public class FightService {
     }
 
     /**
-     * 玩家使用技能打群怪,
+     * 玩家使用技能打单怪,
      * @param player
      * @param skillId
      */

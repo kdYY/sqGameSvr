@@ -1,13 +1,15 @@
 package org.sq.gameDemo.svr.game.mail.service;
 
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.common.proto.ItemPt;
 import org.sq.gameDemo.svr.common.Constant;
+import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.common.customException.CustomException;
-import org.sq.gameDemo.svr.game.bag.model.Bag;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
@@ -41,16 +43,16 @@ public class MailService {
     /**
      * 发送带道具附件的邮件
      */
-    public boolean sendMail(Player sender, Mail mail) throws CustomException.SystemSendMailErrException {
+    private boolean sendMail(Player sender, Mail mail) throws CustomException.SystemSendMailErrException {
 
         if(mail == null) {
             return false;
         }
 
         Player reciever = entityService.getPlayer(mail.getRecevierUnId());
+        //插入完返回主键
         int id = mailMapper.insertSelective(mail);
         if(id >= 0) {
-            mail.setId(id);
             if(reciever == null) {
                 senceService.notifyPlayerByDefault(sender, "玩家不在线，离线发送成功...");
             } else {
@@ -70,25 +72,16 @@ public class MailService {
     /**
      * 创建邮件
      */
-    public Mail createMail(Player sender, String recevierName, String title, String content, List<Item>
+    private Mail createMail(Player sender, Integer recevierUnId, String title, String content, List<Item>
             rewardItems) throws CustomException.SystemSendMailErrException {
-        Integer recevierUnId = entityService.getUnIdByName(recevierName);
 
-        if(recevierUnId == null ) {
-            if(!sender.getUnId().equals(Constant.SYSTEM_UNID)) {
-                senceService.notifyPlayerByDefault(sender, "邮件对象不存在，请检查id");
-            } else {
-                log.info("系统创建邮件失败, unid=" + recevierUnId + "不存在");
-            }
-            return null;
-        }
 
         if(sender.getName().equals(Constant.SYSTEM_MANAGER)) {
             log.info("系统发送邮件");
 //            return new Mail(Constant.SYSTEM_UNID, Constant.SYSTEM_MANAGER, recevierUnId, title, content, rewardItems);
         }
 
-        if(rewardItems == null) {
+        if(rewardItems == null || rewardItems.size() == 0) {
             return new Mail(sender.getUnId(), sender.getName(), recevierUnId, title, content, new ArrayList<>());
         } else {
             return new Mail(sender.getUnId(), sender.getName(), recevierUnId, title, content, rewardItems);
@@ -103,9 +96,6 @@ public class MailService {
         mailExample.createCriteria().andRecevierUnIdEqualTo(player.getUnId());
         List<Mail> mailList = mailMapper.selectByExample(mailExample);
         if(mailList != null && mailList.size() != 0) {
-            mailList.forEach(mail -> {
-
-            });
             return mailList;
         } else {
             senceService.notifyPlayerByDefault(player, "邮箱为空");
@@ -122,8 +112,12 @@ public class MailService {
         if(mail != null) {
             return mail;
         }
+
         mail = mailMapper.selectByPrimaryKey(mailId);
         if(mail != null) {
+            if(mail.getRewardItems().size() != 0) {
+                senceService.notifyPlayerByDefault(player, "该邮件已经超出领取有效期");
+            }
             return mail;
         } else {
             senceService.notifyPlayerByDefault(player, "该邮件不存在了");
@@ -154,6 +148,13 @@ public class MailService {
     }
 
     /**
+     * 获取缓存中指定邮件
+     * @return
+     */
+    public Mail getMailInCache(Integer id) {
+        return mailCache.get(id);
+    }
+    /**
      * 收取缓存中单个邮件
      * @param player
      * @param mail
@@ -164,12 +165,16 @@ public class MailService {
             mail.setIsRead(true);
             mail.setKeepTime(-1L);
             mailCache.remove(mail);
-            mailMapper.updateByPrimaryKey(mail);
+            ThreadManager.dbTaskPool.execute(() -> {
+                mailMapper.updateByPrimaryKey(mail);
+            });
         } else {
             senceService.notifyPlayerByDefault(player, "id="+ mail.getId() + " 的邮件不存在");
         }
 
     }
+
+
 
     /**
      * 退还邮件
@@ -178,24 +183,26 @@ public class MailService {
     public void returnItems(Mail mail) {
         synchronized(mail) {
             mailCache.remove(mail);
-
-
             Mail maildb = mailMapper.selectByPrimaryKey(mail.getId());
 
             if(maildb != null) {
                 if(mail.getSenderUnId().equals(Constant.SYSTEM_UNID)
                         || maildb.getRewardItems() == null
-                        || maildb.getRewardItems().size()
-                        == 0) {
+                        || maildb.getRewardItems().size() == 0) {
                     maildb.setIsRead(true);
                     maildb.setKeepTime(-1L);
-                    mailMapper.updateByPrimaryKey(maildb);
+                    ThreadManager.dbTaskPool.execute(() -> {
+                        mailMapper.updateByPrimaryKey(maildb);
+                    });
                     mailCache.remove(mail);
                 } else {
                     maildb.setKeepTime(-1L);
                     maildb.setSenderName(Constant.SYSTEM_MANAGER);
                     maildb.setRecevierUnId(maildb.getSenderUnId());
                     maildb.setSenderUnId(Constant.SYSTEM_UNID);
+                    ThreadManager.dbTaskPool.execute(() -> {
+                        mailMapper.deleteByPrimaryKey(maildb.getId());
+                    });
                     try {
                         sendMail(entityService.getPlayer(Constant.SYSTEM_UNID), maildb);
                     } catch (CustomException.SystemSendMailErrException e) {
@@ -215,23 +222,90 @@ public class MailService {
      */
     public void loadMail(Player player) {
         MailExample mailExample = new MailExample();
-        mailExample.createCriteria().andRecevierUnIdEqualTo(player.getUnId()).andKeepTimeGreaterThan(0L).andIsReadEqualTo(false);
+        mailExample.createCriteria().andRecevierUnIdEqualTo(player.getUnId()).andIsReadEqualTo(false);
         List<Mail> mailList = mailMapper.selectByExample(mailExample);
-        for (Mail mail : mailList) {
-            mailCache.put(mail);
-        }
+        mailList.stream().filter(mail -> !Strings.isNullOrEmpty(mail.getItemsStr())).forEach(mail -> mailCache.put(mail));
         log.info("玩家上线，邮件资源加载成功");
+        if(mailList.size() > 0) {
+            senceService.notifyPlayerByDefault(player, "你有" + mailList.size() + "封邮件还没接收");
+        }
     }
 
 
     /**
      * 清除邮件缓存
      */
-    public void clearCache(Player player) {
+    public synchronized void clearCache(Player player) {
         mailCache.asMap()
                 .values()
                 .stream()
                 .filter(mail -> mail.getRecevierUnId().equals(player.getUnId()))
                 .forEach(mail -> mailCache.remove(mail));
+    }
+
+
+    /**
+     * 玩家发送邮件
+     */
+    public void playerSendMail(Player sender, String title, String content, String recevierName, List<Item> itemSendList, List<ItemPt.Item>
+            itemIdList) throws CustomException.SystemSendMailErrException {
+        Integer recevierUnId = entityService.getUnIdByName(recevierName);
+
+        if(recevierUnId == null ) {
+            if(!sender.getUnId().equals(Constant.SYSTEM_UNID)) {
+                senceService.notifyPlayerByDefault(sender, "邮件对象不存在，请检查id");
+            } else {
+                log.info("系统创建邮件失败, unid=" + recevierUnId + "不存在");
+            }
+            return;
+        }
+
+        for (ItemPt.Item item : itemIdList) {
+            Item itemInBag = bagService.findItem(sender, item.getId(), item.getCount());
+            Item itemSend = new Item();
+            BeanUtils.copyProperties(itemInBag, itemSend);
+            itemSend.setCount(item.getCount());
+
+            bagService.removeItem(sender, itemInBag.getId(), item.getCount());
+            itemSendList.add(itemSend);
+        }
+
+        Mail mail = createMail(sender, recevierUnId, title, content, itemSendList);
+        if(!sendMail(sender, mail) && mail != null) {
+            returnItems(mail);
+        }
+    }
+
+    /**
+     * 发送邮件
+     */
+    public void sendMail(Player sender, Integer recevierUnId, String title, String content, List<Item> items) throws CustomException
+            .SystemSendMailErrException {
+        Mail mail = createMail(sender, recevierUnId, title, content, items);
+        if(!sendMail(sender, mail) && mail != null) {
+            returnItems(mail);
+        }
+    }
+    /**
+     * 发送邮件
+     */
+    public void sendMail(Player sender, Integer recevierUnId, String title, String content, Item item) throws CustomException
+            .SystemSendMailErrException {
+        ThreadManager.dbTaskPool.execute(() -> {
+            List<Item> items = new ArrayList<Item>();
+            items.add(item);
+            Mail mail = null;
+            try {
+                mail = createMail(sender, recevierUnId, title, content, items);
+                if(!sendMail(sender, mail) && mail != null) {
+                    returnItems(mail);
+                }
+            } catch (CustomException.SystemSendMailErrException e) {
+                e.printStackTrace();
+                log.info("发送单个邮件失败");
+            }
+
+        });
+
     }
 }

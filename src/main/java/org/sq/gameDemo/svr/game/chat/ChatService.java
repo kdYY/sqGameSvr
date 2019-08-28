@@ -41,7 +41,7 @@ public class ChatService {
      * @param word
      */
     public void chatInWord(Player sender, String word) {
-        senceService.notifyAllSence(sender, word);
+        senceService.notifyAllSence(sender, "id:" + sender.getId() + ", name:" + sender.getName() + "发起世界喊话: " + word);
     }
 
 
