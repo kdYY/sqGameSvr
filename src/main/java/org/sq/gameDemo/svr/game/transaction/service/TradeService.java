@@ -38,14 +38,21 @@ public class TradeService {
     }
 
 
-    public List<Trade>  selectByAccpetUnId(Integer acceptUnId) {
+    /**
+     * 查询交易
+     * @param acceptUnId
+     * @return
+     */
+    public List<Trade> selectOnlineByAccpetUnId(Integer acceptUnId) {
         TradeExample tradeExample = new TradeExample();
-        tradeExample.createCriteria().andAcceptUnIdEqualTo(acceptUnId).andFinishEqualTo(false);
+        tradeExample.createCriteria().andAcceptUnIdEqualTo(acceptUnId)
+                .andTradeModelEqualTo(TradeModel.ONINE_TRADE.getCode())
+                .andFinishEqualTo(false);
         return  tradeMapper.selectByExample(tradeExample);
     }
 
 
-
+    //获取交易中需要的最高价
     public Integer getMaxPriceInTrade(Trade trade) {
         Integer maxPrice = trade.getPrice();
         if(trade.getTradeModel().equals(TradeModel.BID.getCode())) {
@@ -59,5 +66,16 @@ public class TradeService {
         } else {
             return maxPrice;
         }
+    }
+
+    /**
+     * 获取交易栏为交易数据
+     * @return
+     */
+    public List<Trade> getAllUnFinishDealTrade() {
+        TradeExample tradeExample = new TradeExample();
+        tradeExample.createCriteria().andTradeModelNotEqualTo(TradeModel.ONINE_TRADE.getCode()).andFinishEqualTo(false);
+        return  tradeMapper.selectByExample(tradeExample);
+
     }
 }

@@ -229,4 +229,20 @@ public class DealTradeService {
         tradeService.updateTrace(trade);
     }
 
+    public List<DealTrade> getTrace(Player player) {
+        return transactionCache.dealAsMap().values().stream().collect(Collectors.toList());
+    }
+
+    //可以进行交易的物品
+    public List<DealTrade> getTraceCanBuy(Player player) {
+        Item item = bagService.findItem(player, Constant.YUAN_BAO);
+        if(item == null) {
+            return null;
+        } else {
+            return transactionCache.dealAsMap().values().stream()
+                    .filter(trade -> !trade.getOwnerUnId().equals(player.getUnId()) && tradeService.getMaxPriceInTrade(trade) <= item.getCount())
+                    .collect(Collectors.toList());
+        }
+
+    }
 }

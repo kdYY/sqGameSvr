@@ -1745,6 +1745,16 @@ public final class TradePt {
      * <code>int32 itemInfoId = 8;</code>
      */
     int getItemInfoId();
+
+    /**
+     * <code>int32 price = 9;</code>
+     */
+    int getPrice();
+
+    /**
+     * <code>int32 tradeModel = 10;</code>
+     */
+    int getTradeModel();
   }
   /**
    * <pre>
@@ -1833,6 +1843,16 @@ public final class TradePt {
             case 64: {
 
               itemInfoId_ = input.readInt32();
+              break;
+            }
+            case 72: {
+
+              price_ = input.readInt32();
+              break;
+            }
+            case 80: {
+
+              tradeModel_ = input.readInt32();
               break;
             }
             default: {
@@ -1951,6 +1971,24 @@ public final class TradePt {
       return itemInfoId_;
     }
 
+    public static final int PRICE_FIELD_NUMBER = 9;
+    private int price_;
+    /**
+     * <code>int32 price = 9;</code>
+     */
+    public int getPrice() {
+      return price_;
+    }
+
+    public static final int TRADEMODEL_FIELD_NUMBER = 10;
+    private int tradeModel_;
+    /**
+     * <code>int32 tradeModel = 10;</code>
+     */
+    public int getTradeModel() {
+      return tradeModel_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -1988,6 +2026,12 @@ public final class TradePt {
       }
       if (itemInfoId_ != 0) {
         output.writeInt32(8, itemInfoId_);
+      }
+      if (price_ != 0) {
+        output.writeInt32(9, price_);
+      }
+      if (tradeModel_ != 0) {
+        output.writeInt32(10, tradeModel_);
       }
       unknownFields.writeTo(output);
     }
@@ -2030,6 +2074,14 @@ public final class TradePt {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, itemInfoId_);
       }
+      if (price_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, price_);
+      }
+      if (tradeModel_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(10, tradeModel_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -2061,6 +2113,10 @@ public final class TradePt {
           != other.getAccpetCount()) return false;
       if (getItemInfoId()
           != other.getItemInfoId()) return false;
+      if (getPrice()
+          != other.getPrice()) return false;
+      if (getTradeModel()
+          != other.getTradeModel()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2092,6 +2148,10 @@ public final class TradePt {
       hash = (53 * hash) + getAccpetCount();
       hash = (37 * hash) + ITEMINFOID_FIELD_NUMBER;
       hash = (53 * hash) + getItemInfoId();
+      hash = (37 * hash) + PRICE_FIELD_NUMBER;
+      hash = (53 * hash) + getPrice();
+      hash = (37 * hash) + TRADEMODEL_FIELD_NUMBER;
+      hash = (53 * hash) + getTradeModel();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2245,6 +2305,10 @@ public final class TradePt {
 
         itemInfoId_ = 0;
 
+        price_ = 0;
+
+        tradeModel_ = 0;
+
         return this;
       }
 
@@ -2279,6 +2343,8 @@ public final class TradePt {
         result.autionCount_ = autionCount_;
         result.accpetCount_ = accpetCount_;
         result.itemInfoId_ = itemInfoId_;
+        result.price_ = price_;
+        result.tradeModel_ = tradeModel_;
         onBuilt();
         return result;
       }
@@ -2350,6 +2416,12 @@ public final class TradePt {
         }
         if (other.getItemInfoId() != 0) {
           setItemInfoId(other.getItemInfoId());
+        }
+        if (other.getPrice() != 0) {
+          setPrice(other.getPrice());
+        }
+        if (other.getTradeModel() != 0) {
+          setTradeModel(other.getTradeModel());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2620,6 +2692,58 @@ public final class TradePt {
       public Builder clearItemInfoId() {
         
         itemInfoId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int price_ ;
+      /**
+       * <code>int32 price = 9;</code>
+       */
+      public int getPrice() {
+        return price_;
+      }
+      /**
+       * <code>int32 price = 9;</code>
+       */
+      public Builder setPrice(int value) {
+        
+        price_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 price = 9;</code>
+       */
+      public Builder clearPrice() {
+        
+        price_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int tradeModel_ ;
+      /**
+       * <code>int32 tradeModel = 10;</code>
+       */
+      public int getTradeModel() {
+        return tradeModel_;
+      }
+      /**
+       * <code>int32 tradeModel = 10;</code>
+       */
+      public Builder setTradeModel(int value) {
+        
+        tradeModel_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 tradeModel = 10;</code>
+       */
+      public Builder clearTradeModel() {
+        
+        tradeModel_ = 0;
         onChanged();
         return this;
       }
@@ -3868,15 +3992,15 @@ public final class TradePt {
       "\030\007 \001(\004\022\020\n\010keepTime\030\010 \001(\004\022\r\n\005price\030\t \001(\005\022" +
       "\016\n\006finish\030\n \001(\010\022\017\n\007success\030\013 \001(\010\022\030\n\ttrad" +
       "eItem\030\014 \001(\0132\005.Item\022\023\n\004item\030\r \003(\0132\005.Item\"" +
-      "\245\001\n\020TradeRequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004" +
+      "\310\001\n\020TradeRequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004" +
       "time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\022\n\naccpeterId\030\004 \001" +
       "(\004\022\025\n\rauctionItemId\030\005 \001(\004\022\023\n\013autionCount" +
       "\030\006 \001(\005\022\023\n\013accpetCount\030\007 \001(\005\022\022\n\nitemInfoI" +
-      "d\030\010 \001(\005\"i\n\021TradeResponseInfo\022\016\n\006msg_id\030\001" +
-      " \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007co" +
-      "ntent\030\004 \001(\t\022\025\n\005trade\030\005 \003(\0132\006.TradeB\'\n\034or" +
-      "g.sq.gameDemo.common.protoB\007TradePtb\006pro" +
-      "to3"
+      "d\030\010 \001(\005\022\r\n\005price\030\t \001(\005\022\022\n\ntradeModel\030\n \001" +
+      "(\005\"i\n\021TradeResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022" +
+      "\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content" +
+      "\030\004 \001(\t\022\025\n\005trade\030\005 \003(\0132\006.TradeB\'\n\034org.sq." +
+      "gameDemo.common.protoB\007TradePtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3894,7 +4018,7 @@ public final class TradePt {
     internal_static_TradeRequestInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_TradeRequestInfo_descriptor,
-        new String[] { "MsgId", "Time", "Id", "AccpeterId", "AuctionItemId", "AutionCount", "AccpetCount", "ItemInfoId", });
+        new String[] { "MsgId", "Time", "Id", "AccpeterId", "AuctionItemId", "AutionCount", "AccpetCount", "ItemInfoId", "Price", "TradeModel", });
     internal_static_TradeResponseInfo_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_TradeResponseInfo_fieldAccessorTable = new

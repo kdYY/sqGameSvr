@@ -203,7 +203,7 @@ public class OnlineTradeService {
     //查看交易
     public List<OnlineTrade> getTrace(Player player) {
         return transactionCache.onlineAsMap().values().stream()
-                .filter(trade -> trade.getAcceptUnId().equals(player.getUnId()) || trade.getOwnerUnId().equals(player.getUnId()))
+                .filter(trade -> trade.getOwnerUnId().equals(player.getUnId()))
                 .collect(Collectors.toList());
     }
 
@@ -213,7 +213,7 @@ public class OnlineTradeService {
      */
     public void loadTrace(Player playerCached) {
         ThreadManager.dbTaskPool.execute(() -> {
-            List<Trade> trades = tradeService.selectByAccpetUnId(playerCached.getUnId());
+            List<Trade> trades = tradeService.selectOnlineByAccpetUnId(playerCached.getUnId());
             for (Trade trade : trades) {
                 OnlineTrade onlineTrade = new OnlineTrade();
                 BeanUtils.copyProperties(trade, onlineTrade);

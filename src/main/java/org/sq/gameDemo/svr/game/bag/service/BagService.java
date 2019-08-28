@@ -284,6 +284,16 @@ public class BagService {
 
     /*寻找背包中物品*/
     public Item findItem(Player player, Integer iteminfoId, Integer count) {
+        Item itemInBag = findItem(player, iteminfoId);
+        if(itemInBag != null && itemInBag.getCount() < count) {
+            senceService.notifyPlayerByDefault(player, "iteminfoId=" + iteminfoId + "物品数量不足");
+            return null;
+        }
+        return itemInBag;
+
+    }
+    /*寻找背包中物品*/
+    public Item findItem(Player player, Integer iteminfoId) {
         Bag bag = player.getBag();
         Map<Long, Item> itemMap = bag.getItemBar();
 
@@ -294,18 +304,12 @@ public class BagService {
                 senceService.notifyPlayerByDefault(player, "iteminfoId=" + iteminfoId + "物品不存在");
                 return null;
             }
-            itemInBag = find.get();
-            if(itemInBag.getCount() < count) {
-                senceService.notifyPlayerByDefault(player, "iteminfoId=" + iteminfoId + "物品数量不足");
-                return null;
-            }
         } else {
             senceService.notifyPlayerByDefault(player, "背包为空");
         }
         return itemInBag;
 
     }
-
 
 
     @Data

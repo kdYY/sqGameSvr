@@ -43,7 +43,12 @@ public enum OrderEnum {
     RECEIVE_MAIL("receiveMail", 137),
     SHOW_ITEMINFO("showItemInfo", 138),
     START_ONLINE_TRADE("startonlineTrade", 139),
-    ACCEPT_ONLINE_TRADE("acceptonlinetrade", 140);
+    ACCEPT_ONLINE_TRADE("acceptonlinetrade", 140),
+    GET_ONLINE_TRADE("getonlinetrade", 150),
+    START_DEAL_TRADE("startdealTrade", 151),
+    ACCEPT_DEAL_TRADE("acceptDealTrade",152 ),
+    GET_DEAL("getDeal", 153), GET_DEAL_CAN_BUY("canbuyDeal", 154 );
+
 
     private String order;
     private short orderCode;

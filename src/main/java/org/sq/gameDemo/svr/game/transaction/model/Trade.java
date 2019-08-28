@@ -60,7 +60,7 @@ public class Trade {
     }
 
 
-    //<物品Id, <用户UnId, Item>>
+    //<<用户UnId, Item>>
     @ProtoField(TargetName = "item", Function = "addItemPt", TargetClass =TradePt.Trade.class)
     private Map<Integer, Item> autionItemMap = new ConcurrentHashMap<>();
 
