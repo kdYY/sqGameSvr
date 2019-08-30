@@ -321,6 +321,18 @@ public class GuildService {
      * 获取公会物品
      */
 
+    public void getGuildItem(Player player, Integer guildId) {
+        Guild guild = guildCache.get(guildId);
+        if(!checkGuild(player, guildId, guild)) {
+            return;
+        }
+        if(!guild.getMemberMap().get(player.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode())) {
+            senceService.notifyPlayerByDefault(player, "您不是此公会的会长，没有权限查看申请，使用showChairManGuild查看有会长权限的公会列表");
+            return;
+        }
+
+        //发邮件
+    }
 
 
     /**
