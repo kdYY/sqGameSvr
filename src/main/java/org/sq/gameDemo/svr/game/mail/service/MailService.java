@@ -289,8 +289,7 @@ public class MailService {
     /**
      * 发送邮件
      */
-    public void sendMail(Player sender, Integer recevierUnId, String title, String content, Item item) throws CustomException
-            .SystemSendMailErrException {
+    public void sendMail(Player sender, Integer recevierUnId, String title, String content, Item item)  {
         ThreadManager.dbTaskPool.execute(() -> {
             List<Item> items = new ArrayList<Item>();
             items.add(item);

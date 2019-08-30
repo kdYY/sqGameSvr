@@ -74,38 +74,56 @@ public final class TradePt {
     boolean getSuccess();
 
     /**
-     * <code>.Item tradeItem = 12;</code>
+     * <code>uint64 auctionItemId = 12;</code>
+     */
+    long getAuctionItemId();
+
+    /**
+     * <code>.Item tradeItem = 13;</code>
      */
     boolean hasTradeItem();
     /**
-     * <code>.Item tradeItem = 12;</code>
+     * <code>.Item tradeItem = 13;</code>
      */
     ItemPt.Item getTradeItem();
     /**
-     * <code>.Item tradeItem = 12;</code>
+     * <code>.Item tradeItem = 13;</code>
      */
     ItemPt.ItemOrBuilder getTradeItemOrBuilder();
 
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>.ItemInfo accpertItemInfo = 14;</code>
+     */
+    boolean hasAccpertItemInfo();
+    /**
+     * <code>.ItemInfo accpertItemInfo = 14;</code>
+     */
+    ItemInfoPt.ItemInfo getAccpertItemInfo();
+    /**
+     * <code>.ItemInfo accpertItemInfo = 14;</code>
+     */
+    ItemInfoPt.ItemInfoOrBuilder getAccpertItemInfoOrBuilder();
+
+    /**
+     * <code>repeated .Item item = 15;</code>
      */
     java.util.List<ItemPt.Item>
         getItemList();
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     ItemPt.Item getItem(int index);
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     int getItemCount();
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     java.util.List<? extends ItemPt.ItemOrBuilder>
         getItemOrBuilderList();
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     ItemPt.ItemOrBuilder getItemOrBuilder(
             int index);
@@ -216,7 +234,12 @@ public final class TradePt {
               success_ = input.readBool();
               break;
             }
-            case 98: {
+            case 96: {
+
+              auctionItemId_ = input.readUInt64();
+              break;
+            }
+            case 106: {
               ItemPt.Item.Builder subBuilder = null;
               if (tradeItem_ != null) {
                 subBuilder = tradeItem_.toBuilder();
@@ -229,7 +252,20 @@ public final class TradePt {
 
               break;
             }
-            case 106: {
+            case 114: {
+              ItemInfoPt.ItemInfo.Builder subBuilder = null;
+              if (accpertItemInfo_ != null) {
+                subBuilder = accpertItemInfo_.toBuilder();
+              }
+              accpertItemInfo_ = input.readMessage(ItemInfoPt.ItemInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(accpertItemInfo_);
+                accpertItemInfo_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 122: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 item_ = new java.util.ArrayList<ItemPt.Item>();
                 mutable_bitField0_ |= 0x00000001;
@@ -372,56 +408,86 @@ public final class TradePt {
       return success_;
     }
 
-    public static final int TRADEITEM_FIELD_NUMBER = 12;
+    public static final int AUCTIONITEMID_FIELD_NUMBER = 12;
+    private long auctionItemId_;
+    /**
+     * <code>uint64 auctionItemId = 12;</code>
+     */
+    public long getAuctionItemId() {
+      return auctionItemId_;
+    }
+
+    public static final int TRADEITEM_FIELD_NUMBER = 13;
     private ItemPt.Item tradeItem_;
     /**
-     * <code>.Item tradeItem = 12;</code>
+     * <code>.Item tradeItem = 13;</code>
      */
     public boolean hasTradeItem() {
       return tradeItem_ != null;
     }
     /**
-     * <code>.Item tradeItem = 12;</code>
+     * <code>.Item tradeItem = 13;</code>
      */
     public ItemPt.Item getTradeItem() {
       return tradeItem_ == null ? ItemPt.Item.getDefaultInstance() : tradeItem_;
     }
     /**
-     * <code>.Item tradeItem = 12;</code>
+     * <code>.Item tradeItem = 13;</code>
      */
     public ItemPt.ItemOrBuilder getTradeItemOrBuilder() {
       return getTradeItem();
     }
 
-    public static final int ITEM_FIELD_NUMBER = 13;
+    public static final int ACCPERTITEMINFO_FIELD_NUMBER = 14;
+    private ItemInfoPt.ItemInfo accpertItemInfo_;
+    /**
+     * <code>.ItemInfo accpertItemInfo = 14;</code>
+     */
+    public boolean hasAccpertItemInfo() {
+      return accpertItemInfo_ != null;
+    }
+    /**
+     * <code>.ItemInfo accpertItemInfo = 14;</code>
+     */
+    public ItemInfoPt.ItemInfo getAccpertItemInfo() {
+      return accpertItemInfo_ == null ? ItemInfoPt.ItemInfo.getDefaultInstance() : accpertItemInfo_;
+    }
+    /**
+     * <code>.ItemInfo accpertItemInfo = 14;</code>
+     */
+    public ItemInfoPt.ItemInfoOrBuilder getAccpertItemInfoOrBuilder() {
+      return getAccpertItemInfo();
+    }
+
+    public static final int ITEM_FIELD_NUMBER = 15;
     private java.util.List<ItemPt.Item> item_;
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     public java.util.List<ItemPt.Item> getItemList() {
       return item_;
     }
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     public java.util.List<? extends ItemPt.ItemOrBuilder>
         getItemOrBuilderList() {
       return item_;
     }
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     public int getItemCount() {
       return item_.size();
     }
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     public ItemPt.Item getItem(int index) {
       return item_.get(index);
     }
     /**
-     * <code>repeated .Item item = 13;</code>
+     * <code>repeated .Item item = 15;</code>
      */
     public ItemPt.ItemOrBuilder getItemOrBuilder(
         int index) {
@@ -475,11 +541,17 @@ public final class TradePt {
       if (success_ != false) {
         output.writeBool(11, success_);
       }
+      if (auctionItemId_ != 0L) {
+        output.writeUInt64(12, auctionItemId_);
+      }
       if (tradeItem_ != null) {
-        output.writeMessage(12, getTradeItem());
+        output.writeMessage(13, getTradeItem());
+      }
+      if (accpertItemInfo_ != null) {
+        output.writeMessage(14, getAccpertItemInfo());
       }
       for (int i = 0; i < item_.size(); i++) {
-        output.writeMessage(13, item_.get(i));
+        output.writeMessage(15, item_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -534,13 +606,21 @@ public final class TradePt {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(11, success_);
       }
+      if (auctionItemId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(12, auctionItemId_);
+      }
       if (tradeItem_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, getTradeItem());
+          .computeMessageSize(13, getTradeItem());
+      }
+      if (accpertItemInfo_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(14, getAccpertItemInfo());
       }
       for (int i = 0; i < item_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, item_.get(i));
+          .computeMessageSize(15, item_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -579,10 +659,17 @@ public final class TradePt {
           != other.getFinish()) return false;
       if (getSuccess()
           != other.getSuccess()) return false;
+      if (getAuctionItemId()
+          != other.getAuctionItemId()) return false;
       if (hasTradeItem() != other.hasTradeItem()) return false;
       if (hasTradeItem()) {
         if (!getTradeItem()
             .equals(other.getTradeItem())) return false;
+      }
+      if (hasAccpertItemInfo() != other.hasAccpertItemInfo()) return false;
+      if (hasAccpertItemInfo()) {
+        if (!getAccpertItemInfo()
+            .equals(other.getAccpertItemInfo())) return false;
       }
       if (!getItemList()
           .equals(other.getItemList())) return false;
@@ -623,9 +710,16 @@ public final class TradePt {
       hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getSuccess());
+      hash = (37 * hash) + AUCTIONITEMID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getAuctionItemId());
       if (hasTradeItem()) {
         hash = (37 * hash) + TRADEITEM_FIELD_NUMBER;
         hash = (53 * hash) + getTradeItem().hashCode();
+      }
+      if (hasAccpertItemInfo()) {
+        hash = (37 * hash) + ACCPERTITEMINFO_FIELD_NUMBER;
+        hash = (53 * hash) + getAccpertItemInfo().hashCode();
       }
       if (getItemCount() > 0) {
         hash = (37 * hash) + ITEM_FIELD_NUMBER;
@@ -791,11 +885,19 @@ public final class TradePt {
 
         success_ = false;
 
+        auctionItemId_ = 0L;
+
         if (tradeItemBuilder_ == null) {
           tradeItem_ = null;
         } else {
           tradeItem_ = null;
           tradeItemBuilder_ = null;
+        }
+        if (accpertItemInfoBuilder_ == null) {
+          accpertItemInfo_ = null;
+        } else {
+          accpertItemInfo_ = null;
+          accpertItemInfoBuilder_ = null;
         }
         if (itemBuilder_ == null) {
           item_ = java.util.Collections.emptyList();
@@ -841,10 +943,16 @@ public final class TradePt {
         result.price_ = price_;
         result.finish_ = finish_;
         result.success_ = success_;
+        result.auctionItemId_ = auctionItemId_;
         if (tradeItemBuilder_ == null) {
           result.tradeItem_ = tradeItem_;
         } else {
           result.tradeItem_ = tradeItemBuilder_.build();
+        }
+        if (accpertItemInfoBuilder_ == null) {
+          result.accpertItemInfo_ = accpertItemInfo_;
+        } else {
+          result.accpertItemInfo_ = accpertItemInfoBuilder_.build();
         }
         if (itemBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
@@ -936,8 +1044,14 @@ public final class TradePt {
         if (other.getSuccess() != false) {
           setSuccess(other.getSuccess());
         }
+        if (other.getAuctionItemId() != 0L) {
+          setAuctionItemId(other.getAuctionItemId());
+        }
         if (other.hasTradeItem()) {
           mergeTradeItem(other.getTradeItem());
+        }
+        if (other.hasAccpertItemInfo()) {
+          mergeAccpertItemInfo(other.getAccpertItemInfo());
         }
         if (itemBuilder_ == null) {
           if (!other.item_.isEmpty()) {
@@ -1281,17 +1395,43 @@ public final class TradePt {
         return this;
       }
 
+      private long auctionItemId_ ;
+      /**
+       * <code>uint64 auctionItemId = 12;</code>
+       */
+      public long getAuctionItemId() {
+        return auctionItemId_;
+      }
+      /**
+       * <code>uint64 auctionItemId = 12;</code>
+       */
+      public Builder setAuctionItemId(long value) {
+        
+        auctionItemId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 auctionItemId = 12;</code>
+       */
+      public Builder clearAuctionItemId() {
+        
+        auctionItemId_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private ItemPt.Item tradeItem_;
       private com.google.protobuf.SingleFieldBuilderV3<
           ItemPt.Item, ItemPt.Item.Builder, ItemPt.ItemOrBuilder> tradeItemBuilder_;
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       public boolean hasTradeItem() {
         return tradeItemBuilder_ != null || tradeItem_ != null;
       }
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       public ItemPt.Item getTradeItem() {
         if (tradeItemBuilder_ == null) {
@@ -1301,7 +1441,7 @@ public final class TradePt {
         }
       }
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       public Builder setTradeItem(ItemPt.Item value) {
         if (tradeItemBuilder_ == null) {
@@ -1317,7 +1457,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       public Builder setTradeItem(
           ItemPt.Item.Builder builderForValue) {
@@ -1331,7 +1471,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       public Builder mergeTradeItem(ItemPt.Item value) {
         if (tradeItemBuilder_ == null) {
@@ -1349,7 +1489,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       public Builder clearTradeItem() {
         if (tradeItemBuilder_ == null) {
@@ -1363,7 +1503,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       public ItemPt.Item.Builder getTradeItemBuilder() {
         
@@ -1371,7 +1511,7 @@ public final class TradePt {
         return getTradeItemFieldBuilder().getBuilder();
       }
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       public ItemPt.ItemOrBuilder getTradeItemOrBuilder() {
         if (tradeItemBuilder_ != null) {
@@ -1382,7 +1522,7 @@ public final class TradePt {
         }
       }
       /**
-       * <code>.Item tradeItem = 12;</code>
+       * <code>.Item tradeItem = 13;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           ItemPt.Item, ItemPt.Item.Builder, ItemPt.ItemOrBuilder>
@@ -1398,6 +1538,123 @@ public final class TradePt {
         return tradeItemBuilder_;
       }
 
+      private ItemInfoPt.ItemInfo accpertItemInfo_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          ItemInfoPt.ItemInfo, ItemInfoPt.ItemInfo.Builder, ItemInfoPt.ItemInfoOrBuilder> accpertItemInfoBuilder_;
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      public boolean hasAccpertItemInfo() {
+        return accpertItemInfoBuilder_ != null || accpertItemInfo_ != null;
+      }
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      public ItemInfoPt.ItemInfo getAccpertItemInfo() {
+        if (accpertItemInfoBuilder_ == null) {
+          return accpertItemInfo_ == null ? ItemInfoPt.ItemInfo.getDefaultInstance() : accpertItemInfo_;
+        } else {
+          return accpertItemInfoBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      public Builder setAccpertItemInfo(ItemInfoPt.ItemInfo value) {
+        if (accpertItemInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          accpertItemInfo_ = value;
+          onChanged();
+        } else {
+          accpertItemInfoBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      public Builder setAccpertItemInfo(
+          ItemInfoPt.ItemInfo.Builder builderForValue) {
+        if (accpertItemInfoBuilder_ == null) {
+          accpertItemInfo_ = builderForValue.build();
+          onChanged();
+        } else {
+          accpertItemInfoBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      public Builder mergeAccpertItemInfo(ItemInfoPt.ItemInfo value) {
+        if (accpertItemInfoBuilder_ == null) {
+          if (accpertItemInfo_ != null) {
+            accpertItemInfo_ =
+              ItemInfoPt.ItemInfo.newBuilder(accpertItemInfo_).mergeFrom(value).buildPartial();
+          } else {
+            accpertItemInfo_ = value;
+          }
+          onChanged();
+        } else {
+          accpertItemInfoBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      public Builder clearAccpertItemInfo() {
+        if (accpertItemInfoBuilder_ == null) {
+          accpertItemInfo_ = null;
+          onChanged();
+        } else {
+          accpertItemInfo_ = null;
+          accpertItemInfoBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      public ItemInfoPt.ItemInfo.Builder getAccpertItemInfoBuilder() {
+        
+        onChanged();
+        return getAccpertItemInfoFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      public ItemInfoPt.ItemInfoOrBuilder getAccpertItemInfoOrBuilder() {
+        if (accpertItemInfoBuilder_ != null) {
+          return accpertItemInfoBuilder_.getMessageOrBuilder();
+        } else {
+          return accpertItemInfo_ == null ?
+              ItemInfoPt.ItemInfo.getDefaultInstance() : accpertItemInfo_;
+        }
+      }
+      /**
+       * <code>.ItemInfo accpertItemInfo = 14;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          ItemInfoPt.ItemInfo, ItemInfoPt.ItemInfo.Builder, ItemInfoPt.ItemInfoOrBuilder>
+          getAccpertItemInfoFieldBuilder() {
+        if (accpertItemInfoBuilder_ == null) {
+          accpertItemInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              ItemInfoPt.ItemInfo, ItemInfoPt.ItemInfo.Builder, ItemInfoPt.ItemInfoOrBuilder>(
+                  getAccpertItemInfo(),
+                  getParentForChildren(),
+                  isClean());
+          accpertItemInfo_ = null;
+        }
+        return accpertItemInfoBuilder_;
+      }
+
       private java.util.List<ItemPt.Item> item_ =
         java.util.Collections.emptyList();
       private void ensureItemIsMutable() {
@@ -1411,7 +1668,7 @@ public final class TradePt {
           ItemPt.Item, ItemPt.Item.Builder, ItemPt.ItemOrBuilder> itemBuilder_;
 
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public java.util.List<ItemPt.Item> getItemList() {
         if (itemBuilder_ == null) {
@@ -1421,7 +1678,7 @@ public final class TradePt {
         }
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public int getItemCount() {
         if (itemBuilder_ == null) {
@@ -1431,7 +1688,7 @@ public final class TradePt {
         }
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public ItemPt.Item getItem(int index) {
         if (itemBuilder_ == null) {
@@ -1441,7 +1698,7 @@ public final class TradePt {
         }
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder setItem(
           int index, ItemPt.Item value) {
@@ -1458,7 +1715,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder setItem(
           int index, ItemPt.Item.Builder builderForValue) {
@@ -1472,7 +1729,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder addItem(ItemPt.Item value) {
         if (itemBuilder_ == null) {
@@ -1488,7 +1745,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder addItem(
           int index, ItemPt.Item value) {
@@ -1505,7 +1762,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder addItem(
           ItemPt.Item.Builder builderForValue) {
@@ -1519,7 +1776,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder addItem(
           int index, ItemPt.Item.Builder builderForValue) {
@@ -1533,7 +1790,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder addAllItem(
           Iterable<? extends ItemPt.Item> values) {
@@ -1548,7 +1805,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder clearItem() {
         if (itemBuilder_ == null) {
@@ -1561,7 +1818,7 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public Builder removeItem(int index) {
         if (itemBuilder_ == null) {
@@ -1574,14 +1831,14 @@ public final class TradePt {
         return this;
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public ItemPt.Item.Builder getItemBuilder(
           int index) {
         return getItemFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public ItemPt.ItemOrBuilder getItemOrBuilder(
           int index) {
@@ -1591,7 +1848,7 @@ public final class TradePt {
         }
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public java.util.List<? extends ItemPt.ItemOrBuilder>
            getItemOrBuilderList() {
@@ -1602,14 +1859,14 @@ public final class TradePt {
         }
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public ItemPt.Item.Builder addItemBuilder() {
         return getItemFieldBuilder().addBuilder(
             ItemPt.Item.getDefaultInstance());
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public ItemPt.Item.Builder addItemBuilder(
           int index) {
@@ -1617,7 +1874,7 @@ public final class TradePt {
             index, ItemPt.Item.getDefaultInstance());
       }
       /**
-       * <code>repeated .Item item = 13;</code>
+       * <code>repeated .Item item = 15;</code>
        */
       public java.util.List<ItemPt.Item.Builder>
            getItemBuilderList() {
@@ -3985,34 +4242,37 @@ public final class TradePt {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\021OnlineTrade.proto\032\nItem.proto\"\365\001\n\005Trad" +
-      "e\022\n\n\002id\030\001 \001(\005\022\022\n\nacceptUnId\030\002 \001(\005\022\021\n\town" +
-      "erUnId\030\003 \001(\005\022\022\n\nitemInfoId\030\004 \001(\005\022\r\n\005coun" +
-      "t\030\005 \001(\005\022\022\n\ntradeModel\030\006 \001(\005\022\021\n\tstartTime" +
-      "\030\007 \001(\004\022\020\n\010keepTime\030\010 \001(\004\022\r\n\005price\030\t \001(\005\022" +
-      "\016\n\006finish\030\n \001(\010\022\017\n\007success\030\013 \001(\010\022\030\n\ttrad" +
-      "eItem\030\014 \001(\0132\005.Item\022\023\n\004item\030\r \003(\0132\005.Item\"" +
-      "\310\001\n\020TradeRequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004" +
-      "time\030\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\022\n\naccpeterId\030\004 \001" +
-      "(\004\022\025\n\rauctionItemId\030\005 \001(\004\022\023\n\013autionCount" +
-      "\030\006 \001(\005\022\023\n\013accpetCount\030\007 \001(\005\022\022\n\nitemInfoI" +
-      "d\030\010 \001(\005\022\r\n\005price\030\t \001(\005\022\022\n\ntradeModel\030\n \001" +
-      "(\005\"i\n\021TradeResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022" +
-      "\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content" +
-      "\030\004 \001(\t\022\025\n\005trade\030\005 \003(\0132\006.TradeB\'\n\034org.sq." +
-      "gameDemo.common.protoB\007TradePtb\006proto3"
+      "\n\021OnlineTrade.proto\032\nItem.proto\032\016ItemInf" +
+      "o.proto\"\260\002\n\005Trade\022\n\n\002id\030\001 \001(\005\022\022\n\nacceptU" +
+      "nId\030\002 \001(\005\022\021\n\townerUnId\030\003 \001(\005\022\022\n\nitemInfo" +
+      "Id\030\004 \001(\005\022\r\n\005count\030\005 \001(\005\022\022\n\ntradeModel\030\006 " +
+      "\001(\005\022\021\n\tstartTime\030\007 \001(\004\022\020\n\010keepTime\030\010 \001(\004" +
+      "\022\r\n\005price\030\t \001(\005\022\016\n\006finish\030\n \001(\010\022\017\n\007succe" +
+      "ss\030\013 \001(\010\022\025\n\rauctionItemId\030\014 \001(\004\022\030\n\ttrade" +
+      "Item\030\r \001(\0132\005.Item\022\"\n\017accpertItemInfo\030\016 \001" +
+      "(\0132\t.ItemInfo\022\023\n\004item\030\017 \003(\0132\005.Item\"\310\001\n\020T" +
+      "radeRequestInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030" +
+      "\002 \001(\004\022\n\n\002id\030\003 \001(\005\022\022\n\naccpeterId\030\004 \001(\004\022\025\n" +
+      "\rauctionItemId\030\005 \001(\004\022\023\n\013autionCount\030\006 \001(" +
+      "\005\022\023\n\013accpetCount\030\007 \001(\005\022\022\n\nitemInfoId\030\010 \001" +
+      "(\005\022\r\n\005price\030\t \001(\005\022\022\n\ntradeModel\030\n \001(\005\"i\n" +
+      "\021TradeResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006re" +
+      "sult\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(" +
+      "\t\022\025\n\005trade\030\005 \003(\0132\006.TradeB\'\n\034org.sq.gameD" +
+      "emo.common.protoB\007TradePtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           ItemPt.getDescriptor(),
+          ItemInfoPt.getDescriptor(),
         });
     internal_static_Trade_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_Trade_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Trade_descriptor,
-        new String[] { "Id", "AcceptUnId", "OwnerUnId", "ItemInfoId", "Count", "TradeModel", "StartTime", "KeepTime", "Price", "Finish", "Success", "TradeItem", "Item", });
+        new String[] { "Id", "AcceptUnId", "OwnerUnId", "ItemInfoId", "Count", "TradeModel", "StartTime", "KeepTime", "Price", "Finish", "Success", "AuctionItemId", "TradeItem", "AccpertItemInfo", "Item", });
     internal_static_TradeRequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_TradeRequestInfo_fieldAccessorTable = new
@@ -4026,6 +4286,7 @@ public final class TradePt {
         internal_static_TradeResponseInfo_descriptor,
         new String[] { "MsgId", "Result", "Time", "Content", "Trade", });
     ItemPt.getDescriptor();
+    ItemInfoPt.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

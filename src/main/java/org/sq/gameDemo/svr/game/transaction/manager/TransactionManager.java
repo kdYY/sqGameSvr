@@ -15,8 +15,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-@Component
+
 @Slf4j
+@Component
 public class TransactionManager {
 
     @Autowired
@@ -31,17 +32,16 @@ public class TransactionManager {
     /** 一个线程处理 */
     static ScheduledExecutorService singleThreadSchedule = Executors.newSingleThreadScheduledExecutor(tradeCheckFactory);
 
-
     @PostConstruct
     private void init() {
         log.info("开始轮询交易状态");
-        singleThreadSchedule.scheduleWithFixedDelay(this::refreshTrace, 60, 1000, TimeUnit.MILLISECONDS);
+        singleThreadSchedule.scheduleWithFixedDelay(this::refreshTrace, 1000, 1000, TimeUnit.MILLISECONDS);
     }
 
     /**
      * 刷新交易
      */
-    private void refreshTrace() {
+    public void refreshTrace() {
         Map<Integer, OnlineTrade> onlineAsMap = transactionCache.onlineAsMap();
         onlineAsMap.values().stream()
                 .filter(onlineTrade -> onlineTrade.getStartTime() + onlineTrade.getKeepTime() <= System.currentTimeMillis())

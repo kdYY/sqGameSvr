@@ -2,6 +2,7 @@ package org.sq.gameDemo.svr.game.transaction.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.transaction.dao.TradeMapper;
@@ -27,6 +28,7 @@ public class TradeService {
      * @return
      */
     protected boolean insertTrade(Trade trade) {
+        trade.setItemsMapStr(JsonUtil.serializableJson(trade.getAutionItemMap()));
         return tradeMapper.insertSelective(trade) > 0 ? true : false;
     }
 
@@ -34,7 +36,8 @@ public class TradeService {
      * 更新交易数据
      */
     public void updateTrace(Trade trade) {
-        ThreadManager.dbTaskPool.execute(()->tradeMapper.insertSelective(trade));
+        trade.setItemsMapStr(JsonUtil.serializableJson(trade.getAutionItemMap()));
+        ThreadManager.dbTaskPool.execute(()->tradeMapper.updateByPrimaryKey(trade));
     }
 
 
@@ -56,6 +59,9 @@ public class TradeService {
     public Integer getMaxPriceInTrade(Trade trade) {
         Integer maxPrice = trade.getPrice();
         if(trade.getTradeModel().equals(TradeModel.BID.getCode())) {
+            return maxPrice;
+        }
+        if(trade.getAutionItemMap().size() == 1) {
             return maxPrice;
         }
         Optional<Integer> max = trade.getAutionItemMap().values().stream()
@@ -81,5 +87,9 @@ public class TradeService {
 
     public List<Trade> selectDealHistory(Integer unId) {
         return  tradeMapper.selectDealHistory(unId);
+    }
+
+    public List<Trade> selectFinishedOnlineTrade(Integer unId) {
+        return  tradeMapper.selectOnlineTradeHistory(unId);
     }
 }

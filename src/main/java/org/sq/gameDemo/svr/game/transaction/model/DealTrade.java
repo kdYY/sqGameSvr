@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 public class DealTrade extends Trade{
-
+    private Long auctionItemId;
     public DealTrade() {
         super();
     }
@@ -25,7 +25,7 @@ public class DealTrade extends Trade{
         super.setStartTime(System.currentTimeMillis());
         super.setTradeModel(tradeModel);
         super.setPrice(price);
-
+        this.auctionItemId = auctionItem.getId();
         this.getAutionItemMap().put(ownerUnId, auctionItem);
 
     }

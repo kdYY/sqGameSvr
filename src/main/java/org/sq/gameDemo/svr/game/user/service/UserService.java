@@ -188,9 +188,8 @@ public class UserService {
                     userEntity.setSenceId(player.getSenceId());
                 }
                 Map<Integer, Item> equipmentBar = player.getEquipmentBar();
-                if(equipmentBar != null && equipmentBar.size() > 0) {
-                    userEntity.setEquipments(JsonUtil.serializableJson(equipmentBar));
-                }
+                userEntity.setEquipments(JsonUtil.serializableJson(equipmentBar));
+                userEntity.setGuildListStr(JsonUtil.serializableJson(player.getGuildList()));
                 userEntityMapper.updateByPrimaryKeySelective(userEntity);
                 bagService.updateBagInDB(player);
             });

@@ -70,7 +70,12 @@ public class DealTradeController {
                                @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         List<DealTrade> trades = dealTradeService.getTrace();
+        if(trades == null || trades.size() == 0) {
+            senceService.notifyPlayerByDefault(player, "(空)");
+            return msgEntity;
+        }
         transformTrade(trades,builder);
+        msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
 
@@ -93,7 +98,12 @@ public class DealTradeController {
                                   @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         List<DealTrade> trades = dealTradeService.getTraceCanBuy(player);
+        if(trades == null || trades.size() == 0) {
+            senceService.notifyPlayerByDefault(player, "(空)");
+            return msgEntity;
+        }
         transformTrade(trades,builder);
+        msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
 
@@ -107,6 +117,11 @@ public class DealTradeController {
                                         @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         List<Trade> traceHistory = dealTradeService.getTraceHistory(player);
+        if(traceHistory == null || traceHistory.size() == 0) {
+            msgEntity.setData(builder.build().toByteArray());
+            senceService.notifyPlayerByDefault(player, "(空)");
+            return msgEntity;
+        }
         for (Trade trade : traceHistory) {
             try {
                 builder.addTrade((TradePt.Trade) ProtoBufUtil.transformProtoReturnBean(TradePt.Trade.newBuilder(), trade));
@@ -114,6 +129,8 @@ public class DealTradeController {
                 e.printStackTrace();
             }
         }
-        return null;
+        msgEntity.setData(builder.build().toByteArray());
+
+        return msgEntity;
     }
 }

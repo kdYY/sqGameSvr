@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.svr.common.Ref;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.game.bag.model.Item;
+import org.sq.gameDemo.svr.game.bag.model.ItemInfo;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -118,11 +120,14 @@ public class OnlineTradeService {
         Item ownerItem = onlineTrade.getAutionItemMap().get(onlineTrade.getOwnerUnId());
         Item acceptItem = onlineTrade.getAutionItemMap().get(onlineTrade.getAcceptUnId());
         if(!onlineTrade.isSuccess()) {
-            mailService.sendMail(entityService.getSystemPlayer(), onlineTrade.getAcceptUnId(), title, content, acceptItem);
-            mailService.sendMail(entityService.getSystemPlayer(), onlineTrade.getOwnerUnId(), title, content, ownerItem);
+            //mailService.sendMail(entityService.getSystemPlayer(), onlineTrade.getAcceptUnId(), title, content, acceptItem);
+            Optional.ofNullable(ownerItem).ifPresent(
+                    item -> mailService.sendMail(entityService.getSystemPlayer(), onlineTrade.getOwnerUnId(), title, content, ownerItem));
         } else {
-            mailService.sendMail(entityService.getSystemPlayer(), onlineTrade.getAcceptUnId(), title, content, ownerItem);
-            mailService.sendMail(entityService.getSystemPlayer(), onlineTrade.getOwnerUnId(), title, content, acceptItem);
+            Optional.ofNullable(ownerItem).ifPresent(
+                    item -> mailService.sendMail(entityService.getSystemPlayer(), onlineTrade.getAcceptUnId(), title, content, ownerItem));
+            Optional.ofNullable(acceptItem).ifPresent(
+                    item ->  mailService.sendMail(entityService.getSystemPlayer(), onlineTrade.getOwnerUnId(), title, content, acceptItem));
         }
 
     }
@@ -141,6 +146,7 @@ public class OnlineTradeService {
         }
         Item item = new Item();
         BeanUtils.copyProperties(itemInBag, item);
+        item.setCount(onlineTrade.getCount());
         if(!bagService.removeItem(accpeter, item.getId(), onlineTrade.getCount())) {
            return false;
         }
@@ -161,7 +167,8 @@ public class OnlineTradeService {
                                           accpetItemCount, Integer
                                          accpetItemInfoId) {
         Player accpeter = entityService.getPlayer(accpeterId);
-        if(checkTransaction(itemOwner, accpeter, auctionItemId, autionCount)) {
+        Ref<ItemInfo> itemInfoRef = new Ref<>();
+        if(!checkTransaction(itemOwner, accpeter, auctionItemId, autionCount, accpetItemInfoId, itemInfoRef)) {
             return null;
         }
 
@@ -170,7 +177,7 @@ public class OnlineTradeService {
             Item tradeItem = new Item();
             BeanUtils.copyProperties(item, tradeItem);
             tradeItem.setCount(autionCount);
-            return new OnlineTrade(itemOwner, accpeter, item, accpetItemInfoId, accpetItemCount);
+            return new OnlineTrade(itemOwner, accpeter, tradeItem, itemInfoRef.ref, accpetItemCount);
         } else {
             senceService.notifyPlayerByDefault(itemOwner, "物品移除失败");
             return null;
@@ -180,7 +187,8 @@ public class OnlineTradeService {
     /**
      * 检查能否发起交易
      */
-    private boolean checkTransaction(Player itemOwner, Player accpeter, Long auctionItemId, Integer count) {
+    private boolean checkTransaction(Player itemOwner, Player accpeter, Long auctionItemId, Integer count, Integer
+            accpetItemInfoId, Ref<ItemInfo> itemInfoRef) {
         if(accpeter == null) {
             senceService.notifyPlayerByDefault(itemOwner, "在线交易失败，交易对象不在线");
             return false;
@@ -195,6 +203,13 @@ public class OnlineTradeService {
         if(item == null) {
             return false;
         }
+
+        ItemInfo itemInfo = bagService.getItemInfo(accpetItemInfoId);
+        if(itemInfo == null) {
+            senceService.notifyPlayerByDefault(itemOwner, "期望交易的物品种类不存在，请检查accpetItemInfoId");
+            return false;
+        }
+        itemInfoRef.ref = itemInfo;
         return true;
 
     }
@@ -224,11 +239,18 @@ public class OnlineTradeService {
             for (Trade trade : trades) {
                 OnlineTrade onlineTrade = new OnlineTrade();
                 BeanUtils.copyProperties(trade, onlineTrade);
+                Integer itemInfoId = onlineTrade.getItemInfoId();
+                onlineTrade.setAccpertItemInfo(bagService.getItemInfo(itemInfoId));
+                onlineTrade.setAuctionItemId(onlineTrade.getAutionItemMap().get(onlineTrade.getOwnerUnId()).getId());
                 transactionCache.putOnlineTrade(onlineTrade);
             }
 
             trades.forEach(trade -> senceService.notifyPlayerByDefault(playerCached,
                             "你有一项面对面交易未完成，交易号为 id=" + trade.getId()));
         });
+    }
+
+    public List<Trade> getTraceHistory(Player player) {
+        return tradeService.selectFinishedOnlineTrade(player.getUnId());
     }
 }

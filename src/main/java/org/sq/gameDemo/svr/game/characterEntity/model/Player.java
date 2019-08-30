@@ -101,7 +101,8 @@ public class Player extends UserEntity implements Character {
     /**
      * 玩家身上的buff
      */
-    @ProtoField(TargetClass = BuffPt.Buff.class, TargetName = "buff")
+    //@ProtoField(TargetClass = BuffPt.Buff.class, TargetName = "buff")
+    @ProtoField(Ignore = true)
     private List<Buff> bufferList = new CopyOnWriteArrayList<>();
 
 

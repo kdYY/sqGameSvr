@@ -33,4 +33,8 @@ public interface UserEntityMapper {
     int updateByPrimaryKey(UserEntity record);
 
     UserEntity getUserEntityByUserId(int userId);
+
+    String getUserEntityGuildStr(int unId);
+
+    void updateGuildStr(int unId, String guildListStr);
 }

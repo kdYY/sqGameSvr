@@ -6,13 +6,13 @@
         <id column="un_id" property="unId" jdbcType="INTEGER" />
         <result column="user_id" property="userId" jdbcType="TINYINT" />
         <result column="name" property="name" jdbcType="VARCHAR" />
-        <result column="state" property="state" jdbcType="TINYINT" />
-        <result column="type_id" property="typeId" jdbcType="TINYINT" />
-        <result column="sence_id" property="senceId" jdbcType="TINYINT" />
+        <result column="state" property="state" jdbcType="INTEGER" />
+        <result column="type_id" property="typeId" jdbcType="INTEGER" />
+        <result column="sence_id" property="senceId" jdbcType="INTEGER" />
         <result column="exp" property="exp" jdbcType="INTEGER" />
         <result column="equipments" property="equipments" jdbcType="LONGVARCHAR" />
         <result column="money" property="money" jdbcType="INTEGER" />
-        <result column="guild_id" property="guildId" jdbcType="INTEGER" />
+        <result column="guild_list_str" property="guildListStr" jdbcType="VARCHAR" />
         <result column="baby_level" property="babyLevel" jdbcType="INTEGER" />
         <result column="baby_type" property="babyType" jdbcType="INTEGER" />
     </resultMap>
@@ -78,7 +78,7 @@
     </sql>
 
     <sql id="Base_Column_List" >
-        un_id, user_id, name, state, type_id, sence_id, exp, equipments, money, guild_id,
+        un_id, user_id, name, state, type_id, sence_id, exp, equipments, money, guild_list_str,
         baby_level, baby_type
     </sql>
 
@@ -120,12 +120,12 @@
         insert into user_entity (un_id, user_id, name,
             state, type_id, sence_id,
             exp, equipments, money,
-            guild_id, baby_level, baby_type
+            guild_list_str, baby_level, baby_type
             )
         values (#{unId,jdbcType=INTEGER}, #{userId,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
-            #{state,jdbcType=TINYINT}, #{typeId,jdbcType=TINYINT}, #{senceId,jdbcType=TINYINT},
+            #{state,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, #{senceId,jdbcType=INTEGER},
             #{exp,jdbcType=INTEGER}, #{equipments,jdbcType=LONGVARCHAR}, #{money,jdbcType=INTEGER},
-            #{guildId,jdbcType=INTEGER}, #{babyLevel,jdbcType=INTEGER}, #{babyType,jdbcType=INTEGER}
+            #{guildListStr,jdbcType=VARCHAR}, #{babyLevel,jdbcType=INTEGER}, #{babyType,jdbcType=INTEGER}
             )
     </insert>
 
@@ -159,8 +159,8 @@
             <if test="money != null" >
                 money,
             </if>
-            <if test="guildId != null" >
-                guild_id,
+            <if test="guildListStr != null" >
+                guild_list_str,
             </if>
             <if test="babyLevel != null" >
                 baby_level,
@@ -180,13 +180,13 @@
                 #{name,jdbcType=VARCHAR},
             </if>
             <if test="state != null" >
-                #{state,jdbcType=TINYINT},
+                #{state,jdbcType=INTEGER},
             </if>
             <if test="typeId != null" >
-                #{typeId,jdbcType=TINYINT},
+                #{typeId,jdbcType=INTEGER},
             </if>
             <if test="senceId != null" >
-                #{senceId,jdbcType=TINYINT},
+                #{senceId,jdbcType=INTEGER},
             </if>
             <if test="exp != null" >
                 #{exp,jdbcType=INTEGER},
@@ -197,8 +197,8 @@
             <if test="money != null" >
                 #{money,jdbcType=INTEGER},
             </if>
-            <if test="guildId != null" >
-                #{guildId,jdbcType=INTEGER},
+            <if test="guildListStr != null" >
+                #{guildListStr,jdbcType=VARCHAR},
             </if>
             <if test="babyLevel != null" >
                 #{babyLevel,jdbcType=INTEGER},
@@ -229,13 +229,13 @@
                 name = #{record.name,jdbcType=VARCHAR},
             </if>
             <if test="record.state != null" >
-                state = #{record.state,jdbcType=TINYINT},
+                state = #{record.state,jdbcType=INTEGER},
             </if>
             <if test="record.typeId != null" >
-                type_id = #{record.typeId,jdbcType=TINYINT},
+                type_id = #{record.typeId,jdbcType=INTEGER},
             </if>
             <if test="record.senceId != null" >
-                sence_id = #{record.senceId,jdbcType=TINYINT},
+                sence_id = #{record.senceId,jdbcType=INTEGER},
             </if>
             <if test="record.exp != null" >
                 exp = #{record.exp,jdbcType=INTEGER},
@@ -246,8 +246,8 @@
             <if test="record.money != null" >
                 money = #{record.money,jdbcType=INTEGER},
             </if>
-            <if test="record.guildId != null" >
-                guild_id = #{record.guildId,jdbcType=INTEGER},
+            <if test="record.guildListStr != null" >
+                guild_list_str = #{record.guildListStr,jdbcType=VARCHAR},
             </if>
             <if test="record.babyLevel != null" >
                 baby_level = #{record.babyLevel,jdbcType=INTEGER},
@@ -266,13 +266,13 @@
         set un_id = #{record.unId,jdbcType=INTEGER},
         user_id = #{record.userId,jdbcType=TINYINT},
         name = #{record.name,jdbcType=VARCHAR},
-        state = #{record.state,jdbcType=TINYINT},
-        type_id = #{record.typeId,jdbcType=TINYINT},
-        sence_id = #{record.senceId,jdbcType=TINYINT},
+        state = #{record.state,jdbcType=INTEGER},
+        type_id = #{record.typeId,jdbcType=INTEGER},
+        sence_id = #{record.senceId,jdbcType=INTEGER},
         exp = #{record.exp,jdbcType=INTEGER},
         equipments = #{record.equipments,jdbcType=LONGVARCHAR},
         money = #{record.money,jdbcType=INTEGER},
-        guild_id = #{record.guildId,jdbcType=INTEGER},
+        guild_list_str = #{record.guildListStr,jdbcType=VARCHAR},
         baby_level = #{record.babyLevel,jdbcType=INTEGER},
         baby_type = #{record.babyType,jdbcType=INTEGER}
         <if test="_parameter != null" >
@@ -290,13 +290,13 @@
                 name = #{name,jdbcType=VARCHAR},
             </if>
             <if test="state != null" >
-                state = #{state,jdbcType=TINYINT},
+                state = #{state,jdbcType=INTEGER},
             </if>
             <if test="typeId != null" >
-                type_id = #{typeId,jdbcType=TINYINT},
+                type_id = #{typeId,jdbcType=INTEGER},
             </if>
             <if test="senceId != null" >
-                sence_id = #{senceId,jdbcType=TINYINT},
+                sence_id = #{senceId,jdbcType=INTEGER},
             </if>
             <if test="exp != null" >
                 exp = #{exp,jdbcType=INTEGER},
@@ -307,8 +307,8 @@
             <if test="money != null" >
                 money = #{money,jdbcType=INTEGER},
             </if>
-            <if test="guildId != null" >
-                guild_id = #{guildId,jdbcType=INTEGER},
+            <if test="guildListStr != null" >
+                guild_list_str = #{guildListStr,jdbcType=VARCHAR},
             </if>
             <if test="babyLevel != null" >
                 baby_level = #{babyLevel,jdbcType=INTEGER},
@@ -324,18 +324,17 @@
         update user_entity
         set user_id = #{userId,jdbcType=TINYINT},
             name = #{name,jdbcType=VARCHAR},
-            state = #{state,jdbcType=TINYINT},
-            type_id = #{typeId,jdbcType=TINYINT},
-            sence_id = #{senceId,jdbcType=TINYINT},
+            state = #{state,jdbcType=INTEGER},
+            type_id = #{typeId,jdbcType=INTEGER},
+            sence_id = #{senceId,jdbcType=INTEGER},
             exp = #{exp,jdbcType=INTEGER},
             equipments = #{equipments,jdbcType=LONGVARCHAR},
             money = #{money,jdbcType=INTEGER},
-            guild_id = #{guildId,jdbcType=INTEGER},
+            guild_list_str = #{guildListStr,jdbcType=VARCHAR},
             baby_level = #{babyLevel,jdbcType=INTEGER},
             baby_type = #{babyType,jdbcType=INTEGER}
         where un_id = #{unId,jdbcType=INTEGER}
     </update>
-
 
     <select id="getUserEntityByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select
@@ -343,4 +342,19 @@
         from user_entity
         where user_id = #{userId,jdbcType=INTEGER}
     </select>
+
+    <select id="getUserEntityGuildStr" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select guild_list_str from user_entity
+        where un_id = #{unId,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateGuildStr" parameterType="org.sq.gameDemo.svr.game.characterEntity.model.UserEntity" >
+        update user_entity
+        <set>
+            <if test="guildListStr != null" >
+                guild_list_str = #{guildListStr,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where un_id = #{unId,jdbcType=INTEGER}
+    </update>
 </mapper>

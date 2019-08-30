@@ -306,9 +306,12 @@ public class SenceService {
         }
         senceIdAndSenceMsgMap.asMap().values().forEach(
                 senceConfigMsg -> {
-                    senceConfigMsg.getPlayerList().forEach( p -> {
-                        notifyPlayerByDefault(p, word);
-                    });
+                    List<Player> playerList = senceConfigMsg.getPlayerList();
+                    if(playerList != null) {
+                        playerList.forEach( p -> {
+                            notifyPlayerByDefault(p, word);
+                        });
+                    }
                 }
         );
     }

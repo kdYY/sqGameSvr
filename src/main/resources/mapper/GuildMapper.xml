@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.sq.gameDemo.svr.game.guild.dao.GuildMapper" >
+
+    <resultMap id="BaseResultMap" type="org.sq.gameDemo.svr.game.guild.model.Guild" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="level" property="level" jdbcType="INTEGER" />
+        <result column="member_size" property="memberSize" jdbcType="INTEGER" />
+        <result column="warehouse_str" property="warehouseStr" jdbcType="LONGVARCHAR" />
+        <result column="warehouse_size" property="warehouseSize" jdbcType="INTEGER" />
+        <result column="donate_str" property="donateStr" jdbcType="LONGVARCHAR" />
+        <result column="join_request_str" property="joinRequestStr" jdbcType="LONGVARCHAR" />
+        <result column="member_str" property="memberStr" jdbcType="LONGVARCHAR" />
+    </resultMap>
+
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List" >
+        id, name, level, member_size, warehouse_str, warehouse_size, donate_str, join_request_str, 
+        member_str
+    </sql>
+
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.guild.model.GuildExample" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from guild
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="Base_Column_List" />
+        from guild
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from guild
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteByExample" parameterType="org.sq.gameDemo.svr.game.guild.model.GuildExample" >
+        delete from guild
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+
+    <insert id="insert" parameterType="org.sq.gameDemo.svr.game.guild.model.Guild" >
+        insert into guild (id, name, level, 
+            member_size, warehouse_str, warehouse_size, 
+            donate_str, join_request_str, member_str
+            )
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, 
+            #{memberSize,jdbcType=INTEGER}, #{warehouseStr,jdbcType=LONGVARCHAR}, #{warehouseSize,jdbcType=INTEGER}, 
+            #{donateStr,jdbcType=LONGVARCHAR}, #{joinRequestStr,jdbcType=LONGVARCHAR}, #{memberStr,jdbcType=LONGVARCHAR}
+            )
+    </insert>
+
+    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.guild.model.Guild" >
+        insert into guild
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="level != null" >
+                level,
+            </if>
+            <if test="memberSize != null" >
+                member_size,
+            </if>
+            <if test="warehouseStr != null" >
+                warehouse_str,
+            </if>
+            <if test="warehouseSize != null" >
+                warehouse_size,
+            </if>
+            <if test="donateStr != null" >
+                donate_str,
+            </if>
+            <if test="joinRequestStr != null" >
+                join_request_str,
+            </if>
+            <if test="memberStr != null" >
+                member_str,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null" >
+                #{level,jdbcType=INTEGER},
+            </if>
+            <if test="memberSize != null" >
+                #{memberSize,jdbcType=INTEGER},
+            </if>
+            <if test="warehouseStr != null" >
+                #{warehouseStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="warehouseSize != null" >
+                #{warehouseSize,jdbcType=INTEGER},
+            </if>
+            <if test="donateStr != null" >
+                #{donateStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="joinRequestStr != null" >
+                #{joinRequestStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="memberStr != null" >
+                #{memberStr,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByExample" parameterType="org.sq.gameDemo.svr.game.guild.model.GuildExample" resultType="java.lang.Integer" >
+        select count(*) from guild
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByExampleSelective" parameterType="map" >
+        update guild
+        <set >
+            <if test="record.id != null" >
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.name != null" >
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.level != null" >
+                level = #{record.level,jdbcType=INTEGER},
+            </if>
+            <if test="record.memberSize != null" >
+                member_size = #{record.memberSize,jdbcType=INTEGER},
+            </if>
+            <if test="record.warehouseStr != null" >
+                warehouse_str = #{record.warehouseStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.warehouseSize != null" >
+                warehouse_size = #{record.warehouseSize,jdbcType=INTEGER},
+            </if>
+            <if test="record.donateStr != null" >
+                donate_str = #{record.donateStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.joinRequestStr != null" >
+                join_request_str = #{record.joinRequestStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.memberStr != null" >
+                member_str = #{record.memberStr,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByExample" parameterType="map" >
+        update guild
+        set id = #{record.id,jdbcType=INTEGER},
+            name = #{record.name,jdbcType=VARCHAR},
+            level = #{record.level,jdbcType=INTEGER},
+            member_size = #{record.memberSize,jdbcType=INTEGER},
+            warehouse_str = #{record.warehouseStr,jdbcType=LONGVARCHAR},
+            warehouse_size = #{record.warehouseSize,jdbcType=INTEGER},
+            donate_str = #{record.donateStr,jdbcType=LONGVARCHAR},
+            join_request_str = #{record.joinRequestStr,jdbcType=LONGVARCHAR},
+            member_str = #{record.memberStr,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="org.sq.gameDemo.svr.game.guild.model.Guild" >
+        update guild
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null" >
+                level = #{level,jdbcType=INTEGER},
+            </if>
+            <if test="memberSize != null" >
+                member_size = #{memberSize,jdbcType=INTEGER},
+            </if>
+            <if test="warehouseStr != null" >
+                warehouse_str = #{warehouseStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="warehouseSize != null" >
+                warehouse_size = #{warehouseSize,jdbcType=INTEGER},
+            </if>
+            <if test="donateStr != null" >
+                donate_str = #{donateStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="joinRequestStr != null" >
+                join_request_str = #{joinRequestStr,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="memberStr != null" >
+                member_str = #{memberStr,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="org.sq.gameDemo.svr.game.guild.model.Guild" >
+        update guild
+        set name = #{name,jdbcType=VARCHAR},
+            level = #{level,jdbcType=INTEGER},
+            member_size = #{memberSize,jdbcType=INTEGER},
+            warehouse_str = #{warehouseStr,jdbcType=LONGVARCHAR},
+            warehouse_size = #{warehouseSize,jdbcType=INTEGER},
+            donate_str = #{donateStr,jdbcType=LONGVARCHAR},
+            join_request_str = #{joinRequestStr,jdbcType=LONGVARCHAR},
+            member_str = #{memberStr,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

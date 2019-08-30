@@ -73,4 +73,8 @@ public interface Constant {
     String SYSTEM_MANAGER = "系统";
     Integer SYSTEM_UNID = -1;
     Long SYSTEM_ID = 1L;
+    Integer GUILD_PRICE = 1888;
+    Integer GUILD_DEFAULT_WAREHOUSE_SIZE = 50;
+
+    Integer GUILD_DEFAULT_MEMBER_SIZE = 27;
 }

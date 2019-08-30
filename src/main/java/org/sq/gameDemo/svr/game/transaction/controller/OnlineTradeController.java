@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
+import org.sq.gameDemo.common.proto.ItemInfoPt;
 import org.sq.gameDemo.common.proto.StorePt;
 import org.sq.gameDemo.common.proto.TradePt;
 import org.sq.gameDemo.svr.common.OrderMapping;
@@ -16,6 +17,7 @@ import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.transaction.model.OnlineTrade;
+import org.sq.gameDemo.svr.game.transaction.model.Trade;
 import org.sq.gameDemo.svr.game.transaction.service.OnlineTradeService;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +30,10 @@ public class OnlineTradeController {
     private OnlineTradeService onlineTradeService;
     @Autowired
     private EntityService entityService;
-
+    @Autowired
+    private SenceService senceService;
+    @Autowired
+    private BagService bagService;
     /**
      * 发起在线交易
      */
@@ -38,7 +43,7 @@ public class OnlineTradeController {
         Player player = entityService.getPlayer(msgEntity.getChannel());
             onlineTradeService.startTrade(player, requestInfo.getAccpeterId(),  requestInfo.getAuctionItemId()
                     , requestInfo.getAutionCount(), requestInfo.getAccpetCount(), requestInfo.getItemInfoId());
-//        return msgEntity;
+//\\        return msgEntity;
     }
 
     /**
@@ -75,11 +80,12 @@ public class OnlineTradeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
 
     /**
-     * 获取自己发起的所有在线交易
+     * 获取自己还未处理的面对面交易
      * @param msgEntity
      * @param builder
      */
@@ -95,8 +101,37 @@ public class OnlineTradeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
+    }
+    /**
+     * 获取历史的面对面交易
+     * @param msgEntity
+     * @param builder
+     */
+    @OrderMapping(OrderEnum.GET_ONLINE_TRADE_HISTORY)
+    public MsgEntity getOnlineTradeHistory(MsgEntity msgEntity,
+                                          @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        try {
+            List<Trade> trades = onlineTradeService.getTraceHistory(player);
+            transformOnlineTrade(builder, trades);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        msgEntity.setData(builder.build().toByteArray());
+
         return msgEntity;
     }
 
+    private void transformOnlineTrade(TradePt.TradeResponseInfo.Builder builder, List<Trade> trades) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+        for (Trade trade : trades) {
+            TradePt.Trade.Builder tradeBuilder = ProtoBufUtil.transformProtoReturnBuilder(TradePt.Trade.newBuilder(), trade);
+            tradeBuilder.setAccpertItemInfo(
+                    ProtoBufUtil.transformProtoReturnBuilder(ItemInfoPt.ItemInfo.newBuilder(), bagService.getItemInfo(tradeBuilder.getItemInfoId()))
+            );
+            builder.addTrade(tradeBuilder);
+        }
+    }
 
 }

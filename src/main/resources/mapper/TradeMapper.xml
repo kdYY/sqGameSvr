@@ -345,5 +345,15 @@
         where owner_un_id = #{id,jdbcType=INTEGER} or accept_un_id = #{id,jdbcType=INTEGER}) a
         where a.finish = 1 and trade_model != 1
     </select>
+    <select id="selectOnlineTradeHistory" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from
+        (select
+        <include refid="Base_Column_List" />
+        from trade
+        where owner_un_id = #{id,jdbcType=INTEGER} or accept_un_id = #{id,jdbcType=INTEGER}) a
+        where a.finish = 1 and trade_model = 1
+    </select>
 
 </mapper>

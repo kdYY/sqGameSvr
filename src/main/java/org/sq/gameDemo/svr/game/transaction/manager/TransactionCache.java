@@ -41,6 +41,7 @@ public class TransactionCache {
         for (Trade trade : trades) {
             DealTrade dealTrade = new DealTrade();
             BeanUtils.copyProperties(trade, dealTrade);
+            dealTrade.setAuctionItemId(dealTrade.getAutionItemMap().get(dealTrade.getOwnerUnId()).getId());
             putDeal(dealTrade);
         }
     }

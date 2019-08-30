@@ -21,6 +21,7 @@ import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
+import org.sq.gameDemo.svr.game.guild.service.GuildService;
 import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
@@ -64,6 +65,8 @@ public class EntityService {
     private MailService mailService;
     @Autowired
     private OnlineTradeService onlineTradeService;
+    @Autowired
+    private GuildService guildService;
 
     /**
      * 用户登录
@@ -139,6 +142,14 @@ public class EntityService {
         return initedPlayer;
     }
 
+    /**
+     * 获取userEntity
+     * @param unId
+     * @return
+     */
+    public String getUserEntityGuildStr(Integer unId) {
+        return userEntityMapper.getUserEntityGuildStr(unId);
+    }
 
     /**
      * 初始化player
@@ -147,7 +158,6 @@ public class EntityService {
      * @return
      */
     public Player getInitedPlayer(int userId, Channel channel) {
-        //先从缓存中获取，如果没有，再从数据库查询，然后更新缓存
         UserEntity usrEntity = userEntityMapper.getUserEntityByUserId(userId);
         Player playerCached = new Player();
         BeanUtils.copyProperties(usrEntity,playerCached);
@@ -162,6 +172,7 @@ public class EntityService {
 
         mailService.loadMail(playerCached);
         onlineTradeService.loadTrace(playerCached);
+        guildService.loadGuild(playerCached);
         return playerCached;
     }
 
@@ -206,6 +217,7 @@ public class EntityService {
         }
         //计算最终的攻击力
         computeAttack(player);
+
 
         buffService.buffAffecting(player, buffService.getBuff(105));
         buffService.buffAffecting(player, buffService.getBuff(106));
@@ -350,7 +362,11 @@ public class EntityService {
     }
     //找到玩家
     public Player getPlayer(Long playerId) {
-        return playerCache.getPlayerByChannel(playerCache.getChannelByPlayerId(playerId));
+        Channel channel = playerCache.getChannelByPlayerId(playerId);
+        if(channel == null) {
+            return null;
+        }
+        return playerCache.getPlayerByChannel(channel);
     }
     //找到玩家
     public Player getPlayer(Integer unId) {
@@ -380,5 +396,10 @@ public class EntityService {
         } else {
             return null;
         }
+    }
+
+    //已经进行异步
+    public void updateUserEntityGuildStr(int unId, String guildListStr) {
+        userEntityMapper.updateGuildStr(unId, guildListStr);
     }
 }

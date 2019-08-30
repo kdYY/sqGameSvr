@@ -32,23 +32,6 @@ public class MailCache {
             ).build();
 
 
-    // @PostConstruct
-    public void init() throws Exception {
-        //将有过期时间的邮件进行加载
-        MailExample mailExample = new MailExample();
-        mailExample.createCriteria().andKeepTimeNotEqualTo(-1L);
-        List<Mail> mailList = mailMapper.selectByExample(mailExample);
-
-        for (Mail mail : mailList) {
-            String itemsStr = mail.getItemsStr();
-            if(!Strings.isNullOrEmpty(itemsStr)) {
-                List<Item> list = JsonUtil.reSerializableJson(itemsStr, Item.class);
-                mail.setRewardItems(list);
-            }
-        }
-
-    }
-
     public Mail get(Integer id) {
         return  mailCache.getIfPresent(id);
     }

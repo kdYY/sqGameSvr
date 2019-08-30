@@ -61,7 +61,7 @@ public class Trade {
 
 
     //<<用户UnId, Item>>
-    @ProtoField(TargetName = "item", Function = "addItemPt", TargetClass =TradePt.Trade.class)
+    @ProtoField(TargetName = "item", Function = "addItemPt", TargetClass =TradePt.Trade.Builder.class)
     private Map<Integer, Item> autionItemMap = new ConcurrentHashMap<>();
 
     /**
@@ -72,12 +72,12 @@ public class Trade {
     public void addItemPt(TradePt.Trade.Builder builder) throws Exception {
         List<Item> collect = this.getAutionItemMap().values().stream().collect(Collectors.toList());
         for (Item item : collect) {
-            builder.addItem((ItemPt.Item) ProtoBufUtil.transformProtoReturnBean(ItemInfoPt.ItemInfo.newBuilder(), item));
+            builder.addItem((ItemPt.Item) ProtoBufUtil.transformProtoReturnBean(ItemPt.Item.newBuilder(), item));
         }
     }
 
     public Map<Integer, Item> getAutionItemMap() {
-        if(autionItemMap == null && !Strings.isNullOrEmpty(itemsMapStr)) {
+        if(autionItemMap.size() == 0 && !Strings.isNullOrEmpty(itemsMapStr)) {
             this.autionItemMap  = JsonUtil.reSerializableJson(itemsMapStr, new TypeReference<Map<Integer,  Item>>(){});
         }
         return autionItemMap;

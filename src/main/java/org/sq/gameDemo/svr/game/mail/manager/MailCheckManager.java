@@ -51,5 +51,6 @@ public class MailCheckManager {
                 .forEach(mail -> {
                     mailService.returnItems(mail);
                 });
+
     }
 }

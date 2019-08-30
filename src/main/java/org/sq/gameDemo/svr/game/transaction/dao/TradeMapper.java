@@ -34,4 +34,6 @@ public interface TradeMapper {
     int updateByPrimaryKey(Trade record);
 
     List<Trade> selectDealHistory(Integer unId);
+
+    List<Trade> selectOnlineTradeHistory(Integer unId);
 }

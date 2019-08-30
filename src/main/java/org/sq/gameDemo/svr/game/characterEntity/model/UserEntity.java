@@ -4,6 +4,8 @@ import lombok.Data;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -60,7 +62,7 @@ public class UserEntity {
     /**
      * 公会id
      */
-    private Integer guildId;
+    private String guildListStr;
 
     /**
      * 宝宝等级 0代表没有宝宝
@@ -70,6 +72,7 @@ public class UserEntity {
     /**
      * 宝宝类型
      * */
+    @ProtoField(Ignore = true)
     private Integer babyType = 0;
 
     // 当前使用技能的集合
@@ -83,5 +86,8 @@ public class UserEntity {
     //延迟释放的技能
     @ProtoField(Ignore = true)
     private Map<Skill, Future> skillInEffectingMap = new ConcurrentHashMap<>();
+
+    @ProtoField(Ignore = true)
+    private List<Integer> guildList = new ArrayList<>();
 
 }

@@ -1,5 +1,6 @@
 package org.sq.gameDemo.svr.common.protoUtil;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
@@ -22,6 +23,7 @@ public class ProtoBufUtil {
             Method build = goalBuilder.getClass().getDeclaredMethod("build");
             return build.invoke(goalBuilder);
         }catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
 
@@ -66,14 +68,32 @@ public class ProtoBufUtil {
                     Class targetClass = annotation.TargetClass();
                     //如果K中有Function需要执行的，加入执行
                     if(!annotation.Function().isEmpty()) {
-                        Method method;
-                        if(!targetClass.equals(Void.class)
-                                && !annotation.TargetName().isEmpty()) {
-                            method = sourceBean.getClass().getMethod(annotation.Function(), targetClass);
-                        } else {
-                            method = sourceBean.getClass().getDeclaredMethod(annotation.Function());
+                        Method method = null;
+
+                        try {
+                            if(!targetClass.equals(Void.class)
+                                    && !annotation.TargetName().isEmpty()) {
+                                method = sourceBean.getClass().getMethod(annotation.Function(), targetClass);
+                            } else {
+                                method = sourceBean.getClass().getDeclaredMethod(annotation.Function());
+                            }
+
+                        } catch (NoSuchMethodException e) {
+                            try{
+                                if(!targetClass.equals(Void.class)) {
+                                    method = getDeclaredMethod(sourceBean.getClass(), annotation.Function(), targetClass);
+                                } else {
+                                    method = getDeclaredMethod(sourceBean.getClass(), annotation.Function());
+                                }
+                            } catch (NoSuchMethodException e1) {
+                                e1.printStackTrace();
+                            }
+                            e.printStackTrace();
+
                         }
-                        sourceBeanFunctionMap.put(declaredField, method);
+                        if(method != null) {
+                            sourceBeanFunctionMap.put(declaredField, method);
+                        }
                         inject = false;
                         break;
                     }
@@ -269,7 +289,13 @@ public class ProtoBufUtil {
         if (result == null && (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class)) {
             result = getDeclaredMethod(cur_class.getSuperclass(), methodName);
             if(result == null) {
-                throw new NoSuchMethodException("在" + cur_class.getName() + "中递归找不到该方法" + methodName);
+                String content = null;
+                if(parameterTypes != null) {
+                    for (Class<?> parameterType : parameterTypes) {
+                        content += parameterType.getSimpleName();
+                    }
+                }
+                throw new NoSuchMethodException("在" + cur_class.getName() + "中递归找不到该方法" + methodName + "(" + content + ")");
             }
         }
         return result;

@@ -52,10 +52,19 @@ public class DealTradeService {
             return;
         }
         DealTrade dealInCache = transactionCache.getDealInCache(tradeId);
+        if(accpeter.getUnId().equals(dealInCache.getOwnerUnId())) {
+            String content = "不能自己竞拍自己的东西";
+            if(dealInCache.getTradeModel().equals(TradeModel.AT_AUCTION.getCode())) {
+                content += ", 不要妄想哄抬价格";
+            }
+            senceService.notifyPlayerByDefault(accpeter, content);
+            return;
+        }
+
         synchronized (dealInCache) {
             Integer nowMaPrice = tradeService.getMaxPriceInTrade(dealInCache);
             if(price < nowMaPrice) {
-                senceService.notifyPlayerByDefault(accpeter, "您出的元宝数量低于该物品目前的价格price=" + dealInCache.getPrice());
+                senceService.notifyPlayerByDefault(accpeter, "您出的元宝数量低于该物品竞拍价格price=" + dealInCache.getPrice());
                 return;
             }
             if(!bagService.removeItem(accpeter, itemInBag.getId(), price)) {

@@ -27,11 +27,23 @@ public class OnlineTrade extends Trade{
     private Player itemOwner;
     @ProtoField(Ignore = true)
     private Player accpeter;
+    @ProtoField(TargetName = "accpertItemInfo", Function = "addItemInfoPt", TargetClass = TradePt.Trade.Builder.class)
+    private ItemInfo accpertItemInfo;
 
+    private Long auctionItemId;
+    /**
+     * 做item中ItemInfo的注入
+     * @param builder
+     * @throws Exception
+     */
+    public void addItemInfoPt(TradePt.Trade.Builder builder) throws Exception {
+        builder.setAccpertItemInfo((ItemInfoPt.ItemInfo) ProtoBufUtil.transformProtoReturnBean(ItemInfoPt.ItemInfo.newBuilder(), this
+                .getAccpertItemInfo()));
+    }
 
     public OnlineTrade() {super();}
 
-    public OnlineTrade(Player itemOwner, Player accpeter, Item auctionItem, Integer acceptItemInfoId, Integer count) {
+    public OnlineTrade(Player itemOwner, Player accpeter, Item auctionItem, ItemInfo accpertItemInfo, Integer count) {
 
         super.setOwnerUnId(itemOwner.getUnId());
         super.setAcceptUnId(accpeter.getUnId());
@@ -39,12 +51,14 @@ public class OnlineTrade extends Trade{
         super.setStartTime(System.currentTimeMillis());
         super.setTradeModel(TradeModel.ONINE_TRADE.getCode());
 
-        super.setItemInfoId(acceptItemInfoId);
+        super.setItemInfoId(accpertItemInfo.getId());
+
         super.setCount(count);
 
         this.itemOwner = itemOwner;
         this.accpeter = accpeter;
-
+        this.setAccpertItemInfo(accpertItemInfo);
+        this.auctionItemId = auctionItem.getId();
         super.getAutionItemMap().put(itemOwner.getUnId(), auctionItem);
     }
 

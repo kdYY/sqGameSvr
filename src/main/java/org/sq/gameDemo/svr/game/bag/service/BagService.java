@@ -77,7 +77,7 @@ public class BagService {
      * @param id
      * @return
      */
-    private ItemInfo getItemInfo(Integer id) {
+    public ItemInfo getItemInfo(Integer id) {
         return itemInfoCache.get(id);
     }
 
@@ -304,6 +304,7 @@ public class BagService {
                 senceService.notifyPlayerByDefault(player, "iteminfoId=" + iteminfoId + "物品不存在");
                 return null;
             }
+            itemInBag = find.get();
         } else {
             senceService.notifyPlayerByDefault(player, "背包为空");
         }
