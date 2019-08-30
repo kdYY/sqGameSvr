@@ -207,6 +207,18 @@ public class GuildService {
     /**
      * showGuildReq 查看指定公会入会申请
      */
+    public List<Integer> showGuildReq(Player player, Integer guildId) {
+        Guild guild = guildCache.get(guildId);
+        if(!checkGuild(player, guildId, guild)) {
+            return null;
+        }
+        if(!guild.getMemberMap().get(player.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode())) {
+            senceService.notifyPlayerByDefault(player, "您不是此公会的会长，没有权限查看申请，使用showChairManGuild查看有会长权限的公会列表");
+            return null;
+        }
+
+        return  guild.getPlayerJoinRequestMap().keySet().stream().collect(Collectors.toList());
+    }
 
 
     /**
@@ -248,6 +260,8 @@ public class GuildService {
             player.getGuildList().add(guildId);
             senceService.notifyPlayerByDefault(player, "加入公会成功，使用showGuild查看加入的公会列表");
         }
+        guild.getPlayerJoinRequestMap().remove(unId);
+        updateGuild(guild);
 
     }
     /**
