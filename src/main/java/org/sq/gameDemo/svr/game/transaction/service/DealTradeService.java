@@ -138,15 +138,18 @@ public class DealTradeService {
 
             //竞拍中 其余的返回
             if(dealInCache.getTradeModel().equals(TradeModel.AT_AUCTION.getCode())) {
-                List<Map.Entry<Integer, Item>> collect = dealInCache.getAutionItemMap().entrySet().stream().filter(entry -> !(entry.getKey().equals(ownerUnId) || entry.getKey()
-                        .equals(acceptUnId))).collect(Collectors.toList());
+                List<Map.Entry<Integer, Item>> collect = dealInCache.getAutionItemMap().entrySet()
+                        .stream()
+                        .filter(entry -> !(entry.getKey().equals(ownerUnId) || entry.getKey().equals(acceptUnId)))
+                        .collect(Collectors.toList());
+
                 for (Map.Entry<Integer, Item> itemEntry : collect) {
                     mailService.sendMail(entityService.getSystemPlayer(), itemEntry.getKey(), title, content, itemEntry.getValue());
                 }
             }
         } else {
-            mailService.sendMail(entityService.getSystemPlayer(), acceptUnId, title, content,ownerItem);
             //竞拍不成功的时候 一口价没人买 竞拍超时没人拍
+            mailService.sendMail(entityService.getSystemPlayer(), acceptUnId, title, content,ownerItem);
         }
 
 

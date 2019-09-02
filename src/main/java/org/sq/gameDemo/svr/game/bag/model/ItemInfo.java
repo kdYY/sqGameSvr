@@ -16,13 +16,15 @@ public class ItemInfo {
 
     private Integer id;
 
+    private Integer type;
+
     private String name;
 
     private Integer buff;
 
     @ProtoField(Ignore = true)
     private Integer level;
-    private Integer type;
+
 
     @ProtoField(TargetName = "part", Function = "transformPart", TargetClass = ItemInfoPt.ItemInfo.Builder.class)
     private Integer part;

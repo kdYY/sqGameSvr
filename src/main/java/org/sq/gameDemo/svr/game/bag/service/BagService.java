@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.game.bag.dao.BagMapper;
@@ -22,6 +23,9 @@ import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -182,6 +186,9 @@ public class BagService {
                 .stream()
                 .filter(filterItem -> filterItem.getItemInfo().getId().equals(itemInfoId))
                 .findFirst();
+
+        Integer bagSize = getBagCurrentSize(bag);
+
         //可以叠加
         if(itemOptional.isPresent() && item.getItemInfo().getType().equals(ItemType.CAN_BE_STACKED.getType())) {
             Item itemFind = itemOptional.get();
@@ -189,17 +196,38 @@ public class BagService {
             senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + "物品 *" + item.getCount() + "已经放入背包");
         }
         //不可叠加的时候
-        else if(bag.getSize() > bag.getItemBar().keySet().size()) {
+        else if(bag.getSize() > bagSize) {
             bag.getItemBar().put(item.getId(), item);
             senceService.notifyPlayerByDefault(player, item.getItemInfo().getName() + "物品 *" + item.getCount() + "已经放入背包");
         }
         //背包已经满了
         else {
-            senceService.notifyPlayerByDefault(player, "背包已满，请整理背包");
+            senceService.notifyPlayerByDefault(player, "背包已满，请清除背包");
             return false;
         }
         updateBagInDB(player);
         return true;
+    }
+
+    /**
+     * 计算目前背包容量
+     */
+    private Integer getBagCurrentSize(Bag bag) {
+        ConcurrentMap<Integer, Integer> collect = bag.getItemBar().values()
+                .stream()
+                .filter(item -> !item.getItemInfo().getId().equals(Constant.YUAN_BAO))
+                .collect(Collectors.groupingByConcurrent(bagItem -> bagItem.getItemInfo().getType(), Collectors.summingInt(Item::getCount)));
+        int result = 0;
+
+        for (Integer type : collect.keySet()) {
+            if(type.equals(ItemType.CAN_BE_STACKED.getType())) {
+               result += (collect.get(type) > 100 ? (collect.get(type)/100) : 1);
+            } else {
+                result += collect.get(type);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -238,11 +266,12 @@ public class BagService {
      */
     public void tidyBag(Player player) {
         Bag bag = player.getBag();
+
         synchronized (bag) {
             Map<Long, Item> itemMap = bag.getItemBar();
-            Map<Long, Item> newItemMap = new LinkedHashMap<>();
+            Map<Long, Item> newItemMap = new ConcurrentSkipListMap<>();
 
-            for (ItemType itemType : ItemType.values()) {
+            for (ItemType itemType : ItemType.getTypeQueue()) {
                 Map<Long, Item> collect = itemMap.values()
                         .stream()
                         .filter(item -> item.getItemInfo().getType().equals(itemType.getType()))

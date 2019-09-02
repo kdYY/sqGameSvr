@@ -42,4 +42,9 @@ public enum GuildAuth {
         }
         return queue;
     }
+
+    public String getName() {
+        return name;
+    }
+
 }

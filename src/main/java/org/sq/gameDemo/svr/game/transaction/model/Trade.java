@@ -37,6 +37,7 @@ public class Trade {
     //价格
     private Integer price;
 
+
     private boolean finish = false;
     private boolean success = false;
 

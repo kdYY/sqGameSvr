@@ -9,25 +9,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.JsonUtil;
+import org.sq.gameDemo.svr.common.Ref;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.GuildFullEvent;
+import org.sq.gameDemo.svr.game.bag.model.Bag;
 import org.sq.gameDemo.svr.game.bag.model.Item;
+import org.sq.gameDemo.svr.game.bag.model.ItemType;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.guild.dao.GuildCache;
 import org.sq.gameDemo.svr.game.guild.dao.GuildMapper;
-import org.sq.gameDemo.svr.game.guild.model.AttendGuildReq;
-import org.sq.gameDemo.svr.game.guild.model.Guild;
-import org.sq.gameDemo.svr.game.guild.model.GuildAuth;
-import org.sq.gameDemo.svr.game.guild.model.GuildExample;
+import org.sq.gameDemo.svr.game.guild.model.*;
+import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
@@ -47,6 +49,8 @@ public class GuildService {
     private GuildMapper guildMapper;
     @Autowired
     private EntityService entityService;
+    @Autowired
+    private MailService mailService;
 
     /**
      * 创建公会
@@ -64,10 +68,14 @@ public class GuildService {
         if(!bagService.removeItem(player, item.getId(), Constant.GUILD_PRICE)) {
             return null;
         }
-        Guild guild = new Guild(name, player.getUnId(), Constant.GUILD_DEFAULT_WAREHOUSE_SIZE, Constant.GUILD_DEFAULT_MEMBER_SIZE);
+        Guild guild = new Guild(name, Constant.GUILD_DEFAULT_WAREHOUSE_SIZE, Constant.GUILD_DEFAULT_MEMBER_SIZE);
         if(guildMapper.insert(guild) > 0) {
             guildCache.put(guild);
             player.getGuildList().add(guild.getId());
+            guild.getMemberMap().put(player.getUnId(),
+                    new Member(player.getUnId(), player.getName(), player.getLevel(), GuildAuth.CHAIRMAN.getName(), GuildAuth.CHAIRMAN.getAuthCode()));
+            updateGuild(guild);
+            senceService.notifyPlayerByDefault(player, "创建公会成功，可以使用showGuild id=" + guild.getId() + "查看公会哦");
             return guild;
         } else {
             senceService.notifyPlayerByDefault(player, "svr err, 创建公会失败");
@@ -146,13 +154,16 @@ public class GuildService {
      * @param guild
      * @return
      */
-    private Integer getNewMemberAuth(Guild guild) {
+    private GuildAuth getNewMemberAuth(Guild guild) {
 
+        //获取每个权限下分布的人数
         ConcurrentMap<Integer, Long> collect = guild.getMemberMap()
                 .values().stream()
+                .map(Member::getGuildAuth)
                 .collect(Collectors.groupingByConcurrent(Function.identity(), Collectors.counting()));
 
         Optional<GuildAuth> first = GuildAuth.getQueue().stream().filter(guildAuth -> collect.get(guildAuth.getAuthCode()) < guildAuth.getLimitNum()).findFirst();
+
         if(first.isPresent()) {
             log.info("queue找新公会会员的权限: auth1=" + first.get().getAuthCode());
         }
@@ -160,10 +171,10 @@ public class GuildService {
         for (GuildAuth guildAuth : GuildAuth.getQueue()) {
             if(collect.get(guildAuth.getAuthCode()) < guildAuth.getLimitNum()) {
                 log.info("queue找新公会会员的权限: auth2=" + guildAuth.getAuthCode());
-                return guildAuth.getAuthCode();
+                return guildAuth;
             }
         }
-        return GuildAuth.COMMON.getAuthCode();
+        return GuildAuth.COMMON;
     }
 
     /**
@@ -171,18 +182,18 @@ public class GuildService {
      */
     public void exitGuild(Player player, int guildId) {
         if(!player.getGuildList().contains(guildId)) {
-            senceService.notifyPlayerByDefault(player, "您没有加入此公会，使用showGuild查看已加入的公会列表");
+            senceService.notifyPlayerByDefault(player, "您没有加入此公会，使用showGuildList查看已加入的公会列表");
             return;
         }
         Guild guild = guildCache.get(guildId);
         if(guild == null) {
-            senceService.notifyPlayerByDefault(player, "无此公会，使用showGuild查看已加入的公会列表");
+            senceService.notifyPlayerByDefault(player, "无此公会，使用showGuildList查看已加入的公会列表");
             return;
         }
         player.getGuildList().remove(guildId);
         guild.getMemberMap().remove(player.getUnId());
         updateGuild(guild);
-        senceService.notifyPlayerByDefault(player, "退出"+ guild.getName() +"公会成功，使用showGuild查看已加入的公会列表");
+        senceService.notifyPlayerByDefault(player, "退出"+ guild.getName() +"公会成功，使用showGuildList查看已加入的公会列表");
 
     }
 
@@ -194,20 +205,20 @@ public class GuildService {
         if(playerCached.getGuildList().size() == 0 && !Strings.isNullOrEmpty(playerCached.getGuildListStr())) {
             playerCached.setGuildList(JsonUtil.reSerializableJson(playerCached.getGuildListStr(), new TypeReference<List<Integer>>(){}));
             playerCached.getGuildList().stream()
-                    .filter(guildId -> guildCache.get(guildId).getMemberMap().get(playerCached.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode()))
-                    .forEach(guildId -> {
-                        senceService.notifyPlayerByDefault(playerCached,  "公会(id=" + guildId + ",name=" + guildCache.get(guildId).getName
-                                () +") 有玩家申请入会，使用 showGuildReq id=" + guildId + "查看入会申请");
-                        //guildCache.get(guildId).getPlayerJoinRequestMap().values().forEach();
-                        //申请号reqId="+  +" 使用agreeEnter "
-                    });
+                    .map(id -> guildCache.get(id))
+                    .filter(guild -> guild.getMemberMap().get(playerCached.getUnId()).getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode()))
+                    .filter(guild -> guild.getPlayerJoinRequestMap().size() > 0)
+                    .forEach(guild ->
+                        senceService.notifyPlayerByDefault(playerCached,  "公会(id=" + guild.getId() + ",name=" + guild.getName
+                                () +") 有玩家申请入会，使用 showGuildReq id=" + guild.getId() + "查看入会申请")
+                    );
         }
     }
 
     /**
      * showGuildReq 查看指定公会入会申请
      */
-    public List<Integer> showGuildReq(Player player, Integer guildId) {
+    public List<AttendGuildReq> showGuildReq(Player player, Integer guildId) {
         Guild guild = guildCache.get(guildId);
         if(!checkGuild(player, guildId, guild)) {
             return null;
@@ -217,7 +228,7 @@ public class GuildService {
             return null;
         }
 
-        return  guild.getPlayerJoinRequestMap().keySet().stream().collect(Collectors.toList());
+        return  guild.getPlayerJoinRequestMap().values().stream().collect(Collectors.toList());
     }
 
 
@@ -242,14 +253,13 @@ public class GuildService {
         }
         //同意申请
         //检查可以成为的公会成员权限
-        Integer auth = getNewMemberAuth(guild);
-        guild.getMemberMap().put(attendGuildReq.getUnId(), auth);
-        updateGuild(guild);
-        senceService.notifyPlayerByDefault(chairMan, "已同意");
-
+        GuildAuth newMemberAuth = getNewMemberAuth(guild);
         //获取userEntity 更新在线状态(如果该玩家在线)
         Player player = entityService.getPlayer(attendGuildReq.getUnId());
         if(player == null) {
+            UserEntity userEntity = entityService.findUserEntity(unId);
+            guild.getMemberMap().put(attendGuildReq.getUnId(), new Member(userEntity.getUnId(), userEntity.getName(), userEntity.getExp()
+                    / 100, newMemberAuth.getName(), newMemberAuth.getAuthCode()));
             ThreadManager.dbTaskPool.execute(() ->{
                 String guildStr = entityService.getUserEntityGuildStr(unId);
                 List<Integer> guildList = JsonUtil.reSerializableJson(guildStr, new TypeReference<List<Integer>>() {});
@@ -258,10 +268,13 @@ public class GuildService {
             });
         } else {
             player.getGuildList().add(guildId);
-            senceService.notifyPlayerByDefault(player, "加入公会成功，使用showGuild查看加入的公会列表");
+            guild.getMemberMap().put(attendGuildReq.getUnId(),
+                    new Member(player.getUnId(), player.getName(), player.getLevel(), newMemberAuth.getName(), newMemberAuth.getAuthCode()));
+            senceService.notifyPlayerByDefault(player, "加入公会成功，使用showGuildList查看加入的公会列表");
         }
         guild.getPlayerJoinRequestMap().remove(unId);
         updateGuild(guild);
+        senceService.notifyPlayerByDefault(chairMan, "已同意");
 
     }
     /**
@@ -280,7 +293,8 @@ public class GuildService {
         }
 
         //检查公会背包是否已满
-        if(guild.getWarehouseMap().size() >= guild.getWarehouseSize()) {
+        Integer wareHouseSize = getCurrentWareHouseSize(guild);
+        if(wareHouseSize >= guild.getWarehouseSize()) {
             senceService.notifyPlayerByDefault(donater, "公会背包已满");
             EventBus.publish(new GuildFullEvent(guild));
             return;
@@ -297,6 +311,14 @@ public class GuildService {
                 itemWanna.setCount(count);
                 guild.getWarehouseMap().put(item.getItemInfo().getId(), itemWanna);
             }
+
+            Donate donate = guild.getDonateMap().get(donater.getUnId());
+            if(donate != null) {
+                donate.setDonateNum(donate.getDonateNum() + item.getItemInfo().getPrice() * count);
+            } else {
+                donate = new Donate(donate.getUnId(), donate.getName(), Long.valueOf(item.getItemInfo().getPrice() * count));
+                guild.getDonateMap().put(donater.getUnId(), donate);
+            }
             senceService.notifyPlayerByDefault(donater, "捐献成功");
 
         } else {
@@ -304,13 +326,37 @@ public class GuildService {
         }
     }
 
+    /**
+     * 计算目前背包容量
+     */
+    private Integer getCurrentWareHouseSize(Guild guild) {
+        ConcurrentMap<Integer, Integer> collect = guild.getWarehouseMap().values()
+                .stream()
+                .filter(item -> !item.getItemInfo().getId().equals(Constant.YUAN_BAO))
+                .collect(Collectors.groupingByConcurrent(bagItem -> bagItem.getItemInfo().getType(), Collectors.summingInt(Item::getCount)));
+        int result = 0;
+
+        for (Integer type : collect.keySet()) {
+            if(type.equals(ItemType.CAN_BE_STACKED.getType())) {
+                result += (collect.get(type) > 100 ? (collect.get(type)/100) : 1);
+            } else {
+                result += collect.get(type);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 检查公会
+     */
     private boolean checkGuild(Player donater, Integer guildId, Guild guild) {
         if(guild == null) {
-            senceService.notifyPlayerByDefault(donater, "无此公会，使用showGuild查看已加入的公会列表");
+            senceService.notifyPlayerByDefault(donater, "无此公会，使用showGuildList查看已加入的公会列表");
             return false;
         }
         if(!donater.getGuildList().contains(guildId)) {
-            senceService.notifyPlayerByDefault(donater, "您没有加入此公会，使用showGuild查看已加入的公会列表");
+            senceService.notifyPlayerByDefault(donater, "您没有加入此公会，使用showGuildList查看已加入的公会列表");
             return false;
         }
         return true;
@@ -320,18 +366,52 @@ public class GuildService {
     /**
      * 获取公会物品
      */
-
-    public void getGuildItem(Player player, Integer guildId) {
+    public void getGuildItem(Player player, Integer guildId, Integer itemInfoId, Integer count) {
         Guild guild = guildCache.get(guildId);
         if(!checkGuild(player, guildId, guild)) {
             return;
         }
+
         if(!guild.getMemberMap().get(player.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode())) {
             senceService.notifyPlayerByDefault(player, "您不是此公会的会长，没有权限查看申请，使用showChairManGuild查看有会长权限的公会列表");
             return;
         }
 
+        Ref<Item> itemRef = new Ref<>();
+        if(!checkGuildWareHouse(player, guild, itemInfoId, count, itemRef)) {
+            return;
+        }
+
         //发邮件
+        Item item = new Item();
+        BeanUtils.copyProperties(item, itemRef.ref);
+        if(itemRef.ref.getCount() == count) {
+            guild.getWarehouseMap().remove(itemRef.ref.getItemInfo().getId(), itemRef.ref);
+        }
+        item.setCount(count);
+
+        mailService.sendMail(entityService.getSystemPlayer(), player.getUnId(),"公会物品获取", "这是您在公会获取的物品", item);
+
+    }
+
+    /**
+     * 检查公会背包
+     */
+    private boolean checkGuildWareHouse(Player player, Guild guild, Integer itemInfoId, Integer count, Ref<Item> refItem) {
+        Map<Integer, Item> warehouseMap = guild.getWarehouseMap();
+        Item item;
+        if((item = warehouseMap.get(itemInfoId)) == null) {
+            senceService.notifyPlayerByDefault(player, "无此物品，请检查itemInfoId");
+            return false;
+        }
+
+        if(item.getCount()  < count) {
+            senceService.notifyPlayerByDefault(player, "物品数量不足");
+            return false;
+        }
+
+        refItem.ref = item;
+        return true;
     }
 
 
@@ -341,14 +421,39 @@ public class GuildService {
 
 
     /**
-     * 使用showGuild查看已加入的公会列表
+     * 使用showGuildList查看已加入的公会列表
      */
-    public List<Guild> showGuild(Player player) {
+    public List<Guild> showGuildList(Player player) {
         List<Guild> guilds = new ArrayList<>();
         for (Integer guildId : player.getGuildList()) {
             guilds.add(guildCache.get(guildId));
         }
         return guilds;
     }
+
+
+    /**
+     * 使用showChairManGuildList查看已加入的公会列表
+     */
+    public List<Guild> showChairManGuildList(Player player) {
+        List<Guild> guilds = new ArrayList<>();
+        for (Integer guildId : player.getGuildList()) {
+            Guild guild = guildCache.get(guildId);
+            if(guild.getMemberMap().get(player.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode())) {
+                guilds.add(guild);
+            }
+        }
+        return guilds;
+    }
+
+
+    public Guild showGuild(Player player, Integer guildId) {
+        Guild guild = guildCache.get(guildId);
+        if(!checkGuild(player, guildId, guild)) {
+            return null;
+        }
+        return guild;
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package org.sq.gameDemo.svr.game.bag.model;
 
 import lombok.Data;
+import org.omg.CORBA.INTERNAL;
 import org.sq.gameDemo.common.proto.ItemInfoPt;
 import org.sq.gameDemo.common.proto.ItemPt;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
@@ -15,8 +16,14 @@ public class Item {
 
     private Integer count; // 武器不能叠加
 
+    @ProtoField(TargetName = "itemInfo", Function = "addItemInfoPt", TargetClass = ItemPt.Item.Builder.class)
+    private ItemInfo itemInfo;
+
     private Integer locationIndex = 0;
 
+//    public Integer getType() {
+//        return itemInfo.getType();
+//    }
 
     /**武器耐久度 默认是-1*/
     private Long durable = -1L;
@@ -50,8 +57,7 @@ public class Item {
         this.itemInfo = itemInfo;
     }
 
-    @ProtoField(TargetName = "itemInfo", Function = "addItemInfoPt", TargetClass = ItemPt.Item.Builder.class)
-    private ItemInfo itemInfo;
+
 
 
     /**

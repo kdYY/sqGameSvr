@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.Collectors;
 
 @Data
@@ -20,7 +21,7 @@ public class Bag {
     String name;
 
 
-    //背包格子数
+    //背包容量
     Integer size;
     //存库用
     String itemStr;
@@ -34,7 +35,7 @@ public class Bag {
 
     //物品集合
     @ProtoField(Ignore = true)
-    Map<Long, Item> itemBar = new LinkedHashMap<>();
+    Map<Long, Item> itemBar = new ConcurrentSkipListMap<>();
 
     @ProtoField(TargetName = "item", TargetClass = ItemPt.Item.class)
     private List<Item> itemList;

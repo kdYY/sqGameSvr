@@ -9,6 +9,13 @@ public class AttendGuildReq {
     private Integer unId;
     private boolean agree;
 
+    public boolean isAgree() {
+        return agree;
+    }
+    public boolean getAgree() {
+        return agree;
+    }
+
     public AttendGuildReq(Integer unId) {
         this.unId = unId;
         this.requestTime = System.currentTimeMillis();

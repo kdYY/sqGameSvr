@@ -383,8 +383,8 @@ public class EntityService {
 
     }
 
-    public boolean hasUserEntity(Integer unId) {
-        return userEntityMapper.selectByPrimaryKey(unId) != null;
+    public UserEntity findUserEntity(Integer unId) {
+        return userEntityMapper.selectByPrimaryKey(unId);
     }
 
     public Integer getUnIdByName(String name) {

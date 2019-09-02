@@ -50,7 +50,18 @@ public enum OrderEnum {
     GET_DEAL("getDeal", 153),
     GET_DEAL_CAN_BUY("canbuyDeal", 154 ),
     GET_DEAL_HISTORY("getDealHistory", 155),
-    GET_ONLINE_TRADE_CAN_RECEIVE("getOnlineTradeCnReceive", 156), GET_ONLINE_TRADE_HISTORY("getOnlineTradeHistory", 157);
+    GET_ONLINE_TRADE_CAN_RECEIVE("getOnlineTradeCnReceive", 156),
+    GET_ONLINE_TRADE_HISTORY("getOnlineTradeHistory", 157),
+
+    CREATE_GUILD("createGuild", 158),
+    SHOW_GUILD_CAN_ATTEND("showGuildCanAttend", 159),
+    APPLY_ATTEND_GUILD("applyAttendGuild", 160),
+    SHOW_GUILD_REQUEST("showGuildReq", 161),
+    AGREE_ATTEND_REQUEST("agreeAttendRequest", 162),
+    EXIT_GUILD("exitGuild", 163),
+    DONATE_ITEM("donateItem", 164),
+    GET_GUILD_ITEM("getGuildItem", 165),
+    SHOW_CHAIRMAN_GUILD("showChairManGuild", 166), SHOW_GUILDLIST("showGuildList", 167);
 
 
     private String order;
