@@ -3,24 +3,15 @@ package org.sq.gameDemo.svr.game.guild.model;
 
 import com.alibaba.fastjson.TypeReference;
 import lombok.Data;
-import org.springframework.util.StringUtils;
 import org.sq.gameDemo.common.proto.GuildPt;
 import org.sq.gameDemo.common.proto.ItemPt;
-import org.sq.gameDemo.common.proto.PlayerPt;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.bag.model.Item;
-import org.sq.gameDemo.svr.game.characterEntity.model.Player;
-import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.InetSocketAddress;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Data
 public class Guild {
@@ -52,7 +43,7 @@ public class Guild {
     @ProtoField(TargetName = "member", Function = "addMemberPt", TargetClass = GuildPt.Guild.Builder.class)
     private Map<Integer, Member> memberMap = new ConcurrentSkipListMap<>();
 
-    private void addMemberPt(GuildPt.Guild.Builder builder) throws Exception {
+    public void addMemberPt(GuildPt.Guild.Builder builder) throws Exception {
         for (Member member : memberMap.values()) {
             builder.addMember(ProtoBufUtil.transformProtoReturnBuilder(GuildPt.Member.newBuilder(), member));
         }
@@ -62,7 +53,7 @@ public class Guild {
     @ProtoField(TargetName = "wareHouseitem", Function = "addItemPt", TargetClass = GuildPt.Guild.Builder.class)
     private Map<Integer, Item> warehouseMap =  new ConcurrentSkipListMap<>();
 
-    private void addItemPt(GuildPt.Guild.Builder builder) throws Exception {
+    public void addItemPt(GuildPt.Guild.Builder builder) throws Exception {
         for (Item item : warehouseMap.values()) {
             builder.addWareHouseitem(ProtoBufUtil.transformProtoReturnBuilder(ItemPt.Item.newBuilder(), item));
         }
@@ -73,7 +64,7 @@ public class Guild {
     private Map<Integer, Donate> donateMap = new ConcurrentSkipListMap<>();
 
 
-    private void addDonate(GuildPt.Guild.Builder builder) throws Exception {
+    public void addDonate(GuildPt.Guild.Builder builder) throws Exception {
         for (Donate donate : donateMap.values()) {
             builder.addDonate(ProtoBufUtil.transformProtoReturnBuilder(GuildPt.Donate.newBuilder(), donate));
         }
@@ -84,43 +75,10 @@ public class Guild {
     @ProtoField(TargetName = "attendReq", Function = "addAttendReq", TargetClass = GuildPt.Guild.Builder.class)
     private Map<Integer, AttendGuildReq> playerJoinRequestMap =  new ConcurrentSkipListMap<>();
 
-    private void addAttendReq(GuildPt.Guild.Builder builder) throws Exception {
+    public void addAttendReq(GuildPt.Guild.Builder builder) throws Exception {
         for (AttendGuildReq attendGuildReq : playerJoinRequestMap.values()) {
             builder.addAttendReq(ProtoBufUtil.transformProtoReturnBuilder(GuildPt.AttendGuildReq.newBuilder(), attendGuildReq));
         }
-    }
-
-    public String getDonateStr() {
-        return JsonUtil.getJsonStr(donateMap, donateStr);
-    }
-
-    public Map<Integer, Donate> getDonateMap() {
-        return JsonUtil.getMap(donateMap, donateStr);
-    }
-
-    public Map<Integer, Member> getMemberMap() {
-       return JsonUtil.getMap(memberMap, memberStr);
-    }
-
-    public String getMemberStr() {
-        return JsonUtil.getJsonStr(memberMap, memberStr);
-    }
-
-    public String getWarehouseStr() {
-        return JsonUtil.getJsonStr(warehouseMap, warehouseStr);
-    }
-
-    public String getJoinRequestStr() {
-        return JsonUtil.getJsonStr(playerJoinRequestMap, joinRequestStr);
-    }
-
-    public Map<Integer, Item> getWarehouseMap() {
-        return JsonUtil.getMap(warehouseMap, warehouseStr);
-
-    }
-
-    public Map<Integer, AttendGuildReq> getPlayerJoinRequestMap() {
-        return JsonUtil.getMap(playerJoinRequestMap, joinRequestStr);
     }
 
 
@@ -132,5 +90,20 @@ public class Guild {
         this.time = System.currentTimeMillis();
         this.warehouseSize = warehouseSize;
         this.memberSize = memberSize;
+    }
+
+
+
+    public String getDonateStr() {
+        return JsonUtil.getJsonStr(donateMap, donateStr);
+    }
+    public String getMemberStr() {
+        return JsonUtil.getJsonStr(memberMap, memberStr);
+    }
+    public String getWarehouseStr() {
+        return JsonUtil.getJsonStr(warehouseMap, warehouseStr);
+    }
+    public String getJoinRequestStr() {
+        return JsonUtil.getJsonStr(playerJoinRequestMap, joinRequestStr);
     }
 }

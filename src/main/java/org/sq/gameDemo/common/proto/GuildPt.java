@@ -2992,7 +2992,17 @@ public final class GuildPt {
     int getUnId();
 
     /**
-     * <code>bool agree = 3;</code>
+     * <code>string name = 3;</code>
+     */
+    String getName();
+    /**
+     * <code>string name = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>bool agree = 4;</code>
      */
     boolean getAgree();
   }
@@ -3009,6 +3019,7 @@ public final class GuildPt {
       super(builder);
     }
     private AttendGuildReq() {
+      name_ = "";
     }
 
     @Override
@@ -3051,7 +3062,13 @@ public final class GuildPt {
               unId_ = input.readInt32();
               break;
             }
-            case 24: {
+            case 26: {
+              String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 32: {
 
               agree_ = input.readBool();
               break;
@@ -3106,10 +3123,44 @@ public final class GuildPt {
       return unId_;
     }
 
-    public static final int AGREE_FIELD_NUMBER = 3;
+    public static final int NAME_FIELD_NUMBER = 3;
+    private volatile Object name_;
+    /**
+     * <code>string name = 3;</code>
+     */
+    public String getName() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string name = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AGREE_FIELD_NUMBER = 4;
     private boolean agree_;
     /**
-     * <code>bool agree = 3;</code>
+     * <code>bool agree = 4;</code>
      */
     public boolean getAgree() {
       return agree_;
@@ -3135,8 +3186,11 @@ public final class GuildPt {
       if (unId_ != 0) {
         output.writeInt32(2, unId_);
       }
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
+      }
       if (agree_ != false) {
-        output.writeBool(3, agree_);
+        output.writeBool(4, agree_);
       }
       unknownFields.writeTo(output);
     }
@@ -3155,9 +3209,12 @@ public final class GuildPt {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, unId_);
       }
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
+      }
       if (agree_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, agree_);
+          .computeBoolSize(4, agree_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3178,6 +3235,8 @@ public final class GuildPt {
           != other.getRequestTime()) return false;
       if (getUnId()
           != other.getUnId()) return false;
+      if (!getName()
+          .equals(other.getName())) return false;
       if (getAgree()
           != other.getAgree()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -3196,6 +3255,8 @@ public final class GuildPt {
           getRequestTime());
       hash = (37 * hash) + UNID_FIELD_NUMBER;
       hash = (53 * hash) + getUnId();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + AGREE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getAgree());
@@ -3336,6 +3397,8 @@ public final class GuildPt {
 
         unId_ = 0;
 
+        name_ = "";
+
         agree_ = false;
 
         return this;
@@ -3366,6 +3429,7 @@ public final class GuildPt {
         AttendGuildReq result = new AttendGuildReq(this);
         result.requestTime_ = requestTime_;
         result.unId_ = unId_;
+        result.name_ = name_;
         result.agree_ = agree_;
         onBuilt();
         return result;
@@ -3420,6 +3484,10 @@ public final class GuildPt {
         }
         if (other.getUnId() != 0) {
           setUnId(other.getUnId());
+        }
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
         }
         if (other.getAgree() != false) {
           setAgree(other.getAgree());
@@ -3505,15 +3573,84 @@ public final class GuildPt {
         return this;
       }
 
+      private Object name_ = "";
+      /**
+       * <code>string name = 3;</code>
+       */
+      public String getName() {
+        Object ref = name_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>string name = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string name = 3;</code>
+       */
+      public Builder setName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 3;</code>
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 3;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
       private boolean agree_ ;
       /**
-       * <code>bool agree = 3;</code>
+       * <code>bool agree = 4;</code>
        */
       public boolean getAgree() {
         return agree_;
       }
       /**
-       * <code>bool agree = 3;</code>
+       * <code>bool agree = 4;</code>
        */
       public Builder setAgree(boolean value) {
         
@@ -3522,7 +3659,7 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>bool agree = 3;</code>
+       * <code>bool agree = 4;</code>
        */
       public Builder clearAgree() {
         
@@ -4397,6 +4534,11 @@ public final class GuildPt {
      * <code>int32 itemInfoId = 8;</code>
      */
     int getItemInfoId();
+
+    /**
+     * <code>bool agree = 9;</code>
+     */
+    boolean getAgree();
   }
   /**
    * <pre>
@@ -4487,6 +4629,11 @@ public final class GuildPt {
             case 64: {
 
               itemInfoId_ = input.readInt32();
+              break;
+            }
+            case 72: {
+
+              agree_ = input.readBool();
               break;
             }
             default: {
@@ -4630,6 +4777,15 @@ public final class GuildPt {
       return itemInfoId_;
     }
 
+    public static final int AGREE_FIELD_NUMBER = 9;
+    private boolean agree_;
+    /**
+     * <code>bool agree = 9;</code>
+     */
+    public boolean getAgree() {
+      return agree_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -4667,6 +4823,9 @@ public final class GuildPt {
       }
       if (itemInfoId_ != 0) {
         output.writeInt32(8, itemInfoId_);
+      }
+      if (agree_ != false) {
+        output.writeBool(9, agree_);
       }
       unknownFields.writeTo(output);
     }
@@ -4708,6 +4867,10 @@ public final class GuildPt {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, itemInfoId_);
       }
+      if (agree_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(9, agree_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -4739,6 +4902,8 @@ public final class GuildPt {
           != other.getCount()) return false;
       if (getItemInfoId()
           != other.getItemInfoId()) return false;
+      if (getAgree()
+          != other.getAgree()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4769,6 +4934,9 @@ public final class GuildPt {
       hash = (53 * hash) + getCount();
       hash = (37 * hash) + ITEMINFOID_FIELD_NUMBER;
       hash = (53 * hash) + getItemInfoId();
+      hash = (37 * hash) + AGREE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getAgree());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4922,6 +5090,8 @@ public final class GuildPt {
 
         itemInfoId_ = 0;
 
+        agree_ = false;
+
         return this;
       }
 
@@ -4956,6 +5126,7 @@ public final class GuildPt {
         result.itemId_ = itemId_;
         result.count_ = count_;
         result.itemInfoId_ = itemInfoId_;
+        result.agree_ = agree_;
         onBuilt();
         return result;
       }
@@ -5028,6 +5199,9 @@ public final class GuildPt {
         }
         if (other.getItemInfoId() != 0) {
           setItemInfoId(other.getItemInfoId());
+        }
+        if (other.getAgree() != false) {
+          setAgree(other.getAgree());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5344,6 +5518,32 @@ public final class GuildPt {
         onChanged();
         return this;
       }
+
+      private boolean agree_ ;
+      /**
+       * <code>bool agree = 9;</code>
+       */
+      public boolean getAgree() {
+        return agree_;
+      }
+      /**
+       * <code>bool agree = 9;</code>
+       */
+      public Builder setAgree(boolean value) {
+        
+        agree_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool agree = 9;</code>
+       */
+      public Builder clearAgree() {
+        
+        agree_ = false;
+        onChanged();
+        return this;
+      }
       @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -5483,25 +5683,49 @@ public final class GuildPt {
             int index);
 
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Item item = 7;</code>
+     */
+    java.util.List<ItemPt.Item>
+        getItemList();
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    ItemPt.Item getItem(int index);
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    int getItemCount();
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    java.util.List<? extends ItemPt.ItemOrBuilder>
+        getItemOrBuilderList();
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    ItemPt.ItemOrBuilder getItemOrBuilder(
+            int index);
+
+    /**
+     * <code>repeated .Donate donate = 8;</code>
      */
     java.util.List<Donate>
         getDonateList();
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     Donate getDonate(int index);
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     int getDonateCount();
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     java.util.List<? extends DonateOrBuilder>
         getDonateOrBuilderList();
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     DonateOrBuilder getDonateOrBuilder(
             int index);
@@ -5526,6 +5750,7 @@ public final class GuildPt {
       content_ = "";
       guild_ = java.util.Collections.emptyList();
       attendReq_ = java.util.Collections.emptyList();
+      item_ = java.util.Collections.emptyList();
       donate_ = java.util.Collections.emptyList();
     }
 
@@ -5601,8 +5826,17 @@ public final class GuildPt {
             }
             case 58: {
               if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                donate_ = new java.util.ArrayList<Donate>();
+                item_ = new java.util.ArrayList<ItemPt.Item>();
                 mutable_bitField0_ |= 0x00000004;
+              }
+              item_.add(
+                  input.readMessage(ItemPt.Item.parser(), extensionRegistry));
+              break;
+            }
+            case 66: {
+              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+                donate_ = new java.util.ArrayList<Donate>();
+                mutable_bitField0_ |= 0x00000008;
               }
               donate_.add(
                   input.readMessage(Donate.parser(), extensionRegistry));
@@ -5630,6 +5864,9 @@ public final class GuildPt {
           attendReq_ = java.util.Collections.unmodifiableList(attendReq_);
         }
         if (((mutable_bitField0_ & 0x00000004) != 0)) {
+          item_ = java.util.Collections.unmodifiableList(item_);
+        }
+        if (((mutable_bitField0_ & 0x00000008) != 0)) {
           donate_ = java.util.Collections.unmodifiableList(donate_);
         }
         this.unknownFields = unknownFields.build();
@@ -5788,35 +6025,70 @@ public final class GuildPt {
       return attendReq_.get(index);
     }
 
-    public static final int DONATE_FIELD_NUMBER = 7;
+    public static final int ITEM_FIELD_NUMBER = 7;
+    private java.util.List<ItemPt.Item> item_;
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    public java.util.List<ItemPt.Item> getItemList() {
+      return item_;
+    }
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    public java.util.List<? extends ItemPt.ItemOrBuilder>
+        getItemOrBuilderList() {
+      return item_;
+    }
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    public int getItemCount() {
+      return item_.size();
+    }
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    public ItemPt.Item getItem(int index) {
+      return item_.get(index);
+    }
+    /**
+     * <code>repeated .Item item = 7;</code>
+     */
+    public ItemPt.ItemOrBuilder getItemOrBuilder(
+        int index) {
+      return item_.get(index);
+    }
+
+    public static final int DONATE_FIELD_NUMBER = 8;
     private java.util.List<Donate> donate_;
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     public java.util.List<Donate> getDonateList() {
       return donate_;
     }
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     public java.util.List<? extends DonateOrBuilder>
         getDonateOrBuilderList() {
       return donate_;
     }
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     public int getDonateCount() {
       return donate_.size();
     }
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     public Donate getDonate(int index) {
       return donate_.get(index);
     }
     /**
-     * <code>repeated .Donate donate = 7;</code>
+     * <code>repeated .Donate donate = 8;</code>
      */
     public DonateOrBuilder getDonateOrBuilder(
         int index) {
@@ -5855,8 +6127,11 @@ public final class GuildPt {
       for (int i = 0; i < attendReq_.size(); i++) {
         output.writeMessage(6, attendReq_.get(i));
       }
+      for (int i = 0; i < item_.size(); i++) {
+        output.writeMessage(7, item_.get(i));
+      }
       for (int i = 0; i < donate_.size(); i++) {
-        output.writeMessage(7, donate_.get(i));
+        output.writeMessage(8, donate_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -5890,9 +6165,13 @@ public final class GuildPt {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, attendReq_.get(i));
       }
+      for (int i = 0; i < item_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, item_.get(i));
+      }
       for (int i = 0; i < donate_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, donate_.get(i));
+          .computeMessageSize(8, donate_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5921,6 +6200,8 @@ public final class GuildPt {
           .equals(other.getGuildList())) return false;
       if (!getAttendReqList()
           .equals(other.getAttendReqList())) return false;
+      if (!getItemList()
+          .equals(other.getItemList())) return false;
       if (!getDonateList()
           .equals(other.getDonateList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -5951,6 +6232,10 @@ public final class GuildPt {
       if (getAttendReqCount() > 0) {
         hash = (37 * hash) + ATTENDREQ_FIELD_NUMBER;
         hash = (53 * hash) + getAttendReqList().hashCode();
+      }
+      if (getItemCount() > 0) {
+        hash = (37 * hash) + ITEM_FIELD_NUMBER;
+        hash = (53 * hash) + getItemList().hashCode();
       }
       if (getDonateCount() > 0) {
         hash = (37 * hash) + DONATE_FIELD_NUMBER;
@@ -6090,6 +6375,7 @@ public final class GuildPt {
                 .alwaysUseFieldBuilders) {
           getGuildFieldBuilder();
           getAttendReqFieldBuilder();
+          getItemFieldBuilder();
           getDonateFieldBuilder();
         }
       }
@@ -6116,9 +6402,15 @@ public final class GuildPt {
         } else {
           attendReqBuilder_.clear();
         }
+        if (itemBuilder_ == null) {
+          item_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          itemBuilder_.clear();
+        }
         if (donateBuilder_ == null) {
           donate_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000008);
         } else {
           donateBuilder_.clear();
         }
@@ -6171,10 +6463,19 @@ public final class GuildPt {
         } else {
           result.attendReq_ = attendReqBuilder_.build();
         }
-        if (donateBuilder_ == null) {
+        if (itemBuilder_ == null) {
           if (((bitField0_ & 0x00000004) != 0)) {
-            donate_ = java.util.Collections.unmodifiableList(donate_);
+            item_ = java.util.Collections.unmodifiableList(item_);
             bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.item_ = item_;
+        } else {
+          result.item_ = itemBuilder_.build();
+        }
+        if (donateBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0)) {
+            donate_ = java.util.Collections.unmodifiableList(donate_);
+            bitField0_ = (bitField0_ & ~0x00000008);
           }
           result.donate_ = donate_;
         } else {
@@ -6293,11 +6594,37 @@ public final class GuildPt {
             }
           }
         }
+        if (itemBuilder_ == null) {
+          if (!other.item_.isEmpty()) {
+            if (item_.isEmpty()) {
+              item_ = other.item_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureItemIsMutable();
+              item_.addAll(other.item_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.item_.isEmpty()) {
+            if (itemBuilder_.isEmpty()) {
+              itemBuilder_.dispose();
+              itemBuilder_ = null;
+              item_ = other.item_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              itemBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getItemFieldBuilder() : null;
+            } else {
+              itemBuilder_.addAllMessages(other.item_);
+            }
+          }
+        }
         if (donateBuilder_ == null) {
           if (!other.donate_.isEmpty()) {
             if (donate_.isEmpty()) {
               donate_ = other.donate_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000008);
             } else {
               ensureDonateIsMutable();
               donate_.addAll(other.donate_);
@@ -6310,7 +6637,7 @@ public final class GuildPt {
               donateBuilder_.dispose();
               donateBuilder_ = null;
               donate_ = other.donate_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000008);
               donateBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getDonateFieldBuilder() : null;
@@ -7000,12 +7327,252 @@ public final class GuildPt {
         return attendReqBuilder_;
       }
 
+      private java.util.List<ItemPt.Item> item_ =
+        java.util.Collections.emptyList();
+      private void ensureItemIsMutable() {
+        if (!((bitField0_ & 0x00000004) != 0)) {
+          item_ = new java.util.ArrayList<ItemPt.Item>(item_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          ItemPt.Item, ItemPt.Item.Builder, ItemPt.ItemOrBuilder> itemBuilder_;
+
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public java.util.List<ItemPt.Item> getItemList() {
+        if (itemBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(item_);
+        } else {
+          return itemBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public int getItemCount() {
+        if (itemBuilder_ == null) {
+          return item_.size();
+        } else {
+          return itemBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public ItemPt.Item getItem(int index) {
+        if (itemBuilder_ == null) {
+          return item_.get(index);
+        } else {
+          return itemBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder setItem(
+          int index, ItemPt.Item value) {
+        if (itemBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemIsMutable();
+          item_.set(index, value);
+          onChanged();
+        } else {
+          itemBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder setItem(
+          int index, ItemPt.Item.Builder builderForValue) {
+        if (itemBuilder_ == null) {
+          ensureItemIsMutable();
+          item_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder addItem(ItemPt.Item value) {
+        if (itemBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemIsMutable();
+          item_.add(value);
+          onChanged();
+        } else {
+          itemBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder addItem(
+          int index, ItemPt.Item value) {
+        if (itemBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemIsMutable();
+          item_.add(index, value);
+          onChanged();
+        } else {
+          itemBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder addItem(
+          ItemPt.Item.Builder builderForValue) {
+        if (itemBuilder_ == null) {
+          ensureItemIsMutable();
+          item_.add(builderForValue.build());
+          onChanged();
+        } else {
+          itemBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder addItem(
+          int index, ItemPt.Item.Builder builderForValue) {
+        if (itemBuilder_ == null) {
+          ensureItemIsMutable();
+          item_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder addAllItem(
+          Iterable<? extends ItemPt.Item> values) {
+        if (itemBuilder_ == null) {
+          ensureItemIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, item_);
+          onChanged();
+        } else {
+          itemBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder clearItem() {
+        if (itemBuilder_ == null) {
+          item_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          itemBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public Builder removeItem(int index) {
+        if (itemBuilder_ == null) {
+          ensureItemIsMutable();
+          item_.remove(index);
+          onChanged();
+        } else {
+          itemBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public ItemPt.Item.Builder getItemBuilder(
+          int index) {
+        return getItemFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public ItemPt.ItemOrBuilder getItemOrBuilder(
+          int index) {
+        if (itemBuilder_ == null) {
+          return item_.get(index);  } else {
+          return itemBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public java.util.List<? extends ItemPt.ItemOrBuilder>
+           getItemOrBuilderList() {
+        if (itemBuilder_ != null) {
+          return itemBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(item_);
+        }
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public ItemPt.Item.Builder addItemBuilder() {
+        return getItemFieldBuilder().addBuilder(
+            ItemPt.Item.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public ItemPt.Item.Builder addItemBuilder(
+          int index) {
+        return getItemFieldBuilder().addBuilder(
+            index, ItemPt.Item.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Item item = 7;</code>
+       */
+      public java.util.List<ItemPt.Item.Builder>
+           getItemBuilderList() {
+        return getItemFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          ItemPt.Item, ItemPt.Item.Builder, ItemPt.ItemOrBuilder>
+          getItemFieldBuilder() {
+        if (itemBuilder_ == null) {
+          itemBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              ItemPt.Item, ItemPt.Item.Builder, ItemPt.ItemOrBuilder>(
+                  item_,
+                  ((bitField0_ & 0x00000004) != 0),
+                  getParentForChildren(),
+                  isClean());
+          item_ = null;
+        }
+        return itemBuilder_;
+      }
+
       private java.util.List<Donate> donate_ =
         java.util.Collections.emptyList();
       private void ensureDonateIsMutable() {
-        if (!((bitField0_ & 0x00000004) != 0)) {
+        if (!((bitField0_ & 0x00000008) != 0)) {
           donate_ = new java.util.ArrayList<Donate>(donate_);
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000008;
          }
       }
 
@@ -7013,7 +7580,7 @@ public final class GuildPt {
           Donate, Donate.Builder, DonateOrBuilder> donateBuilder_;
 
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public java.util.List<Donate> getDonateList() {
         if (donateBuilder_ == null) {
@@ -7023,7 +7590,7 @@ public final class GuildPt {
         }
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public int getDonateCount() {
         if (donateBuilder_ == null) {
@@ -7033,7 +7600,7 @@ public final class GuildPt {
         }
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Donate getDonate(int index) {
         if (donateBuilder_ == null) {
@@ -7043,7 +7610,7 @@ public final class GuildPt {
         }
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder setDonate(
           int index, Donate value) {
@@ -7060,7 +7627,7 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder setDonate(
           int index, Donate.Builder builderForValue) {
@@ -7074,7 +7641,7 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder addDonate(Donate value) {
         if (donateBuilder_ == null) {
@@ -7090,7 +7657,7 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder addDonate(
           int index, Donate value) {
@@ -7107,7 +7674,7 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder addDonate(
           Donate.Builder builderForValue) {
@@ -7121,7 +7688,7 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder addDonate(
           int index, Donate.Builder builderForValue) {
@@ -7135,7 +7702,7 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder addAllDonate(
           Iterable<? extends Donate> values) {
@@ -7150,12 +7717,12 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder clearDonate() {
         if (donateBuilder_ == null) {
           donate_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000008);
           onChanged();
         } else {
           donateBuilder_.clear();
@@ -7163,7 +7730,7 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Builder removeDonate(int index) {
         if (donateBuilder_ == null) {
@@ -7176,14 +7743,14 @@ public final class GuildPt {
         return this;
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Donate.Builder getDonateBuilder(
           int index) {
         return getDonateFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public DonateOrBuilder getDonateOrBuilder(
           int index) {
@@ -7193,7 +7760,7 @@ public final class GuildPt {
         }
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public java.util.List<? extends DonateOrBuilder>
            getDonateOrBuilderList() {
@@ -7204,14 +7771,14 @@ public final class GuildPt {
         }
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Donate.Builder addDonateBuilder() {
         return getDonateFieldBuilder().addBuilder(
             Donate.getDefaultInstance());
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public Donate.Builder addDonateBuilder(
           int index) {
@@ -7219,7 +7786,7 @@ public final class GuildPt {
             index, Donate.getDefaultInstance());
       }
       /**
-       * <code>repeated .Donate donate = 7;</code>
+       * <code>repeated .Donate donate = 8;</code>
        */
       public java.util.List<Donate.Builder>
            getDonateBuilderList() {
@@ -7232,7 +7799,7 @@ public final class GuildPt {
           donateBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               Donate, Donate.Builder, DonateOrBuilder>(
                   donate_,
-                  ((bitField0_ & 0x00000004) != 0),
+                  ((bitField0_ & 0x00000008) != 0),
                   getParentForChildren(),
                   isClean());
           donate_ = null;
@@ -7338,19 +7905,20 @@ public final class GuildPt {
       "tem\022\027\n\006donate\030\010 \003(\0132\007.Donate\022\"\n\tattendRe" +
       "q\030\t \003(\0132\017.AttendGuildReq\022\027\n\006member\030\n \003(\013" +
       "2\007.Member\")\n\006Donate\022\014\n\004name\030\001 \001(\t\022\021\n\tdon" +
-      "ateNum\030\002 \001(\004\"B\n\016AttendGuildReq\022\023\n\013reques" +
-      "tTime\030\001 \001(\004\022\014\n\004unId\030\002 \001(\005\022\r\n\005agree\030\003 \001(\010" +
-      "\"4\n\006Member\022\014\n\004name\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\022" +
-      "\r\n\005right\030\003 \001(\t\"\220\001\n\020GuildRequestInfo\022\016\n\006m" +
-      "sg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\017\n\007guildId\030\003 \001" +
-      "(\005\022\014\n\004name\030\004 \001(\t\022\014\n\004unId\030\005 \001(\005\022\016\n\006itemId" +
-      "\030\006 \001(\004\022\r\n\005count\030\007 \001(\005\022\022\n\nitemInfoId\030\010 \001(" +
-      "\005\"\246\001\n\021GuildResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022" +
-      "\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content" +
-      "\030\004 \001(\t\022\025\n\005guild\030\005 \003(\0132\006.Guild\022\"\n\tattendR" +
-      "eq\030\006 \003(\0132\017.AttendGuildReq\022\027\n\006donate\030\007 \003(" +
-      "\0132\007.DonateB\'\n\034org.sq.gameDemo.common.pro" +
-      "toB\007GuildPtb\006proto3"
+      "ateNum\030\002 \001(\004\"P\n\016AttendGuildReq\022\023\n\013reques" +
+      "tTime\030\001 \001(\004\022\014\n\004unId\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022" +
+      "\r\n\005agree\030\004 \001(\010\"4\n\006Member\022\014\n\004name\030\001 \001(\t\022\r" +
+      "\n\005level\030\002 \001(\005\022\r\n\005right\030\003 \001(\t\"\237\001\n\020GuildRe" +
+      "questInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022" +
+      "\017\n\007guildId\030\003 \001(\005\022\014\n\004name\030\004 \001(\t\022\014\n\004unId\030\005" +
+      " \001(\005\022\016\n\006itemId\030\006 \001(\004\022\r\n\005count\030\007 \001(\005\022\022\n\ni" +
+      "temInfoId\030\010 \001(\005\022\r\n\005agree\030\t \001(\010\"\273\001\n\021Guild" +
+      "ResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006result\030\002" +
+      " \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(\t\022\025\n\005g" +
+      "uild\030\005 \003(\0132\006.Guild\022\"\n\tattendReq\030\006 \003(\0132\017." +
+      "AttendGuildReq\022\023\n\004item\030\007 \003(\0132\005.Item\022\027\n\006d" +
+      "onate\030\010 \003(\0132\007.DonateB\'\n\034org.sq.gameDemo." +
+      "common.protoB\007GuildPtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7374,7 +7942,7 @@ public final class GuildPt {
     internal_static_AttendGuildReq_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_AttendGuildReq_descriptor,
-        new String[] { "RequestTime", "UnId", "Agree", });
+        new String[] { "RequestTime", "UnId", "Name", "Agree", });
     internal_static_Member_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Member_fieldAccessorTable = new
@@ -7386,13 +7954,13 @@ public final class GuildPt {
     internal_static_GuildRequestInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_GuildRequestInfo_descriptor,
-        new String[] { "MsgId", "Time", "GuildId", "Name", "UnId", "ItemId", "Count", "ItemInfoId", });
+        new String[] { "MsgId", "Time", "GuildId", "Name", "UnId", "ItemId", "Count", "ItemInfoId", "Agree", });
     internal_static_GuildResponseInfo_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_GuildResponseInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_GuildResponseInfo_descriptor,
-        new String[] { "MsgId", "Result", "Time", "Content", "Guild", "AttendReq", "Donate", });
+        new String[] { "MsgId", "Result", "Time", "Content", "Guild", "AttendReq", "Item", "Donate", });
     ItemPt.getDescriptor();
   }
 

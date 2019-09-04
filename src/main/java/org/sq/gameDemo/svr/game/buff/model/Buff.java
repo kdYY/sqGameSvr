@@ -58,8 +58,22 @@ public class Buff {
 
     public void setFuture(Future future) {
         this.future = future;
-
     }
 
-
+    @Override
+    public String toString() {
+        return "Buff{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", cd=" + cd +
+                ", mp=" + mp +
+                ", hp=" + hp +
+                ", effect=" + effect +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", intervalTime=" + intervalTime +
+                ", character=" + character.getName() +
+                '}';
+    }
 }

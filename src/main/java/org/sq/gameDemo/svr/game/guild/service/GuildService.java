@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.common.proto.GuildPt;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.Ref;
@@ -27,10 +28,7 @@ import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -109,9 +107,11 @@ public class GuildService {
      * 查询可加入的公会
      * @return
      */
-    public List<Guild> findGuild() {
+    public List<Guild> findGuild(Player player) {
         return guildCache.asMap().values()
-                .stream().filter(guild -> guild.getMemberMap().size() < guild.getMemberSize())
+                .stream()
+                .filter(guild -> guild.getMemberMap().size() < guild.getMemberSize())
+                .filter(guild -> !player.getGuildList().contains(guild.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -125,9 +125,14 @@ public class GuildService {
             senceService.notifyPlayerByDefault(player, "无此公会，使用showGuildCanAttend查看可加入的公会列表");
             return;
         }
-        //
-        if(guild.getPlayerJoinRequestMap().get(player.getUnId()) != null) {
-            senceService.notifyPlayerByDefault(player, "已经申请加入此公会，不要重复申请");
+        if(player.getGuildList().contains(guildId)) {
+            senceService.notifyPlayerByDefault(player, "你已经在此公会中，使用showGuildCanAttend查看可加入的公会列表");
+            return;
+        }
+        AttendGuildReq attendGuildReq = guild.getPlayerJoinRequestMap().get(player.getUnId());
+        long now = System.currentTimeMillis();
+        if(attendGuildReq != null && now - attendGuildReq.getRequestTime() < 5000) {
+            senceService.notifyPlayerByDefault(player, "已经申请加入此公会，不要频繁重复申请");
             return;
         }
         if(guild.getMemberMap().size() >= guild.getMemberSize()) {
@@ -135,10 +140,26 @@ public class GuildService {
             EventBus.publish(new GuildFullEvent(guild));
             return;
         }
-        guild.getPlayerJoinRequestMap().put(player.getUnId(), new AttendGuildReq(player.getUnId()));
+        if(attendGuildReq == null) {
+            guild.getPlayerJoinRequestMap().put(player.getUnId(), new AttendGuildReq(player.getUnId(), player.getName()));
+        } else {
+            attendGuildReq.setRequestTime(now);
+        }
         updateGuild(guild);
         senceService.notifyPlayerByDefault(player, "申请加入" + guild.getName() + " 公会成功，等待同意通过, 申请号为" + player.getUnId());
 
+        ThreadManager.dbTaskPool.execute(() -> {
+            guild.getMemberMap().entrySet().stream()
+                    .filter(entry -> entry.getValue().getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode()))
+                    .findFirst()
+                    .ifPresent(entry -> {
+                        Player chairMan = entityService.getPlayer(entry.getKey());
+                        if(chairMan != null) {
+                            senceService.notifyPlayerByDefault(chairMan, "公会(id=" + guild.getId() + ",name=" + guild.getName
+                                    () +") 有玩家申请入会，使用 showGuildReq id=" + guild.getId() + "查看入会申请");
+                        }
+                    });
+        });
     }
 
     /**
@@ -162,16 +183,23 @@ public class GuildService {
                 .map(Member::getGuildAuth)
                 .collect(Collectors.groupingByConcurrent(Function.identity(), Collectors.counting()));
 
-        Optional<GuildAuth> first = GuildAuth.getQueue().stream().filter(guildAuth -> collect.get(guildAuth.getAuthCode()) < guildAuth.getLimitNum()).findFirst();
-
-        if(first.isPresent()) {
-            log.info("queue找新公会会员的权限: auth1=" + first.get().getAuthCode());
-        }
+//        Optional<GuildAuth> first = GuildAuth.getQueue().stream()
+//                .filter(guildAuth -> collect.get(guildAuth.getAuthCode()) != null)
+//                .filter(guildAuth -> collect.get(guildAuth.getAuthCode()) < guildAuth.getLimitNum())
+//                .findFirst();
+//
+//        if(first.isPresent()) {
+//            log.info("queue找新公会会员的权限: auth1=" + first.get().getAuthCode());
+//        }
 
         for (GuildAuth guildAuth : GuildAuth.getQueue()) {
-            if(collect.get(guildAuth.getAuthCode()) < guildAuth.getLimitNum()) {
-                log.info("queue找新公会会员的权限: auth2=" + guildAuth.getAuthCode());
+            if(collect.get(guildAuth.getAuthCode()) == null) {
                 return guildAuth;
+            } else {
+                if(collect.get(guildAuth.getAuthCode()) < guildAuth.getLimitNum()) {
+                    log.info("queue找新公会会员的权限: auth2=" + guildAuth.getAuthCode());
+                    return guildAuth;
+                }
             }
         }
         return GuildAuth.COMMON;
@@ -180,8 +208,9 @@ public class GuildService {
     /**
      * 退出公会
      */
-    public void exitGuild(Player player, int guildId) {
-        if(!player.getGuildList().contains(guildId)) {
+    public void exitGuild(Player player, Integer guildId) {
+        List<Integer> guildList = player.getGuildList();
+        if(!guildList.contains(guildId)) {
             senceService.notifyPlayerByDefault(player, "您没有加入此公会，使用showGuildList查看已加入的公会列表");
             return;
         }
@@ -190,11 +219,80 @@ public class GuildService {
             senceService.notifyPlayerByDefault(player, "无此公会，使用showGuildList查看已加入的公会列表");
             return;
         }
-        player.getGuildList().remove(guildId);
+        guildList.remove(guildId);
+        if(guildList.contains(guildId)) {
+            System.out.println("0000");
+        }
+        Member member = guild.getMemberMap().get(player.getUnId());
         guild.getMemberMap().remove(player.getUnId());
-        updateGuild(guild);
+        //职位禅让制
+        if(guild.getMemberMap().size() == 0) {
+            //删除公会
+            guildCache.remove(guild);
+            deleteGuild(guild);
+        } else {
+            tidyMemberRight(guild, member);
+            updateGuild(guild);
+        }
         senceService.notifyPlayerByDefault(player, "退出"+ guild.getName() +"公会成功，使用showGuildList查看已加入的公会列表");
 
+    }
+
+    /**
+     * 更正公会职位分布
+     * @param guild
+     * @param removeMan
+     */
+    private void tidyMemberRight(Guild guild, Member removeMan) {
+
+        if(removeMan.getGuildAuth().equals(GuildAuth.COMMON.getAuthCode())) {
+            return;
+        }
+
+        boolean next = false;
+        int tidyAuthCode = 0;
+        for (GuildAuth guildAuth : GuildAuth.getQueue()) {
+            if(removeMan.getGuildAuth().equals(guildAuth.getAuthCode())) {
+                next = true;
+            } else {
+                if(next) {
+                    tidyAuthCode = guildAuth.getAuthCode();
+                    break;
+                }
+            }
+        }
+        int finalTidyAuthCode = tidyAuthCode;
+        //根据贡献最大升职位规则
+        Optional<Member> max = guild.getMemberMap().values()
+                .stream()
+                .filter(member -> member.getGuildAuth().equals(finalTidyAuthCode) && guild.getDonateMap().get(member.getUnId()) != null)
+                .max(Comparator.comparingLong(member -> guild.getDonateMap().get(member.getUnId()).getDonateNum()));
+
+        if(!max.isPresent()) {
+            max = guild.getMemberMap().values()
+                    .stream()
+                    .filter(member -> member.getGuildAuth().equals(finalTidyAuthCode))
+                    .findAny();
+        }
+
+        if(max.isPresent()) {
+            Member member = max.get();
+            member.setGuildAuth(removeMan.getGuildAuth());
+            member.setRight(removeMan.getRight());
+            Player player = entityService.getPlayer(member.getUnId());
+            if(player != null) {
+                senceService.notifyPlayerByDefault(player,  "公会(id=" + guild.getId() + ",name="
+                        + guild.getName() +") 根据公会禅让制， 你职位变为" + guild.getMemberMap().get(player.getUnId()).getRight());
+            } else {
+                member.setChange(true);
+            }
+        }
+
+
+    }
+
+    private void deleteGuild(Guild guild) {
+        guildMapper.deleteByPrimaryKey(guild.getId());
     }
 
     /**
@@ -202,16 +300,23 @@ public class GuildService {
      * @param playerCached
      */
     public void loadGuild(Player playerCached) {
-        if(playerCached.getGuildList().size() == 0 && !Strings.isNullOrEmpty(playerCached.getGuildListStr())) {
-            playerCached.setGuildList(JsonUtil.reSerializableJson(playerCached.getGuildListStr(), new TypeReference<List<Integer>>(){}));
-            playerCached.getGuildList().stream()
-                    .map(id -> guildCache.get(id))
+        List<Integer> list = playerCached.getGuildList();
+        if(list.size() == 0 && !Strings.isNullOrEmpty(playerCached.getGuildListStr())) {
+            list.addAll(JsonUtil.reSerializableJson(playerCached.getGuildListStr(), new TypeReference<List<Integer>>(){}));
+            List<Guild> guildList = list.stream().map(id -> guildCache.get(id)).collect(Collectors.toList());
+
+            guildList.stream()
                     .filter(guild -> guild.getMemberMap().get(playerCached.getUnId()).getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode()))
                     .filter(guild -> guild.getPlayerJoinRequestMap().size() > 0)
                     .forEach(guild ->
-                        senceService.notifyPlayerByDefault(playerCached,  "公会(id=" + guild.getId() + ",name=" + guild.getName
-                                () +") 有玩家申请入会，使用 showGuildReq id=" + guild.getId() + "查看入会申请")
+                        senceService.notifyPlayerByDefault(playerCached,  "公会(id=" + guild.getId() + ",name=" + guild.getName()
+                                +") 有玩家申请入会，使用 showGuildReq id=" + guild.getId() + "查看入会申请")
                     );
+
+            guildList.stream()
+                    .filter(guild -> guild.getMemberMap().get(playerCached.getUnId()).isChange())
+                    .forEach(guild -> senceService.notifyPlayerByDefault(playerCached,  "公会(id=" + guild.getId() + ",name="
+                            + guild.getName() +") 根据公会禅让制， 你职位变为" + guild.getMemberMap().get(playerCached.getUnId()).getRight()));
         }
     }
 
@@ -223,24 +328,24 @@ public class GuildService {
         if(!checkGuild(player, guildId, guild)) {
             return null;
         }
-        if(!guild.getMemberMap().get(player.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode())) {
+        if(!guild.getMemberMap().get(player.getUnId()).getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode())) {
             senceService.notifyPlayerByDefault(player, "您不是此公会的会长，没有权限查看申请，使用showChairManGuild查看有会长权限的公会列表");
             return null;
         }
 
-        return  guild.getPlayerJoinRequestMap().values().stream().collect(Collectors.toList());
+        return  guild.getPlayerJoinRequestMap().values().stream().sorted(Comparator.comparingLong(AttendGuildReq::getRequestTime).reversed()).collect(Collectors.toList());
     }
 
 
     /**
      * 会长同意申请
      */
-    public void agreeEnterGuild(Player chairMan, Integer guildId, Integer unId) {
+    public void agreeEnterGuild(Player chairMan, Integer guildId, Integer unId, boolean agree) {
         Guild guild = guildCache.get(guildId);
         if(!checkGuild(chairMan, guildId, guild)) {
             return;
         }
-        if(!guild.getMemberMap().get(chairMan.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode())) {
+        if(!guild.getMemberMap().get(chairMan.getUnId()).getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode())) {
             senceService.notifyPlayerByDefault(chairMan, "您不是此公会的会长，使用showChairManGuild查看有会长权限的公会列表");
             return;
         }
@@ -251,32 +356,49 @@ public class GuildService {
             senceService.notifyPlayerByDefault(chairMan, "无此申请号，使用 showGuildReq id=" + guildId + "查看入会申请");
             return;
         }
+
         //同意申请
         //检查可以成为的公会成员权限
         GuildAuth newMemberAuth = getNewMemberAuth(guild);
         //获取userEntity 更新在线状态(如果该玩家在线)
         Player player = entityService.getPlayer(attendGuildReq.getUnId());
-        if(player == null) {
+        if(player == null && agree) {
             UserEntity userEntity = entityService.findUserEntity(unId);
             guild.getMemberMap().put(attendGuildReq.getUnId(), new Member(userEntity.getUnId(), userEntity.getName(), userEntity.getExp()
                     / 100, newMemberAuth.getName(), newMemberAuth.getAuthCode()));
-            ThreadManager.dbTaskPool.execute(() ->{
-                String guildStr = entityService.getUserEntityGuildStr(unId);
-                List<Integer> guildList = JsonUtil.reSerializableJson(guildStr, new TypeReference<List<Integer>>() {});
-                guildList.add(guildId);
-                entityService.updateUserEntityGuildStr(unId, JsonUtil.serializableJson(guildList));
-            });
-        } else {
-            player.getGuildList().add(guildId);
-            guild.getMemberMap().put(attendGuildReq.getUnId(),
-                    new Member(player.getUnId(), player.getName(), player.getLevel(), newMemberAuth.getName(), newMemberAuth.getAuthCode()));
-            senceService.notifyPlayerByDefault(player, "加入公会成功，使用showGuildList查看加入的公会列表");
+            updatePlayerGuild(guildId, unId);
+        } else{
+            if(agree) {
+                player.getGuildList().add(guildId);
+                guild.getMemberMap().put(attendGuildReq.getUnId(),
+                        new Member(player.getUnId(), player.getName(), player.getLevel(), newMemberAuth.getName(), newMemberAuth.getAuthCode()));
+                senceService.notifyPlayerByDefault(player, "加入公会成功，使用showGuildList查看加入的公会列表");
+            } else {
+                senceService.notifyPlayerByDefault(player, "公会(id=" + guild.getId() + ",name=" + guild.getName
+                        () +") 拒绝你的入会申请");
+            }
+
         }
         guild.getPlayerJoinRequestMap().remove(unId);
         updateGuild(guild);
-        senceService.notifyPlayerByDefault(chairMan, "已同意");
+        senceService.notifyPlayerByDefault(chairMan, "已处理");
 
     }
+
+    /**
+     * 更新用户数据
+     * @param guildId
+     * @param unId
+     */
+    private void updatePlayerGuild(Integer guildId, Integer unId) {
+        ThreadManager.dbTaskPool.execute(() ->{
+            String guildStr = entityService.getUserEntityGuildStr(unId);
+            List<Integer> guildList = JsonUtil.reSerializableJson(guildStr, new TypeReference<List<Integer>>() {});
+            guildList.add(guildId);
+            entityService.updateUserEntityGuildStr(unId, JsonUtil.serializableJson(guildList));
+        });
+    }
+
     /**
      * 捐献公会物品
      */
@@ -316,11 +438,11 @@ public class GuildService {
             if(donate != null) {
                 donate.setDonateNum(donate.getDonateNum() + item.getItemInfo().getPrice() * count);
             } else {
-                donate = new Donate(donate.getUnId(), donate.getName(), Long.valueOf(item.getItemInfo().getPrice() * count));
+                donate = new Donate(donater.getUnId(), donater.getName(), Long.valueOf(item.getItemInfo().getPrice() * count));
                 guild.getDonateMap().put(donater.getUnId(), donate);
             }
             senceService.notifyPlayerByDefault(donater, "捐献成功");
-
+            updateGuild(guild);
         } else {
             senceService.notifyPlayerByDefault(donater, "捐献失败");
         }
@@ -372,7 +494,7 @@ public class GuildService {
             return;
         }
 
-        if(!guild.getMemberMap().get(player.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode())) {
+        if(!guild.getMemberMap().get(player.getUnId()).getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode())) {
             senceService.notifyPlayerByDefault(player, "您不是此公会的会长，没有权限查看申请，使用showChairManGuild查看有会长权限的公会列表");
             return;
         }
@@ -384,14 +506,16 @@ public class GuildService {
 
         //发邮件
         Item item = new Item();
-        BeanUtils.copyProperties(item, itemRef.ref);
-        if(itemRef.ref.getCount() == count) {
+        BeanUtils.copyProperties(itemRef.ref, item);
+        if(itemRef.ref.getCount().equals(count)) {
             guild.getWarehouseMap().remove(itemRef.ref.getItemInfo().getId(), itemRef.ref);
+        } else {
+            itemRef.ref.setCount(itemRef.ref.getCount() - count);
         }
         item.setCount(count);
 
         mailService.sendMail(entityService.getSystemPlayer(), player.getUnId(),"公会物品获取", "这是您在公会获取的物品", item);
-
+        updateGuild(guild);
     }
 
     /**
@@ -439,7 +563,7 @@ public class GuildService {
         List<Guild> guilds = new ArrayList<>();
         for (Integer guildId : player.getGuildList()) {
             Guild guild = guildCache.get(guildId);
-            if(guild.getMemberMap().get(player.getUnId()).equals(GuildAuth.CHAIRMAN.getAuthCode())) {
+            if(guild.getMemberMap().get(player.getUnId()).getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode())) {
                 guilds.add(guild);
             }
         }
@@ -456,4 +580,12 @@ public class GuildService {
     }
 
 
+    public List<Item> showGuildBag(Player player, Integer guildId) {
+        Guild guild = guildCache.get(guildId);
+        if(!checkGuild(player, guildId, guild)) {
+            return null;
+        }
+        return guild.getWarehouseMap().values().stream().collect(Collectors.toList());
+
+    }
 }

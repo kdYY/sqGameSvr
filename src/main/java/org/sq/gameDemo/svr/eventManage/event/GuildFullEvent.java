@@ -12,5 +12,4 @@ import org.sq.gameDemo.svr.game.guild.model.Guild;
 @AllArgsConstructor
 public class GuildFullEvent extends Event {
     Guild guild;
-
 }

@@ -1,15 +1,13 @@
 package org.sq.gameDemo.svr.game.guild.dao;
 
-import com.google.common.base.Strings;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.game.bag.model.Item;
-import org.sq.gameDemo.svr.game.guild.dao.GuildMapper;
-import org.sq.gameDemo.svr.game.guild.model.Guild;
-import org.sq.gameDemo.svr.game.guild.model.GuildExample;
+import org.sq.gameDemo.svr.game.guild.model.*;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -35,6 +33,10 @@ public class GuildCache {
     public void init() throws Exception {
         List<Guild> guildList = guildMapper.selectByExample(new GuildExample());
         for (Guild guild : guildList) {
+            JsonUtil.setMap(guild.getMemberMap(), guild.getMemberStr(), new TypeReference<Map<Integer, Member>>(){});
+            JsonUtil.setMap(guild.getDonateMap(), guild.getDonateStr(), new TypeReference<Map<Integer, Donate>>(){});
+            JsonUtil.setMap(guild.getPlayerJoinRequestMap(), guild.getJoinRequestStr(), new TypeReference<Map<Integer, AttendGuildReq>>(){});
+            JsonUtil.setMap(guild.getWarehouseMap(), guild.getWarehouseStr(), new TypeReference<Map<Integer, Item>>(){});
             put(guild);
         }
     }

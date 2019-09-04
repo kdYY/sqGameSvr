@@ -5,12 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.GuildPt;
+import org.sq.gameDemo.common.proto.ItemPt;
 import org.sq.gameDemo.common.proto.TradePt;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
 import org.sq.gameDemo.svr.common.dispatch.RespBuilderParam;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.guild.model.AttendGuildReq;
@@ -46,9 +48,11 @@ public class GuildController {
 
     //将guild为pt文件
     private void transformGuildPt(@RespBuilderParam GuildPt.GuildResponseInfo.Builder builder, Guild guild) {
+        if(guild == null) {
+            return;
+        }
         try {
             builder.addGuild(ProtoBufUtil.transformProtoReturnBuilder(GuildPt.Guild.newBuilder(), guild));
-
         } catch (Exception e) {
             e.printStackTrace();
             builder.setResult(Constant.SVR_ERR);
@@ -62,9 +66,11 @@ public class GuildController {
     @OrderMapping(OrderEnum.SHOW_GUILD_CAN_ATTEND)
     public MsgEntity showGuildCanAttend(MsgEntity msgEntity,
                                  @RespBuilderParam GuildPt.GuildResponseInfo.Builder builder) {
-        for (Guild guild : guildService.findGuild()) {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        for (Guild guild : guildService.findGuild(player)) {
             transformGuildPt(builder, guild);
         }
+        builder.setResult(Constant.SUCCESS);
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
@@ -86,7 +92,7 @@ public class GuildController {
      */
     @OrderMapping(OrderEnum.SHOW_GUILD_REQUEST)
     public MsgEntity showGuildRequest(MsgEntity msgEntity,
-                                 @ReqParseParam GuildPt.GuildRequestInfo requestInfo,
+                                  @ReqParseParam GuildPt.GuildRequestInfo requestInfo,
                                  @RespBuilderParam GuildPt.GuildResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         List<AttendGuildReq> attendGuildReqs = guildService.showGuildReq(player, requestInfo.getGuildId());
@@ -98,6 +104,7 @@ public class GuildController {
                 builder.setResult(Constant.SVR_ERR);
             }
         }
+        builder.setResult(Constant.SUCCESS);
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
@@ -110,7 +117,7 @@ public class GuildController {
     public void agreeAttendRequest(MsgEntity msgEntity,
                                  @ReqParseParam GuildPt.GuildRequestInfo requestInfo) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
-        guildService.agreeEnterGuild(player, requestInfo.getGuildId(), requestInfo.getUnId());
+        guildService.agreeEnterGuild(player, requestInfo.getGuildId(), requestInfo.getUnId(),requestInfo.getAgree());
     }
 
     /**
@@ -145,6 +152,8 @@ public class GuildController {
         for (Guild guild : guildList) {
             transformGuildPt(builder, guild);
         }
+        builder.setResult(Constant.SUCCESS);
+
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
@@ -171,9 +180,22 @@ public class GuildController {
         for (Guild guild : guildList) {
             transformGuildPt(builder, guild);
         }
+        builder.setResult(Constant.SUCCESS);
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }
 
-
+    @OrderMapping(OrderEnum.SHOW_GUILD_BAG)
+    public MsgEntity showGuildBag(MsgEntity msgEntity,
+                                  @ReqParseParam GuildPt.GuildRequestInfo requestInfo,
+                                  @RespBuilderParam GuildPt.GuildResponseInfo.Builder builder) throws Exception {
+        Player player = entityService.getPlayer(msgEntity.getChannel());
+        List<Item> itemList = guildService.showGuildBag(player, requestInfo.getGuildId());
+        for (Item item : itemList) {
+            builder.addItem(ProtoBufUtil.transformProtoReturnBuilder(ItemPt.Item.newBuilder(), item));
+        }
+        builder.setResult(Constant.SUCCESS);
+        msgEntity.setData(builder.build().toByteArray());
+        return msgEntity;
+    }
 }

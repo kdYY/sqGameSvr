@@ -8,6 +8,7 @@ public class AttendGuildReq {
     private Long requestTime;
     private Integer unId;
     private boolean agree;
+    private String name;
 
     public boolean isAgree() {
         return agree;
@@ -16,7 +17,10 @@ public class AttendGuildReq {
         return agree;
     }
 
-    public AttendGuildReq(Integer unId) {
+
+    public AttendGuildReq(){}
+    public AttendGuildReq(Integer unId, String name) {
+        this.name = name;
         this.unId = unId;
         this.requestTime = System.currentTimeMillis();
         agree = false;

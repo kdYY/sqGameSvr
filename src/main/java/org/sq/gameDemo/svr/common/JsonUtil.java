@@ -40,18 +40,17 @@ public class JsonUtil {
     /**
      * 获取map
      */
-    public static  <T extends Map> T getMap(T t, String str)  {
+    public static  <T extends Map> void setMap(T t, String str, TypeReference<T> typeReference)  {
         if(t.size() == 0 && !StringUtils.isEmpty(str)) {
-            t = reSerializableJson(str, new TypeReference<T>(){});
+            t.putAll(reSerializableJson(str, typeReference));;
         }
-        return t;
     }
 
     /**
      * 获取jsonStr
      */
     public static  <T extends Map> String getJsonStr(T t, String str)  {
-        if(t.size() != 0 && StringUtils.isEmpty(str)) {
+        if(t.size() != 0) {
            str = serializableJson(t);
         }
         return str;

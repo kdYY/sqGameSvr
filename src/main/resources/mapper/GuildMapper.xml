@@ -113,18 +113,18 @@
         </if>
     </delete>
 
-    <insert id="insert" parameterType="org.sq.gameDemo.svr.game.guild.model.Guild" >
-        insert into guild (id, name, level, 
+    <insert id="insert" parameterType="org.sq.gameDemo.svr.game.guild.model.Guild" useGeneratedKeys="true" keyProperty="id">
+        insert into guild (name, level,
             member_size, warehouse_str, warehouse_size, 
             donate_str, join_request_str, member_str
             )
-        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, 
+        values ( #{name,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER},
             #{memberSize,jdbcType=INTEGER}, #{warehouseStr,jdbcType=LONGVARCHAR}, #{warehouseSize,jdbcType=INTEGER}, 
             #{donateStr,jdbcType=LONGVARCHAR}, #{joinRequestStr,jdbcType=LONGVARCHAR}, #{memberStr,jdbcType=LONGVARCHAR}
             )
     </insert>
 
-    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.guild.model.Guild" >
+    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.guild.model.Guild" useGeneratedKeys="true" keyProperty="id">
         insert into guild
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="id != null" >
