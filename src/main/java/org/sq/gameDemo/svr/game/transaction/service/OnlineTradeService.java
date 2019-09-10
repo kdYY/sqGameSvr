@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.Ref;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.common.customException.CustomException;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.FirstTradeEvent;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.model.ItemInfo;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
@@ -62,6 +64,7 @@ public class OnlineTradeService {
         }
         transactionCache.putOnlineTrade(onlineTrade);
         senceService.notifyPlayerByDefault(onlineTrade.getAccpeter(), itemOwner.getName() + "向你发起交易，交易号为 id=" + onlineTrade.getId());
+        EventBus.publish(new FirstTradeEvent(itemOwner));
     }
 
 
@@ -88,6 +91,7 @@ public class OnlineTradeService {
         }
         //更新数据库
         tradeService.updateTrace(onlineTrade);
+        EventBus.publish(new FirstTradeEvent(accpeter));
     }
 
 

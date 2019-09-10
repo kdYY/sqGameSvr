@@ -3,26 +3,19 @@ package org.sq.gameDemo.svr.game.fight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.Constant;
-import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.eventManage.EventBus;
-import org.sq.gameDemo.svr.eventManage.event.MonsterDeadEvent;
-import org.sq.gameDemo.svr.eventManage.event.PlayerDeadEvent;
-import org.sq.gameDemo.svr.game.bag.model.Item;
+import org.sq.gameDemo.svr.eventManage.event.PlayerPKEvent;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
-import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
-import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
-import sun.rmi.runtime.Log;
 
-import java.lang.annotation.Target;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -80,7 +73,6 @@ public class FightService {
                 //武器损耗
                 equipDurable(player);
             }
-
         }
     }
 
@@ -92,7 +84,6 @@ public class FightService {
         //找到目标
         Character target = null;
         //找到怪物
-
         target = senecMsg.getMonsterList()
                 .stream()
                 .filter(monster -> monster.getId().equals(targetId) && monster.getHp() > 0)
@@ -109,6 +100,7 @@ public class FightService {
                     .filter(pl -> pl.getId().equals(targetId) && pl.getHp() > 0)
                     .findFirst()
                     .orElse(null);
+
         }
         //不是玩家也不是怪物
         if(target == null) {
@@ -199,8 +191,7 @@ public class FightService {
         if(attacter instanceof Player && entityService.playerIsDead(player, attacter)) {
             senceService.notifyPlayerByDefault(attacter, player.getName() + "(id=" + player.getId() + ")被你杀死了");
             // 抛出玩家被其他玩家打死的事件
-            EventBus.publish(new PlayerDeadEvent(attacter, player));
-        } else {
+            EventBus.publish(new PlayerPKEvent((Player) attacter, player));
 
         }
     }

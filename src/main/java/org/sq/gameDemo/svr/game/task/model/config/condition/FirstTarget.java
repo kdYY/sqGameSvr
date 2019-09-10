@@ -16,4 +16,8 @@ public enum FirstTarget {
         this.code = code;
         this.meaning = meaning;
     }
+
+    public int getCode() {
+        return code;
+    }
 }

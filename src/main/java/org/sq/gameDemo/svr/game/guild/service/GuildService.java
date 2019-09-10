@@ -14,6 +14,7 @@ import org.sq.gameDemo.svr.common.Ref;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.GuildFullEvent;
+import org.sq.gameDemo.svr.eventManage.event.PlayerAddGuildEvent;
 import org.sq.gameDemo.svr.game.bag.model.Bag;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.model.ItemType;
@@ -359,26 +360,29 @@ public class GuildService {
 
         //同意申请
         //检查可以成为的公会成员权限
-        GuildAuth newMemberAuth = getNewMemberAuth(guild);
+        GuildAuth auth = getNewMemberAuth(guild);
         //获取userEntity 更新在线状态(如果该玩家在线)
         Player player = entityService.getPlayer(attendGuildReq.getUnId());
-        if(player == null && agree) {
-            UserEntity userEntity = entityService.findUserEntity(unId);
-            guild.getMemberMap().put(attendGuildReq.getUnId(), new Member(userEntity.getUnId(), userEntity.getName(), userEntity.getExp()
-                    / 100, newMemberAuth.getName(), newMemberAuth.getAuthCode()));
-            updatePlayerGuild(guildId, unId);
-        } else{
-            if(agree) {
+        if(agree) {
+            UserEntity un = null;
+            if(player == null) {
+                un = entityService.findUserEntity(unId);
+                guild.getMemberMap().put(attendGuildReq.getUnId(),
+                        new Member(un.getUnId(), un.getName(), un.getExp() / 100, auth.getName(), auth.getAuthCode()));
+                updatePlayerGuild(guildId, unId);
+            } else{
                 player.getGuildList().add(guildId);
                 guild.getMemberMap().put(attendGuildReq.getUnId(),
-                        new Member(player.getUnId(), player.getName(), player.getLevel(), newMemberAuth.getName(), newMemberAuth.getAuthCode()));
+                        new Member(player.getUnId(), player.getName(), player.getLevel(), auth.getName(), auth.getAuthCode()));
                 senceService.notifyPlayerByDefault(player, "加入公会成功，使用showGuildList查看加入的公会列表");
-            } else {
-                senceService.notifyPlayerByDefault(player, "公会(id=" + guild.getId() + ",name=" + guild.getName
-                        () +") 拒绝你的入会申请");
             }
-
+            EventBus.publish(new PlayerAddGuildEvent(player, un));
+        } else {
+            senceService.notifyPlayerByDefault(player, "公会(id=" + guild.getId() + ",name=" + guild.getName
+                    () +") 拒绝你的入会申请");
         }
+
+
         guild.getPlayerJoinRequestMap().remove(unId);
         updateGuild(guild);
         senceService.notifyPlayerByDefault(chairMan, "已处理");

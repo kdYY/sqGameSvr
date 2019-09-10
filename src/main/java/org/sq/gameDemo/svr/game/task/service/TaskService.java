@@ -102,7 +102,7 @@ public class TaskService {
     /**
      * 检测任务进度， 任务是否完成 用于事件检查
      */
-    public void checkTaskProgress(Player player, TaskType taskType, FinishField finishField, Integer target, Consumer<Progress> consumer) {
+    public void checkTaskProgress(Player player, TaskType taskType, FinishField finishField, Integer target, Consumer<Progress> progressAction) {
 
         List<TaskProgress> taskProgressList = player.getTaskProgressMap().values()
                 .stream()
@@ -114,7 +114,7 @@ public class TaskService {
             //根据field进行条件的判断
             taskProgress.getProgresseList().stream()
                     .filter(tp -> tp.getCondition().getTarget().equals(target))
-                    .forEach(consumer);
+                    .forEach(progressAction);
 
             if(taskProgress.getProgresseList().stream().filter(p -> !p.isFinished()).findFirst().isPresent()) {
                 //任务完成

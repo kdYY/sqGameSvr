@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.Ref;
 import org.sq.gameDemo.svr.common.customException.CustomException;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.FirstTradeEvent;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
@@ -95,6 +97,7 @@ public class DealTradeService {
                 sendDealMail(dealInCache);
                 tradeService.updateTrace(dealInCache);
             }
+            EventBus.publish(new FirstTradeEvent(accpeter));
 
         }
 
@@ -179,6 +182,7 @@ public class DealTradeService {
                         + ", 已放入交易栏，交易号id="+ dealTrade.getId()
                         + "使用showDeal " + "id="+ dealTrade.getId()+" 查看交易栏吧");
 
+        EventBus.publish(new FirstTradeEvent(itemOwner));
     }
 
 
@@ -203,7 +207,7 @@ public class DealTradeService {
     }
 
     /**
-     * 检测是否创建交易
+     * 检测是否可以创建交易
      */
     private boolean tryCreateDeal(Player itemOwner, Long auctionItemId, Integer count, Integer price, Ref<Item> itemRef, Integer
             tradeModel) {
