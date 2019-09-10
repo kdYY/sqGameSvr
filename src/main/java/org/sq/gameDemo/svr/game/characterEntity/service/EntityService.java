@@ -9,6 +9,7 @@ import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
+import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
@@ -27,6 +28,7 @@ import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
+import org.sq.gameDemo.svr.game.task.service.TaskService;
 import org.sq.gameDemo.svr.game.transaction.service.OnlineTradeService;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.sq.gameDemo.svr.game.user.service.UserService;
@@ -41,6 +43,8 @@ public class EntityService {
     @Autowired
     private UserEntityMapper userEntityMapper;
 
+    @Autowired
+    private  SenceEntityCache senceEntityCache;
     @Autowired
     private UserService userService;
     @Autowired
@@ -67,6 +71,8 @@ public class EntityService {
     private OnlineTradeService onlineTradeService;
     @Autowired
     private GuildService guildService;
+    @Autowired
+    private TaskService taskService;
 
     /**
      * 用户登录
@@ -129,8 +135,9 @@ public class EntityService {
             //老用户
             throw new CustomException.BindRoleInSenceException("角色只能绑定一次");
         }
+        ;
         UserEntity userEntity = new UserEntity();
-        userEntity.setName(Constant.DefaultPlayerName + userId);
+        userEntity.setName(userService.getUser(userId));
         userEntity.setTypeId(typeId);
         userEntity.setUserId(userId);
         userEntity.setSenceId(Constant.DEFAULT_SENCE_ID);
@@ -139,6 +146,9 @@ public class EntityService {
         //返回初始化完毕的玩家
         Player initedPlayer = getInitedPlayer(userId, channel);
         senceService.addPlayerInSence(initedPlayer);
+        //初始化任务
+        taskService.getNewPlayerTask(initedPlayer);
+
         return initedPlayer;
     }
 
@@ -173,6 +183,7 @@ public class EntityService {
         mailService.loadMail(playerCached);
         onlineTradeService.loadTrace(playerCached);
         guildService.loadGuild(playerCached);
+        taskService.loadTaskProgress(playerCached);
         return playerCached;
     }
 
@@ -282,11 +293,6 @@ public class EntityService {
 
     /**
      * 将entityType转换为proto
-     * @param builder
-     * @throws IllegalAccessException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
      */
     public void transformEntityTypeProto(EntityTypeProto.EntityTypeResponseInfo.Builder builder) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         for (EntityType entityType : entityTypeCache.getAllEntityTypes()) {
@@ -401,5 +407,12 @@ public class EntityService {
     //已经进行异步
     public void updateUserEntityGuildStr(int unId, String guildListStr) {
         userEntityMapper.updateGuildStr(unId, guildListStr);
+    }
+
+    /**
+     * 获取怪物
+     */
+    public SenceEntity getSenceEntity(Integer id) {
+        return senceEntityCache.get((long)id);
     }
 }

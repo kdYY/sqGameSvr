@@ -48,7 +48,7 @@ public class test {
         skillMap.put(5, new Attack(-100, -1L, 1000L));
     }
 
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
 
         List<Integer> buffList = new ArrayList<>();
         long[] cdRemain = new long[5];

@@ -11,5 +11,4 @@ import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 @AllArgsConstructor
 public class PlayerAddGuildEvent extends Event {
     Player player;
-    UserEntity un;
 }

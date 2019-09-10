@@ -148,7 +148,7 @@ public class GuildService {
         }
         updateGuild(guild);
         senceService.notifyPlayerByDefault(player, "申请加入" + guild.getName() + " 公会成功，等待同意通过, 申请号为" + player.getUnId());
-
+        EventBus.publish(new PlayerAddGuildEvent(player));
         ThreadManager.dbTaskPool.execute(() -> {
             guild.getMemberMap().entrySet().stream()
                     .filter(entry -> entry.getValue().getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode()))
@@ -376,7 +376,7 @@ public class GuildService {
                         new Member(player.getUnId(), player.getName(), player.getLevel(), auth.getName(), auth.getAuthCode()));
                 senceService.notifyPlayerByDefault(player, "加入公会成功，使用showGuildList查看加入的公会列表");
             }
-            EventBus.publish(new PlayerAddGuildEvent(player, un));
+
         } else {
             senceService.notifyPlayerByDefault(player, "公会(id=" + guild.getId() + ",name=" + guild.getName
                     () +") 拒绝你的入会申请");

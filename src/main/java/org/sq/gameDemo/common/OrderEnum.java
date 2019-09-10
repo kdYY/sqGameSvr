@@ -61,7 +61,11 @@ public enum OrderEnum {
     EXIT_GUILD("exitGuild", 163),
     DONATE_ITEM("donateItem", 164),
     GET_GUILD_ITEM("getGuildItem", 165),
-    SHOW_CHAIRMAN_GUILD("showChairManGuild", 166), SHOW_GUILDLIST("showGuildList", 167), SHOW_GUILD_BAG("showGuildWareHouse", 168);
+    SHOW_CHAIRMAN_GUILD("showChairManGuild", 166),
+    SHOW_GUILDLIST("showGuildList", 167),
+    SHOW_GUILD_BAG("showGuildWareHouse", 168),
+    SHOW_TASK_CAN_ACCEPT("showTaskCanAccpet", 169),
+    SHOW_TASK("showtask", 170), ACCEPT_TASK("acceptTask", 171);
 
 
     private String order;

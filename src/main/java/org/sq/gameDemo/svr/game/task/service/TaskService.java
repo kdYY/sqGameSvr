@@ -3,11 +3,17 @@ package org.sq.gameDemo.svr.game.task.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.common.proto.ItemInfoPt;
+import org.sq.gameDemo.common.proto.TaskPt;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.ThreadManager;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.model.ItemInfo;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
+import org.sq.gameDemo.svr.game.characterEntity.model.EntityType;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
+import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.task.dao.TaskCache;
@@ -19,6 +25,7 @@ import org.sq.gameDemo.svr.game.task.model.config.TaskReward;
 import org.sq.gameDemo.svr.game.task.model.config.TaskType;
 import org.sq.gameDemo.svr.game.task.model.config.condition.FinishField;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -88,15 +95,6 @@ public class TaskService {
     }
 
 
-    /**
-     * 保存，创建任务
-     */
-
-
-
-
-
-
 
 
     /**
@@ -135,12 +133,11 @@ public class TaskService {
     /**
      * 使用showTaskCanAccpet查看当前可领取任务
      */
-    public List<Task> showTaskCanAccept(Player player) {
+    public List<TaskProgress> showTaskCanAccept(Player player) {
         return player.getTaskProgressMap().values()
                 .stream()
                 .filter(t -> t.getTask().getLevel() <= player.getLevel())
                 .filter(t -> t.getState().equals(TaskStateConstant.CAN_ACCEPT))
-                .map(t -> t.getTask())
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -171,7 +168,7 @@ public class TaskService {
             updateTaskProgress(taskProgress);
             senceService.notifyPlayerByDefault(player, "接受新任务:(id=" + task.getId() + ", name=" + task.getName() + ") 使用showTask查看当前任务吧!");
         } else {
-            senceService.notifyPlayerByDefault(player, "任务尚未激活，使用showTaskCanAccpet查看当前可领取任务");
+            senceService.notifyPlayerByDefault(player, "任务尚未激活，使用showTaskCanAccpet查看其他可领取任务");
         }
     }
 
@@ -179,7 +176,7 @@ public class TaskService {
     /**
      * 任务发放奖励 触发下一个任务
      */
-    public void finishTask(Player player, TaskProgress taskProgress) {
+    private void finishTask(Player player, TaskProgress taskProgress) {
         taskProgress.setState(TaskStateConstant.FINISH);
         updateTaskProgress(taskProgress);
         TaskReward taskReward = taskProgress.getTask().getTaskReward();
@@ -201,6 +198,7 @@ public class TaskService {
     //增加任务
     private void addAcceptTask(Player player, Integer taskId) {
         if(player.getTaskProgressMap().get(taskId) != null) {
+            senceService.notifyPlayerByDefault(player, "任务已存在");
             return;
         }
         Task task = taskCache.get(taskId);
@@ -224,21 +222,56 @@ public class TaskService {
     }
 
 
+    //展示任务进度, 这是我写的最沙雕的代码之一
+    public TaskPt.Task.Builder TaskProTransformTaskPt(TaskProgress taskProgress) throws Exception {
+
+        TaskPt.Task.Builder taskBuilder = TaskPt.Task.newBuilder();
+        Task task = taskProgress.getTask();
+        taskBuilder.setDescription(task.getDescription());
+        taskBuilder.setTaskId(task.getId());
+        taskBuilder.setName(task.getName());
+        List<TaskReward.RewardItem> itemList = task.getTaskReward().getItemList();
+        for (TaskReward.RewardItem rewardItem : itemList) {
+            ItemInfoPt.ItemInfo.Builder itemInfoBuilder = ItemInfoPt.ItemInfo.newBuilder();
+            ProtoBufUtil.transformProtoReturnBuilder(itemInfoBuilder, bagService.getItemInfo(rewardItem.getItemInfoId()));
+            itemInfoBuilder.setCount(rewardItem.getNum());
+            taskBuilder.addReward(itemInfoBuilder);
+        }
+        taskBuilder.setId(taskProgress.getId());
+        taskBuilder.setState(taskProgress.getState());
+
+        StringBuilder pro = new StringBuilder();
+        for (Progress progress : taskProgress.getProgresseList()) {
+            FinishCondition condition = progress.getCondition();
+            taskCondition(pro, condition);
+            pro.append("(" + progress.getProgressNum().get() + "/" + condition.getGoal() + ")\r\n");
+        }
+        taskBuilder.setTaskProgress(pro.toString());
+        return taskBuilder;
+    }
+
+    //展示任务的条件, 这是我写的最沙雕的代码之二
+    private void taskCondition(StringBuilder pro,  FinishCondition condition) {
+        Integer field = condition.getField();
+        Integer target = condition.getTarget();
+        if(field.equals(FinishField.ITEMINFO_ID.getField())) {
+            ItemInfo itemInfo = bagService.getItemInfo(target);
+            pro.append(itemInfo.getName());
+        } else if(field.equals(FinishField.ENTITY_TYPE.getField())) {
+            SenceEntity senceEntity = entityService.getSenceEntity(target);
+            pro.append(senceEntity.getName());
+        } else {
+            pro.append("进度");
+        }
+
+    }
 
 
     /**
-     * 放弃任务
+     * 新玩家初始化任务
+     * @param initedPlayer
      */
-
-
-
-
-
-
-
-
-
-
-
-
+    public void getNewPlayerTask(Player initedPlayer) {
+        addAcceptTask(initedPlayer, Constant.NEW_PLAYER_TASK_ID);
+    }
 }

@@ -3,6 +3,7 @@ package org.sq.gameDemo.svr.game.task.model;
 import com.google.common.base.Strings;
 import lombok.Data;
 import org.sq.gameDemo.svr.common.JsonUtil;
+import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class TaskProgress {
     private Long beginTime;
     private Long endTime;
     //存放
+    @ProtoField(Ignore = true)
     private String progress;
 
     public TaskProgress() {}
@@ -32,10 +34,8 @@ public class TaskProgress {
         this.task = task;
     }
 
-    //初始化任务进度
     public void setTask(Task task) {
         this.task = task;
-
     }
 
     List<Progress> progresseList = new CopyOnWriteArrayList<>();

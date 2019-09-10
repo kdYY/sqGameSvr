@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.UserProto;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.common.UserCache;
@@ -208,5 +209,15 @@ public class UserService {
             return users.get(0);
         }
         return null;
+    }
+
+    public String getUser(Integer userId) {
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andIdEqualTo(userId);
+        List<User> users = userMapper.selectByExample(userExample);
+        if(users != null && users.size() >= 1) {
+            return users.get(0).getName();
+        }
+        return Constant.DefaultPlayerName;
     }
 }
