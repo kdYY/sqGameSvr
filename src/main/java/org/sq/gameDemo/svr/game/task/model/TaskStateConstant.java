@@ -1,6 +1,6 @@
 package org.sq.gameDemo.svr.game.task.model;
 
-public class TaskState {
+public class TaskStateConstant {
     /**0 不可接状态*/
     public static final int CANNOT_ACCEPT = 0;
 

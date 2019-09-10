@@ -18,4 +18,8 @@ public enum TaskKind {
     TaskKind(Integer kind) {
         this.kind = kind;
     }
+
+    public Integer getKind() {
+        return kind;
+    }
 }

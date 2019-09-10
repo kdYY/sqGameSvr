@@ -5,24 +5,23 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.sq.gameDemo.common.proto.MessageProto;
 import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.poiUtil.PoiUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.ConversationEvent;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
-import org.sq.gameDemo.svr.game.copyScene.service.CopySceneService;
 import org.sq.gameDemo.svr.game.scene.model.GameScene;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
@@ -224,13 +223,25 @@ public class SenceService {
         return player;
     }
 
-    public Npc getNpcInSence(Integer senceId, Long npcId) {
+    /**
+     * 找到场景中的npc
+     */
+    private Npc getNpcInSence(Integer senceId, Long npcId) {
         return getSingleByCondition(
                 senceIdAndSenceMsgMap.getIfPresent(senceId).getNpcList(),
                 o -> o.getId().equals(npcId));
     }
 
-    public static <T> T getSingleByCondition(List<T> list, Function<T,Boolean> function) {
+    /**
+     * 获取聊天的npc
+     */
+    public Npc getTalkNpc(Player player, Integer senceId, Long npcId) {
+        Npc npc = getNpcInSence(senceId, npcId);
+        EventBus.publish(new ConversationEvent(player, npc));
+        return npc;
+    }
+
+    private <T> T getSingleByCondition(List<T> list, Function<T,Boolean> function) {
         if(Objects.isNull(list) || list.size() == 0) {
             return null;
         }

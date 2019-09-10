@@ -7,6 +7,7 @@ import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.CopySceneMonsterDeadEvent;
 import org.sq.gameDemo.svr.eventManage.event.MonsterBeAttackedEvent;
 import org.sq.gameDemo.svr.eventManage.event.MonsterDeadEvent;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
@@ -62,7 +63,7 @@ public class MonsterAIService {
             //是副本，同时死亡 从副本场景移除
             SenceConfigMsg sence = senceService.getSenecMsgById(targetMonster.getSenceId());
             if(sence instanceof CopyScene) {
-                copySceneMonsterDead(targetMonster);
+                copySceneMonsterDead((CopyScene)sence, targetMonster);
                 return;
             }
 
@@ -87,7 +88,7 @@ public class MonsterAIService {
                         + player.getExp()
                 );
                 // 抛出怪物被玩家打死的事件
-                EventBus.publish(new MonsterDeadEvent(target, targetMonster));
+                EventBus.publish(new MonsterDeadEvent(player, targetMonster));
                 return;
             }
             //怪物把宝宝打死
@@ -100,7 +101,7 @@ public class MonsterAIService {
         }
     }
 
-    private void copySceneMonsterDead(Monster targetMonster) {
+    private void copySceneMonsterDead(CopyScene sence, Monster targetMonster) {
         if(!senceService.removeMonster(targetMonster)) {
             throw new CustomException.RemoveFailedException("怪物移除失败");
         } else {
@@ -108,6 +109,7 @@ public class MonsterAIService {
         }
 
         targetMonster.setDeadStatus();
+        EventBus.publish(new CopySceneMonsterDeadEvent(sence, targetMonster));
     }
 
     /**

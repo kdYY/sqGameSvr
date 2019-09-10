@@ -9,6 +9,8 @@ import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.ThreadManager;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.CollectorEvent;
 import org.sq.gameDemo.svr.game.bag.dao.BagMapper;
 import org.sq.gameDemo.svr.game.bag.dao.ItemInfoCache;
 import org.sq.gameDemo.svr.game.bag.model.Bag;
@@ -117,7 +119,10 @@ public class BagService {
      */
     public Item createItem(Integer itemInfoId, Integer count, Integer level) {
         ItemInfo itemInfo = getItemInfo(itemInfoId);
+        return createItem(itemInfo, count,level);
+    }
 
+    public Item createItem(ItemInfo itemInfo, Integer count, Integer level) {
         if (Objects.isNull(itemInfo)) {
             return null;
         }
@@ -205,6 +210,7 @@ public class BagService {
             senceService.notifyPlayerByDefault(player, "背包已满，请清除背包");
             return false;
         }
+        EventBus.publish(new CollectorEvent(player, item));
         updateBagInDB(player);
         return true;
     }

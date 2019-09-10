@@ -12,7 +12,7 @@ import java.util.List;
 public class TaskReward {
 
 
-    private List<RewardItem> rewardItemList = new ArrayList<>();
+    private List<RewardItem> itemList = new ArrayList<>();
     private List<Integer> nextTask = new ArrayList<>();
 
     @Data

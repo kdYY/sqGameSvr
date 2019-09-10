@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.sq.gameDemo.svr.game.task.dao.TaskProgressMapper" >
+
+    <resultMap id="BaseResultMap" type="org.sq.gameDemo.svr.game.task.model.TaskProgress" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="task_id" property="taskId" jdbcType="INTEGER" />
+        <result column="un_id" property="unId" jdbcType="INTEGER" />
+        <result column="state" property="state" jdbcType="INTEGER" />
+        <result column="begin_time" property="beginTime" jdbcType="BIGINT" />
+        <result column="end_time" property="endTime" jdbcType="BIGINT" />
+        <result column="progress" property="progress" jdbcType="LONGVARCHAR" />
+    </resultMap>
+
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List" >
+        id, task_id, un_id, state, begin_time, end_time, progress
+    </sql>
+
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgressExample" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from task_progress
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="Base_Column_List" />
+        from task_progress
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from task_progress
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteByExample" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgressExample" >
+        delete from task_progress
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+
+    <insert id="insert" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgress" >
+        insert into task_progress (id, task_id, un_id, 
+            state, begin_time, end_time, 
+            progress)
+        values (#{id,jdbcType=INTEGER}, #{taskId,jdbcType=INTEGER}, #{unId,jdbcType=INTEGER}, 
+            #{state,jdbcType=INTEGER}, #{beginTime,jdbcType=BIGINT}, #{endTime,jdbcType=BIGINT}, 
+            #{progress,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgress" >
+        insert into task_progress
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="taskId != null" >
+                task_id,
+            </if>
+            <if test="unId != null" >
+                un_id,
+            </if>
+            <if test="state != null" >
+                state,
+            </if>
+            <if test="beginTime != null" >
+                begin_time,
+            </if>
+            <if test="endTime != null" >
+                end_time,
+            </if>
+            <if test="progress != null" >
+                progress,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="taskId != null" >
+                #{taskId,jdbcType=INTEGER},
+            </if>
+            <if test="unId != null" >
+                #{unId,jdbcType=INTEGER},
+            </if>
+            <if test="state != null" >
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="beginTime != null" >
+                #{beginTime,jdbcType=BIGINT},
+            </if>
+            <if test="endTime != null" >
+                #{endTime,jdbcType=BIGINT},
+            </if>
+            <if test="progress != null" >
+                #{progress,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByExample" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgressExample" resultType="java.lang.Integer" >
+        select count(*) from task_progress
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByExampleSelective" parameterType="map" >
+        update task_progress
+        <set >
+            <if test="record.id != null" >
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.taskId != null" >
+                task_id = #{record.taskId,jdbcType=INTEGER},
+            </if>
+            <if test="record.unId != null" >
+                un_id = #{record.unId,jdbcType=INTEGER},
+            </if>
+            <if test="record.state != null" >
+                state = #{record.state,jdbcType=INTEGER},
+            </if>
+            <if test="record.beginTime != null" >
+                begin_time = #{record.beginTime,jdbcType=BIGINT},
+            </if>
+            <if test="record.endTime != null" >
+                end_time = #{record.endTime,jdbcType=BIGINT},
+            </if>
+            <if test="record.progress != null" >
+                progress = #{record.progress,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByExample" parameterType="map" >
+        update task_progress
+        set id = #{record.id,jdbcType=INTEGER},
+            task_id = #{record.taskId,jdbcType=INTEGER},
+            un_id = #{record.unId,jdbcType=INTEGER},
+            state = #{record.state,jdbcType=INTEGER},
+            begin_time = #{record.beginTime,jdbcType=BIGINT},
+            end_time = #{record.endTime,jdbcType=BIGINT},
+            progress = #{record.progress,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgress" >
+        update task_progress
+        <set >
+            <if test="taskId != null" >
+                task_id = #{taskId,jdbcType=INTEGER},
+            </if>
+            <if test="unId != null" >
+                un_id = #{unId,jdbcType=INTEGER},
+            </if>
+            <if test="state != null" >
+                state = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="beginTime != null" >
+                begin_time = #{beginTime,jdbcType=BIGINT},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime,jdbcType=BIGINT},
+            </if>
+            <if test="progress != null" >
+                progress = #{progress,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgress" >
+        update task_progress
+        set task_id = #{taskId,jdbcType=INTEGER},
+            un_id = #{unId,jdbcType=INTEGER},
+            state = #{state,jdbcType=INTEGER},
+            begin_time = #{beginTime,jdbcType=BIGINT},
+            end_time = #{endTime,jdbcType=BIGINT},
+            progress = #{progress,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

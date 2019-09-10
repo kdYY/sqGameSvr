@@ -189,11 +189,10 @@ public class EntityController {
                                  @RespBuilderParam NpcPt.NpcRespInfo.Builder builder) throws Exception {
         try {
             long npcId = requestInfo.getId();
-            Integer userId = UserCache.getUserIdByChannel(msgEntity.getChannel());
             Player player = entityService.getPlayer(msgEntity.getChannel());
-            Npc npc = senceService.getNpcInSence(player.getSenceId(), npcId);
+            Npc npc = senceService.getTalkNpc(player, player.getSenceId(), npcId);
             if(npc == null) {
-                builder.setContent("无此npc, npc编号出错");
+                builder.setContent("无此npc, npcId出错");
                 builder.setResult(Constant.ORDER_ERR);
             } else {
                 NpcPt.Npc npcProto =

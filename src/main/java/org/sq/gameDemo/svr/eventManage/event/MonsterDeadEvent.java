@@ -5,6 +5,7 @@ import lombok.Data;
 import org.sq.gameDemo.svr.eventManage.Event;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
+import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 
@@ -12,7 +13,7 @@ import org.sq.gameDemo.svr.game.skills.model.Skill;
 @AllArgsConstructor
 public class MonsterDeadEvent extends Event {
 
-    private Character attacter;
+    private Player attacter;
     private  Monster targetMonster;
 
 }

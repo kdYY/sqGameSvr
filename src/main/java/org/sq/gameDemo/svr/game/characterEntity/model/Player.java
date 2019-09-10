@@ -16,6 +16,8 @@ import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
+import org.sq.gameDemo.svr.game.task.model.Task;
+import org.sq.gameDemo.svr.game.task.model.TaskProgress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +134,12 @@ public class Player extends UserEntity implements Character {
     //baby
     @ProtoField(Ignore = true)
     private Baby baby;
+
     @ProtoField(Ignore = true)
-    private List<Integer> guildList = new ArrayList<>();
+    private List<Integer> guildList = new CopyOnWriteArrayList<>();
+
+    //<taskId, taskProgress>
+    @ProtoField(Ignore = true)
+    private Map<Integer, TaskProgress> taskProgressMap = new ConcurrentHashMap<>();
 
 }

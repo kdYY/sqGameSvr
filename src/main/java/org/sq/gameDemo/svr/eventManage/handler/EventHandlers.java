@@ -6,12 +6,8 @@ import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.eventManage.Event;
 import org.sq.gameDemo.svr.eventManage.EventBus;
-import org.sq.gameDemo.svr.eventManage.event.LevelEvent;
-import org.sq.gameDemo.svr.eventManage.event.MonsterBeAttackedEvent;
-import org.sq.gameDemo.svr.eventManage.event.MonsterDeadEvent;
-import org.sq.gameDemo.svr.eventManage.event.PlayerDeadEvent;
+import org.sq.gameDemo.svr.eventManage.event.*;
 import org.sq.gameDemo.svr.game.bag.model.Item;
-import org.sq.gameDemo.svr.game.bag.model.ItemType;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
@@ -19,9 +15,11 @@ import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.UserEntity;
 import org.sq.gameDemo.svr.game.drop.service.DropPool;
-import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
+import org.sq.gameDemo.svr.game.task.model.config.TaskType;
+import org.sq.gameDemo.svr.game.task.model.config.condition.FinishField;
+import org.sq.gameDemo.svr.game.task.service.TaskService;
 
 import java.util.List;
 import java.util.Map;
@@ -45,6 +43,8 @@ public class EventHandlers {
     private SenceService senceService;
     @Autowired
     private BagService bagService;
+    @Autowired
+    private TaskService taskService;
 
     {
         EventBus.registe(LevelEvent.class, this::levelUp);
@@ -55,6 +55,27 @@ public class EventHandlers {
         log.info("怪物死亡事件注册成功");
         EventBus.registe(PlayerDeadEvent.class, this::playerDead);
         log.info("人物死亡事件注册成功");
+        EventBus.registe(ConversationEvent.class, this::conversation);
+        log.info("聊天事件注册成功");
+        EventBus.registe(CollectorEvent.class, this::collectItem);
+    }
+
+    private  void collectItem(CollectorEvent collectorEvent) {
+        taskService.checkTaskFinish(collectorEvent.getPlayer(),
+                TaskType.COLLECTION,
+                FinishField.ITEMINFO_ID,
+                collectorEvent.getItem().getItemInfo().getId());
+    }
+
+
+    /**
+     * 玩家跟npc对话
+     */
+    private void conversation(ConversationEvent conversationEvent) {
+        taskService.checkTaskFinish(conversationEvent.getPlayer(),
+                TaskType.CONVERSATION,
+                FinishField.ENTITY_TYPE,
+                conversationEvent.getNpc().getTypeId());
     }
 
     /**
@@ -99,16 +120,20 @@ public class EventHandlers {
     private  void monsterDead(MonsterDeadEvent monsterDeadEvent) {
         //玩家 检查任务进度，掉落物品，触发幸运大爆 ....
         //掉落物品
-        Character attacter = monsterDeadEvent.getAttacter();
-        if(attacter instanceof Player) {
-            List<Item> dropItems = dropPool
-                    .getDropItems(attacter, monsterDeadEvent.getTargetMonster());
-            dropItems.forEach(item -> {
-                senceService.notifyPlayerByDefault(attacter, "掉落" + item.getItemInfo().getName()
-                        + " * " + item.getCount());
-                bagService.addItemInBag((Player) attacter, item);
-            });
-        }
+        Player attacter = monsterDeadEvent.getAttacter();
+        Monster deadMonster = monsterDeadEvent.getTargetMonster();
+
+        List<Item> dropItems = dropPool
+                .getDropItems(attacter, deadMonster);
+
+        dropItems.forEach(item -> {
+            senceService.notifyPlayerByDefault(attacter, "掉落" + item.getItemInfo().getName()
+                    + " * " + item.getCount());
+            bagService.addItemInBag((Player) attacter, item);
+        });
+
+        //检查任务进度
+        taskService.checkTaskFinish(attacter, TaskType.KILLING, FinishField.ENTITY_TYPE, deadMonster.getTypeId());
     }
 
     /**
