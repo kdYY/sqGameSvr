@@ -3,12 +3,9 @@ package org.sq.gameDemo.svr.game.fight.monsterAI;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.customException.CustomException;
-import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.CopySceneMonsterDeadEvent;
-import org.sq.gameDemo.svr.eventManage.event.MonsterBeAttackedEvent;
 import org.sq.gameDemo.svr.eventManage.event.MonsterDeadEvent;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
@@ -20,9 +17,7 @@ import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
-import org.sq.gameDemo.svr.game.skills.service.SkillCache;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
-import sun.rmi.runtime.Log;
 
 import java.util.*;
 

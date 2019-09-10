@@ -11,12 +11,27 @@ public class Progress {
 
     private AtomicInteger progressNum = new AtomicInteger(0);
 
-    public boolean finished = false;
+    public volatile boolean finished = false;
 
     public Progress(FinishCondition condition) {
         this.condition = condition;
     }
 
     public Progress() {
+    }
+
+    public void addProgressNum(Integer count) {
+        if(progressNum.addAndGet(count) >= condition.getGoal()) {
+            progressNum.set(condition.getGoal());
+            finished = true;
+        }
+    }
+
+    public void setProgressNumber(Integer count) {
+        if(count >= condition.getGoal()) {
+            progressNum.set(condition.getGoal());
+            finished = true;
+        }
+        progressNum.set(count);
     }
 }

@@ -9,6 +9,8 @@ import org.sq.gameDemo.common.proto.ItemPt;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.WearEquipEvent;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.equip.model.EquitmentPart;
 import org.sq.gameDemo.svr.game.bag.model.Item;
@@ -104,6 +106,8 @@ public class EquitService {
         entityService.computeAttack(player);
         senceService.notifyPlayerByDefault(player, "穿上" + equipName  + ", 提升↑" + (player.getAttack() - attack) + ", 目前战力" + player.getAttack());
         bagService.removeItem(player, equip.getId(), 1);
+        EventBus.publish(new WearEquipEvent(player));
+
     }
 
 

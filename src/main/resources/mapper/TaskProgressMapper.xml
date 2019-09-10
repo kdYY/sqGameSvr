@@ -119,7 +119,7 @@
             #{progress,jdbcType=LONGVARCHAR})
     </insert>
 
-    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgress" >
+    <insert id="insertSelective" parameterType="org.sq.gameDemo.svr.game.task.model.TaskProgress"  useGeneratedKeys="true" keyProperty="id">
         insert into task_progress
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="id != null" >

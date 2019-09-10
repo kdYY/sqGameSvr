@@ -22,6 +22,8 @@ import org.sq.gameDemo.svr.game.task.model.config.condition.FinishField;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -61,6 +63,10 @@ public class TaskService {
         log.info("玩家任务进度加载完毕");
     }
 
+    /**
+     * 初始化日常任务
+     * @param taskProgress
+     */
     private void initDailyTask(TaskProgress taskProgress) {
         Calendar instance = Calendar.getInstance();
         instance.setTimeInMillis(taskProgress.getBeginTime());
@@ -92,48 +98,36 @@ public class TaskService {
 
 
 
-    /**
-     * 某个任务中某一项进度+1
-     */
-    public void doTaskProgress(TaskProgress taskProgress, Integer field, Integer target) {
-        taskProgress.getProgresseList().stream()
-                .filter(t -> t.getCondition().getField().equals(field) && t.getCondition().getTarget().equals(target))
-                .findFirst()
-                .ifPresent(t -> {
-                    int result = t.getProgressNum().incrementAndGet();
-                    if(t.getCondition().getGoal() <= result) {
-                        //任务中一项完成
-                        t.setFinished(true);
-                    }
-                });
-    }
-
 
     /**
      * 检测任务进度， 任务是否完成 用于事件检查
      */
-    public void checkTaskFinish(Player player, TaskType taskType, FinishField finishField, Integer target) {
+    public void checkTaskProgress(Player player, TaskType taskType, FinishField finishField, Integer target, Consumer<Progress> consumer) {
+
         List<TaskProgress> taskProgressList = player.getTaskProgressMap().values()
                 .stream()
-                .filter(tp -> tp.getTask().getType().equals(taskType.getTypeId()))
+                .filter(tp -> tp.getTask().getType().equals(taskType.getTypeId()) && tp.getState().equals(TaskStateConstant.DOING))
                 .filter(tp -> tp.getTask().getFinishConditionList().stream().anyMatch(f -> f.getField().equals(finishField.getField())))
                 .collect(Collectors.toList());
 
         for (TaskProgress taskProgress : taskProgressList) {
             //根据field进行条件的判断
-            if(taskProgress.getState().equals(TaskStateConstant.DOING)) {
-                taskProgress.getProgresseList().stream()
-                        .filter(tp -> tp.getCondition().getTarget().equals(target))
-                        .forEach(tp -> tp.getProgressNum().incrementAndGet());
+            taskProgress.getProgresseList().stream()
+                    .filter(tp -> tp.getCondition().getTarget().equals(target))
+                    .forEach(consumer);
 
-                if(taskProgress.getProgresseList().stream().filter(p -> !p.isFinished()).findFirst().isPresent()) {
-                    //任务完成
-                    finishTask(player, taskProgress);
-                }
+            if(taskProgress.getProgresseList().stream().filter(p -> !p.isFinished()).findFirst().isPresent()) {
+                //任务完成
+                finishTask(player, taskProgress);
             }
         }
+
     }
 
+    /**
+     * 更新数据库中的任务进度
+     * @param taskProgress
+     */
     private void updateTaskProgress(TaskProgress taskProgress) {
         ThreadManager.dbTaskPool.execute(() -> taskProgressMapper.updateByPrimaryKey(taskProgress));
     }
@@ -174,6 +168,7 @@ public class TaskService {
         TaskProgress taskProgress = player.getTaskProgressMap().get(task.getId());
         if(taskProgress != null) {
             taskProgress.setState(TaskStateConstant.DOING);
+            updateTaskProgress(taskProgress);
             senceService.notifyPlayerByDefault(player, "接受新任务:(id=" + task.getId() + ", name=" + task.getName() + ") 使用showTask查看当前任务吧!");
         } else {
             senceService.notifyPlayerByDefault(player, "任务尚未激活，使用showTaskCanAccpet查看当前可领取任务");
@@ -196,12 +191,39 @@ public class TaskService {
         }
         List<Integer> nextTask = taskReward.getNextTask();
         if(nextTask.size() != 0) {
-            senceService.notifyPlayerByDefault(player, "新任务已解锁");
             for (Integer taskId : nextTask) {
-                acceptTask(player, taskId);
+                //初始化taskprogress
+                addAcceptTask(player, taskId);
             }
         }
     }
+
+    //增加任务
+    private void addAcceptTask(Player player, Integer taskId) {
+        if(player.getTaskProgressMap().get(taskId) != null) {
+            return;
+        }
+        Task task = taskCache.get(taskId);
+        TaskProgress taskProgress = new TaskProgress(player, task);
+        for (FinishCondition finishCondition : taskProgress.getTask().getFinishConditionList()) {
+            taskProgress.getProgresseList().add(new Progress(finishCondition));
+        }
+        insert(taskProgress);
+        player.getTaskProgressMap().put(taskId, taskProgress);
+        senceService.notifyPlayerByDefault(player, "解锁新任务:" + task.getName() + ", 使用showTaskCanAccpet");
+    }
+
+    /**
+     * 插入，返回主键
+     * @param taskProgress
+     */
+    private void insert(TaskProgress taskProgress) {
+        if(taskProgressMapper.insertSelective(taskProgress) <= 0) {
+            log.info("progress插入失败");
+        }
+    }
+
+
 
 
     /**

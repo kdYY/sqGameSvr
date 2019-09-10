@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
-import org.sq.gameDemo.svr.eventManage.Event;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.*;
 import org.sq.gameDemo.svr.game.bag.model.Item;
@@ -19,6 +18,7 @@ import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.task.model.config.TaskType;
 import org.sq.gameDemo.svr.game.task.model.config.condition.FinishField;
+import org.sq.gameDemo.svr.game.task.model.config.condition.LevelTarget;
 import org.sq.gameDemo.svr.game.task.service.TaskService;
 
 import java.util.List;
@@ -49,8 +49,6 @@ public class EventHandlers {
     {
         EventBus.registe(LevelEvent.class, this::levelUp);
         log.info("角色升级事件注册成功");
-        EventBus.registe(MonsterBeAttackedEvent.class, this::monsterBeAttacked);
-        log.info("怪物被攻击事件注册成功");
         EventBus.registe(MonsterDeadEvent.class, this::monsterDead);
         log.info("怪物死亡事件注册成功");
         EventBus.registe(PlayerDeadEvent.class, this::playerDead);
@@ -58,13 +56,22 @@ public class EventHandlers {
         EventBus.registe(ConversationEvent.class, this::conversation);
         log.info("聊天事件注册成功");
         EventBus.registe(CollectorEvent.class, this::collectItem);
+        log.info("物品收集事件注册成功");
+        EventBus.registe(WearEquipEvent.class, this::equipCheck);
+        log.info("穿戴装备事件注册成功");
+
     }
 
+    /**
+     * 收集物品
+     * @param collectorEvent
+     */
     private  void collectItem(CollectorEvent collectorEvent) {
-        taskService.checkTaskFinish(collectorEvent.getPlayer(),
+        taskService.checkTaskProgress(collectorEvent.getPlayer(),
                 TaskType.COLLECTION,
                 FinishField.ITEMINFO_ID,
-                collectorEvent.getItem().getItemInfo().getId());
+                collectorEvent.getItem().getItemInfo().getId(),
+                (progress -> progress.addProgressNum(collectorEvent.getItem().getCount())));
     }
 
 
@@ -72,10 +79,11 @@ public class EventHandlers {
      * 玩家跟npc对话
      */
     private void conversation(ConversationEvent conversationEvent) {
-        taskService.checkTaskFinish(conversationEvent.getPlayer(),
+        taskService.checkTaskProgress(conversationEvent.getPlayer(),
                 TaskType.CONVERSATION,
                 FinishField.ENTITY_TYPE,
-                conversationEvent.getNpc().getTypeId());
+                conversationEvent.getNpc().getTypeId(),
+                (progress -> progress.addProgressNum(1)));
     }
 
     /**
@@ -90,28 +98,31 @@ public class EventHandlers {
 
             playerCache.getChannelByPlayerId(player.getId()).writeAndFlush(
                     ProtoBufUtil.getBroadCastDefaultEntity("恭喜你升了"+ (newlevel - level) + "级，目前等级是" + newlevel));
+
+            taskService.checkTaskProgress(player,
+                    TaskType.FUNCTIONAL_UPGRADE,
+                    FinishField.PLAYER_LEVEL,
+                    LevelTarget.PLAYER.getCode(),
+                    (progress -> progress.setProgressNumber(newlevel)));
         });
     }
 
-
     /**
-     * 怪物被攻击事件处理
-     * @param attackedEvent
+     * 装备更换事件
+     * @param wearEquipEvent
      */
-    private  void monsterBeAttacked(MonsterBeAttackedEvent attackedEvent) {
-        //怪物被攻击
-        Monster targetMonster = attackedEvent.getTargetMonster();
-        Character attacter = attackedEvent.getAttacter();
+    private void equipCheck(WearEquipEvent wearEquipEvent) {
+        Player player = wearEquipEvent.getPlayer();
+        Long count = player.getEquipmentBar().values().stream().map(equip -> equip.getLevel()).count();
 
-        //再做一次校验
-        if(targetMonster != null &&((UserEntity)attacter).getTarget().getId().equals(targetMonster.getId())) {
-            targetMonster.setState(CharacterState.ATTACKING.getCode());
-            // TODO 调试通放开
-            // monsterAIService.monsterAttacking(targetMonster);
-        }
-
-
+        taskService.checkTaskProgress(player,
+                TaskType.FUNCTIONAL_UPGRADE,
+                FinishField.ALL_EQUIP_LEVEL,
+                LevelTarget.EQUIPALL.getCode(),
+                (progress -> progress.setProgressNumber(count.intValue())));
     }
+
+
 
     /**
      * 怪物死亡事件处理 注意，不在这设置monster的属性
@@ -133,7 +144,7 @@ public class EventHandlers {
         });
 
         //检查任务进度
-        taskService.checkTaskFinish(attacter, TaskType.KILLING, FinishField.ENTITY_TYPE, deadMonster.getTypeId());
+        taskService.checkTaskProgress(attacter, TaskType.KILLING, FinishField.ENTITY_TYPE, deadMonster.getTypeId(), (progress -> progress.addProgressNum(1)));
     }
 
     /**

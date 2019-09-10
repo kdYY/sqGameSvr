@@ -3,6 +3,8 @@ package org.sq.gameDemo.svr.game.roleAttribute.service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.WearEquipEvent;
 import org.sq.gameDemo.svr.game.bag.dao.ItemInfoCache;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
@@ -51,7 +53,6 @@ public class RoleAttributeService {
                 );
             });
             player.getEquipmentBar().put(equitment.getItemInfo().getPart(), equitment);
-
         }
 
 

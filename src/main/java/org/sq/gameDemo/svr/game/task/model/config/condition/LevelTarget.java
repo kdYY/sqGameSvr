@@ -17,4 +17,8 @@ public enum LevelTarget {
         this.code = code;
         this.meaning = meaning;
     }
+
+    public int getCode() {
+        return code;
+    }
 }
