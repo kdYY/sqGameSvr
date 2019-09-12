@@ -31,7 +31,9 @@ public class Progress {
         if(count >= condition.getGoal()) {
             progressNum.set(condition.getGoal());
             finished = true;
+        } else {
+            progressNum.set(count);
         }
-        progressNum.set(count);
+
     }
 }

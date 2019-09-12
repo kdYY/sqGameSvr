@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.common.customException.CustomException;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.CopySceneFinishedEvent;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -16,7 +18,9 @@ import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
+import org.sq.gameDemo.svr.game.team.model.Team;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -66,8 +70,8 @@ public class CopySceneService {
         SenceConfig.tmpCommonConf bossConf = JsonUtil.reJson(config.getBoss(), SenceConfig.tmpCommonConf.class);
         Monster bossMonster = senceService.getInitedMonster(senceEntityCache.get((long) bossConf.getId()), senceId, bossConf.getLevel());
 
-        List<SenceConfig.tmpCommonConf> tmpCommonConfList = JsonUtil.reSerializableJson(config.getMonsters(), SenceConfig.tmpCommonConf
-                .class);
+        List<SenceConfig.tmpCommonConf> tmpCommonConfList =
+                JsonUtil.reSerializableJson(config.getMonsters(), SenceConfig.tmpCommonConf.class);
 
         List<Monster> monsterList = new CopyOnWriteArrayList();
         for (SenceConfig.tmpCommonConf tmpCommonConf : tmpCommonConfList) {
@@ -91,7 +95,7 @@ public class CopySceneService {
         copyScene.setStartTime(System.currentTimeMillis());
         copyScene.setMaxTime(config.getTime());
 
-        // 进入场景检查线程
+        //开启计时检测线程
         Future future = null;
         try {
             future = checkCopyScene(copyScene);
@@ -145,12 +149,6 @@ public class CopySceneService {
                 for (Monster monster : collect) {
                     copyMonsterAttacking(copyScene, monster);
                 }
-//                //如果有玩家死完，死亡玩家退出副本
-//                copyScene.getPlayerList().stream().filter(player -> player.getHp() <= 0).forEach(
-//                        player -> {
-//
-//                        }
-//                );
             }
         }, 2000,Constant.COPY_CHECK_RATE_TIME, TimeUnit.MILLISECONDS);
 
@@ -181,6 +179,9 @@ public class CopySceneService {
                     exitCopyScene(player, copyScene);
                 }
         );
+        ArrayList<Player> players = new ArrayList<>();
+        players.addAll(copyScene.getPlayerList());
+        EventBus.publish(new CopySceneFinishedEvent(players, copyScene.getId()));
         destroyInstance(copyScene, copyScene.getFuture());
         //TODO 发送邮件奖励
 
@@ -307,7 +308,7 @@ public class CopySceneService {
 
 
     /**
-     * 玩家进入新的副本
+     * 玩家进入新的副本 单人挑战副本
      * @param copySceneId
      * @param player
      */
@@ -316,6 +317,21 @@ public class CopySceneService {
         //将场景保存到缓存
         senceService.getSenceCache().put(copyScene.getSenceId(), copyScene);
         enterCopyScene(copyScene, player);
+        return copyScene;
+    }
+
+    /**
+     * 玩家进入新的副本 单人挑战副本
+     * @param copySceneId
+     */
+    public CopyScene enterNewCopySceneWithTeam(Integer copySceneId, Team team) throws Exception {
+        CopyScene copyScene = getInitedCopyScene(copySceneId);
+        //将场景保存到缓存
+        senceService.getSenceCache().put(copyScene.getSenceId(), copyScene);
+
+        for (Player player : team.getPlayerInTeam().values()) {
+            enterCopyScene(copyScene, player);
+        }
         return copyScene;
     }
 

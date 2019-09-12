@@ -63,8 +63,29 @@ public class EventHandlers {
         log.info("加入公会事件注册成功");
         EventBus.registe(FirstTradeEvent.class, this::makeTrade);
         log.info("参与交易事件注册成功");
+        EventBus.registe(TaskFinishedEvent.class, this::taskFinish);
+        log.info("参与任务事件注册成功");
+        EventBus.registe(ActivatTaskEvent.class, this::activatTask);
+        log.info("激活任务事件注册成功");
 
+    }
 
+    /**
+     * 激活任务
+     * @param activatTaskEvent
+     */
+    private void activatTask(ActivatTaskEvent activatTaskEvent) {
+        for (Integer id : activatTaskEvent.getTaskId()) {
+            taskService.addAcceptTask(activatTaskEvent.getPlayer(), id);
+        }
+    }
+
+    /**
+     * 任务完成
+     * @param taskFinishedEvent
+     */
+    private  void taskFinish(TaskFinishedEvent taskFinishedEvent) {
+        taskService.finishTask(taskFinishedEvent.getPlayer(), taskFinishedEvent.getTaskProgress());
     }
 
     /**
@@ -199,7 +220,7 @@ public class EventHandlers {
         taskService.checkTaskProgress(attacter,
                 TaskType.KILLING,
                 FinishField.ENTITY_TYPE,
-                deadMonster.getTypeId(),
+                deadMonster.getEntityTypeId().intValue(),
                 progress -> progress.addProgressNum(1));
     }
 

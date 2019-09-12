@@ -185,7 +185,7 @@ public class SkillService {
         String notice = "";
 
         if(Objects.isNull(skill)) {
-            notice = "技能不存在，技能id有误";
+            notice = "技能不存在，技能id有误, 使用showPlayer查看自身技能";
         } else if(character.getSkillInUsedMap().get(skill.getId()).getLastUseTime() + skill.getCd() > System.currentTimeMillis()) {
             notice = "技能正在冷却";
         } else if(character instanceof Player) {
@@ -195,6 +195,10 @@ public class SkillService {
             if(character.getMp() < skill.getMpNeed()) {
                 notice = "角色蓝量不够";
             }
+        }
+        if(!StringUtils.isEmpty(notice) && character instanceof Player) {
+            senceService.notifyPlayerByDefault(character, notice);
+            return false;
         }
         if(targetIdList != null && targetIdList.size() > 1 && !skill.getSkillRange().equals(SkillRange.Enemys)) {
             notice = "该技能不能针对多个敌方";

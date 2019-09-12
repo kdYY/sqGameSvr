@@ -141,5 +141,8 @@ public class Player extends UserEntity implements Character {
     //<taskId, taskProgress>
     @ProtoField(Ignore = true)
     private Map<Integer, TaskProgress> taskProgressMap = new ConcurrentHashMap<>();
+    
+    // 玩家当前的队伍id
+    private String teamId = "";
 
 }

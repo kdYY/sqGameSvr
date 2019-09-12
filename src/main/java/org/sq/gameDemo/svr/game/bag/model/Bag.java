@@ -27,9 +27,11 @@ public class Bag {
     String itemStr;
 
     public String getItemStr() {
-        if(itemBar != null && itemBar.size() > 0) {
-            itemStr = JsonUtil.serializableJson(itemBar);
-        }
+       synchronized (itemBar) {
+           if(itemBar != null && itemBar.size() > 0) {
+               itemStr = JsonUtil.serializableJson(itemBar);
+           }
+       }
         return itemStr;
     }
 

@@ -27,6 +27,9 @@ import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
+import org.sq.gameDemo.svr.game.task.model.Progress;
+import org.sq.gameDemo.svr.game.task.model.TaskProgress;
+import org.sq.gameDemo.svr.game.task.model.TaskStateConstant;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -237,7 +240,19 @@ public class SenceService {
      */
     public Npc getTalkNpc(Player player, Integer senceId, Long npcId) {
         Npc npc = getNpcInSence(senceId, npcId);
-        EventBus.publish(new ConversationEvent(player, npc));
+        List<Integer> taskList = npc.getTaskList();
+        taskList.stream()
+                .filter(id -> player.getTaskProgressMap().get(id) != null)
+                .map(id -> player.getTaskProgressMap().get(id))
+                .filter(tp -> tp.getState().equals(TaskStateConstant.DOING))
+                .min(Comparator.comparingLong(TaskProgress::getBeginTime))
+                .ifPresent(
+                        taskProgress -> {
+                            npc.setNpcWord(taskProgress.getTask().getDescription());
+                            EventBus.publish(new ConversationEvent(player, npc));
+                        }
+                );
+
         return npc;
     }
 

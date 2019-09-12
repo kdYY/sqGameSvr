@@ -1,17 +1,21 @@
 package org.sq.gameDemo.svr.game.task.service;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.common.proto.ItemInfoPt;
 import org.sq.gameDemo.common.proto.TaskPt;
 import org.sq.gameDemo.svr.common.Constant;
+import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.ActivatTaskEvent;
+import org.sq.gameDemo.svr.eventManage.event.TaskFinishedEvent;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.model.ItemInfo;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
-import org.sq.gameDemo.svr.game.characterEntity.model.EntityType;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.model.SenceEntity;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -25,12 +29,10 @@ import org.sq.gameDemo.svr.game.task.model.config.TaskReward;
 import org.sq.gameDemo.svr.game.task.model.config.TaskType;
 import org.sq.gameDemo.svr.game.task.model.config.condition.FinishField;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -61,11 +63,17 @@ public class TaskService {
         for (TaskProgress taskProgress : taskProgresses) {
             Task task = taskCache.get(taskProgress.getTaskId());
             taskProgress.setTask(task);
+            if(!Strings.isNullOrEmpty(taskProgress.getProgress())) {
+                taskProgress.getProgresseList().addAll(JsonUtil.reSerializableJson(taskProgress.getProgress(), Progress.class));
+            }
             //初始化日常任務
             if(task.getKind().equals(TaskKind.DAILY.getKind())) {
                 initDailyTask(taskProgress);
             }
             player.getTaskProgressMap().put(taskProgress.getTaskId(), taskProgress);
+            if(taskProgress.getState().equals(TaskStateConstant.DOING)) {
+                senceService.notifyPlayerByDefault(player, "当前正在进行的任务: " + taskProgress.getTask().getName() + ",使用showTask查看正在进行的任务");
+            }
         }
         log.info("玩家任务进度加载完毕");
     }
@@ -111,12 +119,13 @@ public class TaskService {
         for (TaskProgress taskProgress : taskProgressList) {
             //根据field进行条件的判断
             taskProgress.getProgresseList().stream()
-                    .filter(tp -> tp.getCondition().getTarget().equals(target))
+                    .filter(pro -> pro.getCondition().getTarget().equals(target))
                     .forEach(progressAction);
 
-            if(taskProgress.getProgresseList().stream().filter(p -> !p.isFinished()).findFirst().isPresent()) {
+            if(!taskProgress.getProgresseList().stream().filter(p -> !p.isFinished()).findFirst().isPresent()) {
                 //任务完成
-                finishTask(player, taskProgress);
+                taskProgress.setState(TaskStateConstant.FINISH);
+                EventBus.publish(new TaskFinishedEvent(player, taskProgress));
             }
         }
 
@@ -176,9 +185,12 @@ public class TaskService {
     /**
      * 任务发放奖励 触发下一个任务
      */
-    private void finishTask(Player player, TaskProgress taskProgress) {
+    public void finishTask(Player player, TaskProgress taskProgress) {
         taskProgress.setState(TaskStateConstant.FINISH);
+        taskProgress.setEndTime(System.currentTimeMillis());
         updateTaskProgress(taskProgress);
+
+        senceService.notifyPlayerByDefault(player, taskProgress.getTask().getName() + "任务完成，获取任务奖励");
         TaskReward taskReward = taskProgress.getTask().getTaskReward();
         List<TaskReward.RewardItem> itemList = taskReward.getItemList();
         for (TaskReward.RewardItem rewardItem : itemList) {
@@ -188,15 +200,12 @@ public class TaskService {
         }
         List<Integer> nextTask = taskReward.getNextTask();
         if(nextTask.size() != 0) {
-            for (Integer taskId : nextTask) {
-                //初始化taskprogress
-                addAcceptTask(player, taskId);
-            }
+            EventBus.publish(new ActivatTaskEvent(player, nextTask));
         }
     }
 
     //增加任务
-    private void addAcceptTask(Player player, Integer taskId) {
+    public void addAcceptTask(Player player, Integer taskId) {
         if(player.getTaskProgressMap().get(taskId) != null) {
             senceService.notifyPlayerByDefault(player, "任务已存在");
             return;
@@ -206,9 +215,15 @@ public class TaskService {
         for (FinishCondition finishCondition : taskProgress.getTask().getFinishConditionList()) {
             taskProgress.getProgresseList().add(new Progress(finishCondition));
         }
+
         insert(taskProgress);
         player.getTaskProgressMap().put(taskId, taskProgress);
-        senceService.notifyPlayerByDefault(player, "解锁新任务:" + task.getName() + ", 使用showTaskCanAccpet");
+
+
+
+        senceService.notifyPlayerByDefault(player, "解锁新任务: id=" + task.getId() + ", name=" + task.getName() + " , " +
+                "使用showTaskCanAccpet查看可接受的新任务, 使用acceptTask id=" + task.getId() + " , 进行任务吧!");
+
     }
 
     /**
@@ -273,5 +288,6 @@ public class TaskService {
      */
     public void getNewPlayerTask(Player initedPlayer) {
         addAcceptTask(initedPlayer, Constant.NEW_PLAYER_TASK_ID);
+
     }
 }

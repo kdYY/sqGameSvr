@@ -41,13 +41,13 @@ public class TaskProgress {
     List<Progress> progresseList = new CopyOnWriteArrayList<>();
 
     public List<Progress> getProgresseList() {
-        if(progresseList.size() == 0 && Strings.isNullOrEmpty(progress) && !progress.equals("[]")) {
-            progresseList.addAll(JsonUtil.reSerializableJson(progress, Progress.class));
-        }
         return progresseList;
     }
 
     public String getProgress() {
-        return JsonUtil.serializableJson(progresseList);
+        if(progresseList.size() != 0) {
+            progress = JsonUtil.serializableJson(progresseList);
+        }
+        return progress;
     }
 }

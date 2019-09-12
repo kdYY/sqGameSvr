@@ -64,6 +64,8 @@ public class CopyScene extends SenceConfigMsg {
 
     @ProtoField(Ignore = true)
     private Future future;
+
+    //将场景回收
     public void inGarbage() {
 
         this.setGarbage(true);

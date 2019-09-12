@@ -1,6 +1,7 @@
 package org.sq.gameDemo.svr.game.bag.service;
 
 import com.alibaba.fastjson.TypeReference;
+import com.google.common.base.Strings;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,10 +107,13 @@ public class BagService {
         }
         ItemInfo itemInfo = itemInfoCache.get(item.getItemInfo().getId());
         senceService.notifyPlayerByDefault(player, "开始使用" + itemInfo.getName() );
-
-        for (int i = 0; i < count; i++) {
-            Optional.ofNullable(buffService.getBuff(itemInfo.getBuff()))
-                    .ifPresent(buff -> buffService.buffAffecting(player, buff));
+        if(itemInfo.getBuff().equals(Constant.EXPITEM_BUFF)) {
+            player.addExp(count);
+        } else {
+            for (int i = 0; i < count; i++) {
+                Optional.ofNullable(buffService.getBuff(itemInfo.getBuff()))
+                        .ifPresent(buff -> buffService.buffAffecting(player, buff));
+            }
         }
         return removeItem(player, item.getId(), count);
     }
@@ -139,22 +143,17 @@ public class BagService {
      * @param player
      */
     public void bindBag(Player player) {
-        Optional.ofNullable(bagMapper.selectByPrimaryKey(player.getUnId())).ifPresent(
-                bag -> {
-                    Bag playerBag = player.getBag();
-                    if(bag.getItemStr().isEmpty()) {
-                        playerBag.setItemBar(new LinkedHashMap<>());
-                    } else {
-                        Map<Long, Item> itemMap = JsonUtil.reSerializableJson(
-                                bag.getItemStr(), new TypeReference<Map<Long, Item>>() {});
-                        playerBag.setItemBar(itemMap);
-                    }
-                    //player.setBag(playerBag);
-                }
-        );
-        if(player.getBag().getUnId() == null) {
+
+        Bag bag = bagMapper.selectByPrimaryKey(player.getUnId());
+        if(bag != null) {
+            if(!Strings.isNullOrEmpty(bag.getItemStr())) {
+                Map<Long, Item> itemMap = JsonUtil.reSerializableJson(bag.getItemStr(), new TypeReference<Map<Long, Item>>() {});
+                player.getBag().getItemBar().putAll(itemMap);
+            }
+        } else {
             player.getBag().setUnId(player.getUnId());
         }
+
 
     }
 

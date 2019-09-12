@@ -8,6 +8,7 @@ import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.TaskPt;
 import org.sq.gameDemo.common.proto.TradePt;
+import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.OrderMapping;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.dispatch.ReqParseParam;
@@ -52,7 +53,7 @@ public class TaskController {
      * 查看正在进行的任务
      */
     @OrderMapping(OrderEnum.SHOW_TASK)
-    public MsgEntity getDealTrade(MsgEntity msgEntity,
+    public MsgEntity showtask(MsgEntity msgEntity,
                                   @RespBuilderParam TaskPt.TaskResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         List<TaskProgress> tps = taskService.showTaskProgress(player);
@@ -63,6 +64,7 @@ public class TaskController {
                 e.printStackTrace();
             }
         }
+        builder.setResult(Constant.SUCCESS);
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }

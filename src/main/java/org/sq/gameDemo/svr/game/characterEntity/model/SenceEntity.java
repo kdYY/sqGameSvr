@@ -30,6 +30,8 @@ public class SenceEntity{
     private Long attack;
     private Long refreshTime; //刷新时间
     private String npcWord;
+    @ProtoField(Ignore = true)
+    private String taskStr;
 
     @ProtoField(Ignore = true)
     private String skillStr;

@@ -146,7 +146,7 @@ public class EntityService {
         //返回初始化完毕的玩家
         Player initedPlayer = getInitedPlayer(userId, channel);
         senceService.addPlayerInSence(initedPlayer);
-        //初始化任务
+        //初始化新手任务
         taskService.getNewPlayerTask(initedPlayer);
 
         return initedPlayer;

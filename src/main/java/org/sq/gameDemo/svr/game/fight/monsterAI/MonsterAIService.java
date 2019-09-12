@@ -74,11 +74,11 @@ public class MonsterAIService {
             }
 
             if(player != null) {
-                player.addExp(targetMonster.getLevel() * 10);
+                player.addExp(targetMonster.getLevel() * 5);
                 senceService.notifyPlayerByDefault(attacter, targetMonster.getName()
                         + "(id=" + targetMonster.getId()
                         + ")被你杀死了, 经验增加↑"
-                        + targetMonster.getLevel() * 10
+                        + targetMonster.getLevel() * 5
                         + "↑, 当前exp="
                         + player.getExp()
                 );
