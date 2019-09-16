@@ -112,7 +112,7 @@ public class Player extends UserEntity implements Character {
     private List<Buff> bufferList = new CopyOnWriteArrayList<>();
 
 
-    // 装备<部位，>
+    // 装备<部位，装备>
     @ProtoField(Ignore = true)
     private Map<Integer, Item> equipmentBar = new ConcurrentHashMap<>();
 
@@ -141,8 +141,8 @@ public class Player extends UserEntity implements Character {
     //<taskId, taskProgress>
     @ProtoField(Ignore = true)
     private Map<Integer, TaskProgress> taskProgressMap = new ConcurrentHashMap<>();
-    
+
     // 玩家当前的队伍id
-    private String teamId = "";
+    private Long teamId;
 
 }

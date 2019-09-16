@@ -102,6 +102,7 @@ public class MailController {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         Mail mail = mailService.getMail(player, requestInfo.getId());
         transformMail(msgEntity, builder, mail);
+        builder.setResult(Constant.SUCCESS);
         msgEntity.setData(builder.build().toByteArray());
         return msgEntity;
     }

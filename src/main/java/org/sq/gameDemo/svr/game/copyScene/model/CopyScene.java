@@ -7,10 +7,14 @@ import org.sq.gameDemo.common.proto.SenceMsgProto;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
+import org.sq.gameDemo.svr.game.characterEntity.model.Baby;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
 import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
+import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
+import sun.rmi.runtime.Log;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,9 +31,10 @@ public class CopyScene extends SenceConfigMsg {
     //副本场景id
     private Integer id;
 
-    //<玩家id, 玩家所占伤害>
+    private Long rewardExp;
+    //<玩家Unid, 玩家所占伤害>
     @ProtoField(Ignore = true)
-    private Map<Long, Long> bossDamagePercentage = new ConcurrentHashMap<>();
+    private Map<Integer, Long> bossDamagePercentage = new ConcurrentHashMap<>();
 
     //<playerId , beforeSceneId>
     @ProtoField(Ignore = true)
@@ -91,16 +96,25 @@ public class CopyScene extends SenceConfigMsg {
     }
 
     public synchronized void updateDamage(Character attacter, Long damage) {
-        Long beforeDamage = this.getBossDamagePercentage().get(attacter.getId());
-        if(beforeDamage != null) {
-            beforeDamage = beforeDamage + damage;
+        Player player = null;
+        if(attacter instanceof Baby) {
+            player = ((Baby) attacter).getMaster();
+        } else if(attacter instanceof Player) {
+            player = (Player) attacter;
         } else {
-            this.getBossDamagePercentage().put(attacter.getId(), damage);
+            return;
+        }
+        Long beforeDamage = this.getBossDamagePercentage().get(player.getUnId());
+        if(beforeDamage != null) {
+            bossDamagePercentage.replace(player.getUnId(), beforeDamage, beforeDamage + damage);
+        } else {
+            bossDamagePercentage.put(player.getUnId(), damage);
         }
 
     }
 
-    //
-
+    //记录副本归属者
+    @ProtoField(Ignore = true)
+    public List<Integer> owners = new CopyOnWriteArrayList<>();
 
 }

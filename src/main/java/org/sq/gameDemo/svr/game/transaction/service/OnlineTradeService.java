@@ -19,6 +19,7 @@ import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.transaction.manager.TransactionCache;
 import org.sq.gameDemo.svr.game.transaction.model.OnlineTrade;
 import org.sq.gameDemo.svr.game.transaction.model.Trade;
+import org.sq.gameDemo.svr.game.updateDB.UpdateDB;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -238,7 +239,7 @@ public class OnlineTradeService {
      * @param playerCached
      */
     public void loadTrace(Player playerCached) {
-        ThreadManager.dbTaskPool.execute(() -> {
+        UpdateDB.dbTaskPool.execute(() -> {
             List<Trade> trades = tradeService.selectOnlineByAccpetUnId(playerCached.getUnId());
             for (Trade trade : trades) {
                 OnlineTrade onlineTrade = new OnlineTrade();

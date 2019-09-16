@@ -79,4 +79,5 @@ public interface Constant {
     Integer GUILD_DEFAULT_MEMBER_SIZE = 27;
     Integer NEW_PLAYER_TASK_ID = 3;
     Integer EXPITEM_BUFF = 1000;
+    Integer EXP_ITEMINFO = 2000;
 }

@@ -42,11 +42,9 @@ public class CopyController {
         buffer.append("副本模板有以下:\r\n");
         List<CopySceneConfig> collect = copySceneService.getAllCopySceneModel().stream().sorted(Comparator.comparing(CopySceneConfig::getId)).collect(Collectors.toList());
         for (CopySceneConfig model : collect) {
-            buffer.append("id:" + model.getId() + ", name:" + model.getName() + "\r\n");
+            buffer.append("id:" + model.getId() + ", name:" + model.getName() + ", rewardExp:" + model.getExp() +"\r\n");
         }
-
-        buffer.append("使用" + OrderEnum.ENTER_NEW_COPY.getOrder() + " id=1 指令进入新副本吧！");
-
+        buffer.append("使用" + OrderEnum.ENTER_NEW_COPY.getOrder() + " id=#{副本id} 指令进入新副本吧！");
         senceService.notifyPlayerByDefault(player, buffer.toString());
     }
 
@@ -56,7 +54,7 @@ public class CopyController {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         StringBuffer buffer = new StringBuffer();
         buffer.append("存在的副本场景有以下:");
-        List<SenceConfigMsg> allExistCopyScene = copySceneService.getAllExistCopyScene();
+        List<SenceConfigMsg> allExistCopyScene = copySceneService.getAllExistCopyScene(player);
         if(allExistCopyScene.size() <= 0) {
             senceService.notifyPlayerByDefault(player, "(空)");
             return;
@@ -84,8 +82,11 @@ public class CopyController {
         Player player = entityService.getPlayer(msgEntity.getChannel());
         try {
             CopyScene copyScene = copySceneService.enterNewCopyScene(requestInfo.getSenceId(), player);
+            if(copyScene == null) {
+                return msgEntity;
+            }
             senceService.transformEntityRespPt(builder, copyScene.getSenceId());
-            builder.setResult(Constant.SUCCESS);//服务端异常
+            builder.setResult(Constant.SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
             builder.setResult(Constant.SVR_ERR);//服务端异常

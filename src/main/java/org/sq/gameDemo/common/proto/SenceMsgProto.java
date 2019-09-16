@@ -787,97 +787,102 @@ public final class SenceMsgProto {
     long getMaxTime();
 
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>uint64 rewardExp = 13;</code>
+     */
+    long getRewardExp();
+
+    /**
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     java.util.List<EntityTypeProto.EntityType>
         getEntityTypeList();
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     EntityTypeProto.EntityType getEntityType(int index);
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     int getEntityTypeCount();
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     java.util.List<? extends EntityTypeProto.EntityTypeOrBuilder>
         getEntityTypeOrBuilderList();
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     EntityTypeProto.EntityTypeOrBuilder getEntityTypeOrBuilder(
             int index);
 
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     java.util.List<NpcPt.Npc>
         getNpcList();
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     NpcPt.Npc getNpc(int index);
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     int getNpcCount();
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     java.util.List<? extends NpcPt.NpcOrBuilder>
         getNpcOrBuilderList();
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     NpcPt.NpcOrBuilder getNpcOrBuilder(
             int index);
 
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     java.util.List<MonsterPt.Monster>
         getMonsterList();
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     MonsterPt.Monster getMonster(int index);
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     int getMonsterCount();
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     java.util.List<? extends MonsterPt.MonsterOrBuilder>
         getMonsterOrBuilderList();
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     MonsterPt.MonsterOrBuilder getMonsterOrBuilder(
             int index);
 
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     java.util.List<PlayerPt.Player>
         getPlayerList();
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     PlayerPt.Player getPlayer(int index);
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     int getPlayerCount();
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     java.util.List<? extends PlayerPt.PlayerOrBuilder>
         getPlayerOrBuilderList();
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     PlayerPt.PlayerOrBuilder getPlayerOrBuilder(
             int index);
@@ -1016,7 +1021,12 @@ public final class SenceMsgProto {
               maxTime_ = input.readUInt64();
               break;
             }
-            case 106: {
+            case 104: {
+
+              rewardExp_ = input.readUInt64();
+              break;
+            }
+            case 114: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 entityType_ = new java.util.ArrayList<EntityTypeProto.EntityType>();
                 mutable_bitField0_ |= 0x00000001;
@@ -1025,7 +1035,7 @@ public final class SenceMsgProto {
                   input.readMessage(EntityTypeProto.EntityType.parser(), extensionRegistry));
               break;
             }
-            case 114: {
+            case 122: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
                 npc_ = new java.util.ArrayList<NpcPt.Npc>();
                 mutable_bitField0_ |= 0x00000002;
@@ -1034,7 +1044,7 @@ public final class SenceMsgProto {
                   input.readMessage(NpcPt.Npc.parser(), extensionRegistry));
               break;
             }
-            case 122: {
+            case 130: {
               if (!((mutable_bitField0_ & 0x00000004) != 0)) {
                 monster_ = new java.util.ArrayList<MonsterPt.Monster>();
                 mutable_bitField0_ |= 0x00000004;
@@ -1043,7 +1053,7 @@ public final class SenceMsgProto {
                   input.readMessage(MonsterPt.Monster.parser(), extensionRegistry));
               break;
             }
-            case 130: {
+            case 138: {
               if (!((mutable_bitField0_ & 0x00000008) != 0)) {
                 player_ = new java.util.ArrayList<PlayerPt.Player>();
                 mutable_bitField0_ |= 0x00000008;
@@ -1286,140 +1296,149 @@ public final class SenceMsgProto {
       return maxTime_;
     }
 
-    public static final int ENTITYTYPE_FIELD_NUMBER = 13;
+    public static final int REWARDEXP_FIELD_NUMBER = 13;
+    private long rewardExp_;
+    /**
+     * <code>uint64 rewardExp = 13;</code>
+     */
+    public long getRewardExp() {
+      return rewardExp_;
+    }
+
+    public static final int ENTITYTYPE_FIELD_NUMBER = 14;
     private java.util.List<EntityTypeProto.EntityType> entityType_;
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     public java.util.List<EntityTypeProto.EntityType> getEntityTypeList() {
       return entityType_;
     }
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     public java.util.List<? extends EntityTypeProto.EntityTypeOrBuilder>
         getEntityTypeOrBuilderList() {
       return entityType_;
     }
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     public int getEntityTypeCount() {
       return entityType_.size();
     }
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     public EntityTypeProto.EntityType getEntityType(int index) {
       return entityType_.get(index);
     }
     /**
-     * <code>repeated .EntityType entityType = 13;</code>
+     * <code>repeated .EntityType entityType = 14;</code>
      */
     public EntityTypeProto.EntityTypeOrBuilder getEntityTypeOrBuilder(
         int index) {
       return entityType_.get(index);
     }
 
-    public static final int NPC_FIELD_NUMBER = 14;
+    public static final int NPC_FIELD_NUMBER = 15;
     private java.util.List<NpcPt.Npc> npc_;
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     public java.util.List<NpcPt.Npc> getNpcList() {
       return npc_;
     }
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     public java.util.List<? extends NpcPt.NpcOrBuilder>
         getNpcOrBuilderList() {
       return npc_;
     }
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     public int getNpcCount() {
       return npc_.size();
     }
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     public NpcPt.Npc getNpc(int index) {
       return npc_.get(index);
     }
     /**
-     * <code>repeated .Npc npc = 14;</code>
+     * <code>repeated .Npc npc = 15;</code>
      */
     public NpcPt.NpcOrBuilder getNpcOrBuilder(
         int index) {
       return npc_.get(index);
     }
 
-    public static final int MONSTER_FIELD_NUMBER = 15;
+    public static final int MONSTER_FIELD_NUMBER = 16;
     private java.util.List<MonsterPt.Monster> monster_;
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     public java.util.List<MonsterPt.Monster> getMonsterList() {
       return monster_;
     }
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     public java.util.List<? extends MonsterPt.MonsterOrBuilder>
         getMonsterOrBuilderList() {
       return monster_;
     }
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     public int getMonsterCount() {
       return monster_.size();
     }
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     public MonsterPt.Monster getMonster(int index) {
       return monster_.get(index);
     }
     /**
-     * <code>repeated .Monster monster = 15;</code>
+     * <code>repeated .Monster monster = 16;</code>
      */
     public MonsterPt.MonsterOrBuilder getMonsterOrBuilder(
         int index) {
       return monster_.get(index);
     }
 
-    public static final int PLAYER_FIELD_NUMBER = 16;
+    public static final int PLAYER_FIELD_NUMBER = 17;
     private java.util.List<PlayerPt.Player> player_;
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     public java.util.List<PlayerPt.Player> getPlayerList() {
       return player_;
     }
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     public java.util.List<? extends PlayerPt.PlayerOrBuilder>
         getPlayerOrBuilderList() {
       return player_;
     }
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     public int getPlayerCount() {
       return player_.size();
     }
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     public PlayerPt.Player getPlayer(int index) {
       return player_.get(index);
     }
     /**
-     * <code>repeated .Player player = 16;</code>
+     * <code>repeated .Player player = 17;</code>
      */
     public PlayerPt.PlayerOrBuilder getPlayerOrBuilder(
         int index) {
@@ -1476,17 +1495,20 @@ public final class SenceMsgProto {
       if (maxTime_ != 0L) {
         output.writeUInt64(12, maxTime_);
       }
+      if (rewardExp_ != 0L) {
+        output.writeUInt64(13, rewardExp_);
+      }
       for (int i = 0; i < entityType_.size(); i++) {
-        output.writeMessage(13, entityType_.get(i));
+        output.writeMessage(14, entityType_.get(i));
       }
       for (int i = 0; i < npc_.size(); i++) {
-        output.writeMessage(14, npc_.get(i));
+        output.writeMessage(15, npc_.get(i));
       }
       for (int i = 0; i < monster_.size(); i++) {
-        output.writeMessage(15, monster_.get(i));
+        output.writeMessage(16, monster_.get(i));
       }
       for (int i = 0; i < player_.size(); i++) {
-        output.writeMessage(16, player_.get(i));
+        output.writeMessage(17, player_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1543,21 +1565,25 @@ public final class SenceMsgProto {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(12, maxTime_);
       }
+      if (rewardExp_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(13, rewardExp_);
+      }
       for (int i = 0; i < entityType_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, entityType_.get(i));
+          .computeMessageSize(14, entityType_.get(i));
       }
       for (int i = 0; i < npc_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(14, npc_.get(i));
+          .computeMessageSize(15, npc_.get(i));
       }
       for (int i = 0; i < monster_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, monster_.get(i));
+          .computeMessageSize(16, monster_.get(i));
       }
       for (int i = 0; i < player_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(16, player_.get(i));
+          .computeMessageSize(17, player_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1604,6 +1630,8 @@ public final class SenceMsgProto {
           != other.getLimit()) return false;
       if (getMaxTime()
           != other.getMaxTime()) return false;
+      if (getRewardExp()
+          != other.getRewardExp()) return false;
       if (!getEntityTypeList()
           .equals(other.getEntityTypeList())) return false;
       if (!getNpcList()
@@ -1656,6 +1684,9 @@ public final class SenceMsgProto {
       hash = (37 * hash) + MAXTIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getMaxTime());
+      hash = (37 * hash) + REWARDEXP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRewardExp());
       if (getEntityTypeCount() > 0) {
         hash = (37 * hash) + ENTITYTYPE_FIELD_NUMBER;
         hash = (53 * hash) + getEntityTypeList().hashCode();
@@ -1845,6 +1876,8 @@ public final class SenceMsgProto {
 
         maxTime_ = 0L;
 
+        rewardExp_ = 0L;
+
         if (entityTypeBuilder_ == null) {
           entityType_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -1916,6 +1949,7 @@ public final class SenceMsgProto {
         result.startTime_ = startTime_;
         result.limit_ = limit_;
         result.maxTime_ = maxTime_;
+        result.rewardExp_ = rewardExp_;
         if (entityTypeBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             entityType_ = java.util.Collections.unmodifiableList(entityType_);
@@ -2037,6 +2071,9 @@ public final class SenceMsgProto {
         }
         if (other.getMaxTime() != 0L) {
           setMaxTime(other.getMaxTime());
+        }
+        if (other.getRewardExp() != 0L) {
+          setRewardExp(other.getRewardExp());
         }
         if (entityTypeBuilder_ == null) {
           if (!other.entityType_.isEmpty()) {
@@ -2776,6 +2813,32 @@ public final class SenceMsgProto {
         return this;
       }
 
+      private long rewardExp_ ;
+      /**
+       * <code>uint64 rewardExp = 13;</code>
+       */
+      public long getRewardExp() {
+        return rewardExp_;
+      }
+      /**
+       * <code>uint64 rewardExp = 13;</code>
+       */
+      public Builder setRewardExp(long value) {
+        
+        rewardExp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 rewardExp = 13;</code>
+       */
+      public Builder clearRewardExp() {
+        
+        rewardExp_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<EntityTypeProto.EntityType> entityType_ =
         java.util.Collections.emptyList();
       private void ensureEntityTypeIsMutable() {
@@ -2789,7 +2852,7 @@ public final class SenceMsgProto {
           EntityTypeProto.EntityType, EntityTypeProto.EntityType.Builder, EntityTypeProto.EntityTypeOrBuilder> entityTypeBuilder_;
 
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public java.util.List<EntityTypeProto.EntityType> getEntityTypeList() {
         if (entityTypeBuilder_ == null) {
@@ -2799,7 +2862,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public int getEntityTypeCount() {
         if (entityTypeBuilder_ == null) {
@@ -2809,7 +2872,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public EntityTypeProto.EntityType getEntityType(int index) {
         if (entityTypeBuilder_ == null) {
@@ -2819,7 +2882,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder setEntityType(
           int index, EntityTypeProto.EntityType value) {
@@ -2836,7 +2899,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder setEntityType(
           int index, EntityTypeProto.EntityType.Builder builderForValue) {
@@ -2850,7 +2913,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder addEntityType(EntityTypeProto.EntityType value) {
         if (entityTypeBuilder_ == null) {
@@ -2866,7 +2929,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder addEntityType(
           int index, EntityTypeProto.EntityType value) {
@@ -2883,7 +2946,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder addEntityType(
           EntityTypeProto.EntityType.Builder builderForValue) {
@@ -2897,7 +2960,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder addEntityType(
           int index, EntityTypeProto.EntityType.Builder builderForValue) {
@@ -2911,7 +2974,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder addAllEntityType(
           Iterable<? extends EntityTypeProto.EntityType> values) {
@@ -2926,7 +2989,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder clearEntityType() {
         if (entityTypeBuilder_ == null) {
@@ -2939,7 +3002,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public Builder removeEntityType(int index) {
         if (entityTypeBuilder_ == null) {
@@ -2952,14 +3015,14 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public EntityTypeProto.EntityType.Builder getEntityTypeBuilder(
           int index) {
         return getEntityTypeFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public EntityTypeProto.EntityTypeOrBuilder getEntityTypeOrBuilder(
           int index) {
@@ -2969,7 +3032,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public java.util.List<? extends EntityTypeProto.EntityTypeOrBuilder>
            getEntityTypeOrBuilderList() {
@@ -2980,14 +3043,14 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public EntityTypeProto.EntityType.Builder addEntityTypeBuilder() {
         return getEntityTypeFieldBuilder().addBuilder(
             EntityTypeProto.EntityType.getDefaultInstance());
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public EntityTypeProto.EntityType.Builder addEntityTypeBuilder(
           int index) {
@@ -2995,7 +3058,7 @@ public final class SenceMsgProto {
             index, EntityTypeProto.EntityType.getDefaultInstance());
       }
       /**
-       * <code>repeated .EntityType entityType = 13;</code>
+       * <code>repeated .EntityType entityType = 14;</code>
        */
       public java.util.List<EntityTypeProto.EntityType.Builder>
            getEntityTypeBuilderList() {
@@ -3029,7 +3092,7 @@ public final class SenceMsgProto {
           NpcPt.Npc, NpcPt.Npc.Builder, NpcPt.NpcOrBuilder> npcBuilder_;
 
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public java.util.List<NpcPt.Npc> getNpcList() {
         if (npcBuilder_ == null) {
@@ -3039,7 +3102,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public int getNpcCount() {
         if (npcBuilder_ == null) {
@@ -3049,7 +3112,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public NpcPt.Npc getNpc(int index) {
         if (npcBuilder_ == null) {
@@ -3059,7 +3122,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder setNpc(
           int index, NpcPt.Npc value) {
@@ -3076,7 +3139,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder setNpc(
           int index, NpcPt.Npc.Builder builderForValue) {
@@ -3090,7 +3153,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder addNpc(NpcPt.Npc value) {
         if (npcBuilder_ == null) {
@@ -3106,7 +3169,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder addNpc(
           int index, NpcPt.Npc value) {
@@ -3123,7 +3186,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder addNpc(
           NpcPt.Npc.Builder builderForValue) {
@@ -3137,7 +3200,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder addNpc(
           int index, NpcPt.Npc.Builder builderForValue) {
@@ -3151,7 +3214,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder addAllNpc(
           Iterable<? extends NpcPt.Npc> values) {
@@ -3166,7 +3229,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder clearNpc() {
         if (npcBuilder_ == null) {
@@ -3179,7 +3242,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public Builder removeNpc(int index) {
         if (npcBuilder_ == null) {
@@ -3192,14 +3255,14 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public NpcPt.Npc.Builder getNpcBuilder(
           int index) {
         return getNpcFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public NpcPt.NpcOrBuilder getNpcOrBuilder(
           int index) {
@@ -3209,7 +3272,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public java.util.List<? extends NpcPt.NpcOrBuilder>
            getNpcOrBuilderList() {
@@ -3220,14 +3283,14 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public NpcPt.Npc.Builder addNpcBuilder() {
         return getNpcFieldBuilder().addBuilder(
             NpcPt.Npc.getDefaultInstance());
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public NpcPt.Npc.Builder addNpcBuilder(
           int index) {
@@ -3235,7 +3298,7 @@ public final class SenceMsgProto {
             index, NpcPt.Npc.getDefaultInstance());
       }
       /**
-       * <code>repeated .Npc npc = 14;</code>
+       * <code>repeated .Npc npc = 15;</code>
        */
       public java.util.List<NpcPt.Npc.Builder>
            getNpcBuilderList() {
@@ -3269,7 +3332,7 @@ public final class SenceMsgProto {
           MonsterPt.Monster, MonsterPt.Monster.Builder, MonsterPt.MonsterOrBuilder> monsterBuilder_;
 
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public java.util.List<MonsterPt.Monster> getMonsterList() {
         if (monsterBuilder_ == null) {
@@ -3279,7 +3342,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public int getMonsterCount() {
         if (monsterBuilder_ == null) {
@@ -3289,7 +3352,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public MonsterPt.Monster getMonster(int index) {
         if (monsterBuilder_ == null) {
@@ -3299,7 +3362,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder setMonster(
           int index, MonsterPt.Monster value) {
@@ -3316,7 +3379,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder setMonster(
           int index, MonsterPt.Monster.Builder builderForValue) {
@@ -3330,7 +3393,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder addMonster(MonsterPt.Monster value) {
         if (monsterBuilder_ == null) {
@@ -3346,7 +3409,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder addMonster(
           int index, MonsterPt.Monster value) {
@@ -3363,7 +3426,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder addMonster(
           MonsterPt.Monster.Builder builderForValue) {
@@ -3377,7 +3440,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder addMonster(
           int index, MonsterPt.Monster.Builder builderForValue) {
@@ -3391,7 +3454,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder addAllMonster(
           Iterable<? extends MonsterPt.Monster> values) {
@@ -3406,7 +3469,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder clearMonster() {
         if (monsterBuilder_ == null) {
@@ -3419,7 +3482,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public Builder removeMonster(int index) {
         if (monsterBuilder_ == null) {
@@ -3432,14 +3495,14 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public MonsterPt.Monster.Builder getMonsterBuilder(
           int index) {
         return getMonsterFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public MonsterPt.MonsterOrBuilder getMonsterOrBuilder(
           int index) {
@@ -3449,7 +3512,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public java.util.List<? extends MonsterPt.MonsterOrBuilder>
            getMonsterOrBuilderList() {
@@ -3460,14 +3523,14 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public MonsterPt.Monster.Builder addMonsterBuilder() {
         return getMonsterFieldBuilder().addBuilder(
             MonsterPt.Monster.getDefaultInstance());
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public MonsterPt.Monster.Builder addMonsterBuilder(
           int index) {
@@ -3475,7 +3538,7 @@ public final class SenceMsgProto {
             index, MonsterPt.Monster.getDefaultInstance());
       }
       /**
-       * <code>repeated .Monster monster = 15;</code>
+       * <code>repeated .Monster monster = 16;</code>
        */
       public java.util.List<MonsterPt.Monster.Builder>
            getMonsterBuilderList() {
@@ -3509,7 +3572,7 @@ public final class SenceMsgProto {
           PlayerPt.Player, PlayerPt.Player.Builder, PlayerPt.PlayerOrBuilder> playerBuilder_;
 
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public java.util.List<PlayerPt.Player> getPlayerList() {
         if (playerBuilder_ == null) {
@@ -3519,7 +3582,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public int getPlayerCount() {
         if (playerBuilder_ == null) {
@@ -3529,7 +3592,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public PlayerPt.Player getPlayer(int index) {
         if (playerBuilder_ == null) {
@@ -3539,7 +3602,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder setPlayer(
           int index, PlayerPt.Player value) {
@@ -3556,7 +3619,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder setPlayer(
           int index, PlayerPt.Player.Builder builderForValue) {
@@ -3570,7 +3633,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder addPlayer(PlayerPt.Player value) {
         if (playerBuilder_ == null) {
@@ -3586,7 +3649,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder addPlayer(
           int index, PlayerPt.Player value) {
@@ -3603,7 +3666,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder addPlayer(
           PlayerPt.Player.Builder builderForValue) {
@@ -3617,7 +3680,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder addPlayer(
           int index, PlayerPt.Player.Builder builderForValue) {
@@ -3631,7 +3694,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder addAllPlayer(
           Iterable<? extends PlayerPt.Player> values) {
@@ -3646,7 +3709,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder clearPlayer() {
         if (playerBuilder_ == null) {
@@ -3659,7 +3722,7 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public Builder removePlayer(int index) {
         if (playerBuilder_ == null) {
@@ -3672,14 +3735,14 @@ public final class SenceMsgProto {
         return this;
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public PlayerPt.Player.Builder getPlayerBuilder(
           int index) {
         return getPlayerFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public PlayerPt.PlayerOrBuilder getPlayerOrBuilder(
           int index) {
@@ -3689,7 +3752,7 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public java.util.List<? extends PlayerPt.PlayerOrBuilder>
            getPlayerOrBuilderList() {
@@ -3700,14 +3763,14 @@ public final class SenceMsgProto {
         }
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public PlayerPt.Player.Builder addPlayerBuilder() {
         return getPlayerFieldBuilder().addBuilder(
             PlayerPt.Player.getDefaultInstance());
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public PlayerPt.Player.Builder addPlayerBuilder(
           int index) {
@@ -3715,7 +3778,7 @@ public final class SenceMsgProto {
             index, PlayerPt.Player.getDefaultInstance());
       }
       /**
-       * <code>repeated .Player player = 16;</code>
+       * <code>repeated .Player player = 17;</code>
        */
       public java.util.List<PlayerPt.Player.Builder>
            getPlayerBuilderList() {
@@ -3810,17 +3873,18 @@ public final class SenceMsgProto {
       "\n\016SenceMsg.proto\032\020EntityType.proto\032\014Play" +
       "er.proto\032\tNpc.proto\032\013Sence.proto\032\rMonste" +
       "r.proto\"D\n\023SenceMsgRequestInfo\022\016\n\006msg_id" +
-      "\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\017\n\007senceId\030\003 \001(\005\"\312\002" +
+      "\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\017\n\007senceId\030\003 \001(\005\"\335\002" +
       "\n\024SenceMsgResponseInfo\022\016\n\006msg_id\030\001 \001(\004\022\016" +
       "\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030" +
       "\004 \001(\t\022\025\n\005sence\030\005 \001(\0132\006.Sence\022\n\n\002id\030\006 \001(\004" +
       "\022\017\n\007senceId\030\007 \001(\005\022\014\n\004name\030\010 \001(\t\022\026\n\004boss\030" +
       "\t \001(\0132\010.Monster\022\021\n\tstartTime\030\n \001(\004\022\r\n\005li" +
-      "mit\030\013 \001(\005\022\017\n\007maxTime\030\014 \001(\004\022\037\n\nentityType" +
-      "\030\r \003(\0132\013.EntityType\022\021\n\003npc\030\016 \003(\0132\004.Npc\022\031" +
-      "\n\007monster\030\017 \003(\0132\010.Monster\022\027\n\006player\030\020 \003(" +
-      "\0132\007.PlayerB-\n\034org.sq.gameDemo.common.pro" +
-      "toB\rSenceMsgProtob\006proto3"
+      "mit\030\013 \001(\005\022\017\n\007maxTime\030\014 \001(\004\022\021\n\trewardExp\030" +
+      "\r \001(\004\022\037\n\nentityType\030\016 \003(\0132\013.EntityType\022\021" +
+      "\n\003npc\030\017 \003(\0132\004.Npc\022\031\n\007monster\030\020 \003(\0132\010.Mon" +
+      "ster\022\027\n\006player\030\021 \003(\0132\007.PlayerB-\n\034org.sq." +
+      "gameDemo.common.protoB\rSenceMsgProtob\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3842,7 +3906,7 @@ public final class SenceMsgProto {
     internal_static_SenceMsgResponseInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SenceMsgResponseInfo_descriptor,
-        new String[] { "MsgId", "Result", "Time", "Content", "Sence", "Id", "SenceId", "Name", "Boss", "StartTime", "Limit", "MaxTime", "EntityType", "Npc", "Monster", "Player", });
+        new String[] { "MsgId", "Result", "Time", "Content", "Sence", "Id", "SenceId", "Name", "Boss", "StartTime", "Limit", "MaxTime", "RewardExp", "EntityType", "Npc", "Monster", "Player", });
     EntityTypeProto.getDescriptor();
     PlayerPt.getDescriptor();
     NpcPt.getDescriptor();

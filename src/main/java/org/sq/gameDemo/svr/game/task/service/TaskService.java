@@ -136,7 +136,7 @@ public class TaskService {
      * @param taskProgress
      */
     private void updateTaskProgress(TaskProgress taskProgress) {
-        ThreadManager.dbTaskPool.execute(() -> taskProgressMapper.updateByPrimaryKey(taskProgress));
+        //ThreadManager.dbTaskPool.execute(() -> taskProgressMapper.updateByPrimaryKey(taskProgress));
     }
 
     /**
@@ -289,5 +289,11 @@ public class TaskService {
     public void getNewPlayerTask(Player initedPlayer) {
         addAcceptTask(initedPlayer, Constant.NEW_PLAYER_TASK_ID);
 
+    }
+
+    public void updateTask(Player player) {
+        for (TaskProgress taskProgress : player.getTaskProgressMap().values()) {
+            taskProgressMapper.updateByPrimaryKeySelective(taskProgress);
+        }
     }
 }

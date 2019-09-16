@@ -68,6 +68,7 @@ public class UserEntity {
     /**
      * 宝宝等级 0代表没有宝宝
      */
+    @ProtoField(Ignore = true)
     private Integer babyLevel = 0;
 
     /**

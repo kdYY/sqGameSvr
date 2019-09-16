@@ -27,6 +27,7 @@ import org.sq.gameDemo.svr.game.guild.dao.GuildMapper;
 import org.sq.gameDemo.svr.game.guild.model.*;
 import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
+import org.sq.gameDemo.svr.game.updateDB.UpdateDB;
 
 import java.sql.SQLOutput;
 import java.util.*;
@@ -148,19 +149,17 @@ public class GuildService {
         }
         updateGuild(guild);
         senceService.notifyPlayerByDefault(player, "申请加入" + guild.getName() + " 公会成功，等待同意通过, 申请号为" + player.getUnId());
+        guild.getMemberMap().entrySet().stream()
+                .filter(entry -> entry.getValue().getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode()))
+                .findFirst()
+                .ifPresent(entry -> {
+                    Player chairMan = entityService.getPlayer(entry.getKey());
+                    if(chairMan != null) {
+                        senceService.notifyPlayerByDefault(chairMan, "公会(id=" + guild.getId() + ",name=" + guild.getName
+                                () +") 有玩家申请入会，使用 showGuildReq id=" + guild.getId() + "查看入会申请");
+                    }
+                });
         EventBus.publish(new PlayerAddGuildEvent(player));
-        ThreadManager.dbTaskPool.execute(() -> {
-            guild.getMemberMap().entrySet().stream()
-                    .filter(entry -> entry.getValue().getGuildAuth().equals(GuildAuth.CHAIRMAN.getAuthCode()))
-                    .findFirst()
-                    .ifPresent(entry -> {
-                        Player chairMan = entityService.getPlayer(entry.getKey());
-                        if(chairMan != null) {
-                            senceService.notifyPlayerByDefault(chairMan, "公会(id=" + guild.getId() + ",name=" + guild.getName
-                                    () +") 有玩家申请入会，使用 showGuildReq id=" + guild.getId() + "查看入会申请");
-                        }
-                    });
-        });
     }
 
     /**
@@ -168,9 +167,14 @@ public class GuildService {
      * @param guild
      */
     private void updateGuild(Guild guild) {
-        ThreadManager.dbTaskPool.execute(() -> guildMapper.updateByPrimaryKey(guild));
+        //ThreadManager.dbTaskPool.execute(() -> guildMapper.updateByPrimaryKey(guild));
     }
 
+    public synchronized void updateGuildDB() {
+        for (Guild guild : guildCache.asMap().values()) {
+            guildMapper.updateByPrimaryKeySelective(guild);
+        }
+    }
     /**
      * 获取新成员的权限
      * @param guild
@@ -395,7 +399,7 @@ public class GuildService {
      * @param unId
      */
     private void updatePlayerGuild(Integer guildId, Integer unId) {
-        ThreadManager.dbTaskPool.execute(() ->{
+        UpdateDB.dbTaskPool.execute(() ->{
             String guildStr = entityService.getUserEntityGuildStr(unId);
             List<Integer> guildList = JsonUtil.reSerializableJson(guildStr, new TypeReference<List<Integer>>() {});
             guildList.add(guildId);

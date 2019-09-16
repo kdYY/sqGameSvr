@@ -273,7 +273,7 @@ public class SenceService {
      * @param newSenceId
      * @throws Exception
      */
-    public void moveToSence(Player player, int newSenceId) throws Exception{
+    public void moveToSence(Player player, int newSenceId) throws CustomException.BindRoleInSenceException{
         //场景id相同且不在副本中
         if(newSenceId == player.getSenceId() ) {
             //不能移动到原来的场景
@@ -289,18 +289,23 @@ public class SenceService {
 
 
     public void notifyPlayerByDefault(Character attacter, String content) {
-        Channel channel = null;
-        if(attacter instanceof Player) {
-            if(attacter.getName().equals(Constant.SYSTEM_MANAGER)) {
-                return;
+        try {
+            Channel channel = null;
+            if(attacter instanceof Player) {
+                if(attacter.getName().equals(Constant.SYSTEM_MANAGER)) {
+                    return;
+                }
+                channel = playerCache.getChannelByPlayerId(attacter.getId());
             }
-            channel = playerCache.getChannelByPlayerId(attacter.getId());
+            if(attacter instanceof Monster
+                    && ((Monster)attacter).getTarget() instanceof Player) {
+                channel = playerCache.getChannelByPlayerId(((Monster)attacter).getTarget().getId());
+            }
+            Optional.ofNullable(channel).ifPresent(ch -> ch.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content)));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if(attacter instanceof Monster
-                && ((Monster)attacter).getTarget() instanceof Player) {
-            channel = playerCache.getChannelByPlayerId(((Monster)attacter).getTarget().getId());
-        }
-        Optional.ofNullable(channel).ifPresent(ch -> ch.writeAndFlush(ProtoBufUtil.getBroadCastDefaultEntity(content)));
     }
 
     public void notifySenceByDefault(Integer senceId, String content) {

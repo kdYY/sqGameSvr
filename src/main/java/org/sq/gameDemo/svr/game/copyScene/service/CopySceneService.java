@@ -7,6 +7,8 @@ import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.CopySceneFinishedEvent;
+import org.sq.gameDemo.svr.game.bag.model.Item;
+import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
@@ -15,21 +17,23 @@ import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.copyScene.model.CopySceneConfig;
 import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
+import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfig;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.team.model.Team;
+import org.sq.gameDemo.svr.game.team.service.TeamService;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static org.sq.gameDemo.common.OrderEnum.ENTER_COPY;
+import static org.sq.gameDemo.common.OrderEnum.SHOW_COPY_SENCE;
 
 @Slf4j
 @Service
@@ -51,6 +55,15 @@ public class CopySceneService {
 
     @Autowired
     private MonsterAIService monsterAIService;
+
+    @Autowired
+    private TeamService teamService;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private BagService bagService;
 
 
     /**
@@ -94,8 +107,7 @@ public class CopySceneService {
         copyScene.setLimit(config.getLimit());
         copyScene.setStartTime(System.currentTimeMillis());
         copyScene.setMaxTime(config.getTime());
-
-        //开启计时检测线程
+        copyScene.setRewardExp(config.getExp());
         Future future = null;
         try {
             future = checkCopyScene(copyScene);
@@ -108,8 +120,30 @@ public class CopySceneService {
                 log.info("副本任务进行中，出现异常，进行关闭");
             }
         }
-
         return copyScene;
+    }
+
+    private void startCopyScene(List<Player> playerList, CopyScene copyScene) {
+        for (Player player : playerList) {
+            senceService.notifyPlayerByDefault(player, "warning !! you will be send to the copy !!");
+            copyScene.getOwners().add(player.getUnId());
+        }
+        //开启计时检测线程
+        copyScene.getSingleThreadSchedule().schedule(()-> {
+
+            for (Player player : playerList) {
+                if(player != null) {
+                    senceService.notifyPlayerByDefault(player, " the copy active!! ");
+                    try {
+                        enterCopyScene(copyScene, player);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }, 3000, TimeUnit.MILLISECONDS);
+
     }
 
     /**
@@ -132,6 +166,7 @@ public class CopySceneService {
             } else {
                 copyScene.resetGarbageThreshold();
             }
+            //挑战成功
             if(copyScene.getBoss() == null && copyScene.getMonsterList().size() == 0) {
                 copySceneChallegeSuccess(copyScene);
 
@@ -173,20 +208,37 @@ public class CopySceneService {
      * @param copyScene
      */
     private void copySceneChallegeSuccess(CopyScene copyScene) {
+
+        ArrayList<Player> players = new ArrayList<>();
+        players.addAll(copyScene.getPlayerList());
+        EventBus.publish(new CopySceneFinishedEvent(players, copyScene.getId()));
+        Map<Integer, Long> damagePercentage = copyScene.getBossDamagePercentage();
+        long count = 0L;
+        for (Long damage : damagePercentage.values()) {
+            count += damage;
+        }
+        if(count <= 0) {
+            log.info("副本伤害计算有bug");
+            return;
+        }
+        for (Map.Entry<Integer, Long> entry : damagePercentage.entrySet()) {
+            Long getExp = (entry.getValue() / count) * copyScene.getRewardExp();
+            Item item = bagService.createItem(Constant.EXP_ITEMINFO, getExp.intValue(), 1);
+            mailService.sendMail(entityService.getSystemPlayer(), entry.getKey(), "副本挑战成功经验获奖", "这是您在副本中获取的物品", item);
+        }
         copyScene.getPlayerList().forEach(
                 player -> {
                     senceService.notifyPlayerByDefault(player, "恭喜挑战副本成功，正在返回原来场景..");
                     exitCopyScene(player, copyScene);
                 }
         );
-        ArrayList<Player> players = new ArrayList<>();
-        players.addAll(copyScene.getPlayerList());
-        EventBus.publish(new CopySceneFinishedEvent(players, copyScene.getId()));
         destroyInstance(copyScene, copyScene.getFuture());
-        //TODO 发送邮件奖励
 
     }
 
+    /**
+     * 副本内怪物AI攻击
+     */
     private void copyMonsterAttacking(CopyScene copyScene, Monster monster) {
         try {
             monsterAIService.monsterAttacking(monster);
@@ -200,6 +252,9 @@ public class CopySceneService {
         }
     }
 
+    /**
+     * 副本通知
+     */
     private void notifyCopyScene(CopyScene copyScene, String content) {
         Optional.ofNullable(copyScene).ifPresent(scene -> {
             scene.getPlayerList().forEach(
@@ -207,10 +262,14 @@ public class CopySceneService {
         });
     }
 
+    /**
+     * 离开副本
+     */
     public void exitCopyScene(Player player, CopyScene copyScene) {
         try {
             senceService.moveToSence(player,
                     copyScene.getBeforeSenceIdMap().get(player.getId()));
+            senceService.notifyPlayerByDefault(player, "使用" + ENTER_COPY.getOrder() + " senceId=" + copyScene.getId() + "继续挑战副本");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -244,7 +303,7 @@ public class CopySceneService {
      * @param copyScene
      * @param player
      */
-    private void enterCopyScene(CopyScene copyScene, Player player) throws Exception {
+    private void enterCopyScene(CopyScene copyScene, Player player) throws Exception{
         if(copyScene == null) {
             senceService.notifyPlayerByDefault(player, "无此副本场景");
             return;
@@ -259,11 +318,12 @@ public class CopySceneService {
                     + copyScene.getName() + "人数已满, 重新开一个吧");
             return;
         }
-        notifyCopyScene(copyScene, "副本任务即将开始");
+
         //保存玩家原来的场景id
         copyScene.getBeforeSenceIdMap().put(player.getId(), player.getSenceId());
         //移动到副本场景
         senceService.moveToSence(player, copyScene.getSenceId());
+        notifyCopyScene(copyScene, "副本任务即将开始");
         copyScene.getPlayerList().forEach( pl -> {
             senceService.notifyPlayerByDefault(player, pl.getName() + "进入 : (id:" + pl.getId()
                     + ") 进入副本 (id:" + copyScene.getSenceId() + ", name:" + copyScene.getName() + ", 剩余挑战时间: "
@@ -284,21 +344,20 @@ public class CopySceneService {
             } else {
                 //判断怪物的目标是不是战士类型
                 if(boss.getTarget() instanceof Player
-                        && ((Player) boss.getTarget()).getTypeId().equals(JobType.WARRIOR.getType())) {
+                        && !((Player) boss.getTarget()).getTypeId().equals(JobType.WARRIOR.getType())) {
                     copyScene.getPlayerList().stream()
-                           .filter(player1 -> player1.getTypeId().equals(JobType.WARRIOR.getType()))
+                           .filter(pl -> pl.getTypeId().equals(JobType.WARRIOR.getType()))
                            .findFirst()
                            .ifPresent(wairrior -> boss.setTarget(wairrior));
-
                 }
             }
 
-            copyScene.getMonsterList().stream().filter(monster -> monster.getTarget() != null).findAny().ifPresent(
+            copyScene.getMonsterList().stream().filter(monster -> monster.getTarget() == null).findAny().ifPresent(
                     hit -> hit.setTarget(player)
             );
             //所有玩家都进来了，无目标的群怪随机攻击
             if(copyScene.getPlayerList().size() == copyScene.getLimit()) {
-                copyScene.getMonsterList().stream().filter(monster -> monster.getTarget() != null).forEach( mon -> {
+                copyScene.getMonsterList().stream().filter(monster -> monster.getTarget() == null).forEach( mon -> {
                     mon.setTarget(copyScene.getPlayerList().stream().findAny().get());
                 });
             }
@@ -313,25 +372,60 @@ public class CopySceneService {
      * @param player
      */
     public CopyScene enterNewCopyScene(Integer copySceneId, Player player) throws Exception {
-        CopyScene copyScene = getInitedCopyScene(copySceneId);
-        //将场景保存到缓存
-        senceService.getSenceCache().put(copyScene.getSenceId(), copyScene);
-        enterCopyScene(copyScene, player);
-        return copyScene;
+        CopySceneConfig config = copySceneConfCache.get(copySceneId);
+        if(config == null ) {
+            senceService.notifyPlayerByDefault(player, "副本id不存在, 使用" + SHOW_COPY_SENCE.getOrder() + "查看副本");
+            return null;
+        }
+        if(config.getLimit().equals(1)) {
+            return enterSingle(copySceneId, player);
+        } else {
+            return enterWithTeam(copySceneId, player);
+        }
     }
 
     /**
-     * 玩家进入新的副本 单人挑战副本
+     * 进入单人副本
+     */
+    private CopyScene enterSingle(Integer copySceneId, Player player) throws Exception {
+        CopyScene copyScene = getInitedCopyScene(copySceneId);
+        if(copyScene == null ) {
+            senceService.notifyPlayerByDefault(player, "副本id不存在, 使用" + SHOW_COPY_SENCE.getOrder() + "查看副本");
+            return null;
+        }
+        //将场景保存到缓存
+        senceService.getSenceCache().put(copyScene.getSenceId(), copyScene);
+        //开始检测场景
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(player);
+        startCopyScene(players, copyScene);
+        return copyScene;
+    }
+    /**
+     * 玩家进入新的副本 组队挑战副本
      * @param copySceneId
      */
-    public CopyScene enterNewCopySceneWithTeam(Integer copySceneId, Team team) throws Exception {
+    private CopyScene enterWithTeam(Integer copySceneId, Player captain) throws Exception {
+        Team team = teamService.getTeam(captain);
+        if(team == null) {
+            senceService.notifyPlayerByDefault(captain, "你还没加入队伍");
+            return null;
+        }
+        if(!team.getCaptainId().equals(captain.getId())) {
+            senceService.notifyPlayerByDefault(captain, "你8是队伍队长，不能开启该副本");
+            return null;
+        }
+        CopySceneConfig config = copySceneConfCache.get(copySceneId);
+
+        if(team.getPlayerInTeam().values().size() != config.getLimit()) {
+            senceService.notifyPlayerByDefault(entityService.getPlayer(team.getCaptainId()), "人数不满足条件，该副本需要"+ config.getLimit() +" 个玩家进入," +
+                    " 使用" + SHOW_COPY_SENCE.getOrder() + "查看副本详情");
+            return null;
+        }
         CopyScene copyScene = getInitedCopyScene(copySceneId);
         //将场景保存到缓存
         senceService.getSenceCache().put(copyScene.getSenceId(), copyScene);
-
-        for (Player player : team.getPlayerInTeam().values()) {
-            enterCopyScene(copyScene, player);
-        }
+        startCopyScene(team.getPlayerInTeam().keySet().stream().map(id -> entityService.getPlayer(id)).collect(Collectors.toList()), copyScene);
         return copyScene;
     }
 
@@ -344,7 +438,7 @@ public class CopySceneService {
     public CopyScene enterExistCopyScene(Integer copySceneId, Player player) throws Exception {
         CopyScene copyScene = findCopyScene(copySceneId);
         //将场景保存到缓存
-        if(copyScene != null) {
+        if(copyScene != null && copyScene.getOwners().contains(player.getUnId())) {
             enterCopyScene(copyScene, player);
             return copyScene;
         } else {
@@ -379,7 +473,10 @@ public class CopySceneService {
      * 找到所有的存在的副本场景
      * @return
      */
-    public List<SenceConfigMsg> getAllExistCopyScene() {
-        return senceService.getSenceCache().asMap().values().stream().filter(sence -> sence instanceof CopyScene).collect(Collectors.toList());
+    public List<SenceConfigMsg> getAllExistCopyScene(Player player) {
+        return senceService.getSenceCache().asMap().values()
+                .stream()
+                .filter(sence -> sence instanceof CopyScene && ((CopyScene) sence).getOwners().contains(player.getUnId()))
+                .collect(Collectors.toList());
     }
 }

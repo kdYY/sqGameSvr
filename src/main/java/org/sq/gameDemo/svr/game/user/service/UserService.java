@@ -27,6 +27,8 @@ import org.sq.gameDemo.svr.game.copyScene.model.CopyScene;
 import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
+import org.sq.gameDemo.svr.game.team.service.TeamService;
+import org.sq.gameDemo.svr.game.updateDB.UpdateDB;
 import org.sq.gameDemo.svr.game.user.dao.UserMapper;
 import org.sq.gameDemo.svr.game.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,8 @@ public class UserService {
     private BagService bagService;
     @Autowired
     private MailService mailService;
-
+    @Autowired
+    private TeamService teamService;
 
 
     @Transactional
@@ -90,7 +93,7 @@ public class UserService {
 
 
     public void updateTokenByUserId(Integer userId, String token) {
-        ThreadManager.dbTaskPool.execute(() -> {
+        UpdateDB.dbTaskPool.execute(() -> {
             userMapper.updateTokenByUserId(userId, token);
         });
     }
@@ -176,9 +179,9 @@ public class UserService {
         playerCache.removePlayerCache(channel);
         UserCache.removeUserIdChannel(channel, player.getUserId());
         mailService.clearCache(player);
-
+        teamService.clearTeam(player);
         try {
-            ThreadManager.dbTaskPool.execute( () -> {
+            UpdateDB.dbTaskPool.execute( () -> {
                 UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
                 userEntity.setExp(player.getExp());
                 SenceConfigMsg senecMsgById = senceService.getSenecMsgById(player.getSenceId());

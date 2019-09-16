@@ -114,25 +114,30 @@ public final class PlayerPt {
     int getGuildId();
 
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>int32 teamId = 18;</code>
+     */
+    int getTeamId();
+
+    /**
+     * <code>repeated .Buff buff = 19;</code>
      */
     java.util.List<BuffPt.Buff>
         getBuffList();
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     BuffPt.Buff getBuff(int index);
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     int getBuffCount();
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     java.util.List<? extends BuffPt.BuffOrBuilder>
         getBuffOrBuilderList();
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     BuffPt.BuffOrBuilder getBuffOrBuilder(
             int index);
@@ -277,7 +282,12 @@ public final class PlayerPt {
               guildId_ = input.readInt32();
               break;
             }
-            case 146: {
+            case 144: {
+
+              teamId_ = input.readInt32();
+              break;
+            }
+            case 154: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 buff_ = new java.util.ArrayList<BuffPt.Buff>();
                 mutable_bitField0_ |= 0x00000001;
@@ -524,35 +534,44 @@ public final class PlayerPt {
       return guildId_;
     }
 
-    public static final int BUFF_FIELD_NUMBER = 18;
+    public static final int TEAMID_FIELD_NUMBER = 18;
+    private int teamId_;
+    /**
+     * <code>int32 teamId = 18;</code>
+     */
+    public int getTeamId() {
+      return teamId_;
+    }
+
+    public static final int BUFF_FIELD_NUMBER = 19;
     private java.util.List<BuffPt.Buff> buff_;
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     public java.util.List<BuffPt.Buff> getBuffList() {
       return buff_;
     }
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     public java.util.List<? extends BuffPt.BuffOrBuilder>
         getBuffOrBuilderList() {
       return buff_;
     }
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     public int getBuffCount() {
       return buff_.size();
     }
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     public BuffPt.Buff getBuff(int index) {
       return buff_.get(index);
     }
     /**
-     * <code>repeated .Buff buff = 18;</code>
+     * <code>repeated .Buff buff = 19;</code>
      */
     public BuffPt.BuffOrBuilder getBuffOrBuilder(
         int index) {
@@ -624,8 +643,11 @@ public final class PlayerPt {
       if (guildId_ != 0) {
         output.writeInt32(17, guildId_);
       }
+      if (teamId_ != 0) {
+        output.writeInt32(18, teamId_);
+      }
       for (int i = 0; i < buff_.size(); i++) {
-        output.writeMessage(18, buff_.get(i));
+        output.writeMessage(19, buff_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -702,9 +724,13 @@ public final class PlayerPt {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(17, guildId_);
       }
+      if (teamId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(18, teamId_);
+      }
       for (int i = 0; i < buff_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(18, buff_.get(i));
+          .computeMessageSize(19, buff_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -755,6 +781,8 @@ public final class PlayerPt {
           != other.getMoney()) return false;
       if (getGuildId()
           != other.getGuildId()) return false;
+      if (getTeamId()
+          != other.getTeamId()) return false;
       if (!getBuffList()
           .equals(other.getBuffList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -808,6 +836,8 @@ public final class PlayerPt {
       hash = (53 * hash) + getMoney();
       hash = (37 * hash) + GUILDID_FIELD_NUMBER;
       hash = (53 * hash) + getGuildId();
+      hash = (37 * hash) + TEAMID_FIELD_NUMBER;
+      hash = (53 * hash) + getTeamId();
       if (getBuffCount() > 0) {
         hash = (37 * hash) + BUFF_FIELD_NUMBER;
         hash = (53 * hash) + getBuffList().hashCode();
@@ -984,6 +1014,8 @@ public final class PlayerPt {
 
         guildId_ = 0;
 
+        teamId_ = 0;
+
         if (buffBuilder_ == null) {
           buff_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -1034,6 +1066,7 @@ public final class PlayerPt {
         result.equipments_ = equipments_;
         result.money_ = money_;
         result.guildId_ = guildId_;
+        result.teamId_ = teamId_;
         if (buffBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             buff_ = java.util.Collections.unmodifiableList(buff_);
@@ -1143,6 +1176,9 @@ public final class PlayerPt {
         }
         if (other.getGuildId() != 0) {
           setGuildId(other.getGuildId());
+        }
+        if (other.getTeamId() != 0) {
+          setTeamId(other.getTeamId());
         }
         if (buffBuilder_ == null) {
           if (!other.buff_.isEmpty()) {
@@ -1728,6 +1764,32 @@ public final class PlayerPt {
         return this;
       }
 
+      private int teamId_ ;
+      /**
+       * <code>int32 teamId = 18;</code>
+       */
+      public int getTeamId() {
+        return teamId_;
+      }
+      /**
+       * <code>int32 teamId = 18;</code>
+       */
+      public Builder setTeamId(int value) {
+        
+        teamId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 teamId = 18;</code>
+       */
+      public Builder clearTeamId() {
+        
+        teamId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<BuffPt.Buff> buff_ =
         java.util.Collections.emptyList();
       private void ensureBuffIsMutable() {
@@ -1741,7 +1803,7 @@ public final class PlayerPt {
           BuffPt.Buff, BuffPt.Buff.Builder, BuffPt.BuffOrBuilder> buffBuilder_;
 
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public java.util.List<BuffPt.Buff> getBuffList() {
         if (buffBuilder_ == null) {
@@ -1751,7 +1813,7 @@ public final class PlayerPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public int getBuffCount() {
         if (buffBuilder_ == null) {
@@ -1761,7 +1823,7 @@ public final class PlayerPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public BuffPt.Buff getBuff(int index) {
         if (buffBuilder_ == null) {
@@ -1771,7 +1833,7 @@ public final class PlayerPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder setBuff(
           int index, BuffPt.Buff value) {
@@ -1788,7 +1850,7 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder setBuff(
           int index, BuffPt.Buff.Builder builderForValue) {
@@ -1802,7 +1864,7 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder addBuff(BuffPt.Buff value) {
         if (buffBuilder_ == null) {
@@ -1818,7 +1880,7 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder addBuff(
           int index, BuffPt.Buff value) {
@@ -1835,7 +1897,7 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder addBuff(
           BuffPt.Buff.Builder builderForValue) {
@@ -1849,7 +1911,7 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder addBuff(
           int index, BuffPt.Buff.Builder builderForValue) {
@@ -1863,7 +1925,7 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder addAllBuff(
           Iterable<? extends BuffPt.Buff> values) {
@@ -1878,7 +1940,7 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder clearBuff() {
         if (buffBuilder_ == null) {
@@ -1891,7 +1953,7 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public Builder removeBuff(int index) {
         if (buffBuilder_ == null) {
@@ -1904,14 +1966,14 @@ public final class PlayerPt {
         return this;
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public BuffPt.Buff.Builder getBuffBuilder(
           int index) {
         return getBuffFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public BuffPt.BuffOrBuilder getBuffOrBuilder(
           int index) {
@@ -1921,7 +1983,7 @@ public final class PlayerPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public java.util.List<? extends BuffPt.BuffOrBuilder>
            getBuffOrBuilderList() {
@@ -1932,14 +1994,14 @@ public final class PlayerPt {
         }
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public BuffPt.Buff.Builder addBuffBuilder() {
         return getBuffFieldBuilder().addBuilder(
             BuffPt.Buff.getDefaultInstance());
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public BuffPt.Buff.Builder addBuffBuilder(
           int index) {
@@ -1947,7 +2009,7 @@ public final class PlayerPt {
             index, BuffPt.Buff.getDefaultInstance());
       }
       /**
-       * <code>repeated .Buff buff = 18;</code>
+       * <code>repeated .Buff buff = 19;</code>
        */
       public java.util.List<BuffPt.Buff.Builder>
            getBuffBuilderList() {
@@ -4719,22 +4781,22 @@ public final class PlayerPt {
   static {
     String[] descriptorData = {
       "\n\014Player.proto\032\020EntityType.proto\032\013Skill." +
-      "proto\032\nBuff.proto\"\231\002\n\006Player\022\n\n\002id\030\001 \001(\004" +
+      "proto\032\nBuff.proto\"\251\002\n\006Player\022\n\n\002id\030\001 \001(\004" +
       "\022\014\n\004unId\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\016\n\006userId\030\004" +
       " \001(\005\022\r\n\005state\030\005 \001(\005\022\016\n\006typeId\030\006 \001(\005\022\017\n\007s" +
       "enceId\030\007 \001(\005\022\013\n\003exp\030\010 \001(\005\022\r\n\005level\030\t \001(\005" +
       "\022\n\n\002hp\030\n \001(\004\022\n\n\002mp\030\013 \001(\004\022\016\n\006attack\030\014 \001(\004" +
       "\022\014\n\004B_Hp\030\r \001(\004\022\014\n\004B_Mp\030\016 \001(\004\022\022\n\nequipmen" +
       "ts\030\017 \001(\t\022\r\n\005money\030\020 \001(\005\022\017\n\007guildId\030\021 \001(\005" +
-      "\022\023\n\004buff\030\022 \003(\0132\005.Buff\"`\n\rPlayerReqInfo\022\016" +
-      "\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\016\n\006typeId\030\003" +
-      " \001(\005\022\017\n\007senceId\030\004 \001(\005\022\020\n\010playerId\030\005 \001(\004\"" +
-      "\232\001\n\016PlayerRespInfo\022\016\n\006msg_id\030\001 \001(\004\022\016\n\006re" +
-      "sult\030\002 \001(\005\022\014\n\004time\030\003 \001(\004\022\017\n\007content\030\004 \001(" +
-      "\t\022\031\n\004type\030\005 \003(\0132\013.EntityType\022\027\n\006player\030\006" +
-      " \003(\0132\007.Player\022\025\n\005skill\030\007 \003(\0132\006.SkillB(\n\034" +
-      "org.sq.gameDemo.common.protoB\010PlayerPtb\006" +
-      "proto3"
+      "\022\016\n\006teamId\030\022 \001(\005\022\023\n\004buff\030\023 \003(\0132\005.Buff\"`\n" +
+      "\rPlayerReqInfo\022\016\n\006msg_id\030\001 \001(\004\022\014\n\004time\030\002" +
+      " \001(\004\022\016\n\006typeId\030\003 \001(\005\022\017\n\007senceId\030\004 \001(\005\022\020\n" +
+      "\010playerId\030\005 \001(\004\"\232\001\n\016PlayerRespInfo\022\016\n\006ms" +
+      "g_id\030\001 \001(\004\022\016\n\006result\030\002 \001(\005\022\014\n\004time\030\003 \001(\004" +
+      "\022\017\n\007content\030\004 \001(\t\022\031\n\004type\030\005 \003(\0132\013.Entity" +
+      "Type\022\027\n\006player\030\006 \003(\0132\007.Player\022\025\n\005skill\030\007" +
+      " \003(\0132\006.SkillB(\n\034org.sq.gameDemo.common.p" +
+      "rotoB\010PlayerPtb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4748,7 +4810,7 @@ public final class PlayerPt {
     internal_static_Player_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Player_descriptor,
-        new String[] { "Id", "UnId", "Name", "UserId", "State", "TypeId", "SenceId", "Exp", "Level", "Hp", "Mp", "Attack", "BHp", "BMp", "Equipments", "Money", "GuildId", "Buff", });
+        new String[] { "Id", "UnId", "Name", "UserId", "State", "TypeId", "SenceId", "Exp", "Level", "Hp", "Mp", "Attack", "BHp", "BMp", "Equipments", "Money", "GuildId", "TeamId", "Buff", });
     internal_static_PlayerReqInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_PlayerReqInfo_fieldAccessorTable = new

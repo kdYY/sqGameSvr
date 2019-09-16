@@ -56,11 +56,9 @@ public class MonsterAIService {
         if(targetMonster.isDead()) {
 
             //是副本，同时死亡 从副本场景移除
+
             SenceConfigMsg sence = senceService.getSenecMsgById(targetMonster.getSenceId());
-            if(sence instanceof CopyScene) {
-                copySceneMonsterDead((CopyScene)sence, targetMonster);
-                return;
-            }
+
 
             targetMonster.setDeadStatus();
 
@@ -84,6 +82,10 @@ public class MonsterAIService {
                 );
                 // 抛出怪物被玩家打死的事件
                 EventBus.publish(new MonsterDeadEvent(player, targetMonster));
+                if(sence instanceof CopyScene) {
+                    copySceneMonsterDead((CopyScene)sence, targetMonster);
+                    return;
+                }
                 return;
             }
             //怪物把宝宝打死
@@ -102,9 +104,6 @@ public class MonsterAIService {
         } else {
             senceService.notifySenceByDefault(targetMonster.getSenceId(), targetMonster.getName() + "已死亡");
         }
-
-        targetMonster.setDeadStatus();
-        EventBus.publish(new CopySceneMonsterDeadEvent(sence, targetMonster));
     }
 
     /**

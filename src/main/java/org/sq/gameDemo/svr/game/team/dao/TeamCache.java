@@ -17,7 +17,7 @@ public class TeamCache {
             ).build();
 
     /**
-     *   组队请求的缓存,key是被邀请玩家的id,value是发起邀请的玩家id
+     *   组队请求的缓存,key是被邀请玩家的id,value是邀请者id
      */
     private static Cache<Long,Long> teamRequestCache = CacheBuilder.newBuilder()
             // 设置三十秒后请求失效
@@ -34,6 +34,9 @@ public class TeamCache {
         teamCache.put(teamId,team);
     }
 
+    public void removeTeam(Long teamId) {
+        teamCache.invalidate(teamId);
+    }
 
     public Long getTeamRequest(Long inviteeId) {
         return teamRequestCache.getIfPresent(inviteeId);

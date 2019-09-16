@@ -36,6 +36,7 @@ import org.sq.gameDemo.svr.game.user.service.UserService;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Service
 public class EntityService {
@@ -414,5 +415,9 @@ public class EntityService {
      */
     public SenceEntity getSenceEntity(Integer id) {
         return senceEntityCache.get((long)id);
+    }
+
+    public List<Player> getAllPlayer() {
+        return playerCache.getAllPlayerCache().values().stream().collect(Collectors.toList());
     }
 }

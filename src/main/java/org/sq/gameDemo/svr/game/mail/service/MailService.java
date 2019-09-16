@@ -19,6 +19,7 @@ import org.sq.gameDemo.svr.game.mail.dao.MailMapper;
 import org.sq.gameDemo.svr.game.mail.model.Mail;
 import org.sq.gameDemo.svr.game.mail.model.MailExample;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
+import org.sq.gameDemo.svr.game.updateDB.UpdateDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,9 +166,7 @@ public class MailService {
             mail.setIsRead(true);
             mail.setKeepTime(-1L);
             mailCache.remove(mail);
-            ThreadManager.dbTaskPool.execute(() -> {
-                mailMapper.updateByPrimaryKey(mail);
-            });
+            updateMail(mail);
         } else {
             senceService.notifyPlayerByDefault(player, "id="+ mail.getId() + " 的邮件不存在");
         }
@@ -191,16 +190,14 @@ public class MailService {
                         || maildb.getRewardItems().size() == 0) {
                     maildb.setIsRead(true);
                     maildb.setKeepTime(-1L);
-                    ThreadManager.dbTaskPool.execute(() -> {
-                        mailMapper.updateByPrimaryKey(maildb);
-                    });
+                    updateMail(maildb);
                     mailCache.remove(mail);
                 } else {
                     maildb.setKeepTime(-1L);
                     maildb.setSenderName(Constant.SYSTEM_MANAGER);
                     maildb.setRecevierUnId(maildb.getSenderUnId());
                     maildb.setSenderUnId(Constant.SYSTEM_UNID);
-                    ThreadManager.dbTaskPool.execute(() -> {
+                    UpdateDB.dbTaskPool.execute(() -> {
                         mailMapper.deleteByPrimaryKey(maildb.getId());
                     });
                     try {
@@ -214,6 +211,19 @@ public class MailService {
         }
 
 
+    }
+
+
+    private void updateMail(Mail maildb) {
+        /*ThreadManager.dbTaskPool.execute(() -> {
+            mailMapper.updateByPrimaryKey(maildb);
+        });*/
+    }
+
+    public void updateMailDB() {
+        for (Mail mail : mailCache.asMap().values()) {
+            mailMapper.updateByPrimaryKeySelective(mail);
+        }
     }
 
     /**
@@ -290,7 +300,7 @@ public class MailService {
      * 发送邮件
      */
     public void sendMail(Player sender, Integer recevierUnId, String title, String content, Item item)  {
-        ThreadManager.dbTaskPool.execute(() -> {
+        UpdateDB.dbTaskPool.execute(() -> {
             List<Item> items = new ArrayList<Item>();
             items.add(item);
             Mail mail = null;

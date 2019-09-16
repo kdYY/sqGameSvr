@@ -44,6 +44,7 @@ public class TaskProgress {
         return progresseList;
     }
 
+
     public String getProgress() {
         if(progresseList.size() != 0) {
             progress = JsonUtil.serializableJson(progresseList);

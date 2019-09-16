@@ -9,8 +9,10 @@ import org.sq.gameDemo.svr.game.buff.dao.BuffCache;
 import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.buff.model.BuffState;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
+import org.sq.gameDemo.svr.game.fight.monsterAI.MonsterAIService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 
 import java.util.Arrays;
@@ -29,6 +31,8 @@ public class BuffService {
     private EntityService entityService;
     @Autowired
     private SenceService senceService;
+    @Autowired
+    private MonsterAIService monsterAIService;
 
     /**
      * buff开始作用在场景实体上
@@ -130,13 +134,16 @@ public class BuffService {
             else {
                 if(buff.getHp() != 0) {
                     affecter.setHp(affecter.getHp() + buff.getHp());
-                    if(affecter instanceof Player && !buff.getId().equals(106))
-                        log.info(affecter.getName() + " hp += " + buff.getHp());
+//                    if(affecter instanceof Player && !buff.getId().equals(106))
+//                        log.info(affecter.getName() + " hp += " + buff.getHp());
+                    if(affecter instanceof Monster) {
+                        monsterAIService.monsterBeAttacked(((Monster) affecter).getTarget(), (Monster) affecter);
+                    }
                 }
                 if(buff.getMp() != 0) {
                     affecter.setMp(affecter.getMp() + buff.getMp());
-                    if(affecter instanceof Player && !buff.getId().equals(105))
-                        log.info(affecter.getName() + " mp += " + buff.getMp());
+//                    if(affecter instanceof Player && !buff.getId().equals(105))
+//                        log.info(affecter.getName() + " mp += " + buff.getMp());
                 }
                 flag = true;
             }

@@ -65,7 +65,13 @@ public enum OrderEnum {
     SHOW_GUILDLIST("showGuildList", 167),
     SHOW_GUILD_BAG("showGuildWareHouse", 168),
     SHOW_TASK_CAN_ACCEPT("showTaskCanAccpet", 169),
-    SHOW_TASK("showtask", 170), ACCEPT_TASK("acceptTask", 171);
+    SHOW_TASK("showtask", 170),
+    ACCEPT_TASK("acceptTask", 171),
+    CREATE_TEAM("createTeam", 172),
+    INVITE_TEAM("inviteTeam", 173),
+    EXIT_TEAM("exitTeam", 174),
+    SHOW_TEAM("showTeam", 175),
+    ENTER_TEAM("enterTeam", 176);
 
 
     private String order;

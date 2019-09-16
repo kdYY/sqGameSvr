@@ -6,10 +6,8 @@ import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.transaction.dao.TradeMapper;
-import org.sq.gameDemo.svr.game.transaction.model.DealTrade;
-import org.sq.gameDemo.svr.game.transaction.model.Trade;
-import org.sq.gameDemo.svr.game.transaction.model.TradeExample;
-import org.sq.gameDemo.svr.game.transaction.model.TradeModel;
+import org.sq.gameDemo.svr.game.transaction.manager.TransactionCache;
+import org.sq.gameDemo.svr.game.transaction.model.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,6 +19,8 @@ import java.util.stream.Collectors;
 public class TradeService {
     @Autowired
     private TradeMapper tradeMapper;
+    @Autowired
+    private TransactionCache transactionCache;
 
     /**
      * 插入交易
@@ -36,10 +36,20 @@ public class TradeService {
      * 更新交易数据
      */
     public void updateTrace(Trade trade) {
-        trade.setItemsMapStr(JsonUtil.serializableJson(trade.getAutionItemMap()));
-        ThreadManager.dbTaskPool.execute(()->tradeMapper.updateByPrimaryKey(trade));
+//        trade.setItemsMapStr(JsonUtil.serializableJson(trade.getAutionItemMap()));
+//        ThreadManager.dbTaskPool.execute(()->tradeMapper.updateByPrimaryKey(trade));
     }
 
+    public void updateTraceDB() {
+        for (DealTrade trade : transactionCache.dealAsMap().values()) {
+            trade.setItemsMapStr(JsonUtil.serializableJson(trade.getAutionItemMap()));
+            tradeMapper.updateByPrimaryKeySelective(trade);
+        }
+        for (OnlineTrade trade : transactionCache.onlineAsMap().values()) {
+            trade.setItemsMapStr(JsonUtil.serializableJson(trade.getAutionItemMap()));
+            tradeMapper.updateByPrimaryKeySelective(trade);
+        }
+    }
 
     /**
      * 查询交易

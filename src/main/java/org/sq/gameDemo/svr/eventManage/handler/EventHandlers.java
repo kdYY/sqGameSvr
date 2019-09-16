@@ -63,11 +63,23 @@ public class EventHandlers {
         log.info("加入公会事件注册成功");
         EventBus.registe(FirstTradeEvent.class, this::makeTrade);
         log.info("参与交易事件注册成功");
+        EventBus.registe(CopySceneFinishedEvent.class, this::copyFinish);
+        log.info("副本通关事件注册成功");
         EventBus.registe(TaskFinishedEvent.class, this::taskFinish);
         log.info("参与任务事件注册成功");
         EventBus.registe(ActivatTaskEvent.class, this::activatTask);
         log.info("激活任务事件注册成功");
 
+    }
+
+    private void copyFinish(CopySceneFinishedEvent copySceneFinishedEvent) {
+        for (Player player : copySceneFinishedEvent.getPlayerList()) {
+            taskService.checkTaskProgress(player,
+                    TaskType.CLEARANCE_COPY,
+                    FinishField.COPY_SCENE_ID,
+                    copySceneFinishedEvent.getCopySceneId(),
+                    progress -> progress.addProgressNum(1));
+        }
     }
 
     /**

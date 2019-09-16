@@ -162,17 +162,26 @@ public class BagService {
      * @param player
      */
     public void updateBagInDB(Player player) {
-        Bag bag = bagMapper.selectByPrimaryKey(player.getUnId());
-        ThreadManager.dbTaskPool.execute(() -> {
-            if(bag == null) {
-                bagMapper.insert(player.getBag());
-            } else {
-                bagMapper.updateByPrimaryKey(player.getBag());
-            }
-        });
+//        Bag bag = bagMapper.selectByPrimaryKey(player.getUnId());
+//        ThreadManager.dbTaskPool.execute(() -> {
+//            if(bag == null) {
+//                bagMapper.insert(player.getBag());
+//            } else {
+//                bagMapper.updateByPrimaryKey(player.getBag());
+//            }
+//        });
 
     }
-
+    public void updateBag(Player player) {
+        Bag bag = bagMapper.selectByPrimaryKey(player.getUnId());
+        Bag playerBag = player.getBag();
+        playerBag.setUnId(player.getUnId());
+        if(bag == null) {
+            bagMapper.insert(player.getBag());
+        } else {
+            bagMapper.updateByPrimaryKeySelective(playerBag);
+        }
+    }
 
     /**
      * 放置物品进去背包

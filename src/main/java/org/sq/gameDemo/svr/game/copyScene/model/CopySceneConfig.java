@@ -19,4 +19,7 @@ public class CopySceneConfig {
     private String boss;
     //副本计时
     private Long  time;
+
+    //副本奖励经验
+    private Long exp;
 }
