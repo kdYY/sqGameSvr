@@ -182,19 +182,7 @@ public class UserService {
         teamService.clearTeam(player);
         try {
             UpdateDB.dbTaskPool.execute( () -> {
-                UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
-                userEntity.setExp(player.getExp());
-                SenceConfigMsg senecMsgById = senceService.getSenecMsgById(player.getSenceId());
-                if (senecMsgById instanceof CopyScene) {
-                    Integer senceId  = ((CopyScene) senecMsgById).getBeforeSenceIdMap().get(player.getId());
-                    userEntity.setSenceId(senceId);
-                } else {
-                    userEntity.setSenceId(player.getSenceId());
-                }
-                Map<Integer, Item> equipmentBar = player.getEquipmentBar();
-                userEntity.setEquipments(JsonUtil.serializableJson(equipmentBar));
-                userEntity.setGuildListStr(JsonUtil.serializableJson(player.getGuildList()));
-                userEntityMapper.updateByPrimaryKeySelective(userEntity);
+                entityService.updateUserEntity(player);
                 bagService.updateBagInDB(player);
             });
         } catch (Exception e) {

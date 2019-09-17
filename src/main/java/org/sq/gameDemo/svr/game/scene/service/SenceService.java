@@ -127,6 +127,7 @@ public class SenceService {
         monster.setId(ConcurrentSnowFlake.getInstance().nextID());
         monster.setEntityTypeId(senceEntity.getId());
         monster.setSenceId(senceId);
+        monster.setHp(senceEntity.getHp() + level * 10);
         ConcurrentMap<Integer, Skill> collect = Arrays.stream(monster.getSkillStr().trim().split(","))
                 .map(Integer::valueOf)
                 .filter(str -> skillService.getSkill(str) != null)
@@ -136,7 +137,7 @@ public class SenceService {
                         skill -> {
                             Skill monsterSkill = new Skill();
                             BeanUtils.copyProperties(skill, monsterSkill);
-                            monsterSkill.setHurt(skill.getHurt() * level / 10);
+                            monsterSkill.setHurt(skill.getHurt() + level/2);
                             monsterSkill.setMpNeed(0L);
                             return monsterSkill;
                         }

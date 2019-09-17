@@ -56,6 +56,7 @@ public class UpdateDB {
             log.info("定时更新背包数据库");
             taskService.updateTask(player);
             log.info("定时更新任务数据库");
+            entityService.updateUserEntity(player);
         }
         mailService.updateMailDB();
         log.info("定时更新邮件数据库");

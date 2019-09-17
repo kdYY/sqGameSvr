@@ -73,7 +73,7 @@ public enum OrderEnum {
     SHOW_TEAM("showTeam", 175),
     ENTER_TEAM("enterTeam", 176),
     ADD_FRIEND("addFriend", 177),
-    SHOW_FRIEND("showFriend", 177),
+    SHOW_FRIEND("showFriend", 178),
     ;
 
 

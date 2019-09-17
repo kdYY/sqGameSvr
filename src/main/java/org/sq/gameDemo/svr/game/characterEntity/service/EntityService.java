@@ -5,9 +5,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.common.proto.*;
-import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
-import org.sq.gameDemo.svr.common.Constant;
-import org.sq.gameDemo.svr.common.ThreadManager;
+import org.sq.gameDemo.svr.common.*;
+import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.SenceEntityCache;
 import org.sq.gameDemo.svr.game.characterEntity.model.*;
@@ -17,7 +16,6 @@ import org.sq.gameDemo.svr.game.equip.service.EquitService;
 import org.sq.gameDemo.svr.game.buff.service.BuffService;
 import org.sq.gameDemo.svr.game.characterEntity.dao.EntityTypeCache;
 import org.sq.gameDemo.svr.game.characterEntity.dao.PlayerCache;
-import org.sq.gameDemo.svr.common.UserCache;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
@@ -27,6 +25,7 @@ import org.sq.gameDemo.svr.game.guild.service.GuildService;
 import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.roleAttribute.service.RoleAttributeService;
+import org.sq.gameDemo.svr.game.scene.model.SenceConfigMsg;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
 import org.sq.gameDemo.svr.game.skills.service.SkillService;
 import org.sq.gameDemo.svr.game.task.service.TaskService;
@@ -253,7 +252,7 @@ public class EntityService {
             finalTotalAttack.addAndGet(Optional.ofNullable(attr.getValue()).orElse(30));
         });
 
-        long finalAttack = finalTotalAttack.get() * player.getLevel();
+        long finalAttack = finalTotalAttack.get();
         /**
          * AP英雄的增益
          */
@@ -423,5 +422,22 @@ public class EntityService {
 
     public List<Player> getAllPlayer() {
         return playerCache.getAllPlayerCache().values().stream().collect(Collectors.toList());
+    }
+
+    public void updateUserEntity(Player player) {
+        UserEntity userEntity = userEntityMapper.getUserEntityByUserId(player.getUserId());
+        BeanUtils.copyProperties(player, userEntity);
+        SenceConfigMsg senecMsgById = senceService.getSenecMsgById(userEntity.getSenceId());
+        if (senecMsgById instanceof CopyScene) {
+            Integer senceId  = ((CopyScene) senecMsgById).getBeforeSenceIdMap().get(player.getId());
+            userEntity.setSenceId(senceId);
+        } else {
+            userEntity.setSenceId(player.getSenceId());
+        }
+        userEntity.setEquipments(JsonUtil.serializableJson(player.getEquipmentBar()));
+        userEntity.setGuildListStr(JsonUtil.serializableJson(player.getGuildList()));
+        userEntity.setFriend(JsonUtil.serializableJson(player.getFriendMap()));
+
+        userEntityMapper.updateByPrimaryKeySelective(userEntity);
     }
 }

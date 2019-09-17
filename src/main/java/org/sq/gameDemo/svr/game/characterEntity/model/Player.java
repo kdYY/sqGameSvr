@@ -58,8 +58,8 @@ public class Player extends UserEntity implements Character {
      */
     public synchronized void setHp(Long hp) {
 
-        if(hp > this.getB_Hp() * this.getLevel()) {
-            hp = this.getB_Hp() * this.getLevel();
+        if(hp > this.getB_Hp() ) {
+            hp = this.getB_Hp();
         }
         if(hp < 0) {
             hp = 0L;
@@ -73,8 +73,8 @@ public class Player extends UserEntity implements Character {
      * @param mp
      */
     public synchronized void setMp(Long mp) {
-        if(mp > this.getB_Mp() * this.getLevel()) {
-            mp = this.getB_Mp()* this.getLevel();
+        if(mp > this.getB_Mp()) {
+            mp = this.getB_Mp();
         }
         if(mp < 0) {
             mp = 0L;

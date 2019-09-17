@@ -207,7 +207,6 @@ public class TaskService {
     //增加任务
     public void addAcceptTask(Player player, Integer taskId) {
         if(player.getTaskProgressMap().get(taskId) != null) {
-            senceService.notifyPlayerByDefault(player, "任务已存在");
             return;
         }
         Task task = taskCache.get(taskId);

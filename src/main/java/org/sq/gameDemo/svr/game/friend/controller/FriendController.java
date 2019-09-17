@@ -60,6 +60,9 @@ public class FriendController {
 
     private void getFriendResponsePt(FriendPt.FriendResponseInfo.Builder builder, List<Friend> friendList) throws Exception {
         for (Friend friend : friendList) {
+            if(entityService.getPlayer(friend.getUnId()) != null) {
+                friend.setOnline(true);
+            }
             builder.addFriend(ProtoBufUtil.transformProtoReturnBuilder(FriendPt.Friend.newBuilder(), friend));
         }
     }

@@ -113,17 +113,27 @@ public class RoleAttributeService {
         if(cachedRoleAttr.getName().contains("HP")) {
             Optional.ofNullable(cachedRoleAttr).ifPresent(
                     attr -> {
-                        player.setB_Hp(player.getB_Hp() + Long.valueOf(attr.getValue()));
-                        if(player.getHp() == null || player.getHp() <= 0) {
-                            player.setHp(player.getB_Hp() * player.getLevel());
+                        //玩家登陆初始化
+                        if(player.getB_Hp() == null || player.getB_Hp() <= 0) {
+                            player.setB_Hp(Long.valueOf(attr.getValue()) + player.getLevel() * 10);
+                            player.setHp(player.getB_Hp());
+                        }
+                        //装备增益
+                        else {
+                            player.setB_Hp(player.getB_Hp() + Long.valueOf(attr.getValue()));
                         }
                     }
             );
         } else if (cachedRoleAttr.getName().contains("MP")) {
             Optional.ofNullable(cachedRoleAttr).ifPresent( attr -> {
-                player.setB_Mp(player.getB_Mp() + Long.valueOf(attr.getValue()));
-                if(player.getMp() == null || player.getMp() <= 0) {
-                    player.setMp(player.getB_Mp() * player.getLevel());
+                //玩家登陆初始化
+                if(player.getB_Mp() == null || player.getB_Mp() <= 0) {
+                    player.setB_Mp(Long.valueOf(attr.getValue()) + player.getLevel() * 5);
+                    player.setMp(player.getB_Mp());
+                }
+                //装备增益
+                else {
+                    player.setB_Mp(player.getB_Mp() + Long.valueOf(attr.getValue()));
                 }
             });
         }
@@ -139,18 +149,14 @@ public class RoleAttributeService {
             Optional.ofNullable(cachedRoleAttr).ifPresent(
                     attr -> {
                         player.setB_Hp(player.getB_Hp() - Long.valueOf(attr.getValue()));
-                        if(player.getHp() > player.getB_Hp()) {
-                            player.setHp(player.getB_Hp() * player.getLevel());
-                        }
+                        player.setHp(player.getHp());
                     }
             );
         } else if (cachedRoleAttr.getName().contains("MP")) {
             Optional.ofNullable(cachedRoleAttr).ifPresent(
                     attr -> {
                         player.setB_Mp(player.getB_Mp() - Long.valueOf(attr.getValue()));
-                        if(player.getMp() > player.getB_Mp()) {
-                            player.setMp(player.getB_Mp() * player.getLevel());
-                        }
+                        player.setMp(player.getMp());
                     }
             );
         }

@@ -66,12 +66,37 @@ public class EventHandlers {
         EventBus.registe(CopySceneFinishedEvent.class, this::copyFinish);
         log.info("副本通关事件注册成功");
         EventBus.registe(TaskFinishedEvent.class, this::taskFinish);
-        log.info("参与任务事件注册成功");
+        log.info("任务完成事件注册成功");
+        EventBus.registe(FirstAddFriendEvent.class, this::firstAddFriend);
+        log.info("首次添加好友事件注册成功");
+        EventBus.registe(FirstTeamEvent.class, this::firstTeam);
+        log.info("首次组队事件注册成功");
         EventBus.registe(ActivatTaskEvent.class, this::activatTask);
         log.info("激活任务事件注册成功");
 
     }
 
+    /**
+     * 加入队伍事件
+     * @param firstTeamEvent
+     */
+    private void firstTeam(FirstTeamEvent firstTeamEvent) {
+        firstTaskEvent(firstTeamEvent.getPlayer(), FirstTarget.ADD_TEAM);
+    }
+
+
+    /**
+     * 添加好友事件
+     * @param friendEvent
+     */
+    private void firstAddFriend(FirstAddFriendEvent friendEvent) {
+        firstTaskEvent(friendEvent.getPlayer(), FirstTarget.ADD_FIREND);
+    }
+
+    /**
+     * 副本完成事件
+     * @param copySceneFinishedEvent
+     */
     private void copyFinish(CopySceneFinishedEvent copySceneFinishedEvent) {
         for (Player player : copySceneFinishedEvent.getPlayerList()) {
             taskService.checkTaskProgress(player,

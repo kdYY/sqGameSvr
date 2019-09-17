@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.sq.gameDemo.common.OrderEnum.SHOW_FRIEND;
+
 @Service
 public class FriendService {
 
@@ -43,9 +45,9 @@ public class FriendService {
         }
         Friend friend = new Friend(unId, find.getName(), entityService.getType(find.getTypeId()).getTypeName());
         player.getFriendMap().put(unId, friend);
-        player.setFriend(JsonUtil.serializableJson(player.getFriendMap()));
+        //player.setFriend(JsonUtil.serializableJson(player.getFriendMap()));
 
-        senceService.notifyPlayerByDefault(player, "添加好友成功");
+        senceService.notifyPlayerByDefault(player, "添加好友成功, 使用" + SHOW_FRIEND.getOrder() + ", 查看好友列表");
         EventBus.publish(new FirstAddFriendEvent(player));
     }
 

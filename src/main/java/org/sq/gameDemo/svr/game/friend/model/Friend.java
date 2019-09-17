@@ -7,7 +7,7 @@ public class Friend {
     private Integer unId;
     private String name;
     private String typeName;
-    private boolean isOnline;
+    private boolean isOnline = false;
 
     public Friend() {
     }
@@ -22,7 +22,7 @@ public class Friend {
         return isOnline;
     }
 
-    public boolean getOnline() {
+    public boolean getIsOnline() {
         return isOnline;
     }
 }
