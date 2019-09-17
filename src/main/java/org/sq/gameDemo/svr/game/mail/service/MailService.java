@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.sq.gameDemo.common.OrderEnum.ADD_FRIEND;
+
 @Service
 @Slf4j
 public class MailService {
@@ -269,7 +271,11 @@ public class MailService {
             }
             return;
         }
-
+        if(!sender.getFriendMap().containsKey(recevierUnId)) {
+            senceService.notifyPlayerByDefault(sender, recevierName + " 不是你好友(使用" + ADD_FRIEND.getOrder() + " unId=" + recevierName +
+                    "添加他/她为好友)");
+            return;
+        }
         for (ItemPt.Item item : itemIdList) {
             Item itemInBag = bagService.findItem(sender, item.getId(), item.getCount());
             Item itemSend = new Item();

@@ -74,7 +74,7 @@ public class TeamController {
     }
 
     /**
-     * 获取组队响应
+     * 组队协议转换
      * @param builder
      * @param team
      */

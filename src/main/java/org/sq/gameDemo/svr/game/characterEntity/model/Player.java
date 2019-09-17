@@ -15,11 +15,13 @@ import org.sq.gameDemo.svr.game.bag.model.Bag;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
+import org.sq.gameDemo.svr.game.friend.model.Friend;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
 import org.sq.gameDemo.svr.game.task.model.Task;
 import org.sq.gameDemo.svr.game.task.model.TaskProgress;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -145,4 +147,6 @@ public class Player extends UserEntity implements Character {
     // 玩家当前的队伍id
     private Long teamId;
 
+    @ProtoField(Ignore = true)
+    private Map<Integer, Friend> friendMap = new ConcurrentHashMap<>();
 }

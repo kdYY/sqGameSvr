@@ -22,6 +22,7 @@ import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
 import org.sq.gameDemo.svr.game.characterEntity.dao.UserEntityMapper;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
+import org.sq.gameDemo.svr.game.friend.service.FriendService;
 import org.sq.gameDemo.svr.game.guild.service.GuildService;
 import org.sq.gameDemo.svr.game.mail.service.MailService;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
@@ -74,6 +75,8 @@ public class EntityService {
     private GuildService guildService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private FriendService friendService;
 
     /**
      * 用户登录
@@ -185,6 +188,7 @@ public class EntityService {
         onlineTradeService.loadTrace(playerCached);
         guildService.loadGuild(playerCached);
         taskService.loadTaskProgress(playerCached);
+        friendService.loadFriend(playerCached);
         return playerCached;
     }
 

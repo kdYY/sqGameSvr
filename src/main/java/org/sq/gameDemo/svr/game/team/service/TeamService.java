@@ -3,6 +3,8 @@ package org.sq.gameDemo.svr.game.team.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.ConcurrentSnowFlake;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.FirstTeamEvent;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 import org.sq.gameDemo.svr.game.characterEntity.service.EntityService;
 import org.sq.gameDemo.svr.game.scene.service.SenceService;
@@ -42,6 +44,7 @@ public class TeamService {
         teamCache.putTeam(team.getId(), team);
         player.setTeamId(team.getId());
         senceService.notifyPlayerByDefault(player, "队伍创建成功");
+        EventBus.publish(new FirstTeamEvent(player));
         return team;
     }
 
@@ -87,6 +90,7 @@ public class TeamService {
         team.getPlayerInTeam().put(player.getId(), player.getName());
         player.setTeamId(team.getId());
         senceService.notifyPlayerByDefault(player,"已加入" + team.getName() + "队伍");
+        EventBus.publish(new FirstTeamEvent(player));
     }
 
 

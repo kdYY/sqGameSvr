@@ -71,7 +71,10 @@ public enum OrderEnum {
     INVITE_TEAM("inviteTeam", 173),
     EXIT_TEAM("exitTeam", 174),
     SHOW_TEAM("showTeam", 175),
-    ENTER_TEAM("enterTeam", 176);
+    ENTER_TEAM("enterTeam", 176),
+    ADD_FRIEND("addFriend", 177),
+    SHOW_FRIEND("showFriend", 177),
+    ;
 
 
     private String order;

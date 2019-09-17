@@ -1,6 +1,7 @@
 package org.sq.gameDemo.svr.game.characterEntity.model;
 
 import lombok.Data;
+import org.sq.gameDemo.common.proto.TeamPt;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.skills.model.Skill;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 
@@ -51,7 +53,7 @@ public class UserEntity {
     /**
      * 装备
      */
-    private String equipments = "{}";
+    private String equipments;
 
     
     /**
@@ -63,6 +65,7 @@ public class UserEntity {
     /**
      * 公会id
      */
+    @ProtoField(Ignore = true)
     private String guildListStr;
 
     /**
@@ -89,6 +92,7 @@ public class UserEntity {
     @ProtoField(Ignore = true)
     private Map<Skill, Future> skillInEffectingMap = new ConcurrentHashMap<>();
 
-
+    @ProtoField(Ignore = true)
+    String friend;
 
 }

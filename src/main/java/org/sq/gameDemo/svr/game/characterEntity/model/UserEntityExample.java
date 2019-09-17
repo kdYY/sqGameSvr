@@ -68,7 +68,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-30
+     * @date 2019-09-17
      */
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -860,6 +860,76 @@ public class UserEntityExample {
             addCriterion("baby_type not between", value1, value2, "babyType");
             return (Criteria) this;
         }
+
+        public Criteria andFriendIsNull() {
+            addCriterion("friend is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendIsNotNull() {
+            addCriterion("friend is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendEqualTo(String value) {
+            addCriterion("friend =", value, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNotEqualTo(String value) {
+            addCriterion("friend <>", value, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendGreaterThan(String value) {
+            addCriterion("friend >", value, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendGreaterThanOrEqualTo(String value) {
+            addCriterion("friend >=", value, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendLessThan(String value) {
+            addCriterion("friend <", value, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendLessThanOrEqualTo(String value) {
+            addCriterion("friend <=", value, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendLike(String value) {
+            addCriterion("friend like", value, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNotLike(String value) {
+            addCriterion("friend not like", value, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendIn(List<String> values) {
+            addCriterion("friend in", values, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNotIn(List<String> values) {
+            addCriterion("friend not in", values, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendBetween(String value1, String value2) {
+            addCriterion("friend between", value1, value2, "friend");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNotBetween(String value1, String value2) {
+            addCriterion("friend not between", value1, value2, "friend");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
@@ -874,7 +944,7 @@ public class UserEntityExample {
      * 
      * @author wcyong
      * 
-     * @date 2019-08-30
+     * @date 2019-09-17
      */
     public static class Criterion {
         private String condition;
