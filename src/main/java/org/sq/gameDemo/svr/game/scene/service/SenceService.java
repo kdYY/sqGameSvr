@@ -116,6 +116,7 @@ public class SenceService {
     private Npc getInitedNpc(SenceEntity senceEntity, Integer senceId) {
         Npc npc = new Npc();
         BeanUtils.copyProperties(senceEntity, npc);
+        npc.setEntityTypeId(senceEntity.getId().intValue());
         npc.setId(ConcurrentSnowFlake.getInstance().nextID());
         npc.setSenceId(senceId);
         return npc;
@@ -231,9 +232,7 @@ public class SenceService {
      * 找到场景中的npc
      */
     private Npc getNpcInSence(Integer senceId, Long npcId) {
-        return getSingleByCondition(
-                senceIdAndSenceMsgMap.getIfPresent(senceId).getNpcList(),
-                o -> o.getId().equals(npcId));
+        return getSingleByCondition(senceIdAndSenceMsgMap.getIfPresent(senceId).getNpcList(), o -> o.getId().equals(npcId));
     }
 
     /**

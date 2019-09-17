@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.proto.*;
 import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.game.bag.model.Item;
@@ -123,8 +124,10 @@ public class EntityService {
 
             String lastSence = senceService.getSenceBySenceId(player.getSenceId()).getName();
             builder.setContent(lastSence);
+            builder.setResult(Constant.SUCCESS);
         } else {
-            throw new CustomException.BindRoleInSenceException("login game server success, please bind your role，enter \"help\" to get help message");
+            throw new CustomException.BindRoleInSenceException("login game server success, please bind your role，使用"
+                    + OrderEnum.GetRole.getOrder() + "查看可创建的角色" );
         }
     }
 

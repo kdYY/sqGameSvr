@@ -28,14 +28,14 @@ public class UserCache {
     @Autowired
     private UserMapper userMapper;
     //<Token, UserId>
-    public static Map<String, Integer> tokenUserMap = new HashMap<>();
+    public static Map<String, Integer> tokenUserMap = new ConcurrentHashMap<>();
     //<Channel, UserId>
     public static Map<Channel,Integer> channelUserIdMap = new ConcurrentHashMap<>();
     //<UserId, User>
     public static Map<Integer, User> userMap = new ConcurrentHashMap<>();
 
-    public static void removeUserIdChannel(Channel channel, Integer userId) {
-        channelUserIdMap.remove(channel, userId);
+    public static void removeUserIdChannel(Channel channel) {
+        channelUserIdMap.remove(channel);
     }
 
     @PostConstruct

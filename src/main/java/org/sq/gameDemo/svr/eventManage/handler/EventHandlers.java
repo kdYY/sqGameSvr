@@ -195,7 +195,7 @@ public class EventHandlers {
         taskService.checkTaskProgress(conversationEvent.getPlayer(),
                 TaskType.CONVERSATION,
                 FinishField.ENTITY_TYPE,
-                conversationEvent.getNpc().getTypeId(),
+                conversationEvent.getNpc().getEntityTypeId(),
                 progress -> progress.addProgressNum(1));
     }
 

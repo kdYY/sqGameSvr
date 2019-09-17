@@ -23,7 +23,7 @@ public class SenceEntity{
     private Long id;
     private String name;
     private Integer senceId;
-    private Integer typeId;//角色类型
+    private Integer typeId;//npc、monster
     private Integer state;
     private Long hp;
     private Long mp;
@@ -32,7 +32,8 @@ public class SenceEntity{
     private String npcWord;
     @ProtoField(Ignore = true)
     private String taskStr;
-
+    @ProtoField(Ignore = true)
+    private Integer entityTypeId;
     @ProtoField(Ignore = true)
     private String skillStr;
 

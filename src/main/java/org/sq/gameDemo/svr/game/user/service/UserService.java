@@ -151,8 +151,7 @@ public class UserService {
                     entityService.playerLogin(channel, builder, user);
                 }  catch (CustomException.BindRoleInSenceException e1) {
                     builder.setContent(e1.getMessage());
-                    builder.setResult(404);
-                    builder.setToken("");
+                    builder.setResult(505);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -171,13 +170,13 @@ public class UserService {
      */
     public void userOffLine(Channel channel) {
         Player player = playerCache.getPlayerByChannel(channel);
+        UserCache.removeUserIdChannel(channel);
         if(player == null) {
             return;
         }
         senceService.removePlayerAndGet(player);
         //清除playerCache中的数据
         playerCache.removePlayerCache(channel);
-        UserCache.removeUserIdChannel(channel, player.getUserId());
         mailService.clearCache(player);
         teamService.clearTeam(player);
         try {
