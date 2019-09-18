@@ -32,8 +32,7 @@ public class SenceEntity{
     private String npcWord;
     @ProtoField(Ignore = true)
     private String taskStr;
-    @ProtoField(Ignore = true)
-    private Integer entityTypeId;
+
     @ProtoField(Ignore = true)
     private String skillStr;
 

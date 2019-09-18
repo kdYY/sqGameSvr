@@ -47,7 +47,7 @@ public enum OrderEnum {
     GET_ONLINE_TRADE("getonlinetrade", 150),
     START_DEAL_TRADE("startdealTrade", 151),
     ACCEPT_DEAL_TRADE("acceptDealTrade",152 ),
-    GET_DEAL("getDeal", 153),
+    SHOW_DEAL("showDeal", 153),
     GET_DEAL_CAN_BUY("canbuyDeal", 154 ),
     GET_DEAL_HISTORY("getDealHistory", 155),
     GET_ONLINE_TRADE_CAN_RECEIVE("getOnlineTradeCnReceive", 156),

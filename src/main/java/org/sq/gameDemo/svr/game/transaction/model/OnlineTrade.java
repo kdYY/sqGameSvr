@@ -19,6 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * 面对面交易
+ */
 @Data
 @EqualsAndHashCode(callSuper=true)
 public class OnlineTrade extends Trade{

@@ -5,7 +5,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.svr.common.Ref;
-import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.common.customException.CustomException;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.FirstTradeEvent;
@@ -91,7 +90,7 @@ public class OnlineTradeService {
             transactionCache.removeOnlineTrade(onlineTrade);
         }
         //更新数据库
-        tradeService.updateTrace(onlineTrade);
+        tradeService.updateTradeDB(onlineTrade);
         EventBus.publish(new FirstTradeEvent(accpeter));
     }
 
@@ -104,7 +103,7 @@ public class OnlineTradeService {
                 onlineTrade.setFinish(true);
                 transactionCache.removeOnlineTrade(onlineTrade);
                 sendTradeMail(onlineTrade);
-                tradeService.updateTrace(onlineTrade);
+                tradeService.updateTradeDB(onlineTrade);
             } catch (CustomException.SystemSendMailErrException e) {
                 e.printStackTrace();
             }

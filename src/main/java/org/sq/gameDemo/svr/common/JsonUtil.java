@@ -49,11 +49,11 @@ public class JsonUtil {
     /**
      * 获取jsonStr
      */
-    public static  <T extends Map> String getJsonStr(T t, String str)  {
-        if(t.size() != 0) {
-           str = serializableJson(t);
-        }
-        return str;
+    public static  <T extends Map> String getJsonStr(T t)  {
+//        if(t.size() != 0) {
+//           str = serializableJson(t);
+//        }
+        return serializableJson(t);
     }
 
 }

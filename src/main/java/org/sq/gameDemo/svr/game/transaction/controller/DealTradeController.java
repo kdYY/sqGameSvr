@@ -65,7 +65,7 @@ public class DealTradeController {
      * @param msgEntity
      * @param builder
      */
-    @OrderMapping(OrderEnum.GET_DEAL)
+    @OrderMapping(OrderEnum.SHOW_DEAL)
     public MsgEntity getDealTrade(MsgEntity msgEntity,
                                @RespBuilderParam TradePt.TradeResponseInfo.Builder builder) {
         Player player = entityService.getPlayer(msgEntity.getChannel());

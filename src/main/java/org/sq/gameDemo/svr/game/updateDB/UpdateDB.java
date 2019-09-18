@@ -58,11 +58,11 @@ public class UpdateDB {
             log.info("定时更新任务数据库");
             entityService.updateUserEntity(player);
         }
-        mailService.updateMailDB();
-        log.info("定时更新邮件数据库");
+        //mailService.updateMailDB();
+        //log.info("定时更新邮件数据库");
         guildService.updateGuildDB();
         log.info("定时更新公会数据库");
-        tradeService.updateTraceDB();
-        log.info("定时更新交易数据库");
+//        tradeService.updateTraceDB();
+//        log.info("定时更新交易数据库");
     }
 }

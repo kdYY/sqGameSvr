@@ -35,6 +35,9 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static org.sq.gameDemo.common.OrderEnum.SHOW_TASK;
+import static org.sq.gameDemo.common.OrderEnum.SHOW_TASK_CAN_ACCEPT;
+
 @Slf4j
 @Service
 public class TaskService {
@@ -72,8 +75,14 @@ public class TaskService {
             }
             player.getTaskProgressMap().put(taskProgress.getTaskId(), taskProgress);
             if(taskProgress.getState().equals(TaskStateConstant.DOING)) {
-                senceService.notifyPlayerByDefault(player, "当前正在进行的任务: " + taskProgress.getTask().getName() + ",使用showTask查看正在进行的任务");
+                senceService.notifyPlayerByDefault(player, "当前正在进行的任务: " + taskProgress.getTask().getName() + ",使用"+ SHOW_TASK
+                        .getOrder()+"查看正在进行的任务");
             }
+        }
+        long count = taskProgresses.stream().filter(tp -> tp.getState().equals(TaskStateConstant.CAN_ACCEPT)).count();
+        if(count > 0) {
+            senceService.notifyPlayerByDefault(player, "任务池中还有: " + count + " 个任务可以领取, 使用"+ SHOW_TASK_CAN_ACCEPT
+                    .getOrder()+"查看可领取的任务");
         }
         log.info("玩家任务进度加载完毕");
     }
@@ -190,7 +199,7 @@ public class TaskService {
         taskProgress.setEndTime(System.currentTimeMillis());
         updateTaskProgress(taskProgress);
 
-        senceService.notifyPlayerByDefault(player, taskProgress.getTask().getName() + "任务完成，获取任务奖励");
+        senceService.notifyPlayerByDefault(player, taskProgress.getTask().getName() + "^_^ 任务完成，获取任务奖励如下:");
         TaskReward taskReward = taskProgress.getTask().getTaskReward();
         List<TaskReward.RewardItem> itemList = taskReward.getItemList();
         for (TaskReward.RewardItem rewardItem : itemList) {

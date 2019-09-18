@@ -61,7 +61,7 @@ public class Guild {
 
     // 捐献列表<UnId, 贡献值(物品*数量*元宝价值)>
     @ProtoField(TargetName = "donate", Function = "addDonate", TargetClass = GuildPt.Guild.Builder.class)
-    private Map<Integer, Donate> donateMap = new ConcurrentSkipListMap<>();
+    private ConcurrentSkipListMap<Integer, Donate> donateMap = new ConcurrentSkipListMap<>();
 
 
     public void addDonate(GuildPt.Guild.Builder builder) throws Exception {
@@ -94,16 +94,4 @@ public class Guild {
 
 
 
-    public String getDonateStr() {
-        return JsonUtil.getJsonStr(donateMap, donateStr);
-    }
-    public String getMemberStr() {
-        return JsonUtil.getJsonStr(memberMap, memberStr);
-    }
-    public String getWarehouseStr() {
-        return JsonUtil.getJsonStr(warehouseMap, warehouseStr);
-    }
-    public String getJoinRequestStr() {
-        return JsonUtil.getJsonStr(playerJoinRequestMap, joinRequestStr);
-    }
 }

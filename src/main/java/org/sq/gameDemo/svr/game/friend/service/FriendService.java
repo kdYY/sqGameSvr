@@ -43,6 +43,10 @@ public class FriendService {
                 BeanUtils.copyProperties(userEntity, find);
             }
         }
+        if(find.equals(player)) {
+            senceService.notifyPlayerByDefault(player, "不能加自己....");
+            return;
+        }
         Friend friend = new Friend(unId, find.getName(), entityService.getType(find.getTypeId()).getTypeName());
         player.getFriendMap().put(unId, friend);
         //player.setFriend(JsonUtil.serializableJson(player.getFriendMap()));
@@ -57,7 +61,6 @@ public class FriendService {
     public void loadFriend(Player player) {
         JsonUtil.setMap(player.getFriendMap(), player.getFriend(), new TypeReference<Map<Integer, Friend>>(){});
     }
-
 
     /**
      * 查看好友列表

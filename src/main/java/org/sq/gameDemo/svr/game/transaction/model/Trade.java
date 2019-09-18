@@ -79,7 +79,7 @@ public class Trade {
 
     public Map<Integer, Item> getAutionItemMap() {
         if(autionItemMap.size() == 0 && !Strings.isNullOrEmpty(itemsMapStr)) {
-            this.autionItemMap  = JsonUtil.reSerializableJson(itemsMapStr, new TypeReference<Map<Integer,  Item>>(){});
+            this.autionItemMap  = JsonUtil.reSerializableJson(itemsMapStr, new TypeReference<ConcurrentHashMap<Integer,  Item>>(){});
         }
         return autionItemMap;
     }

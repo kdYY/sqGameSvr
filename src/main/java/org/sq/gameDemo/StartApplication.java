@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.sq.gameDemo.svr.common.SpringUtil;
 import org.sq.gameDemo.svr.common.dispatch.DispatchRequest;
 import org.sq.gameDemo.svr.net.GameSvr;

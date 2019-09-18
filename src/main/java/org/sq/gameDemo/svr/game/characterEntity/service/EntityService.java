@@ -109,6 +109,7 @@ public class EntityService {
         //进行token加密
         String token = tokenEncryp(userId);
         //从数据库更新,并更新缓存信息
+        loginUser.setToken(token);
         userService.updateTokenByUserId(userId, token);
         UserCache.updateUserCache(userId, loginUser, channel);
         //将token信息返回

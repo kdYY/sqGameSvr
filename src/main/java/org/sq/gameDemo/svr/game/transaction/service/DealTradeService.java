@@ -95,7 +95,7 @@ public class DealTradeService {
                 transactionCache.removeDeal(dealInCache);
                 dealInCache.setAcceptUnId(accpeter.getUnId());
                 sendDealMail(dealInCache);
-                tradeService.updateTrace(dealInCache);
+                tradeService.updateTradeDB(dealInCache);
             }
             EventBus.publish(new FirstTradeEvent(accpeter));
 
@@ -109,8 +109,9 @@ public class DealTradeService {
      * @throws CustomException.SystemSendMailErrException
      */
     private void sendDealMail(DealTrade dealInCache) throws CustomException.SystemSendMailErrException {
-        String title = "交易栏" + (dealInCache.getTradeModel().equals(TradeModel.BID.getCode())? "一口价" : "竞拍" ) + "邮件";
-        String content = "一口价竞拍交易"
+        String model = dealInCache.getTradeModel().equals(TradeModel.BID.getCode())? "一口价" : "竞拍";
+        String title = "交易栏" + model + "邮件";
+        String content = model + "交易"
                 + (dealInCache.isSuccess() ? "成功":"失败, 系统自动返回交易物品")
                 + (dealInCache.isFinish() ? "":", 原因:交易超时")
                 + ", 这是您此次交易的物品。";
@@ -120,19 +121,22 @@ public class DealTradeService {
                 && dealInCache.getTradeModel().equals(TradeModel.AT_AUCTION.getCode())) {
             //找出最高价unid
             Integer maxPriceInTrade = tradeService.getMaxPriceInTrade(dealInCache);
-            Integer acceptUnId = dealInCache.getAutionItemMap().entrySet().stream()
+            dealInCache.getAutionItemMap().entrySet().stream()
                     .filter(entry -> entry.getValue().getCount().equals(maxPriceInTrade))
                     .findFirst()
-                    .get()
-                    .getKey();
-            dealInCache.setAcceptUnId(acceptUnId);
+                    .ifPresent( entry -> {
+                        dealInCache.setAcceptUnId(entry.getKey());
+                    });
         } else {
             dealInCache.setFinish(true);
         }
         Integer ownerUnId = dealInCache.getOwnerUnId();
-        Integer acceptUnId = dealInCache.getAcceptUnId();
         Item ownerItem = dealInCache.getAutionItemMap().get(ownerUnId);
-        Item acceptItem = dealInCache.getAutionItemMap().get(acceptUnId);
+        Integer acceptUnId = dealInCache.getAcceptUnId();
+        Item acceptItem = null;
+        if(acceptUnId != null) {
+            acceptItem = dealInCache.getAutionItemMap().get(acceptUnId);
+        }
         if(dealInCache.isSuccess()) {
             //物品给最高价提供者
             mailService.sendMail(entityService.getSystemPlayer(), acceptUnId, title, content, ownerItem);
@@ -152,7 +156,7 @@ public class DealTradeService {
             }
         } else {
             //竞拍不成功的时候 一口价没人买 竞拍超时没人拍
-            mailService.sendMail(entityService.getSystemPlayer(), acceptUnId, title, content,ownerItem);
+            mailService.sendMail(entityService.getSystemPlayer(), ownerUnId, title, content,ownerItem);
         }
 
 
@@ -235,15 +239,18 @@ public class DealTradeService {
     public synchronized void offTime(DealTrade trade)  {
         try {
             transactionCache.removeDeal(trade);
-            if(trade.getTradeModel().equals(TradeModel.AT_AUCTION.getCode()) && trade.getAutionItemMap().size() != 0) {
+            if(trade.getTradeModel().equals(TradeModel.AT_AUCTION.getCode()) && trade.getAutionItemMap().size() > 1) {
                 trade.setSuccess(true);
                 trade.setFinish(true);
+            } else {
+                trade.setFinish(true);
             }
+            tradeService.updateTradeDB(trade);
             sendDealMail(trade);
         } catch (CustomException.SystemSendMailErrException e) {
             e.printStackTrace();
         }
-        tradeService.updateTrace(trade);
+
     }
 
     //获取交易栏信息

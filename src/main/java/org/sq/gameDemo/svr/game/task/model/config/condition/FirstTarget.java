@@ -7,6 +7,8 @@ public enum FirstTarget {
     ADD_GUILD(3, "第一次加入公会"),
     FINISH_TRADE(4, "第一次完成交易"),
     FINISH_PK(5, "第一次完成PK"),
+    FIRST_MAIL(6, "第一次发送邮件"),
+    FIRST_STORE(7, "第一次在商店购买")
 
     ;
     private int code;

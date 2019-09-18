@@ -172,6 +172,10 @@ public class GuildService {
 
     public synchronized void updateGuildDB() {
         for (Guild guild : guildCache.asMap().values()) {
+            guild.setMemberStr(JsonUtil.getJsonStr(guild.getMemberMap()));
+            guild.setDonateStr(JsonUtil.getJsonStr(guild.getDonateMap()));
+            guild.setWarehouseStr(JsonUtil.getJsonStr(guild.getWarehouseMap()));
+            guild.setJoinRequestStr(JsonUtil.getJsonStr(guild.getPlayerJoinRequestMap()));
             guildMapper.updateByPrimaryKeySelective(guild);
         }
     }

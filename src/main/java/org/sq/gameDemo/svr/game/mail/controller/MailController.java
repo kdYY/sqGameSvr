@@ -125,11 +125,11 @@ public class MailController {
     public void receieveMail(MsgEntity msgEntity,
                              @ReqParseParam MailPt.MailRequestInfo requestInfo) {
         Player player = entityService.getPlayer(msgEntity.getChannel());
-        Mail mail = mailService.getMailInCache(requestInfo.getId());
+        Mail mail = mailService.getMailInCache(player, requestInfo.getId());
         if(mail != null) {
             mailService.getMailItem(player, mail);
         }else {
-            senceService.notifyPlayerByDefault(player, "id="+ mail.getId() + " 的邮件不存在");
+            senceService.notifyPlayerByDefault(player, "id="+ requestInfo.getId() + " 的邮件不存在");
         }
     }
 

@@ -10,6 +10,8 @@ import org.sq.gameDemo.common.proto.ItemPt;
 import org.sq.gameDemo.svr.common.Constant;
 import org.sq.gameDemo.svr.common.ThreadManager;
 import org.sq.gameDemo.svr.common.customException.CustomException;
+import org.sq.gameDemo.svr.eventManage.EventBus;
+import org.sq.gameDemo.svr.eventManage.event.FirstSendMailEvent;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.sq.gameDemo.common.OrderEnum.ADD_FRIEND;
+import static org.sq.gameDemo.common.OrderEnum.SHOW_ALL_MAIL;
 
 @Service
 @Slf4j
@@ -113,6 +116,10 @@ public class MailService {
         Mail mail = null;
         mail = mailCache.get(mailId);
         if(mail != null) {
+            if(!mail.getRecevierUnId().equals(player.getUnId())) {
+                senceService.notifyPlayerByDefault(player, "没有此邮件");
+                return null;
+            }
             return mail;
         }
 
@@ -154,8 +161,15 @@ public class MailService {
      * 获取缓存中指定邮件
      * @return
      */
-    public Mail getMailInCache(Integer id) {
-        return mailCache.get(id);
+    public Mail getMailInCache(Player player, Integer id) {
+        Mail mail = mailCache.get(id);
+        if(mail == null) {
+            return mail;
+        }
+        if(!mail.getRecevierUnId().equals(player.getUnId())) {
+            return null;
+        }
+        return mail;
     }
     /**
      * 收取缓存中单个邮件
@@ -217,16 +231,12 @@ public class MailService {
 
 
     private void updateMail(Mail maildb) {
-        /*ThreadManager.dbTaskPool.execute(() -> {
+        UpdateDB.dbTaskPool.execute(() -> {
             mailMapper.updateByPrimaryKey(maildb);
-        });*/
+        });
     }
 
-    public void updateMailDB() {
-        for (Mail mail : mailCache.asMap().values()) {
-            mailMapper.updateByPrimaryKeySelective(mail);
-        }
-    }
+
 
     /**
      * 加载邮件资源
@@ -239,7 +249,7 @@ public class MailService {
         mailList.stream().filter(mail -> !Strings.isNullOrEmpty(mail.getItemsStr())).forEach(mail -> mailCache.put(mail));
         log.info("玩家上线，邮件资源加载成功");
         if(mailList.size() > 0) {
-            senceService.notifyPlayerByDefault(player, "你有" + mailList.size() + "封邮件还没接收");
+            senceService.notifyPlayerByDefault(player, "你有" + mailList.size() + "封邮件还没接收, 使用" + SHOW_ALL_MAIL.getOrder() + "查看所有邮件");
         }
     }
 
@@ -290,6 +300,7 @@ public class MailService {
         if(!sendMail(sender, mail) && mail != null) {
             returnItems(mail);
         }
+        EventBus.publish(new FirstSendMailEvent(sender));
     }
 
     /**

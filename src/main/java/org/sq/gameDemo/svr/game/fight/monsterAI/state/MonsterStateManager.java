@@ -69,7 +69,7 @@ public class MonsterStateManager {
             long now = System.currentTimeMillis();
             if(dieTime <= now) {
                 SenceEntity senceEntity = senceEntityCache.get(monster.getEntityTypeId());
-                monster.setHp(senceEntity.getHp());
+                monster.setHp(senceEntity.getHp() + monster.getLevel() * 10);
                 monster.setState(CharacterState.LIVE.getCode());
                 senceService.notifySenceByDefault(monster.getSenceId(), monster.getName() + "(id=" + monster.getId() +")已复活");
 

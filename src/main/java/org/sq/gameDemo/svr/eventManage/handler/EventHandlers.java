@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoBufUtil;
-import org.sq.gameDemo.svr.eventManage.Event;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.*;
 import org.sq.gameDemo.svr.game.bag.model.Item;
@@ -71,10 +70,29 @@ public class EventHandlers {
         log.info("首次添加好友事件注册成功");
         EventBus.registe(FirstTeamEvent.class, this::firstTeam);
         log.info("首次组队事件注册成功");
+        EventBus.registe(FirstSendMailEvent.class, this::firstMail);
+        log.info("首次发邮件事件注册成功");
+        EventBus.registe(FirstStoreBuyEvent.class, this::firstStoreBuy);
+        log.info("首次商店购买事件注册成功");
         EventBus.registe(ActivatTaskEvent.class, this::activatTask);
         log.info("激活任务事件注册成功");
 
     }
+
+    /**
+     * 发送邮件事件
+     */
+    private void firstMail(FirstSendMailEvent firstSendMailEvent) {
+        firstTaskEvent(firstSendMailEvent.getPlayer(), FirstTarget.FIRST_MAIL);
+    }
+
+    /**
+     * 商店购买事件
+     */
+    private void firstStoreBuy(FirstStoreBuyEvent firstStoreBuyEvent) {
+        firstTaskEvent(firstStoreBuyEvent.getPlayer(), FirstTarget.FIRST_STORE);
+    }
+
 
     /**
      * 加入队伍事件

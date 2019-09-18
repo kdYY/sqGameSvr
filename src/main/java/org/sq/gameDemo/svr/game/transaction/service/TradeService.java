@@ -8,6 +8,7 @@ import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.transaction.dao.TradeMapper;
 import org.sq.gameDemo.svr.game.transaction.manager.TransactionCache;
 import org.sq.gameDemo.svr.game.transaction.model.*;
+import org.sq.gameDemo.svr.game.updateDB.UpdateDB;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,9 +36,9 @@ public class TradeService {
     /**
      * 更新交易数据
      */
-    public void updateTrace(Trade trade) {
-//        trade.setItemsMapStr(JsonUtil.serializableJson(trade.getAutionItemMap()));
-//        ThreadManager.dbTaskPool.execute(()->tradeMapper.updateByPrimaryKey(trade));
+    public void updateTradeDB(Trade trade) {
+        trade.setItemsMapStr(JsonUtil.serializableJson(trade.getAutionItemMap()));
+        UpdateDB.dbTaskPool.execute(()->tradeMapper.updateByPrimaryKey(trade));
     }
 
     public void updateTraceDB() {
