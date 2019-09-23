@@ -1,13 +1,10 @@
 package org.sq.gameDemo.svr.common.protoUtil;
 
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.entity.MsgEntity;
 import org.sq.gameDemo.common.proto.MessageProto;
-import org.sq.gameDemo.svr.game.characterEntity.model.Monster;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -304,15 +301,12 @@ public class ProtoBufUtil {
     }
 
     private static Method hasListAddMethond(Method[] declaredMethods, String targetAddMethodName, Class targetClass) {
-        for (Method method : declaredMethods) {
-            Type[] genericParameterTypes = method.getGenericParameterTypes();
-            if(method.getName().equals(targetAddMethodName)
-                    && method.getParameterTypes().length == 1
-                    && genericParameterTypes[0].getTypeName().equals(targetClass.getName())) {
-                return method;
-            }
-        }
-        return null;
+        return Arrays.stream(declaredMethods)
+                .filter(method -> method.getName().equals(targetAddMethodName))
+                .filter(method -> method.getGenericParameterTypes().length == 1
+                        && method.getGenericParameterTypes()[0].getTypeName().equals(targetClass.getName()))
+                .findFirst()
+                .orElse(null);
     }
 
     private static String upperCaseFirstLetter(String word) {
@@ -355,16 +349,14 @@ public class ProtoBufUtil {
         } catch (NoSuchMethodException e) {
             // e.printStackTrace();
         }
-        if (result == null && (cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class)) {
+        if (result == null && cur_class.getSuperclass() != null && cur_class.getSuperclass() != Object.class) {
             result = getDeclaredMethod(cur_class.getSuperclass(), methodName);
             if(result == null) {
-                String content = null;
-                if(parameterTypes != null) {
-                    for (Class<?> parameterType : parameterTypes) {
-                        content += parameterType.getSimpleName();
-                    }
-                }
-                throw new NoSuchMethodException("在" + cur_class.getName() + "中递归找不到该方法" + methodName + "(" + content + ")");
+                AtomicReference<String> content = new AtomicReference<>();
+                Optional.ofNullable(parameterTypes).ifPresent(pts -> {
+                    content.set(Arrays.stream(pts).map(pt -> pt.getSimpleName()).collect(Collectors.joining()));
+                });
+                throw new NoSuchMethodException("在" + cur_class.getName() + "中递归找不到该方法" + methodName + "(" + content.get() + ")");
             }
         }
         return result;
