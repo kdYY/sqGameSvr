@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "Item.proto";
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "MailPt";
+
+//实体类型
+message Mail {
+    int32 id = 1;
+    string senderName = 2;
+    string recevierName = 3;
+    uint64 time = 4;
+    uint64 keepTime = 5;
+    string title = 6;
+    string content = 7;
+    bool isRead = 8;
+    repeated Item item = 9;
+}
+
+//请求
+message MailRequestInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    int32 id = 3;       //获取全部写-1
+    
+    Mail mail = 4;
+    repeated Item item = 5;
+}
+//响应
+message MailResponseInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated Mail mail = 5;
+}
+

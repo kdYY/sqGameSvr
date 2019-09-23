@@ -1,11 +1,20 @@
 syntax = "proto3";
-
+import "Skill.proto";
 option java_package = "org.sq.gameDemo.common.proto";
 option java_outer_classname = "EntityTypeProto";
+enum AttackType {
+    AP = 0;
+    AD = 1;
+}
 //实体类型
 message EntityType {
     int32 id = 1;
     string name = 2;
+    int32 baseMPAttack = 3;
+    int32 baseHPAttack = 4;
+    int32 defense = 5;
+    AttackType type = 6;
+    repeated Skill skill = 7;
 }
 
 //请求

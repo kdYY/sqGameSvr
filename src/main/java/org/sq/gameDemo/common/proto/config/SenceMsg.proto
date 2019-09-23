@@ -1,8 +1,9 @@
 syntax = "proto3";
 import "EntityType.proto";
-import "SenceEntity.proto";
-import "UserEntity.proto";
+import "Player.proto";
+import "Npc.proto";
 import "Sence.proto";
+import "Monster.proto";
 option java_package = "org.sq.gameDemo.common.proto";
 option java_outer_classname = "SenceMsgProto";
 
@@ -21,8 +22,17 @@ message SenceMsgResponseInfo {
     string content = 4;
 
     Sence sence = 5;
-    repeated EntityType entityType = 6;
-    repeated SenceEntity SenceEntity = 7;
-    repeated UserEntity UserEntity = 8;
+    uint64 id=6;
+    int32 senceId = 7;
+    string name=8;
+    Monster boss = 9;
+    uint64 startTime = 10;
+    int32 limit = 11;
+    uint64 maxTime = 12;
+    uint64 rewardExp = 13;
+    repeated EntityType entityType = 14;
+    repeated Npc npc = 15;
+    repeated Monster monster = 16;
+    repeated Player player = 17;
 }
 

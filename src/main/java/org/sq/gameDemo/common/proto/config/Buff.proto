@@ -1,0 +1,35 @@
+syntax = "proto3";
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "BuffPt";
+
+//buff
+message Buff {
+    int32 id = 1;
+    string name = 2;
+    int32 type = 3;
+    uint64 cd = 4;
+    uint64 mp = 5;
+    uint64 hp = 6;
+    int32 effect = 7;
+    uint64 duration = 8;
+    uint64 startTime = 9;
+    uint64 intervalTime = 10;
+}
+
+//请求
+message BuffReqInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    int32 buffId = 3;       //获取全部写-1
+    uint64 target_id = 4; 
+}
+//响应
+message BuffRespInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated Buff buff = 5;
+}
+

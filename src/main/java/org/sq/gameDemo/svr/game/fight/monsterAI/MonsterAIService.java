@@ -76,7 +76,7 @@ public class MonsterAIService {
                 senceService.notifyPlayerByDefault(attacter, targetMonster.getName()
                         + "(id=" + targetMonster.getId()
                         + ")被你杀死了, 经验增加↑"
-                        + targetMonster.getLevel() * 5
+                        + targetMonster.getLevel() * (targetMonster.getLevel()/player.getLevel() < 1 ? 1 : 5 * targetMonster.getLevel()/player.getLevel())
                         + "↑, 当前exp="
                         + player.getExp()
                 );

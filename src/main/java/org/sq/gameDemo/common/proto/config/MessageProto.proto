@@ -10,3 +10,11 @@ message Msg {
     string token = 5;   //验证信息
     int32 result = 6;
 }
+
+//请求
+message MsgRequestInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    uint64 targetId = 3;       //获取全部写-1
+    string content = 4;
+}

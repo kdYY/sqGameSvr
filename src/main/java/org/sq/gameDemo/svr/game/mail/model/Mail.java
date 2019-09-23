@@ -69,13 +69,9 @@ public class Mail {
     }
 
     //是否已读
-    @ProtoField(TargetName = "isRead", Function = "makeRead", TargetClass = MailPt.Mail.Builder.class)
     private Boolean isRead = false;
 
 
-    public void makeRead(MailPt.Mail.Builder builder) {
-        builder.setIsRead(this.isRead);
-    }
     public Mail() {
     }
 

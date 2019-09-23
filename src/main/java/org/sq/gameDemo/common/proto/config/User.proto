@@ -5,8 +5,7 @@ message User {
     uint32 id = 1;          //用户id
     string name = 2;
     string password = 3;
-    uint32 typeId = 5;
-    uint32 senceId = 6;
+    string token = 4;
 }
 //登陆注册的请求体
 message RequestUserInfo {

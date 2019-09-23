@@ -1,0 +1,34 @@
+syntax = "proto3";
+option java_package = "org.sq.gameDemo.common.proto";
+import "ItemInfo.proto";
+option java_outer_classname = "TaskPt";
+
+//实体类型
+message Task {
+    int32 id = 1;
+    int32 taskId = 2;
+    string name = 3;
+    int32 state = 4;
+    string taskProgress = 5;
+    string description = 6;
+    repeated ItemInfo reward = 7;
+}
+
+//请求
+message TaskRequestInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    int32 taskId = 3;       //获取全部写-1
+    string  name = 4;
+}
+
+//响应
+message TaskResponseInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated Task task = 5;
+}
+

@@ -1,0 +1,34 @@
+syntax = "proto3";
+import "ItemInfo.proto";
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "ItemPt";
+
+//实体类型
+message Item {
+    uint64 id = 1;
+    int32 locationIndex = 2;
+    uint64 durable = 3;
+    int32 level = 4;
+    int32 count = 5;
+    ItemInfo itemInfo = 6;
+}
+
+//请求
+message ItemRequestInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    uint64 id = 3;       //获取全部写-1
+    int32 count = 4;
+    EquipPart part = 5; //装备的位置
+    int32 repairValue = 6;
+}
+//响应
+message ItemResponseInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated Item item = 5;
+}
+

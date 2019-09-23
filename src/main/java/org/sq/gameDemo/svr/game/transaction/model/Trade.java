@@ -41,24 +41,6 @@ public class Trade {
     private boolean finish = false;
     private boolean success = false;
 
-    //proto工具类使用 之后改良
-    public boolean getFinish() {
-        return finish;
-    }
-
-    //proto工具类使用
-    public boolean getSuccess() {
-        return success;
-    }
-
-
-    public boolean isFinish() {
-        return finish;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
 
 
     //<<用户UnId, Item>>

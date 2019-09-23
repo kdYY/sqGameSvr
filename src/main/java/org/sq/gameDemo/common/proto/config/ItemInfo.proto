@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "ItemInfoPt";
+//装备穿戴身体部位
+enum EquipPart {
+    HEAD = 0;
+    BODY = 1;
+    HADN =2;
+    FINGER = 3;
+    WAIST = 4;
+    FOOT = 5;
+    PACKAGE = 9;
+}
+//实体类型
+message ItemInfo {
+    int32 id = 1;
+    string name = 2;
+    int32 buff = 3;
+    int32 type = 4;
+    EquipPart part = 5;
+    int32 price = 6;
+    uint64 durable = 7;
+    string describe = 8;
+    string jsonStr = 9;
+    int32 count = 10;
+}
+
+//请求
+message ItemInfoRequestInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    int32 id = 3;       //获取全部写-1
+    int32 count = 4;
+    
+}
+//响应
+message ItemInfoResponseInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated ItemInfo itemInfo = 5;
+}
+

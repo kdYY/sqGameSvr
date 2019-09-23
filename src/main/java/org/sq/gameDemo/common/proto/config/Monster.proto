@@ -1,11 +1,12 @@
 syntax = "proto3";
 
 import "EntityType.proto";
+import "Buff.proto";
 option java_package = "org.sq.gameDemo.common.proto";
-option java_outer_classname = "SenceEntityProto";
+option java_outer_classname = "MonsterPt";
 
 //场景实体
-message SenceEntity {
+message Monster {
    uint64 id = 1;
    string name = 2;
    int32 senceId = 3;
@@ -16,7 +17,10 @@ message SenceEntity {
    uint64 attack = 8;
    uint64 refreshTime = 9;
    string npcWord = 10;
-   int32 level = 11;
+   int32 attackSpeed = 11;
+   uint64 entityTypeId = 12;
+   int32 level = 13;
+   repeated Buff buff = 14;
 }
 //请求
 message RequestInfo {
@@ -33,6 +37,6 @@ message ResponseInfo {
     uint64 time = 3;        //时间戳
     string content = 4;
     repeated EntityType type = 5;
-    repeated SenceEntity SenceEntity = 6;
+    repeated Monster monster = 6;
 }
 

@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+import "EntityType.proto";
+import "Skill.proto";
+import "Buff.proto";
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "PlayerPt";
+
+//用户角色实体
+message Player {
+    uint64 id = 1;
+    int32 unId = 2;
+    string name = 3;
+    int32 userId = 4;
+    int32 state = 5;
+    int32 typeId = 6;
+    int32 senceId = 7;
+    int32 exp = 8;
+    int32 level =9;
+    uint64 hp = 10;
+    uint64 mp = 11;
+    uint64 attack = 12;
+    uint64 B_Hp = 13;
+    uint64 B_Mp = 14;
+    string equipments = 15;
+    int32 money = 16;
+    int32 guildId = 17;
+    int32 teamId = 18;
+    repeated Buff buff = 19;
+    
+}
+//请求
+message PlayerReqInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    int32 typeId = 3;
+    int32 senceId = 4;
+    uint64 playerId = 5;
+}
+//响应
+message PlayerRespInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+    repeated EntityType type = 5;
+    repeated Player player = 6;
+    repeated Skill skill = 7;
+}
+

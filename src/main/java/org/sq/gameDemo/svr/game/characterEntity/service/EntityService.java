@@ -237,7 +237,6 @@ public class EntityService {
         //计算最终的攻击力
         computeAttack(player);
 
-
         buffService.buffAffecting(player, buffService.getBuff(105));
         buffService.buffAffecting(player, buffService.getBuff(106));
 

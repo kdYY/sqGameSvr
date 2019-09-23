@@ -1,0 +1,38 @@
+syntax = "proto3";
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "SkillPt";
+
+//技能
+message Skill {
+    int32 id = 1;
+    string name = 2;
+    int32 skillRange = 3;
+    uint64 cd = 4;
+    uint64 mpNeed = 5;
+    uint64 hurt = 6;
+    uint64 heal = 7;
+    //技能等级
+    int32 grade = 8;
+    int32 buff = 9;
+    uint64 castTime = 10;
+    string description = 11;
+}
+
+//请求
+message SkillReqInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    uint64 player_id = 3;
+    int32 skillId = 4;       //获取全部写-1
+    repeated uint64 target_id = 5; 
+}
+//响应
+message SkillRespInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated Skill skill = 5;
+}
+

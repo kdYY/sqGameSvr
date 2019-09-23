@@ -1,0 +1,39 @@
+syntax = "proto3";
+import "ItemInfo.proto";
+import "Item.proto";
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "BagPt";
+
+//Bag
+message Bag {
+    int32 unId = 1;
+    string name = 2;
+    int32 size = 3;
+    string itemStr = 4;
+    repeated Item item = 5;
+}
+
+//请求
+message BagReqInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    int32 unId = 3;       
+    uint64 itemId = 4;  //使用装备或者物品
+    int32 count = 5; //使用的数量
+    int32 durable = 6;
+    EquipPart part = 7; //装备的位置
+
+    
+}
+//响应
+message BagRespInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    Bag bag = 5;
+}
+
+
+

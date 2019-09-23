@@ -1,0 +1,60 @@
+syntax = "proto3";
+import "Item.proto";
+option java_package = "org.sq.gameDemo.common.proto";
+option java_outer_classname = "GuildPt";
+
+//实体类型
+message Guild {
+    int32 id = 1;
+    string name = 2;
+    int32 level = 3;
+    uint64 time = 4;
+    int32 warehouseSize = 5;
+    int32 memberSize = 6;
+    repeated Item wareHouseitem = 7;
+    repeated Donate donate = 8;
+    repeated AttendGuildReq attendReq = 9;
+    repeated Member member = 10;
+}
+message Donate {
+    string name = 1;
+    uint64 donateNum = 2;
+}
+message AttendGuildReq {
+    uint64 requestTime = 1;
+    int32 unId = 2;
+    string name = 3;
+    bool agree = 4;
+}
+message Member {
+    string name = 1;
+    int32 level = 2;
+    string right = 3;
+}
+//请求
+message GuildRequestInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    int32 guildId = 3;       //获取全部写-1
+    string  name = 4;
+    int32 unId = 5;
+    uint64 itemId = 6;
+    int32 count = 7;
+    int32 itemInfoId = 8;
+    bool agree = 9;
+}
+
+//响应
+message GuildResponseInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated Guild guild = 5;
+    repeated AttendGuildReq attendReq = 6;
+    repeated Item item= 7;
+    repeated Donate donate = 8;
+    
+}
+

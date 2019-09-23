@@ -1,0 +1,36 @@
+syntax = "proto3";
+option java_package = "org.sq.gameDemo.common.proto";
+
+option java_outer_classname = "TeamPt";
+
+//实体类型
+message Team {
+    uint64 id = 1;
+    string name = 2;
+    int32 limitedSize = 3;
+    repeated Member member = 4;
+}
+
+message Member {
+    uint64 id=1;
+    string name=2;
+}
+
+//请求
+message TeamRequestInfo {
+    uint64 msg_id = 1;      //消息id
+    uint64 time = 2;        //时间戳(单位:毫秒)
+    uint64 teamId = 3;       //获取全部写-1
+    uint64  invitedId = 4;
+}
+
+//响应
+message TeamResponseInfo {
+    uint64 msg_id = 1;      //消息id
+    int32 result  = 2;
+    uint64 time = 3;        //时间戳
+    string content = 4;
+
+    repeated Team team = 5;
+}
+
