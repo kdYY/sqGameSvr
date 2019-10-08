@@ -44,6 +44,7 @@ public class ProtoBufUtil {
                 goalBuilderAddMethodMap, sourceBeanGetMethodMap, goalBuilderSetMethodMap, sourceBeanFunctionMap);
 
         invokeGetAndSet(goalBuilder, sourceBean, sourceBeanGetMethodMap, goalBuilderSetMethodMap);
+
         sourceBeanFunctionMap.values().forEach(m -> invokeMethod(m, sourceBean, goalBuilder));
 
         for (Map.Entry<Field, Class> entry : listClassMap.entrySet()) {
@@ -111,6 +112,7 @@ public class ProtoBufUtil {
      */
     private static <T, K> void invokeGetAndSet(T goalBuilder, K sourceBean, Map<Field, Method> sourceBeanGetMethodMap,
                                                Map<Field, Method> goalBuilderSetMethodMap) {
+
         for (Map.Entry<Field, Method>  getMethodEntry: sourceBeanGetMethodMap.entrySet()) {
             Field field = getMethodEntry.getKey();
             field.setAccessible(true);
