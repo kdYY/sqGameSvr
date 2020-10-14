@@ -2,6 +2,7 @@ package org.sq.gameDemo.observer;
 
 import org.sq.gameDemo.observer.Impl.ICreateureDead;
 import org.sq.gameDemo.svr.game.characterEntity.model.Character;
+import org.sq.gameDemo.thread.IdentityEventExecutorGroup;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -79,7 +80,13 @@ public class ObserverController {
             return;
         }
         int version = this.version.get();
-        singleThreadSchedule.execute(() -> {
+//        singleThreadSchedule.execute(() -> {
+//            syncFireByVersion(version, listenerClass, consumer);
+//            if(afterFire != null) {
+//                afterFire.run();
+//            }
+//        });
+        IdentityEventExecutorGroup.addTask(owner.hashCode(), "async fire observer", () -> {
             syncFireByVersion(version, listenerClass, consumer);
             if(afterFire != null) {
                 afterFire.run();
@@ -173,9 +180,9 @@ public class ObserverController {
                 () -> tryRemoveInvalid(ObserverInvalidType.alive, version));
     }
 
-    //TODO 需要优化下->根据玩家的id去抛在玩家专属的线程里
-    // 暂时这样暴力用
-    /** 一个观察者实例 单独一个线程异步处理事件处理，同时保证了事件的循序 */
-    private ExecutorService singleThreadSchedule = Executors.newSingleThreadScheduledExecutor(ThreadPool.getSceneThreadFactory());
+//    //TODO 需要优化下->根据玩家的id去抛在玩家专属的线程里
+//    // 暂时这样暴力用
+//    /** 一个观察者实例 单独一个线程异步处理事件处理，同时保证了事件的循序 */
+//    private ExecutorService singleThreadSchedule = Executors.newSingleThreadScheduledExecutor(ThreadPool.getSceneThreadFactory());
 
 }
