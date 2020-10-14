@@ -54,7 +54,10 @@ public class StartApplication implements CommandLineRunner {
 			future.channel().closeFuture().syncUninterruptibly();
 		}catch (Exception e) {
 			gameSvr.destroy();
+		} finally {
+			System.out.println("启动结束");
+			System.exit(1);
 		}
-		System.out.println("启动结束");
+
 	}
 }

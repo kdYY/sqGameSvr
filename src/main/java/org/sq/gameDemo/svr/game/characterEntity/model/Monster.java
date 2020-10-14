@@ -3,6 +3,7 @@ package org.sq.gameDemo.svr.game.characterEntity.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.sq.gameDemo.common.proto.BuffPt;
+import org.sq.gameDemo.observer.ObserverController;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
@@ -46,4 +47,10 @@ public class Monster extends SenceEntity implements Character {
     @ProtoField(TargetClass = BuffPt.Buff.class, TargetName = "buff")
     private List<Buff> bufferList = new CopyOnWriteArrayList<>();
 
+    private ObserverController observerController = new ObserverController(this);
+
+    @Override
+    public void onDie(Character lastAttacker) {
+        observerController.onDie(lastAttacker);
+    }
 }

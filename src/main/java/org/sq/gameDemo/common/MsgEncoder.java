@@ -12,8 +12,20 @@ public class MsgEncoder extends MessageToByteEncoder<MsgEntity> {
 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, MsgEntity msg, ByteBuf byteBuf) throws Exception {
+//	    int a = 0xa5a9;
+//
+//	    byteBuf.writeInt(msg.getHead());
+//	    byteBuf.writeShort(msg.getType());
+//	    byteBuf.writeShort(msg.getLength());
+//        int dataLength = msg.getData() == null ? 0 : msg.getData().length;
+//        if (dataLength > 0) {
+//            byteBuf.writeBytes(msg.getData());
+//        }
+
+
 		int dataLength = msg.getData() == null ? 0 : msg.getData().length;
 		byteBuf.ensureWritable(4 + dataLength);
+
 
 		byteBuf.writeInt(dataLength);
 		byteBuf.writeShort(msg.getCmdCode());

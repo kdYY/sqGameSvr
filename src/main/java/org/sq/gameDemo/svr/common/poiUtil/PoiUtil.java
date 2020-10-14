@@ -55,6 +55,7 @@ public class PoiUtil {
         Workbook hssfWorkbook = null;
         try {
             File file = new File(fileName);
+            InputStream inputStream = new FileInputStream(file);
             InputStream resourceAsStream = PoiUtil.class.getClassLoader().getResourceAsStream(fileName);
             if (file.getName().endsWith(".xlsx")) {
                 hssfWorkbook = new XSSFWorkbook(resourceAsStream);

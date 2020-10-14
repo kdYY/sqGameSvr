@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sq.gameDemo.common.OrderEnum;
 import org.sq.gameDemo.common.proto.*;
+import org.sq.gameDemo.observer.Impl.ICreateureDead;
 import org.sq.gameDemo.svr.common.*;
 import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.bag.service.BagService;
@@ -176,7 +177,7 @@ public class EntityService {
      */
     public Player getInitedPlayer(int userId, Channel channel) {
         UserEntity usrEntity = userEntityMapper.getUserEntityByUserId(userId);
-        Player playerCached = new Player();
+        Player playerCached = buildPlayer();
         BeanUtils.copyProperties(usrEntity,playerCached);
         //初始化playerId
         playerCached.setId(ConcurrentSnowFlake.getInstance().nextID());
@@ -193,6 +194,35 @@ public class EntityService {
         taskService.loadTaskProgress(playerCached);
         friendService.loadFriend(playerCached);
         return playerCached;
+    }
+
+    private Player buildPlayer() {
+        Player player = new Player();
+        player.getObserverController().attachForever(ICreateureDead.class, (a, attacker) -> {
+            Player beAttacker = (Player) a;
+            //这里应该做成第一个被杀，通知
+            senceService.notifyPlayerByDefault(a, "你被 id: " + attacker.getId() +
+                    ", name:" + attacker.getName() + "杀死了, "+ Constant.RELIVE_TIME + "秒后回主城");
+
+            try {
+                ThreadManager.threadPoolSchedule(
+                        Constant.RELIVE_TIME, () -> {
+                            relivePlayer(beAttacker);
+                            //添加到起源之地
+                            if(!beAttacker.getSenceId().equals(Constant.RELIVE_SCENE)) {
+                                try {
+                                    senceService.moveToSence(beAttacker, 1);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            senceService.notifyPlayerByDefault(beAttacker, "玩家复活，恭喜你复活了");
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return player;
     }
 
     /**
@@ -316,8 +346,7 @@ public class EntityService {
     public boolean playerIsDead(Player player, Character attacker) {
         synchronized (player) {
             if(Objects.nonNull(player) && player.getHp() <= 0) {
-                player.setDeadStatus();
-
+                player.setDeadStatus(attacker);
 
                 if(senceService.getSenecMsgById(player.getSenceId()) instanceof CopyScene) {
                     senceService.notifyPlayerByDefault(player, "你被 id: " + attacker.getId() +
@@ -327,33 +356,8 @@ public class EntityService {
                 if(attacker != null && attacker instanceof Monster) {
                     ((Monster)attacker).setTarget(null);
                 }
-                //这里应该做成第一个被杀，通知
-
-                senceService.notifyPlayerByDefault(player, "你被 id: " + attacker.getId() +
-                        ", name:" + attacker.getName() + "杀死了, "+ Constant.RELIVE_TIME + "秒后回主城");
-
-                try {
-                    ThreadManager.threadPoolSchedule(
-                            Constant.RELIVE_TIME, () -> {
-                                relivePlayer(player);
-                                //添加到起源之地
-                                if(!player.getSenceId().equals(Constant.RELIVE_SCENE)) {
-                                    try {
-                                        senceService.moveToSence(player, 1);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                senceService.notifyPlayerByDefault(player, "玩家复活，恭喜你复活了");
-                            }
-                    );
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 return true;
-
             }
-
             return false;
         }
 

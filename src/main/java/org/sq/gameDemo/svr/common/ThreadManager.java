@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 public class ThreadManager {
 
     /**
-     * 执行游戏过程中用到的任务
+     * 执行任务
      */
     private static ThreadFactory scheduledThreadPoolFactory = new ThreadFactoryBuilder()
             .setNameFormat("scheduledThreadPool-%d").setUncaughtExceptionHandler((t,e) -> e.printStackTrace()).build();

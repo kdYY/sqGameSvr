@@ -31,6 +31,7 @@ public class SvrHandler extends SimpleChannelInboundHandler<MsgEntity> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MsgEntity msgEntity) throws Exception {
+
         DispatchRequest.dispatchRequest(ctx, msgEntity);
     }
 

@@ -1,13 +1,9 @@
 package org.sq.gameDemo.svr.game.characterEntity.model;
 
-import com.alibaba.fastjson.TypeReference;
-import com.google.common.base.Strings;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
-import org.sq.gameDemo.common.proto.BuffPt;
+import org.sq.gameDemo.observer.ObserverController;
 import org.sq.gameDemo.svr.common.Constant;
-import org.sq.gameDemo.svr.common.JsonUtil;
 import org.sq.gameDemo.svr.common.protoUtil.ProtoField;
 import org.sq.gameDemo.svr.eventManage.EventBus;
 import org.sq.gameDemo.svr.eventManage.event.LevelEvent;
@@ -17,16 +13,12 @@ import org.sq.gameDemo.svr.game.buff.model.Buff;
 import org.sq.gameDemo.svr.game.fight.monsterAI.state.CharacterState;
 import org.sq.gameDemo.svr.game.friend.model.Friend;
 import org.sq.gameDemo.svr.game.roleAttribute.model.RoleAttribute;
-import org.sq.gameDemo.svr.game.task.model.Task;
 import org.sq.gameDemo.svr.game.task.model.TaskProgress;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Future;
 
 
 /**
@@ -35,6 +27,8 @@ import java.util.concurrent.Future;
 @Data
 @EqualsAndHashCode(callSuper=true)
 public class Player extends UserEntity implements Character {
+
+    private ObserverController observerController = new ObserverController(this);
 
     private Long id;
     /**
@@ -82,6 +76,11 @@ public class Player extends UserEntity implements Character {
         this.mp = mp;
     }
 
+    @Override
+    public void onDie(Character lastAttacker) {
+        observerController.onDie(lastAttacker);
+    }
+
     /**
      *  玩家战力,根据base技能属性进行计算
      */
@@ -124,12 +123,11 @@ public class Player extends UserEntity implements Character {
     private Bag bag = new Bag(this.getUnId(), "背包栏",100) ;
 
 
-    public void setDeadStatus() {
-        this.setState(CharacterState.IS_REFRESH.getCode());
-        this.setHp(0L);
-        this.setMp(0L);
-//        this.setB_Mp(0L);
-//        this.setB_Hp(0L);
+    public void setDeadStatus(Character lastAttacker) {
+        setState(CharacterState.IS_REFRESH.getCode());
+        setHp(0L);
+        setMp(0L);
+        onDie(lastAttacker);
     }
 
 

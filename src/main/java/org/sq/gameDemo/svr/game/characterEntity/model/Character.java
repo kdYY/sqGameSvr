@@ -49,4 +49,6 @@ public interface Character {
     Integer getSenceId();
     void setSenceId(Integer senceId);
 
+
+    void onDie(Character lastAttacker);
 }

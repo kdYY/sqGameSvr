@@ -8,7 +8,7 @@ import org.sq.gameDemo.svr.game.bag.model.Item;
 import org.sq.gameDemo.svr.game.characterEntity.model.Player;
 @Data
 @AllArgsConstructor
-public class CollectorEvent extends Event {
+public class CollectorEvent extends Event{
     Player player;
     Item item;
 }

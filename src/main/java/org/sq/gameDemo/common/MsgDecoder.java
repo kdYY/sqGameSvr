@@ -45,7 +45,15 @@ public class MsgDecoder extends LengthFieldBasedFrameDecoder {
 			return null;
 		}
 		//int length = buf.readInt();
-		short cmd = buf.readShort();// 先读取两个字节命令码
+
+//        int head = byteBuf.readInt();
+//		short type = byteBuf.readShort();
+//		short length = byteBuf.readShort();
+//        byte[] data = new byte[buf.readableBytes()];// 其它数据为实际数据
+//        buf.readBytes(data);
+
+
+        short cmd = buf.readShort();// 先读取两个字节命令码
 		byte[] data = new byte[buf.readableBytes()];// 其它数据为实际数据
 		buf.readBytes(data);
 

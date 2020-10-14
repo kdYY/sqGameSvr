@@ -1,11 +1,23 @@
 package org.sq.gameDemo.common.entity;
 
 
+import com.google.common.primitives.Bytes;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
+import lombok.Data;
+import org.apache.coyote.http2.ByteUtil;
 
 import java.util.Arrays;
 
+@Data
 public class MsgEntity {
+    private Integer head;
+    private Short type;
+    private Short length;
+    private Byte[] datas;
+
+
+
     private short cmdCode;
     private byte[] data;
     private Channel channel;
@@ -40,5 +52,11 @@ public class MsgEntity {
                 "cmdCode=" + cmdCode +
                 ", data=" + Arrays.toString(data) +
                 '}';
+    }
+
+
+    public static void main(String[] args) {
+
+
     }
 }
