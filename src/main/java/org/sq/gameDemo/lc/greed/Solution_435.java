@@ -34,6 +34,7 @@ public class Solution_435 {
         return result;
     }
 
+
     public static void main(String[] args) {
         Solution_435 solution_435 = new Solution_435();
         int[][] ints = new int[][]{
